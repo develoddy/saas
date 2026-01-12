@@ -1,0 +1,63 @@
+<div class="layout-container" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>LujanDev</h2>
+      <button class="sidebar-toggle" (click)="toggleSidebar()">
+        <span>☰</span>
+      </button>
+    </div>
+
+    <div class="sidebar-content">
+      <!-- User info -->
+      <div class="user-info" *ngIf="tenant">
+        <div class="user-avatar">
+          {{ tenant.name.charAt(0).toUpperCase() }}
+        </div>
+        <div class="user-details">
+          <p class="user-name">{{ tenant.name }}</p>
+          <p class="user-email">{{ tenant.email }}</p>
+          <span class="status-badge" [ngClass]="getStatusClass()">
+            {{ getStatusBadge() }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="sidebar-nav">
+        <a [routerLink]="['/' + tenant?.module_key]" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a [routerLink]="['/' + tenant?.module_key + '/campaigns']" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">📧</span>
+          <span class="nav-label">Campañas</span>
+        </a>
+        <a [routerLink]="['/' + tenant?.module_key + '/subscribers']" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span class="nav-label">Suscriptores</span>
+        </a>
+        <a [routerLink]="['/' + tenant?.module_key + '/analytics']" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span class="nav-label">Estadísticas</span>
+        </a>
+        <a [routerLink]="['/' + tenant?.module_key + '/settings']" routerLinkActive="active" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Configuración</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <span class="nav-icon">🚪</span>
+        <span class="nav-label">Cerrar sesión</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,65 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>LujanDev App</h1>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
+
+    <div *ngIf="error" class="alert alert-error">
+      {{ error }}
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          [class.invalid]="hasError('email', 'required') || hasError('email', 'email')"
+          placeholder="tu@email.com">
+        <div class="error-message" *ngIf="hasError('email', 'required')">
+          El email es requerido
+        </div>
+        <div class="error-message" *ngIf="hasError('email', 'email')">
+          Email inválido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          [class.invalid]="hasError('password', 'required')"
+          placeholder="Tu contraseña">
+        <div class="error-message" *ngIf="hasError('password', 'required')">
+          La contraseña es requerida
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="moduleKey">Módulo</label>
+        <input
+          type="text"
+          id="moduleKey"
+          formControlName="moduleKey"
+          [class.invalid]="hasError('moduleKey', 'required')"
+          placeholder="newsletter-campaigns">
+        <div class="error-message" *ngIf="hasError('moduleKey', 'required')">
+          El módulo es requerido
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting" class="btn-primary">
+        <span *ngIf="!isSubmitting">Iniciar sesión</span>
+        <span *ngIf="isSubmitting">Iniciando...</span>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>¿No tienes cuenta? <a [href]="'https://tienda.lujandev.com/trial/register?module=' + moduleKey">Inicia tu trial gratis</a></p>
+    </div>
+  </div>
+</div>
