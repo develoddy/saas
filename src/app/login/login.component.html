@@ -39,19 +39,6 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="moduleKey">Módulo</label>
-        <input
-          type="text"
-          id="moduleKey"
-          formControlName="moduleKey"
-          [class.invalid]="hasError('moduleKey', 'required')"
-          placeholder="newsletter-campaigns">
-        <div class="error-message" *ngIf="hasError('moduleKey', 'required')">
-          El módulo es requerido
-        </div>
-      </div>
-
       <button type="submit" [disabled]="isSubmitting" class="btn-primary">
         <span *ngIf="!isSubmitting">Iniciar sesión</span>
         <span *ngIf="isSubmitting">Iniciando...</span>
@@ -59,7 +46,7 @@
     </form>
 
     <div class="login-footer">
-      <p>¿No tienes cuenta? <a [href]="'https://tienda.lujandev.com/trial/register?module=' + moduleKey">Inicia tu trial gratis</a></p>
+      <p>¿No tienes cuenta? <a href="https://tienda.lujandev.com/labs">Explora nuestros productos</a></p>
     </div>
   </div>
 </div>

@@ -1,0 +1,55 @@
+<div class="select-app-container">
+  <div class="select-app-header">
+    <h1>Selecciona una aplicación</h1>
+    <p>Tienes acceso a {{ modules.length }} productos de LujanDev</p>
+  </div>
+
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <div class="modules-grid">
+    <div
+      *ngFor="let module of modules"
+      class="module-card"
+      [class.disabled]="!module.has_access"
+      (click)="selectModule(module)">
+      
+      <div class="module-icon" [style.background-color]="module.color">
+        <i [class]="module.icon"></i>
+      </div>
+
+      <div class="module-info">
+        <h3>{{ module.module_name }}</h3>
+        
+        <div class="module-status">
+          <span class="status-badge" [class]="getStatusClass(module.status)">
+            {{ getStatusText(module.status) }}
+          </span>
+          
+          <span *ngIf="module.status === 'trial' && module.days_remaining !== undefined" class="trial-info">
+            {{ module.days_remaining }} días restantes
+          </span>
+        </div>
+
+        <div class="module-plan" *ngIf="module.plan">
+          Plan: <strong>{{ module.plan }}</strong>
+        </div>
+      </div>
+
+      <div class="module-action">
+        <button
+          class="btn-enter"
+          [disabled]="!module.has_access || isLoading"
+          type="button">
+          <span *ngIf="!isLoading">Entrar</span>
+          <span *ngIf="isLoading">Cargando...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="select-app-footer">
+    <a routerLink="/login">← Volver al login</a>
+  </div>
+</div>

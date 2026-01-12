@@ -7,7 +7,20 @@ import { environment } from '../../environments/environment';
 export interface LoginRequest {
   email: string;
   password: string;
-  moduleKey: string;
+  moduleKey?: string; // Opcional: si se omite, backend devuelve lista de módulos
+}
+
+export interface ModuleInfo {
+  module_key: string;
+  module_name: string;
+  icon: string;
+  color: string;
+  status: string;
+  plan: string;
+  trial_ends_at?: string;
+  days_remaining?: number;
+  has_access: boolean;
+  dashboard_url: string;
 }
 
 export interface TenantProfile {
@@ -27,10 +40,14 @@ export interface TenantProfile {
 
 export interface AuthResponse {
   success: boolean;
-  tenant: TenantProfile;
-  token: string;
-  dashboard_url: string;
+  tenant?: TenantProfile; // Opcional cuando se devuelven modules
+  token?: string; // Opcional cuando se devuelven modules
+  dashboard_url?: string; // Opcional cuando se devuelven modules
   message?: string;
+  // Respuesta para detección de múltiples módulos
+  email?: string;
+  modules?: ModuleInfo[];
+  total_modules?: number;
 }
 
 @Injectable({
@@ -161,10 +178,14 @@ export class SaasService {
    * Manejar autenticación exitosa
    */
   private handleAuthentication(response: AuthResponse): void {
-    localStorage.setItem('tenant_token', response.token);
-    this.tokenSubject.next(response.token);
-    localStorage.setItem('tenant_profile', JSON.stringify(response.tenant));
-    this.currentTenantSubject.next(response.tenant);
+    if (response.token) {
+      localStorage.setItem('tenant_token', response.token);
+      this.tokenSubject.next(response.token);
+    }
+    if (response.tenant) {
+      localStorage.setItem('tenant_profile', JSON.stringify(response.tenant));
+      this.currentTenantSubject.next(response.tenant);
+    }
   }
 
   /**

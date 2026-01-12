@@ -19,18 +19,26 @@ export class TenantAuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | boolean {
     
+    console.log('🔐 TenantAuthGuard: Verificando acceso...');
+    
     // Verificar si hay token
     if (!this.saasService.isAuthenticated()) {
+      console.log('❌ No hay token, redirigiendo a login');
       this.router.navigate(['/login']);
       return false;
     }
 
+    console.log('✅ Token encontrado, verificando acceso con backend...');
+
     // Verificar acceso con el backend
     return this.saasService.checkAccess().pipe(
       map(response => {
-        if (response.success && response.has_access) {
+        console.log('📥 Respuesta de checkAccess:', response);
+        if (response.success && response.hasAccess) { // ← Cambiado de has_access a hasAccess
+          console.log('✅ Acceso permitido');
           return true;
         } else {
+          console.log('❌ Acceso denegado, redirigiendo a login');
           this.router.navigate(['/login'], {
             queryParams: { expired: true }
           });
@@ -38,7 +46,7 @@ export class TenantAuthGuard implements CanActivate {
         }
       }),
       catchError(error => {
-        console.error('Error checking tenant access:', error);
+        console.error('❌ Error checking tenant access:', error);
         this.saasService.logout();
         this.router.navigate(['/login']);
         return of(false);
