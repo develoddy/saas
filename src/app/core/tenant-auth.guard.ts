@@ -34,16 +34,37 @@ export class TenantAuthGuard implements CanActivate {
     return this.saasService.checkAccess().pipe(
       map(response => {
         console.log('📥 Respuesta de checkAccess:', response);
-        if (response.success && response.hasAccess) { // ← Cambiado de has_access a hasAccess
+        
+        if (response.success && response.hasAccess) {
           console.log('✅ Acceso permitido');
           return true;
-        } else {
-          console.log('❌ Acceso denegado, redirigiendo a login');
-          this.router.navigate(['/login'], {
-            queryParams: { expired: true }
-          });
-          return false;
+        } 
+        
+        // 🆕 Si el trial expiró o no tiene acceso activo, redirigir a upgrade
+        if (response.tenant) {
+          const tenant = response.tenant;
+          
+          // Trial expirado o status no activo → /upgrade
+          if (tenant.status === 'trial' && !response.hasAccess) {
+            console.log('⏰ Trial expirado, redirigiendo a /upgrade');
+            this.router.navigate(['/upgrade']);
+            return false;
+          }
+          
+          // Subscripción expirada/cancelada → /upgrade
+          if (['expired', 'cancelled', 'suspended'].includes(tenant.status)) {
+            console.log(`❌ Status: ${tenant.status}, redirigiendo a /upgrade`);
+            this.router.navigate(['/upgrade']);
+            return false;
+          }
         }
+        
+        // Otros casos → login
+        console.log('❌ Acceso denegado, redirigiendo a login');
+        this.router.navigate(['/login'], {
+          queryParams: { expired: true }
+        });
+        return false;
       }),
       catchError(error => {
         console.error('❌ Error checking tenant access:', error);

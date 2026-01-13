@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { SelectAppComponent } from './select-app/select-app.component';
+import { UpgradeComponent } from './upgrade/upgrade.component';
 import { TenantAuthGuard } from './core/tenant-auth.guard';
 
 const routes: Routes = [
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: 'select-app',
     component: SelectAppComponent
+  },
+  {
+    path: 'upgrade',
+    component: UpgradeComponent
   },
   {
     path: '',

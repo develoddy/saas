@@ -9,13 +9,15 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { SelectAppComponent } from './select-app/select-app.component';
+import { UpgradeComponent } from './upgrade/upgrade.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     LayoutComponent,
-    SelectAppComponent
+    SelectAppComponent,
+    UpgradeComponent
   ],
   imports: [
     BrowserModule,
