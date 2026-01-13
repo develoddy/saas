@@ -28,10 +28,14 @@ export interface TenantProfile {
   name: string;
   email: string;
   module_key: string;
+  module_name?: string;
   plan: string;
   status: 'trial' | 'active' | 'cancelled' | 'suspended' | 'expired';
   trial_ends_at?: string;
   subscribed_at?: string;
+  cancelled_at?: string;
+  subscription_ends_at?: string;
+  stripe_subscription_id?: string;
   subscription_end_date?: string;
   days_remaining?: number;
   has_access?: boolean;

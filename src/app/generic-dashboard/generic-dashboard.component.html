@@ -1,0 +1,94 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>{{ getGreeting() }}, {{ tenant?.name }}! 👋</h1>
+    <p class="subtitle">{{ tenant?.module_name || moduleKey }}</p>
+  </div>
+
+  <!-- Status banner -->
+  <div class="status-banner" *ngIf="tenant?.is_on_trial">
+    <div class="banner-content">
+      <span class="banner-icon">⏰</span>
+      <div class="banner-text">
+        <strong>Trial activo</strong>
+        <p>Te quedan {{ tenant?.days_remaining }} días para probar todas las funcionalidades</p>
+      </div>
+    </div>
+    <button class="btn-upgrade" routerLink="/upgrade">Actualizar ahora</button>
+  </div>
+
+  <!-- Plan info banner (for active subscriptions) -->
+  <div class="plan-info-banner" *ngIf="!tenant?.is_on_trial && tenant?.status === 'active'">
+    <div class="plan-info-content">
+      <div class="plan-badge">
+        <span class="badge-icon">💎</span>
+        <div>
+          <h4>{{ tenant?.plan }}</h4>
+          <p class="plan-status">Suscripción activa</p>
+        </div>
+      </div>
+      <div class="plan-actions">
+        <button class="btn-manage" routerLink="/account">Gestionar plan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <p class="stat-label">Dashboard</p>
+        <h3 class="stat-value">{{ tenant?.module_name }}</h3>
+        <p class="stat-change">{{ tenant?.plan || 'Trial' }}</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-content">
+        <p class="stat-label">Estado</p>
+        <h3 class="stat-value">{{ tenant?.status }}</h3>
+        <p class="stat-change" *ngIf="tenant?.is_on_trial">{{ tenant?.days_remaining }} días restantes</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">🚀</div>
+      <div class="stat-content">
+        <p class="stat-label">Funcionalidades</p>
+        <h3 class="stat-value">Próximamente</h3>
+        <p class="stat-change">En desarrollo</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Welcome message -->
+  <div class="welcome-section">
+    <div class="card">
+      <div class="card-body">
+        <h2>🎉 ¡Bienvenido a {{ tenant?.module_name }}!</h2>
+        <p class="lead">Este es tu dashboard personal para gestionar tu módulo SaaS.</p>
+        
+        <div class="info-box mt-4">
+          <h4>📦 Información del módulo</h4>
+          <ul>
+            <li><strong>Módulo:</strong> {{ tenant?.module_name || moduleKey }}</li>
+            <li><strong>Plan actual:</strong> {{ tenant?.plan || 'Trial' }}</li>
+            <li><strong>Estado:</strong> {{ tenant?.status }}</li>
+            <li *ngIf="tenant?.is_on_trial"><strong>Días restantes de trial:</strong> {{ tenant?.days_remaining }}</li>
+          </ul>
+        </div>
+
+        <div class="alert alert-info mt-4" role="alert">
+          <strong>ℹ️ Nota:</strong> Este es un dashboard genérico. Las funcionalidades específicas del módulo se agregarán próximamente.
+        </div>
+
+        <div class="action-buttons mt-4" *ngIf="tenant?.is_on_trial">
+          <button class="btn btn-primary" routerLink="/upgrade">
+            <i class="fas fa-rocket"></i> Actualizar a plan de pago
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

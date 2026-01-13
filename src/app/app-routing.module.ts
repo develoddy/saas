@@ -4,6 +4,9 @@ import { LoginComponent } from './login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { SelectAppComponent } from './select-app/select-app.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
+import { UpgradeSuccessComponent } from './upgrade-success/upgrade-success.component';
+import { GenericDashboardComponent } from './generic-dashboard/generic-dashboard.component';
+import { AccountComponent } from './account/account.component';
 import { TenantAuthGuard } from './core/tenant-auth.guard';
 
 const routes: Routes = [
@@ -20,19 +23,22 @@ const routes: Routes = [
     component: UpgradeComponent
   },
   {
+    path: 'upgrade/success',
+    component: UpgradeSuccessComponent
+  },
+  {
+    path: 'account',
+    component: AccountComponent,
+    canActivate: [TenantAuthGuard]
+  },
+  {
     path: '',
     component: LayoutComponent,
     canActivate: [TenantAuthGuard],
     children: [
       {
-        path: 'newsletter-campaigns',
-        loadChildren: () => import('./modules/newsletter-campaigns/newsletter-campaigns.module')
-          .then(m => m.NewsletterCampaignsModule)
-      },
-      {
-        path: '',
-        redirectTo: 'newsletter-campaigns',
-        pathMatch: 'full'
+        path: ':moduleKey',
+        component: GenericDashboardComponent
       }
     ]
   }

@@ -25,10 +25,18 @@
 
       <!-- Navigation -->
       <nav class="sidebar-nav">
-        <a [routerLink]="['/' + tenant?.module_key]" routerLinkActive="active" class="nav-item">
+        <a [routerLink]="['/' + tenant?.module_key]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
           <span class="nav-icon">📊</span>
           <span class="nav-label">Dashboard</span>
         </a>
+        
+        <!-- Upgrade option if on trial -->
+        <a *ngIf="tenant?.is_on_trial" routerLink="/upgrade" routerLinkActive="active" class="nav-item nav-item-upgrade">
+          <span class="nav-icon">🚀</span>
+          <span class="nav-label">Actualizar Plan</span>
+        </a>
+        
+        <!-- Placeholder for future sections
         <a [routerLink]="['/' + tenant?.module_key + '/campaigns']" routerLinkActive="active" class="nav-item">
           <span class="nav-icon">📧</span>
           <span class="nav-label">Campañas</span>
@@ -45,6 +53,7 @@
           <span class="nav-icon">⚙️</span>
           <span class="nav-label">Configuración</span>
         </a>
+        -->
       </nav>
     </div>
 

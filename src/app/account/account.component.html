@@ -1,0 +1,190 @@
+<div class="account-container">
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3 text-muted">Cargando información...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading && tenant" class="content-wrapper">
+    
+    <!-- Header -->
+    <div class="account-header">
+      <button class="btn-back" (click)="goToDashboard()">
+        <i class="fas fa-arrow-left"></i> Volver al dashboard
+      </button>
+      <h1><i class="fas fa-user-circle me-3"></i>Mi Cuenta</h1>
+    </div>
+
+    <!-- Alert messages -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      {{ error }}
+      <button type="button" class="btn-close" (click)="error = null"></button>
+    </div>
+
+    <div *ngIf="success" class="alert alert-success alert-dismissible fade show">
+      <i class="fas fa-check-circle me-2"></i>
+      {{ success }}
+      <button type="button" class="btn-close" (click)="success = null"></button>
+    </div>
+
+    <div class="row g-4">
+      
+      <!-- Profile Info -->
+      <div class="col-lg-4">
+        <div class="card profile-card">
+          <div class="card-body text-center">
+            <div class="profile-avatar">
+              {{ tenant.name.charAt(0).toUpperCase() }}
+            </div>
+            <h3 class="mt-3">{{ tenant.name }}</h3>
+            <p class="text-muted">{{ tenant.email }}</p>
+            <span class="badge-status" [ngClass]="{
+              'badge-active': tenant.status === 'active',
+              'badge-trial': tenant.status === 'trial',
+              'badge-expired': tenant.status === 'expired'
+            }">
+              {{ tenant.status === 'active' ? 'Activo' : tenant.status === 'trial' ? 'Trial' : 'Expirado' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription Info -->
+      <div class="col-lg-8">
+        
+        <!-- Current Plan -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h4><i class="fas fa-gem me-2"></i>Plan Actual</h4>
+          </div>
+          <div class="card-body">
+            <div class="plan-details">
+              <div class="plan-name-section">
+                <h2 class="plan-name">{{ tenant.plan }}</h2>
+                <p class="plan-module">{{ tenant.module_name || tenant.module_key }}</p>
+              </div>
+              
+              <div class="plan-info-grid">
+                <div class="info-item">
+                  <i class="fas fa-calendar-check"></i>
+                  <div>
+                    <small>Fecha de suscripción</small>
+                    <strong>{{ tenant.subscribed_at | date:'dd/MM/yyyy' }}</strong>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="tenant.subscription_ends_at">
+                  <i class="fas fa-calendar-times"></i>
+                  <div>
+                    <small>{{ tenant.cancelled_at ? 'Cancela el' : 'Finaliza el' }}</small>
+                    <strong>{{ tenant.subscription_ends_at | date:'dd/MM/yyyy' }}</strong>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="!tenant.subscription_ends_at && !tenant.cancelled_at">
+                  <i class="fas fa-sync-alt"></i>
+                  <div>
+                    <small>Renovación</small>
+                    <strong>Automática mensual</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Advertencia de cancelación -->
+              <div class="alert alert-warning mb-3" *ngIf="tenant.cancelled_at && tenant.subscription_ends_at">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Suscripción cancelada</strong><br>
+                <small>Conservarás el acceso hasta el {{ tenant.subscription_ends_at | date:'dd/MM/yyyy' }}. Después de esta fecha perderás el acceso al módulo.</small>
+              </div>
+
+              <div class="plan-actions">
+                <button class="btn btn-primary btn-change-plan" (click)="upgradeOrChangePlan()">
+                  <i class="fas fa-arrow-up me-2"></i>
+                  Cambiar plan
+                </button>
+                
+                <button 
+                  *ngIf="tenant.stripe_subscription_id && !tenant.cancelled_at"
+                  class="btn btn-danger btn-cancel" 
+                  (click)="openCancelModal()">
+                  <i class="fas fa-times-circle me-2"></i>
+                  Cancelar suscripción
+                </button>
+
+                <button 
+                  *ngIf="tenant.cancelled_at"
+                  class="btn btn-success btn-reactivate" 
+                  (click)="reactivateSubscription()">
+                  <i class="fas fa-undo me-2"></i>
+                  Reactivar suscripción
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Info -->
+        <div class="card">
+          <div class="card-header">
+            <h4><i class="fas fa-credit-card me-2"></i>Información de pago</h4>
+          </div>
+          <div class="card-body">
+            <p class="text-muted">
+              <i class="fas fa-shield-alt me-2"></i>
+              Tus pagos son procesados de forma segura por Stripe.
+            </p>
+            <p class="mb-0">
+              <strong>ID de suscripción:</strong> 
+              <code class="ms-2">{{ tenant.stripe_subscription_id || 'N/A' }}</code>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel Modal -->
+  <div class="modal-backdrop" *ngIf="showCancelModal" (click)="closeCancelModal()"></div>
+  <div class="modal-dialog" *ngIf="showCancelModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fas fa-exclamation-triangle text-warning me-2"></i>Cancelar Suscripción</h3>
+        <button class="btn-close-modal" (click)="closeCancelModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3">¿Estás seguro de que deseas cancelar tu suscripción?</p>
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          Conservarás el acceso hasta el final del período actual de facturación.
+        </div>
+        
+        <div class="form-group mt-3">
+          <label>¿Por qué cancelas? (opcional)</label>
+          <textarea 
+            class="form-control" 
+            rows="3" 
+            [(ngModel)]="cancelReason"
+            placeholder="Tu feedback nos ayuda a mejorar..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeCancelModal()" [disabled]="canceling">
+          No, mantener suscripción
+        </button>
+        <button class="btn btn-danger" (click)="cancelSubscription()" [disabled]="canceling">
+          <span *ngIf="!canceling">Sí, cancelar suscripción</span>
+          <span *ngIf="canceling">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Cancelando...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

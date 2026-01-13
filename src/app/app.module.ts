@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -10,6 +10,9 @@ import { LoginComponent } from './login/login.component';
 import { LayoutComponent } from './layout/layout.component';
 import { SelectAppComponent } from './select-app/select-app.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
+import { UpgradeSuccessComponent } from './upgrade-success/upgrade-success.component';
+import { GenericDashboardComponent } from './generic-dashboard/generic-dashboard.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -17,13 +20,17 @@ import { UpgradeComponent } from './upgrade/upgrade.component';
     LoginComponent,
     LayoutComponent,
     SelectAppComponent,
-    UpgradeComponent
+    UpgradeComponent,
+    UpgradeSuccessComponent,
+    GenericDashboardComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
     AppRoutingModule
   ],
   providers: [],

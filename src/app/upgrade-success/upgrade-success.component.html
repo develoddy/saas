@@ -1,0 +1,47 @@
+<div class="success-container">
+  <div class="success-card" *ngIf="!loading && !error">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    
+    <h1>¡Pago Exitoso! 🎉</h1>
+    
+    <p class="success-message">
+      Tu subscripción ha sido activada correctamente.
+    </p>
+    
+    <div class="info-box">
+      <p><strong>¿Qué sigue?</strong></p>
+      <ul>
+        <li>Tu cuenta ha sido actualizada al plan de pago</li>
+        <li>Ahora tienes acceso completo a todas las funcionalidades</li>
+        <li>Recibirás un email de confirmación en breve</li>
+      </ul>
+    </div>
+    
+    <p class="redirect-message">
+      Serás redirigido a tu dashboard en unos segundos...
+    </p>
+    
+    <button class="btn btn-primary" (click)="goToDashboard()">
+      Ir al Dashboard
+    </button>
+  </div>
+  
+  <div class="loading-card" *ngIf="loading">
+    <div class="spinner"></div>
+    <h2>Procesando tu pago...</h2>
+    <p>Por favor espera mientras verificamos tu subscripción</p>
+  </div>
+  
+  <div class="error-card" *ngIf="error && !loading">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-circle"></i>
+    </div>
+    <h2>Ocurrió un problema</h2>
+    <p>{{ error }}</p>
+    <button class="btn btn-secondary" (click)="goToDashboard()">
+      Volver al Dashboard
+    </button>
+  </div>
+</div>

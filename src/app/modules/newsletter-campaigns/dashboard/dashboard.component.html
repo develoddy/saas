@@ -1,7 +1,7 @@
 <div class="dashboard">
   <div class="dashboard-header">
     <h1>{{ getGreeting() }}, {{ tenant?.name }}! 👋</h1>
-    <p class="subtitle">Newsletter Campaigns Pro</p>
+    <p class="subtitle">{{ tenant?.module_name || 'Newsletter Campaigns Pro' }}</p>
   </div>
 
   <!-- Status banner -->

@@ -84,8 +84,9 @@ export class UpgradeComponent implements OnInit {
   loadModulePlans(): void {
     if (!this.tenant) return;
 
+    // Usar endpoint público para obtener planes
     this.http.get<any>(
-      `${environment.URL_SERVICE}modules/${this.tenant.module_key}`
+      `${environment.URL_SERVICE}modules/public/${this.tenant.module_key}`
     ).subscribe({
       next: (response) => {
         if (response.module && response.module.saas_config?.pricing) {
@@ -111,7 +112,26 @@ export class UpgradeComponent implements OnInit {
 
     this.processingPlan = plan.name;
 
+    // Log de depuración del plan seleccionado
+    console.log('🎯 Plan seleccionado:', {
+      name: plan.name,
+      price: plan.price,
+      stripe_price_id: plan.stripe_price_id
+    });
+
     try {
+      const requestBody = {
+        tenantId: this.tenant.id,
+        moduleKey: this.tenant.module_key,
+        planName: plan.name,
+        stripePriceId: plan.stripe_price_id,
+        successUrl: `${window.location.origin}/upgrade/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${window.location.origin}/upgrade?canceled=true`
+      };
+
+      // Log de la petición completa
+      console.log('📤 Enviando petición a Stripe:', requestBody);
+
       // Crear sesión de Stripe Checkout
       const response = await this.http.post<{ 
         success: boolean; 
@@ -119,14 +139,7 @@ export class UpgradeComponent implements OnInit {
         url: string 
       }>(
         `${environment.URL_SERVICE}stripe/create-subscription-checkout`,
-        {
-          tenantId: this.tenant.id,
-          moduleKey: this.tenant.module_key,
-          planName: plan.name,
-          stripePriceId: plan.stripe_price_id,
-          successUrl: `${window.location.origin}/upgrade/success`,
-          cancelUrl: `${window.location.origin}/upgrade?canceled=true`
-        }
+        requestBody
       ).toPromise();
 
       if (response?.success && response.url) {

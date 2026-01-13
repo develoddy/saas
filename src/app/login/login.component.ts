@@ -65,12 +65,25 @@ export class LoginComponent implements OnInit {
               // Hacer segundo request con moduleKey para obtener token
               this.saasService.login({ email, password, moduleKey: module.module_key }).subscribe({
                 next: (authResponse) => {
-                  const path = authResponse.dashboard_url ? authResponse.dashboard_url.replace('/app/', '/') : '/newsletter-campaigns';
-                  this.router.navigate([path]);
+                  // Verificar si tiene acceso o si trial expiró
+                  if (authResponse.tenant && !authResponse.tenant.has_access) {
+                    console.log('⏰ Trial expirado o sin acceso, redirigiendo a /upgrade');
+                    this.router.navigate(['/upgrade']);
+                  } else {
+                    const path = authResponse.dashboard_url ? authResponse.dashboard_url.replace('/app/', '/') : '/newsletter-campaigns';
+                    this.router.navigate([path]);
+                  }
+                  this.isSubmitting = false;
                 },
                 error: (err) => {
                   console.error('❌ Error en autenticación específica:', err);
-                  this.error = 'Error al acceder al módulo';
+                  // Si el error es 403, probablemente sea trial expirado
+                  if (err.status === 403) {
+                    console.log('⏰ Trial expirado (403), redirigiendo a /upgrade');
+                    this.router.navigate(['/upgrade']);
+                  } else {
+                    this.error = err.error?.error || 'Error al acceder al módulo';
+                  }
                   this.isSubmitting = false;
                 }
               });
