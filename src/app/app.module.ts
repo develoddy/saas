@@ -13,6 +13,7 @@ import { UpgradeComponent } from './upgrade/upgrade.component';
 import { UpgradeSuccessComponent } from './upgrade-success/upgrade-success.component';
 import { GenericDashboardComponent } from './generic-dashboard/generic-dashboard.component';
 import { AccountComponent } from './account/account.component';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AccountComponent } from './account/account.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

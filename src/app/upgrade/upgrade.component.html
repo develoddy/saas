@@ -14,11 +14,11 @@
   </div>
 
   <!-- Main Content -->
-  <div *ngIf="!loading && !error && tenant" class="content-wrapper">
+  <div *ngIf="!loading && !error" class="content-wrapper">
     
     <!-- Header -->
     <div class="text-center mb-5">
-      <div class="mb-3">
+      <div class="mb-3" *ngIf="tenant">
         <span class="badge bg-warning text-dark fs-5 px-4 py-2">
           <i class="fas fa-clock me-2"></i>
           {{ tenant.is_on_trial ? 'Trial finalizado' : 'Subscripción expirada' }}
@@ -26,14 +26,25 @@
       </div>
 
       <h1 class="display-5 fw-bold mb-3">
-        Elige tu plan para continuar
+        {{ tenant ? 'Elige tu plan para continuar' : 'Elige tu plan' }}
       </h1>
 
       <p class="lead text-muted">
-        {{ tenant.is_on_trial 
-          ? 'Tu periodo de prueba ha terminado. Elige un plan para seguir disfrutando de todas las funcionalidades.' 
-          : 'Selecciona un plan para reactivar tu acceso.' }}
+        {{ tenant 
+          ? (tenant.is_on_trial 
+            ? 'Tu periodo de prueba ha terminado. Elige un plan para seguir disfrutando de todas las funcionalidades.' 
+            : 'Selecciona un plan para reactivar tu acceso.')
+          : 'Selecciona el plan que mejor se adapte a tus necesidades.' }}
       </p>
+      
+      <!-- Info adicional si no hay sesión -->
+      <div *ngIf="!tenant && emailFromUrl" class="alert alert-info mx-auto mt-4" style="max-width: 600px">
+        <i class="fas fa-info-circle me-2"></i>
+        Continúa como: <strong>{{ emailFromUrl }}</strong>
+        <span *ngIf="moduleKeyFromUrl"> para <strong>{{ moduleKeyFromUrl }}</strong></span>
+        <br>
+        <small>Al seleccionar un plan, se te pedirá iniciar sesión para completar la compra.</small>
+      </div>
     </div>
 
     <!-- Pricing Cards -->
@@ -152,7 +163,7 @@
     </div>
 
     <!-- Back Button (si tiene acceso) -->
-    <div class="text-center mt-4" *ngIf="tenant.has_access">
+    <div class="text-center mt-4" *ngIf="tenant && tenant.has_access">
       <button class="btn btn-link" (click)="goToDashboard()">
         <i class="fas fa-arrow-left me-2"></i>
         Volver al dashboard

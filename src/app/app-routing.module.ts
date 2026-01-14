@@ -27,18 +27,22 @@ const routes: Routes = [
     component: UpgradeSuccessComponent
   },
   {
-    path: 'account',
-    component: AccountComponent,
-    canActivate: [TenantAuthGuard]
-  },
-  {
     path: '',
     component: LayoutComponent,
     canActivate: [TenantAuthGuard],
     children: [
       {
         path: ':moduleKey',
-        component: GenericDashboardComponent
+        children: [
+          {
+            path: '',
+            component: GenericDashboardComponent
+          },
+          {
+            path: 'account',
+            component: AccountComponent
+          }
+        ]
       }
     ]
   }

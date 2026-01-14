@@ -4,17 +4,8 @@
     <p class="subtitle">{{ tenant?.module_name || moduleKey }}</p>
   </div>
 
-  <!-- Status banner -->
-  <div class="status-banner" *ngIf="tenant?.is_on_trial">
-    <div class="banner-content">
-      <span class="banner-icon">⏰</span>
-      <div class="banner-text">
-        <strong>Trial activo</strong>
-        <p>Te quedan {{ tenant?.days_remaining }} días para probar todas las funcionalidades</p>
-      </div>
-    </div>
-    <button class="btn-upgrade" routerLink="/upgrade">Actualizar ahora</button>
-  </div>
+  <!-- 🆕 Trial Banner Component -->
+  <app-trial-banner [tenant]="tenant"></app-trial-banner>
 
   <!-- Plan info banner (for active subscriptions) -->
   <div class="plan-info-banner" *ngIf="!tenant?.is_on_trial && tenant?.status === 'active'">

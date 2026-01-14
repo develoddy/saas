@@ -1,0 +1,58 @@
+<div class="trial-banner" 
+     *ngIf="tenant?.is_on_trial && !isDismissed"
+     [class.minimized]="isMinimized"
+     [class.urgent]="urgencyLevel === 'urgent'"
+     [class.warning]="urgencyLevel === 'warning'">
+  
+  <!-- Minimized View -->
+  <div class="banner-minimized" *ngIf="isMinimized" (click)="toggleMinimize()">
+    <div class="minimized-content">
+      <span class="icon">⏰</span>
+      <span class="text">{{ daysRemaining }} días restantes</span>
+    </div>
+  </div>
+
+  <!-- Full View -->
+  <div class="banner-full" *ngIf="!isMinimized">
+    <button class="btn-close" (click)="dismiss()" aria-label="Cerrar">×</button>
+    <button class="btn-minimize" (click)="toggleMinimize()" aria-label="Minimizar">−</button>
+
+    <div class="banner-container">
+      <!-- Left Section: Info -->
+      <div class="banner-left">
+        <div class="icon-section">
+          <div class="icon-circle" [class.pulse]="isExpiringSoon">
+            <span class="icon">{{ isExpiredToday ? '⚠️' : '⏰' }}</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="banner-title">{{ getMessage() }}</h3>
+          <p class="banner-subtitle">
+            Finaliza el <strong>{{ getTrialEndDate() }}</strong>
+          </p>
+
+          <!-- Progress Bar -->
+          <div class="progress-container" *ngIf="daysRemaining > 0">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+            </div>
+            <span class="progress-text">{{ daysRemaining }}/14 días</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Section: CTA -->
+      <div class="banner-right">
+        <button class="btn-upgrade-primary" (click)="navigateToUpgrade()">
+          <span class="btn-text">Ver Planes</span>
+          <span class="btn-arrow">→</span>
+        </button>
+        
+        <p class="banner-note" *ngIf="daysRemaining > 1">
+          Sin compromisos. Cancela cuando quieras.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

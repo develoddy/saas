@@ -1,0 +1,321 @@
+.trial-banner {
+  position: relative;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+
+  // Minimized state
+  &.minimized {
+    margin-bottom: 12px;
+  }
+}
+
+// ==========================================
+// Minimized View
+// ==========================================
+.banner-minimized {
+  background: #000000;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid #ffffff;
+
+  &:hover {
+    background: #1a1a1a;
+  }
+
+  .minimized-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+
+    .icon {
+      font-size: 18px;
+    }
+  }
+}
+
+// ==========================================
+// Full View
+// ==========================================
+.banner-full {
+  position: relative;
+  background: #f8f8f8;
+  border: 2px solid #e0e0e0;
+  border-left: 4px solid #000000;
+  padding: 24px;
+  transition: all 0.3s ease;
+
+  // Urgency variations
+  .trial-banner.warning & {
+    border-left-color: #666666;
+    background: #f5f5f5;
+  }
+
+  .trial-banner.urgent & {
+    border-left-color: #000000;
+    background: #ffffff;
+    border: 2px solid #000000;
+  }
+}
+
+// Close and Minimize buttons
+.btn-close,
+.btn-minimize {
+  position: absolute;
+  top: 12px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  font-weight: 300;
+  color: #666666;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #000000;
+    background: #e0e0e0;
+  }
+}
+
+.btn-close {
+  right: 12px;
+}
+
+.btn-minimize {
+  right: 48px;
+}
+
+// ==========================================
+// Banner Container
+// ==========================================
+.banner-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+}
+
+// ==========================================
+// Left Section
+// ==========================================
+.banner-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.icon-section {
+  flex-shrink: 0;
+}
+
+.icon-circle {
+  width: 56px;
+  height: 56px;
+  background: #000000;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  .icon {
+    font-size: 28px;
+  }
+
+  &.pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .trial-banner.warning & {
+    background: #333333;
+  }
+
+  .trial-banner.urgent & {
+    background: #000000;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.info-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.banner-subtitle {
+  font-size: 14px;
+  color: #666666;
+  margin: 0 0 16px 0;
+
+  strong {
+    color: #000000;
+    font-weight: 500;
+  }
+}
+
+// ==========================================
+// Progress Bar
+// ==========================================
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #000000;
+  transition: width 0.5s ease;
+
+  .trial-banner.warning & {
+    background: linear-gradient(90deg, #000000 0%, #666666 100%);
+  }
+
+  .trial-banner.urgent & {
+    background: #000000;
+  }
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+}
+
+// ==========================================
+// Right Section
+// ==========================================
+.banner-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
+.btn-upgrade-primary {
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    background: #333333;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  .btn-arrow {
+    font-size: 18px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .btn-arrow {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.banner-note {
+  font-size: 12px;
+  color: #999999;
+  margin: 0;
+  text-align: right;
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
+}
+
+// ==========================================
+// Animations
+// ==========================================
+.trial-banner {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

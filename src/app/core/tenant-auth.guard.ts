@@ -24,11 +24,17 @@ export class TenantAuthGuard implements CanActivate {
     // Verificar si hay token
     if (!this.saasService.isAuthenticated()) {
       console.log('❌ No hay token, redirigiendo a login');
-      this.router.navigate(['/login']);
+      // Capturar la URL completa para redirigir después del login
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: state.url }
+      });
       return false;
     }
 
     console.log('✅ Token encontrado, verificando acceso con backend...');
+    
+    // Obtener moduleKey de la ruta o del tenant
+    const moduleKey = route.paramMap.get('moduleKey') || this.saasService.getCurrentTenant()?.module_key;
 
     // Verificar acceso con el backend
     return this.saasService.checkAccess().pipe(
@@ -43,6 +49,7 @@ export class TenantAuthGuard implements CanActivate {
         // 🆕 Si el trial expiró o no tiene acceso activo, redirigir a upgrade
         if (response.tenant) {
           const tenant = response.tenant;
+          const tenantModuleKey = moduleKey || tenant.module_key;
           
           // Trial expirado o status no activo → /upgrade
           if (tenant.status === 'trial' && !response.hasAccess) {

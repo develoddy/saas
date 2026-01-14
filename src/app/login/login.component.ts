@@ -31,11 +31,21 @@ export class LoginComponent implements OnInit {
     if (this.saasService.isAuthenticated()) {
       const tenant = this.saasService.getCurrentTenant();
       if (tenant) {
-        this.router.navigate([`/${tenant.module_key}`]);
+        // Si viene returnUrl, usarlo
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        if (returnUrl) {
+          this.router.navigate([returnUrl]);
+        } else {
+          this.router.navigate([`/${tenant.module_key}`]);
+        }
       }
     }
 
-    // Ya no necesitamos query params para moduleKey - lo detectamos automáticamente
+    // Pre-llenar email si viene desde query params
+    const emailFromUrl = this.route.snapshot.queryParams['email'];
+    if (emailFromUrl) {
+      this.loginForm.patchValue({ email: emailFromUrl });
+    }
   }
 
   onSubmit(): void {
@@ -68,10 +78,18 @@ export class LoginComponent implements OnInit {
                   // Verificar si tiene acceso o si trial expiró
                   if (authResponse.tenant && !authResponse.tenant.has_access) {
                     console.log('⏰ Trial expirado o sin acceso, redirigiendo a /upgrade');
-                    this.router.navigate(['/upgrade']);
+                    this.router.navigate(['/upgrade'], {
+                      queryParams: { email: email }
+                    });
                   } else {
-                    const path = authResponse.dashboard_url ? authResponse.dashboard_url.replace('/app/', '/') : '/newsletter-campaigns';
-                    this.router.navigate([path]);
+                    // Verificar si hay returnUrl
+                    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+                    if (returnUrl) {
+                      this.router.navigate([returnUrl]);
+                    } else {
+                      const path = authResponse.dashboard_url ? authResponse.dashboard_url.replace('/app/', '/') : '/newsletter-campaigns';
+                      this.router.navigate([path]);
+                    }
                   }
                   this.isSubmitting = false;
                 },
@@ -80,7 +98,9 @@ export class LoginComponent implements OnInit {
                   // Si el error es 403, probablemente sea trial expirado
                   if (err.status === 403) {
                     console.log('⏰ Trial expirado (403), redirigiendo a /upgrade');
-                    this.router.navigate(['/upgrade']);
+                    this.router.navigate(['/upgrade'], {
+                      queryParams: { email: email }
+                    });
                   } else {
                     this.error = err.error?.error || 'Error al acceder al módulo';
                   }
@@ -89,7 +109,41 @@ export class LoginComponent implements OnInit {
               });
               
             } else {
-              // MÚLTIPLES módulos → mostrar selector
+              // MÚLTIPLES módulos → verificar si hay returnUrl con moduleKey específico
+              const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+              
+              if (returnUrl && returnUrl.includes('/')) {
+                // Extraer moduleKey del returnUrl (ej: /mailflow -> mailflow)
+                const moduleKeyFromUrl = returnUrl.split('/')[1];
+                const targetModule = response.modules.find(m => m.module_key === moduleKeyFromUrl);
+                
+                if (targetModule) {
+                  console.log(`📍 returnUrl apunta a ${moduleKeyFromUrl}, autenticando en ese módulo...`);
+                  // Hacer login específico para ese módulo
+                  this.saasService.login({ email, password, moduleKey: targetModule.module_key }).subscribe({
+                    next: (authResponse) => {
+                      if (authResponse.tenant && !authResponse.tenant.has_access) {
+                        console.log('⏰ Trial expirado, redirigiendo a /upgrade');
+                        this.router.navigate(['/upgrade'], {
+                          queryParams: { email: email, module: targetModule.module_key }
+                        });
+                      } else {
+                        console.log(`✅ Autenticado en ${targetModule.module_key}, redirigiendo a ${returnUrl}`);
+                        this.router.navigate([returnUrl]);
+                      }
+                      this.isSubmitting = false;
+                    },
+                    error: (err) => {
+                      console.error('❌ Error en autenticación específica:', err);
+                      this.error = err.error?.error || 'Error al acceder al módulo';
+                      this.isSubmitting = false;
+                    }
+                  });
+                  return;
+                }
+              }
+              
+              // Si no hay returnUrl específico o no coincide, mostrar selector
               console.log(`📍 Usuario con ${response.modules.length} módulos, mostrando selector`);
               this.router.navigate(['/select-app'], {
                 state: { modules: response.modules, email, password }

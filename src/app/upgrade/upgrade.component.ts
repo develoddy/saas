@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
@@ -36,13 +36,22 @@ export class UpgradeComponent implements OnInit {
   loading = true;
   error: string | null = null;
   processingPlan: string | null = null;
+  emailFromUrl: string | null = null; // Email del usuario desde URL
+  moduleKeyFromUrl: string | null = null; // Module key desde URL
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private http: HttpClient
   ) {}
 
   ngOnInit(): void {
+    // Obtener email y moduleKey de query params si viene desde el email
+    this.route.queryParams.subscribe(params => {
+      this.emailFromUrl = params['email'] || null;
+      this.moduleKeyFromUrl = params['module'] || null;
+    });
+    
     this.loadTenantProfile();
   }
 
@@ -53,7 +62,10 @@ export class UpgradeComponent implements OnInit {
     const token = localStorage.getItem('tenant_token');
     
     if (!token) {
-      this.router.navigate(['/login']);
+      // No hay sesión - mostrar página de upgrade sin info del tenant
+      console.log('📧 No hay sesión, mostrando planes públicos...');
+      this.tenant = null;
+      this.loadModulePlans();
       return;
     }
 
@@ -72,8 +84,9 @@ export class UpgradeComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading tenant profile:', err);
-        this.error = 'Error al cargar tu información';
-        this.loading = false;
+        // Si hay error, mostrar planes de todas formas
+        this.tenant = null;
+        this.loadModulePlans();
       }
     });
   }
@@ -82,11 +95,18 @@ export class UpgradeComponent implements OnInit {
    * Cargar planes del módulo SaaS
    */
   loadModulePlans(): void {
-    if (!this.tenant) return;
+    // Determinar qué moduleKey usar: del tenant o de la URL
+    const moduleKey = this.tenant?.module_key || this.moduleKeyFromUrl;
+    
+    if (!moduleKey) {
+      this.error = 'No se pudo identificar el módulo';
+      this.loading = false;
+      return;
+    }
 
     // Usar endpoint público para obtener planes
     this.http.get<any>(
-      `${environment.URL_SERVICE}modules/public/${this.tenant.module_key}`
+      `${environment.URL_SERVICE}modules/public/${moduleKey}`
     ).subscribe({
       next: (response) => {
         if (response.module && response.module.saas_config?.pricing) {
@@ -106,7 +126,20 @@ export class UpgradeComponent implements OnInit {
    * Iniciar proceso de subscripción con Stripe
    */
   async subscribeToPlan(plan: PricingPlan): Promise<void> {
-    if (!this.tenant || !plan.stripe_price_id || this.processingPlan) {
+    // Si no hay sesión, redirigir a login primero
+    if (!this.tenant) {
+      console.log('🔒 No hay sesión activa, redirigiendo a login...');
+      const email = this.emailFromUrl || '';
+      this.router.navigate(['/login'], {
+        queryParams: { 
+          returnUrl: '/upgrade',
+          email: email
+        }
+      });
+      return;
+    }
+
+    if (!plan.stripe_price_id || this.processingPlan) {
       return;
     }
 
