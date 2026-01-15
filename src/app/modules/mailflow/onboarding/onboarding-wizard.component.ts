@@ -28,6 +28,7 @@ export class OnboardingWizardComponent implements OnInit {
 
   // Datos de la secuencia generada
   generatedSequence: GeneratedSequence | null = null;
+  previewContacts: Array<{ email: string; name?: string }> = []; // Contactos para preview en Step 4
   isGenerating = false;
   generationError: string | null = null;
 
@@ -79,6 +80,15 @@ export class OnboardingWizardComponent implements OnInit {
     });
   }
 
+  // Contactos de ejemplo para MVP
+  private sampleContacts = [
+    { email: 'john.doe@example.com', name: 'John Doe' },
+    { email: 'jane.smith@example.com', name: 'Jane Smith' },
+    { email: 'mike.wilson@example.com', name: 'Mike Wilson' },
+    { email: 'sarah.brown@example.com', name: 'Sarah Brown' },
+    { email: 'david.garcia@example.com', name: 'David Garcia' }
+  ];
+
   private initializeForms(): void {
     // Step 1: Business Type
     this.step1Form = this.fb.group({
@@ -92,12 +102,13 @@ export class OnboardingWizardComponent implements OnInit {
       goal: ['', Validators.required]
     });
 
-    // Step 3: Contacts
+    // Step 3: Contacts (CSV opcional, usar ejemplos por defecto)
     this.step3Form = this.fb.group({
-      contactSource: ['csv', Validators.required],
+      contactSource: ['sample', Validators.required],
       csvFile: [null],
-      contacts: [[], Validators.required],
-      contactsCount: [0, Validators.min(1)]
+      contacts: [this.sampleContacts], // Inicializar con contactos de ejemplo
+      contactsCount: [this.sampleContacts.length],
+      notes: [''] // Campo opcional para notas
     });
 
     // Escuchar cambios para actualizar validez de los pasos
@@ -162,7 +173,8 @@ export class OnboardingWizardComponent implements OnInit {
   private updateStepsValidity(): void {
     this.steps[0].valid = this.step1Form.valid;
     this.steps[1].valid = this.step2Form.valid;
-    this.steps[2].valid = this.step3Form.valid && this.step3Form.value.contactsCount > 0;
+    // Step 3 siempre válido (contactos de ejemplo por defecto o CSV)
+    this.steps[2].valid = this.step3Form.value.contactsCount > 0;
     this.steps[3].valid = this.generatedSequence !== null;
   }
 
@@ -181,10 +193,25 @@ export class OnboardingWizardComponent implements OnInit {
     reader.onload = (e: any) => {
       const text = e.target.result;
       const contacts = this.extractEmailsFromCSV(text);
-      this.step3Form.patchValue({
-        contacts: contacts,
-        contactsCount: contacts.length
-      });
+      
+      // Limitar a 5 contactos para MVP preview
+      const limitedContacts = contacts.slice(0, 5);
+      
+      if (limitedContacts.length > 0) {
+        this.step3Form.patchValue({
+          contacts: limitedContacts,
+          contactsCount: limitedContacts.length,
+          contactSource: 'csv'
+        });
+      } else {
+        // Si no hay contactos válidos, volver a ejemplos
+        console.warn('⚠️ No valid contacts in CSV, using sample contacts');
+        this.step3Form.patchValue({
+          contacts: this.sampleContacts,
+          contactsCount: this.sampleContacts.length,
+          contactSource: 'sample'
+        });
+      }
       this.updateStepsValidity();
     };
     reader.readAsText(file);
@@ -198,11 +225,18 @@ export class OnboardingWizardComponent implements OnInit {
     const startIndex = lines[0].toLowerCase().includes('email') ? 1 : 0;
 
     for (let i = startIndex; i < lines.length; i++) {
-      const columns = lines[i].split(',').map(col => col.trim());
-      if (columns[0] && this.isValidEmail(columns[0])) {
+      const line = lines[i].trim();
+      if (!line) continue; // Ignorar líneas vacías
+      
+      const columns = line.split(',').map(col => col.trim());
+      const email = columns[0];
+      const name = columns[1];
+      
+      // Validar email antes de agregar
+      if (email && this.isValidEmail(email)) {
         contacts.push({
-          email: columns[0],
-          name: columns[1] || undefined
+          email,
+          name: name || undefined
         });
       }
     }
@@ -220,12 +254,29 @@ export class OnboardingWizardComponent implements OnInit {
     this.isGenerating = true;
     this.generationError = null;
 
+    // Obtener contactos del formulario
+    let contactsFromForm = this.step3Form.value.contacts;
+    
+    // Si no hay contactos o está vacío, usar sampleContacts
+    if (!contactsFromForm || !Array.isArray(contactsFromForm) || contactsFromForm.length === 0) {
+      contactsFromForm = this.sampleContacts;
+    }
+    
+    // Limitar a 5 contactos para preview MVP
+    this.previewContacts = contactsFromForm.slice(0, 5);
+    
+    console.log('📧 Contacts for sequence:', {
+      source: this.step3Form.value.contactSource,
+      total: this.previewContacts.length,
+      contacts: this.previewContacts
+    });
+
     const payload = {
       businessType: this.step1Form.value.businessType,
       goal: this.step2Form.value.goal,
       contactSource: {
-        type: this.step3Form.value.contactSource,
-        data: this.step3Form.value.contacts
+        type: this.step3Form.value.contactSource || 'sample',
+        data: this.previewContacts
       },
       brandInfo: {
         name: this.step1Form.value.brandName,
@@ -234,16 +285,40 @@ export class OnboardingWizardComponent implements OnInit {
     };
 
     try {
-      const result = await this.mailflowService
+      const response = await this.mailflowService
         .generateSequence(payload)
         .toPromise();
       
-      this.generatedSequence = result || null;
+      // Extraer data de la respuesta del backend (puede venir anidada o directa)
+      const data = (response && 'data' in response) ? response.data : response;
+      
+      // Emails por defecto
+      const defaultEmails: SequenceEmail[] = [
+        { subject: 'Welcome to our community', bodyHtml: '<p>Hello {{name}}, welcome!</p>', bodyText: 'Hello {{name}}, welcome!', delayHours: 0, order: 1, editable: true },
+        { subject: 'Getting started', bodyHtml: '<p>Here are your first steps...</p>', bodyText: 'Here are your first steps...', delayHours: 24, order: 2, editable: true },
+        { subject: 'Need help?', bodyHtml: '<p>We\'re here for you!</p>', bodyText: 'We\'re here for you!', delayHours: 72, order: 3, editable: true }
+      ];
+      
+      // Asegurar que siempre tengamos arrays válidos
+      this.generatedSequence = {
+        sequenceId: data?.sequenceId || null,
+        name: data?.name || 'Sample Onboarding Sequence',
+        emails: (data && Array.isArray(data.emails)) ? data.emails : defaultEmails,
+        estimatedContacts: data?.estimatedContacts || this.previewContacts.length,
+        status: data?.status || 'draft'
+      };
+      
+      console.log('✅ Sequence generated:', {
+        sequenceId: this.generatedSequence?.sequenceId,
+        name: this.generatedSequence?.name,
+        emails: this.generatedSequence?.emails?.length || 0,
+        contacts: this.previewContacts.length
+      });
 
       this.currentStep = 4;
       this.updateStepsValidity();
     } catch (error: any) {
-      console.error('Error generating sequence:', error);
+      console.error('❌ Error generating sequence:', error);
       this.generationError = error.error?.message || 'Failed to generate sequence. Please try again.';
     } finally {
       this.isGenerating = false;
@@ -252,7 +327,7 @@ export class OnboardingWizardComponent implements OnInit {
 
   // Editar email de la secuencia
   onEmailEdited(email: SequenceEmail, updates: Partial<SequenceEmail>): void {
-    if (this.generatedSequence) {
+    if (this.generatedSequence?.emails) {
       const emailToUpdate = this.generatedSequence.emails.find(e => e.order === email.order);
       if (emailToUpdate) {
         Object.assign(emailToUpdate, updates);
@@ -262,7 +337,10 @@ export class OnboardingWizardComponent implements OnInit {
 
   // Activar secuencia
   async activateSequence(): Promise<void> {
-    if (!this.generatedSequence) return;
+    if (!this.generatedSequence?.sequenceId) {
+      console.error('❌ No sequence ID available');
+      return;
+    }
 
     try {
       await this.mailflowService
@@ -273,7 +351,7 @@ export class OnboardingWizardComponent implements OnInit {
       this.tracking.moduleActivated('mailflow', {
         sequence_id: this.generatedSequence.sequenceId,
         sequence_name: this.generatedSequence.sequenceName || this.generatedSequence.name,
-        total_emails: this.generatedSequence.emails.length,
+        total_emails: this.generatedSequence.emails?.length || 0,
         contacts_count: this.step3Form.value.contactsCount,
         source: 'onboarding'
       });
@@ -285,6 +363,15 @@ export class OnboardingWizardComponent implements OnInit {
       console.error('Error activating sequence:', error);
       alert('Failed to activate sequence. Please try again.');
     }
+  }
+
+  // Calcular duración total de la secuencia en días
+  getTotalDurationDays(): number {
+    if (!this.generatedSequence?.emails || this.generatedSequence.emails.length === 0) {
+      return 0;
+    }
+    const lastEmail = this.generatedSequence.emails[this.generatedSequence.emails.length - 1];
+    return Math.round((lastEmail?.delayHours || 0) / 24);
   }
 
   // Helpers UI

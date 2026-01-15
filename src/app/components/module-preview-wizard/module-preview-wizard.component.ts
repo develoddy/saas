@@ -118,15 +118,15 @@ export class ModulePreviewWizardComponent implements OnInit {
           ]
         },
         {
-          title: 'Customization',
-          description: 'Customize your sequence (optional)',
+          title: 'Preview Contacts',
+          description: 'We\'ll use sample contacts for the preview (optional)',
           fields: [
             {
               name: 'goalDescription',
-              label: 'Sequence Goal',
+              label: 'Additional Notes',
               type: 'textarea',
               required: false,
-              placeholder: 'What do you want to achieve with this sequence?'
+              placeholder: 'Any specific goals or notes for your sequence? (optional)'
             }
           ]
         }

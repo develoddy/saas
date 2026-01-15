@@ -91,11 +91,12 @@
 
     <!-- Step 3: Contacts -->
     <div *ngIf="currentStep === 3" class="wizard-step fade-in">
-      <h2>Import your contacts</h2>
-      <p class="subtitle">Upload a CSV file with your contacts' email addresses</p>
+      <h2>Preview Contacts</h2>
+      <p class="subtitle">Upload your contacts or use our sample contacts for the preview</p>
       
       <form [formGroup]="step3Form">
         <div class="contact-import">
+          <!-- CSV Upload (opcional) -->
           <div class="upload-zone" 
                [class.has-file]="step3Form.value.csvFile"
                (dragover)="$event.preventDefault()"
@@ -109,29 +110,56 @@
             <label for="csvFile" class="upload-label">
               <div class="upload-icon">📁</div>
               <p class="upload-text">
-                <span *ngIf="!step3Form.value.csvFile">Drop CSV file here or click to upload</span>
+                <span *ngIf="!step3Form.value.csvFile">Drop CSV file here or click to upload (optional)</span>
                 <span *ngIf="step3Form.value.csvFile" class="file-name">
                   {{ step3Form.value.csvFile.name }}
                 </span>
               </p>
-              <p class="upload-hint">CSV format: email, name (optional)</p>
+              <p class="upload-hint">CSV format: email, name (optional) | Max 5 contacts for preview</p>
             </label>
           </div>
 
-          <div *ngIf="step3Form.value.contactsCount > 0" class="contacts-summary">
-            <div class="summary-card">
-              <span class="summary-icon">✅</span>
-              <div class="summary-info">
-                <strong>{{ step3Form.value.contactsCount }}</strong> contacts ready
-                <small>Your sequence will be sent to these contacts</small>
+          <!-- Contactos actuales -->
+          <div *ngIf="step3Form.value.contactsCount > 0" class="contacts-preview">
+            <div class="preview-header">
+              <h3>
+                <span class="icon">👥</span>
+                {{ step3Form.value.contactsCount }} contacts ready
+              </h3>
+              <span class="badge" [class.badge-csv]="step3Form.value.contactSource === 'csv'" 
+                                  [class.badge-sample]="step3Form.value.contactSource === 'sample'">
+                {{ step3Form.value.contactSource === 'csv' ? 'From CSV' : 'Sample Contacts' }}
+              </span>
+            </div>
+
+            <!-- Lista de contactos -->
+            <div class="contacts-list">
+              <div *ngFor="let contact of step3Form.value.contacts; let i = index" 
+                   class="contact-item">
+                <div class="contact-avatar">{{ i + 1 }}</div>
+                <div class="contact-info">
+                  <strong>{{ contact.name || 'Contact ' + (i + 1) }}</strong>
+                  <small>{{ contact.email }}</small>
+                </div>
+                <div class="contact-status">✅</div>
               </div>
             </div>
+
+            <p class="help-text">
+              💡 These contacts will receive your onboarding sequence when you activate it
+            </p>
           </div>
 
-          <div *ngIf="step3Form.value.contactsCount === 0 && step3Form.value.csvFile" 
-               class="alert alert-warning">
-            <strong>⚠️ No valid contacts found</strong>
-            <p>Please make sure your CSV file contains valid email addresses.</p>
+          <!-- Campo de notas opcional -->
+          <div class="form-group">
+            <label for="notes">Additional Notes (optional)</label>
+            <textarea 
+              id="notes"
+              formControlName="notes"
+              placeholder="Any specific goals or notes for your sequence..."
+              rows="3"
+              class="form-control"></textarea>
+            <small class="help-text">Share any additional context about your contacts or goals</small>
           </div>
         </div>
       </form>
@@ -156,13 +184,13 @@
       <div *ngIf="generatedSequence && !isGenerating" class="sequence-preview">
         <div class="sequence-header">
           <div class="sequence-info">
-            <h3>{{ generatedSequence.name }}</h3>
-            <p>{{ generatedSequence.emails.length }} emails • {{ generatedSequence.estimatedContacts }} contacts</p>
+            <h3>{{ generatedSequence.name || 'Onboarding Sequence' }}</h3>
+            <p>{{ generatedSequence.emails?.length || 0 }} emails • {{ previewContacts.length || 0 }} contacts</p>
           </div>
         </div>
 
         <div class="emails-timeline">
-          <div *ngFor="let email of generatedSequence.emails; let i = index" 
+          <div *ngFor="let email of generatedSequence?.emails || []; let i = index" 
                class="email-preview-card">
             <div class="timeline-marker">
               <span class="marker-dot"></span>
@@ -186,15 +214,29 @@
           <div class="stat-card">
             <span class="stat-icon">📧</span>
             <div class="stat-info">
-              <strong>{{ generatedSequence.estimatedContacts }}</strong>
+              <strong>{{ previewContacts.length }}</strong>
               <small>contacts will receive this sequence</small>
             </div>
           </div>
           <div class="stat-card">
             <span class="stat-icon">📅</span>
             <div class="stat-info">
-              <strong>{{ (generatedSequence.emails && generatedSequence.emails.length > 0) ? (generatedSequence.emails[generatedSequence.emails.length - 1].delayHours / 24) : 0 }}</strong>
+              <strong>{{ getTotalDurationDays() }}</strong>
               <small>days total duration</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview de contactos -->
+        <div *ngIf="previewContacts && previewContacts.length > 0" class="contacts-preview-summary">
+          <h4>📋 Target Contacts</h4>
+          <div class="contacts-mini-list">
+            <div *ngFor="let contact of previewContacts || []; let i = index" class="mini-contact-item">
+              <span class="mini-avatar">{{ i + 1 }}</span>
+              <div class="mini-contact-info">
+                <strong>{{ contact?.name || 'Contact ' + (i + 1) }}</strong>
+                <small>{{ contact?.email || 'No email' }}</small>
+              </div>
             </div>
           </div>
         </div>

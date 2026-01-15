@@ -19,8 +19,8 @@ export class MailflowService {
   /**
    * Genera una secuencia de onboarding automática basada en el tipo de negocio y objetivo
    */
-  generateSequence(payload: GenerateSequenceRequest): Observable<GeneratedSequence> {
-    return this.http.post<GeneratedSequence>(`${this.apiUrl}/sequences/generate`, payload);
+  generateSequence(payload: GenerateSequenceRequest): Observable<GeneratedSequence | { data: GeneratedSequence }> {
+    return this.http.post<GeneratedSequence | { data: GeneratedSequence }>(`${this.apiUrl}/sequences/generate`, payload);
   }
 
   /**
