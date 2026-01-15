@@ -1,0 +1,234 @@
+<div class="wizard-container">
+  <!-- Progress bar -->
+  <div class="wizard-progress">
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+    </div>
+    <div class="steps-indicator">
+      <div *ngFor="let step of steps" 
+           class="step-circle"
+           [ngClass]="getStepClass(step.step)"
+           [class.clickable]="step.step <= currentStep"
+           (click)="goToStep(step.step)">
+        <div class="step-number">
+          <span *ngIf="step.step < currentStep">✓</span>
+          <span *ngIf="step.step >= currentStep">{{ step.step }}</span>
+        </div>
+        <div class="step-info">
+          <span class="step-title">{{ step.title }}</span>
+          <span class="step-description">{{ step.description }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step content -->
+  <div class="wizard-content">
+    <!-- Step 1: Business Type -->
+    <div *ngIf="currentStep === 1" class="wizard-step fade-in">
+      <h2>What type of business do you have?</h2>
+      <p class="subtitle">This helps us create the perfect onboarding sequence for you</p>
+      
+      <form [formGroup]="step1Form">
+        <div class="business-type-grid">
+          <label *ngFor="let type of businessTypes" 
+                 class="business-type-card"
+                 [class.selected]="step1Form.value.businessType === type.value">
+            <input type="radio" formControlName="businessType" [value]="type.value">
+            <div class="card-content">
+              <span class="icon">{{ type.icon }}</span>
+              <span class="label">{{ type.label }}</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="brandName">Brand Name *</label>
+          <input 
+            id="brandName"
+            type="text" 
+            formControlName="brandName" 
+            placeholder="e.g., Your Company Name"
+            class="form-control">
+          <small *ngIf="step1Form.get('brandName')?.invalid && step1Form.get('brandName')?.touched" 
+                 class="error-message">
+            Please enter your brand name (at least 2 characters)
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="tone">Email Tone</label>
+          <select id="tone" formControlName="tone" class="form-control">
+            <option *ngFor="let tone of tones" [value]="tone.value">
+              {{ tone.label }}
+            </option>
+          </select>
+          <small class="help-text">How do you want to communicate with your audience?</small>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 2: Goal -->
+    <div *ngIf="currentStep === 2" class="wizard-step fade-in">
+      <h2>What's your main goal?</h2>
+      <p class="subtitle">Choose what you want your onboarding sequence to achieve</p>
+      
+      <form [formGroup]="step2Form">
+        <div class="goal-grid">
+          <label *ngFor="let goal of goals"
+                 class="goal-card"
+                 [class.selected]="step2Form.value.goal === goal.value">
+            <input type="radio" formControlName="goal" [value]="goal.value">
+            <div class="card-content">
+              <span class="icon">{{ goal.icon }}</span>
+              <h3>{{ goal.label }}</h3>
+              <p>{{ goal.description }}</p>
+            </div>
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 3: Contacts -->
+    <div *ngIf="currentStep === 3" class="wizard-step fade-in">
+      <h2>Import your contacts</h2>
+      <p class="subtitle">Upload a CSV file with your contacts' email addresses</p>
+      
+      <form [formGroup]="step3Form">
+        <div class="contact-import">
+          <div class="upload-zone" 
+               [class.has-file]="step3Form.value.csvFile"
+               (dragover)="$event.preventDefault()"
+               (drop)="$event.preventDefault()">
+            <input 
+              type="file" 
+              id="csvFile"
+              accept=".csv" 
+              (change)="onFileSelected($event)"
+              class="file-input">
+            <label for="csvFile" class="upload-label">
+              <div class="upload-icon">📁</div>
+              <p class="upload-text">
+                <span *ngIf="!step3Form.value.csvFile">Drop CSV file here or click to upload</span>
+                <span *ngIf="step3Form.value.csvFile" class="file-name">
+                  {{ step3Form.value.csvFile.name }}
+                </span>
+              </p>
+              <p class="upload-hint">CSV format: email, name (optional)</p>
+            </label>
+          </div>
+
+          <div *ngIf="step3Form.value.contactsCount > 0" class="contacts-summary">
+            <div class="summary-card">
+              <span class="summary-icon">✅</span>
+              <div class="summary-info">
+                <strong>{{ step3Form.value.contactsCount }}</strong> contacts ready
+                <small>Your sequence will be sent to these contacts</small>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="step3Form.value.contactsCount === 0 && step3Form.value.csvFile" 
+               class="alert alert-warning">
+            <strong>⚠️ No valid contacts found</strong>
+            <p>Please make sure your CSV file contains valid email addresses.</p>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 4: Preview & Launch -->
+    <div *ngIf="currentStep === 4" class="wizard-step fade-in">
+      <h2>Your onboarding sequence is ready! 🎉</h2>
+      <p class="subtitle">Review and customize your emails before launching</p>
+
+      <div *ngIf="isGenerating" class="generating-loader">
+        <div class="loader-spinner"></div>
+        <p>Generating your sequence...</p>
+        <small>This will take just a moment</small>
+      </div>
+
+      <div *ngIf="generationError" class="alert alert-error">
+        <strong>❌ {{ generationError }}</strong>
+        <button class="btn-retry" (click)="generateSequence()">Try Again</button>
+      </div>
+
+      <div *ngIf="generatedSequence && !isGenerating" class="sequence-preview">
+        <div class="sequence-header">
+          <div class="sequence-info">
+            <h3>{{ generatedSequence.name }}</h3>
+            <p>{{ generatedSequence.emails.length }} emails • {{ generatedSequence.estimatedContacts }} contacts</p>
+          </div>
+        </div>
+
+        <div class="emails-timeline">
+          <div *ngFor="let email of generatedSequence.emails; let i = index" 
+               class="email-preview-card">
+            <div class="timeline-marker">
+              <span class="marker-dot"></span>
+              <span class="marker-label">
+                <span *ngIf="email.delayHours === 0">Immediate</span>
+                <span *ngIf="email.delayHours === 24">After 1 day</span>
+                <span *ngIf="email.delayHours === 48">After 2 days</span>
+                <span *ngIf="email.delayHours === 72">After 3 days</span>
+                <span *ngIf="email.delayHours > 72">After {{ email.delayHours / 24 }} days</span>
+              </span>
+            </div>
+            <app-sequence-email-card 
+              [email]="email"
+              [index]="i"
+              (emailEdited)="onEmailEdited(email, $event)">
+            </app-sequence-email-card>
+          </div>
+        </div>
+
+        <div class="sequence-stats">
+          <div class="stat-card">
+            <span class="stat-icon">📧</span>
+            <div class="stat-info">
+              <strong>{{ generatedSequence.estimatedContacts }}</strong>
+              <small>contacts will receive this sequence</small>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">📅</span>
+            <div class="stat-info">
+              <strong>{{ (generatedSequence.emails && generatedSequence.emails.length > 0) ? (generatedSequence.emails[generatedSequence.emails.length - 1].delayHours / 24) : 0 }}</strong>
+              <small>days total duration</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation buttons -->
+  <div class="wizard-navigation">
+    <button *ngIf="currentStep > 1 && currentStep < 4" 
+            class="btn btn-secondary" 
+            (click)="previousStep()">
+      ← Back
+    </button>
+
+    <button *ngIf="currentStep === 4 && generatedSequence" 
+            class="btn btn-secondary" 
+            (click)="currentStep = 3">
+      ← Back to Contacts
+    </button>
+
+    <div class="nav-spacer"></div>
+
+    <button *ngIf="currentStep < 4" 
+            class="btn btn-primary" 
+            [disabled]="!canProceed()"
+            (click)="nextStep()">
+      {{ currentStep === 3 ? '✨ Generate Sequence' : 'Continue →' }}
+    </button>
+
+    <button *ngIf="currentStep === 4 && generatedSequence && !isGenerating" 
+            class="btn btn-success" 
+            (click)="activateSequence()">
+      🚀 Launch Sequence
+    </button>
+  </div>
+</div>

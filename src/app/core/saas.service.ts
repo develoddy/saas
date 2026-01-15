@@ -85,6 +85,20 @@ export class SaasService {
   }
 
   /**
+   * Iniciar trial (registro)
+   */
+  startTrial(data: { name: string; email: string; password: string; moduleKey: string; plan?: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/trial/start`, data)
+      .pipe(
+        tap(response => {
+          if (response.success && response.token) {
+            this.handleAuthentication(response);
+          }
+        })
+      );
+  }
+
+  /**
    * Verificar acceso del tenant actual
    */
   checkAccess(): Observable<any> {

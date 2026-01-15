@@ -1,0 +1,58 @@
+<div class="email-card">
+  <div class="email-card-header">
+    <div class="email-number">
+      <span class="badge">Email {{ getEmailNumber() }}</span>
+      <span class="delay-label">{{ getDelayLabel() }}</span>
+    </div>
+    <button *ngIf="!isEditing && email.editable" 
+            class="btn-edit" 
+            (click)="startEditing()">
+      ✏️ Edit
+    </button>
+  </div>
+
+  <!-- View Mode -->
+  <div *ngIf="!isEditing" class="email-content">
+    <div class="email-subject">
+      <label>Subject:</label>
+      <p>{{ email.subject }}</p>
+    </div>
+    <div class="email-body">
+      <label>Content:</label>
+      <div class="body-preview" [innerHTML]="email.bodyHtml"></div>
+    </div>
+  </div>
+
+  <!-- Edit Mode -->
+  <div *ngIf="isEditing" class="email-edit-form">
+    <div class="form-group">
+      <label for="subject-{{index}}">Subject Line</label>
+      <input 
+        type="text" 
+        id="subject-{{index}}"
+        [(ngModel)]="editedSubject" 
+        class="form-control"
+        placeholder="Enter email subject">
+    </div>
+
+    <div class="form-group">
+      <label for="body-{{index}}">Email Content</label>
+      <textarea 
+        id="body-{{index}}"
+        [(ngModel)]="editedBodyText" 
+        class="form-control"
+        rows="8"
+        placeholder="Enter email content"></textarea>
+      <small class="help-text">Keep it simple and focused on your goal</small>
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn btn-secondary" (click)="cancelEditing()">
+        Cancel
+      </button>
+      <button class="btn btn-primary" (click)="saveChanges()">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>

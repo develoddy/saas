@@ -1,0 +1,137 @@
+<div class="module-preview-container" *ngIf="previewData">
+  
+  <!-- Header con metadata -->
+  <div class="preview-header">
+    <div class="header-left">
+      <h3 class="module-name">{{ moduleName }}</h3>
+      <span class="badge" [ngClass]="'badge-' + getStatusBadgeColor()">
+        {{ getStatusBadgeText() }}
+      </span>
+    </div>
+    
+    <div class="header-right">
+      <div class="preview-info" *ngIf="generatedAt && !isExpired">
+        <i class="far fa-clock"></i>
+        <span>Generated {{ generatedAt | date:'short' }}</span>
+      </div>
+      
+      <div class="preview-warning" *ngIf="isExpired">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>This preview has expired</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido del preview (ng-content para que cada módulo inyecte su propia UI) -->
+  <div class="preview-content">
+    <ng-content></ng-content>
+  </div>
+
+  <!-- Error message -->
+  <div class="alert alert-danger" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Actions -->
+  <div class="preview-actions">
+    
+    <!-- Si no está autenticado -->
+    <div class="auth-required-actions" *ngIf="!isAuthenticated && !isExpired">
+      <p class="text-muted mb-3">
+        <i class="fas fa-info-circle"></i>
+        Sign up to save this configuration and start using {{ moduleName }}
+      </p>
+      
+      <button 
+        class="btn btn-primary btn-lg"
+        (click)="redirectToAuth()"
+        [disabled]="loading">
+        <i class="fas fa-user-plus"></i>
+        Sign Up & Save Configuration
+      </button>
+      
+      <button 
+        class="btn btn-outline-secondary ml-2"
+        (click)="editPreview()"
+        [disabled]="loading">
+        <i class="fas fa-edit"></i>
+        Edit Preview
+      </button>
+    </div>
+
+    <!-- Si está autenticado -->
+    <div class="authenticated-actions" *ngIf="isAuthenticated && !isExpired && showConvertButton">
+      <button 
+        class="btn btn-success btn-lg"
+        (click)="convertToReal()"
+        [disabled]="converting">
+        <span *ngIf="!converting">
+          <i class="fas fa-check"></i>
+          Save & Activate
+        </span>
+        <span *ngIf="converting">
+          <i class="fas fa-spinner fa-spin"></i>
+          Converting...
+        </span>
+      </button>
+      
+      <button 
+        class="btn btn-outline-secondary ml-2"
+        (click)="editPreview()"
+        [disabled]="converting">
+        <i class="fas fa-edit"></i>
+        Edit
+      </button>
+    </div>
+
+    <!-- Si expiró -->
+    <div class="expired-actions" *ngIf="isExpired">
+      <p class="text-danger mb-3">
+        <i class="fas fa-exclamation-triangle"></i>
+        This preview has expired. Please generate a new one.
+      </p>
+      
+      <button 
+        class="btn btn-primary"
+        (click)="regeneratePreview()"
+        [disabled]="loading">
+        <i class="fas fa-redo"></i>
+        Generate New Preview
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Footer info -->
+  <div class="preview-footer" *ngIf="!isExpired">
+    <div class="footer-note">
+      <i class="fas fa-shield-alt"></i>
+      <span>
+        This is a preview. Your data is stored temporarily and will be saved 
+        permanently after you sign up.
+      </span>
+    </div>
+    
+    <div class="expiration-timer" *ngIf="expiresAt">
+      <i class="far fa-hourglass"></i>
+      <span>Expires: {{ expiresAt | date:'short' }}</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Empty state -->
+<div class="empty-preview" *ngIf="!previewData">
+  <div class="empty-icon">
+    <i class="fas fa-eye-slash"></i>
+  </div>
+  <h4>No Preview Available</h4>
+  <p class="text-muted">Generate a preview to see how your configuration will look.</p>
+  <button 
+    class="btn btn-primary"
+    (click)="regeneratePreview()">
+    <i class="fas fa-magic"></i>
+    Generate Preview
+  </button>
+</div>

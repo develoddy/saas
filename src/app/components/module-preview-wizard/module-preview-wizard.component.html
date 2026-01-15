@@ -1,0 +1,168 @@
+<div class="preview-wizard-container">
+  
+  <!-- Header -->
+  <div class="wizard-header">
+    <h2>{{ moduleName }} Preview</h2>
+    <p class="subtitle">Try before you buy - no signup required</p>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-container" *ngIf="!generatedPreview">
+    <div class="progress">
+      <div class="progress-bar" 
+           [style.width.%]="getProgress()"
+           role="progressbar">
+        Step {{ currentStep + 1 }} of {{ wizardConfig.steps.length }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Error message -->
+  <div class="alert alert-danger" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Wizard Form -->
+  <div class="wizard-form" *ngIf="!generatedPreview && wizardConfig">
+    <form [formGroup]="wizardForm">
+      
+      <!-- Step content -->
+      <div class="step-content">
+        <h3>{{ getCurrentStepTitle() }}</h3>
+        <p class="step-description">{{ getCurrentStepDescription() }}</p>
+        
+        <div class="form-fields">
+          <div class="form-group" *ngFor="let field of getCurrentStepFields()">
+            <label [for]="field.name">
+              {{ field.label }}
+              <span class="required" *ngIf="field.required">*</span>
+            </label>
+            
+            <!-- Text input -->
+            <input 
+              *ngIf="field.type === 'text' || field.type === 'email'"
+              [type]="field.type"
+              [id]="field.name"
+              [formControlName]="field.name"
+              [placeholder]="field.placeholder"
+              class="form-control"
+              [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+            
+            <!-- Select -->
+            <select 
+              *ngIf="field.type === 'select'"
+              [id]="field.name"
+              [formControlName]="field.name"
+              class="form-control"
+              [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+              <option value="">{{ field.placeholder || 'Select an option' }}</option>
+              <option *ngFor="let option of field.options" [value]="option">
+                {{ option | titlecase }}
+              </option>
+            </select>
+            
+            <!-- Textarea -->
+            <textarea 
+              *ngIf="field.type === 'textarea'"
+              [id]="field.name"
+              [formControlName]="field.name"
+              [placeholder]="field.placeholder"
+              class="form-control"
+              rows="4"
+              [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+            </textarea>
+            
+            <!-- Validation message -->
+            <div class="invalid-feedback" 
+                 *ngIf="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+              This field is required
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation buttons -->
+      <div class="wizard-navigation">
+        <button 
+          type="button"
+          class="btn btn-secondary"
+          (click)="previousStep()"
+          [disabled]="currentStep === 0">
+          <i class="fas fa-arrow-left"></i>
+          Previous
+        </button>
+        
+        <button 
+          type="button"
+          class="btn btn-primary"
+          *ngIf="!isLastStep()"
+          (click)="nextStep()"
+          [disabled]="!isCurrentStepValid()">
+          Next
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        
+        <button 
+          type="button"
+          class="btn btn-success"
+          *ngIf="isLastStep()"
+          (click)="generatePreview()"
+          [disabled]="!wizardForm.valid || generating">
+          <span *ngIf="!generating">
+            <i class="fas fa-magic"></i>
+            Generate Preview
+          </span>
+          <span *ngIf="generating">
+            <i class="fas fa-spinner fa-spin"></i>
+            Generating...
+          </span>
+        </button>
+      </div>
+      
+    </form>
+  </div>
+
+  <!-- Generated Preview -->
+  <div class="generated-preview" *ngIf="generatedPreview">
+    <app-module-preview
+      [moduleKey]="moduleKey"
+      [previewData]="generatedPreview"
+      [isAuthenticated]="false"
+      (onConvert)="handleConversion($event)"
+      (onEdit)="editPreview()">
+      
+      <!-- Contenido específico de MailFlow -->
+      <div class="mailflow-preview" *ngIf="moduleKey === 'mailflow'">
+        <div class="sequence-info">
+          <h4>{{ generatedPreview['sequenceName'] }}</h4>
+          <div class="stats">
+            <div class="stat">
+              <i class="fas fa-envelope"></i>
+              <span>{{ generatedPreview['stats'].totalEmails }} emails</span>
+            </div>
+            <div class="stat">
+              <i class="fas fa-clock"></i>
+              <span>{{ generatedPreview['stats'].estimatedDuration }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="emails-list">
+          <div class="email-card" *ngFor="let email of generatedPreview['emails']; let i = index">
+            <div class="email-header">
+              <span class="email-order">Email {{ i + 1 }}</span>
+              <span class="email-delay">Day {{ email.delayHours / 24 }}</span>
+            </div>
+            <h5>{{ email.subject }}</h5>
+            <p class="email-preview">{{ email.bodyText | slice:0:150 }}...</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Aquí otros módulos pueden inyectar su propio contenido -->
+      
+    </app-module-preview>
+  </div>
+
+</div>

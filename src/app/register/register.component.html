@@ -1,0 +1,146 @@
+<div class="register-container">
+  <div class="register-card">
+    
+    <!-- Header con contexto de preview -->
+    <div class="register-header">
+      <h1>
+        <span *ngIf="!fromPreview">Crear cuenta</span>
+        <span *ngIf="fromPreview">¡Tu configuración está lista!</span>
+      </h1>
+      <p *ngIf="!fromPreview">Comienza tu prueba gratuita</p>
+      <p *ngIf="fromPreview && moduleKey" class="preview-context">
+        <i class="fas fa-check-circle"></i>
+        Regístrate para guardar y activar tu {{ moduleKey === 'mailflow' ? 'secuencia de emails' : 'configuración' }}
+      </p>
+    </div>
+
+    <!-- Preview info (si aplica) -->
+    <div *ngIf="fromPreview && previewData" class="preview-info">
+      <div class="preview-badge">
+        <i class="fas fa-magic"></i>
+        <span>Preview generado</span>
+      </div>
+      <p class="preview-summary" *ngIf="moduleKey === 'mailflow'">
+        {{ previewData['sequenceName'] || 'Tu secuencia' }} • 
+        {{ previewData['stats']?.totalEmails || 0 }} emails • 
+        {{ previewData['stats']?.estimatedDuration || '0 días' }}
+      </p>
+    </div>
+
+    <!-- Success message -->
+    <div *ngIf="success" class="alert alert-success">
+      <i class="fas fa-check-circle"></i>
+      {{ success }}
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="error" class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+    </div>
+
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-group">
+        <label for="name">Nombre completo</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          [class.invalid]="hasError('name', 'required') || hasError('name', 'minlength')"
+          placeholder="Tu nombre">
+        <div class="error-message" *ngIf="hasError('name', 'required')">
+          El nombre es requerido
+        </div>
+        <div class="error-message" *ngIf="hasError('name', 'minlength')">
+          Mínimo 2 caracteres
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          [class.invalid]="hasError('email', 'required') || hasError('email', 'email')"
+          placeholder="tu@email.com">
+        <div class="error-message" *ngIf="hasError('email', 'required')">
+          El email es requerido
+        </div>
+        <div class="error-message" *ngIf="hasError('email', 'email')">
+          Email inválido
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          [class.invalid]="hasError('password', 'required') || hasError('password', 'minlength')"
+          placeholder="Mínimo 6 caracteres">
+        <div class="error-message" *ngIf="hasError('password', 'required')">
+          La contraseña es requerida
+        </div>
+        <div class="error-message" *ngIf="hasError('password', 'minlength')">
+          Mínimo 6 caracteres
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirmar contraseña</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          [class.invalid]="hasError('confirmPassword', 'required') || !passwordsMatch"
+          placeholder="Confirma tu contraseña">
+        <div class="error-message" *ngIf="hasError('confirmPassword', 'required')">
+          Confirma tu contraseña
+        </div>
+        <div class="error-message" *ngIf="!passwordsMatch && registerForm.get('confirmPassword')?.touched">
+          Las contraseñas no coinciden
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting || registerForm.invalid" class="btn-primary">
+        <span *ngIf="!isSubmitting && !fromPreview">
+          <i class="fas fa-rocket"></i>
+          Comenzar prueba gratuita
+        </span>
+        <span *ngIf="!isSubmitting && fromPreview">
+          <i class="fas fa-save"></i>
+          Guardar y activar
+        </span>
+        <span *ngIf="isSubmitting">
+          <i class="fas fa-spinner fa-spin"></i>
+          Creando cuenta...
+        </span>
+      </button>
+    </form>
+
+    <!-- Trial benefits -->
+    <div class="trial-benefits" *ngIf="!fromPreview">
+      <h3>✨ Incluido en tu prueba:</h3>
+      <ul>
+        <li><i class="fas fa-check"></i> 14 días gratis</li>
+        <li><i class="fas fa-check"></i> Sin tarjeta requerida</li>
+        <li><i class="fas fa-check"></i> Acceso completo</li>
+        <li><i class="fas fa-check"></i> Cancela cuando quieras</li>
+      </ul>
+    </div>
+
+    <div class="register-footer">
+      <p>¿Ya tienes cuenta? <a [routerLink]="['/login']">Inicia sesión</a></p>
+      <p class="terms">
+        Al registrarte aceptas nuestros 
+        <a href="https://tienda.lujandev.com/terms" target="_blank">Términos de Servicio</a> y 
+        <a href="https://tienda.lujandev.com/privacy" target="_blank">Política de Privacidad</a>
+      </p>
+    </div>
+
+  </div>
+</div>

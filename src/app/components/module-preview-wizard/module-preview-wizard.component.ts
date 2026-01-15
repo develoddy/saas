@@ -1,0 +1,341 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModulePreviewService } from '../../services/module-preview.service';
+
+/**
+ * Module Preview Wizard Component
+ * 
+ * Componente genérico para generar previews de cualquier módulo.
+ * Se adapta dinámicamente según el module_key en la ruta.
+ * 
+ * Ruta: /preview/:module_key
+ * 
+ * Ejemplo: /preview/mailflow muestra wizard de MailFlow
+ * 
+ * @module components/preview-wizard
+ */
+
+interface ModuleWizardConfig {
+  steps: {
+    title: string;
+    description: string;
+    fields: {
+      name: string;
+      label: string;
+      type: 'text' | 'select' | 'textarea' | 'email';
+      options?: string[];
+      required?: boolean;
+      placeholder?: string;
+    }[];
+  }[];
+}
+
+interface GeneratedPreview {
+  sequenceName: string;
+  sequenceType: string;
+  industry: string;
+  brandName: string;
+  emails: Array<{
+    order: number;
+    delayHours: number;
+    subject: string;
+    bodyHtml: string;
+    bodyText: string;
+    editable: boolean;
+  }>;
+  stats: {
+    totalEmails: number;
+    estimatedDuration: string;
+    sequenceGoal: string;
+  };
+  _metadata: {
+    moduleKey: string;
+    moduleName: string;
+    generatedAt: string;
+    sessionKey: string;
+    expiresIn: string;
+  };
+  [key: string]: any; // Para propiedades dinámicas de otros módulos
+}
+
+@Component({
+  selector: 'app-module-preview-wizard',
+  templateUrl: './module-preview-wizard.component.html',
+  styleUrls: ['./module-preview-wizard.component.scss']
+})
+export class ModulePreviewWizardComponent implements OnInit {
+  
+  moduleKey = '';
+  moduleName = '';
+  
+  currentStep = 0;
+  wizardForm!: FormGroup;
+  wizardConfig: ModuleWizardConfig = { steps: [] };
+  
+  generating = false;
+  generatedPreview: GeneratedPreview | null = null;
+  error: string | null = null;
+  
+  // Configuraciones específicas por módulo
+  private moduleConfigs: { [key: string]: ModuleWizardConfig } = {
+    mailflow: {
+      steps: [
+        {
+          title: 'Business Information',
+          description: 'Tell us about your business',
+          fields: [
+            {
+              name: 'industry',
+              label: 'Industry',
+              type: 'select',
+              options: ['ecommerce', 'saas', 'services', 'education'],
+              required: true,
+              placeholder: 'Select your industry'
+            },
+            {
+              name: 'brandName',
+              label: 'Brand Name',
+              type: 'text',
+              required: true,
+              placeholder: 'Enter your brand name'
+            }
+          ]
+        },
+        {
+          title: 'Sequence Type',
+          description: 'Choose the type of email sequence',
+          fields: [
+            {
+              name: 'goals',
+              label: 'Sequence Goal',
+              type: 'select',
+              options: ['increase_sales', 'build_loyalty', 'onboarding', 'nurture', 'conversion', 're-engagement'],
+              required: true,
+              placeholder: 'Select your primary goal'
+            }
+          ]
+        },
+        {
+          title: 'Customization',
+          description: 'Customize your sequence (optional)',
+          fields: [
+            {
+              name: 'goalDescription',
+              label: 'Sequence Goal',
+              type: 'textarea',
+              required: false,
+              placeholder: 'What do you want to achieve with this sequence?'
+            }
+          ]
+        }
+      ]
+    }
+    // Aquí se pueden agregar configuraciones para otros módulos
+  };
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private fb: FormBuilder,
+    private previewService: ModulePreviewService
+  ) {}
+
+  ngOnInit(): void {
+    // Obtener moduleKey de la ruta
+    this.route.params.subscribe(params => {
+      this.moduleKey = params['moduleKey'];
+      this.loadModuleConfig();
+      this.buildForm();
+    });
+  }
+
+  /**
+   * Cargar configuración del módulo
+   */
+  private async loadModuleConfig(): Promise<void> {
+    try {
+      const response = await this.previewService.getPreviewConfig(this.moduleKey).toPromise();
+      
+      if (response.success) {
+        this.moduleName = response.config.moduleName;
+        this.wizardConfig = this.moduleConfigs[this.moduleKey] || this.getDefaultConfig();
+      }
+      
+    } catch (error) {
+      console.error('Error loading module config:', error);
+      this.error = 'Module not found or preview not available';
+    }
+  }
+
+  /**
+   * Construir formulario dinámicamente
+   */
+  private buildForm(): void {
+    const formConfig: any = {};
+    
+    const config = this.moduleConfigs[this.moduleKey] || this.getDefaultConfig();
+    
+    config.steps.forEach(step => {
+      step.fields.forEach(field => {
+        formConfig[field.name] = [
+          '',
+          field.required ? Validators.required : []
+        ];
+      });
+    });
+    
+    this.wizardForm = this.fb.group(formConfig);
+  }
+
+  /**
+   * Configuración por defecto si el módulo no tiene una específica
+   */
+  private getDefaultConfig(): ModuleWizardConfig {
+    return {
+      steps: [
+        {
+          title: 'Basic Information',
+          description: 'Enter basic information',
+          fields: [
+            {
+              name: 'name',
+              label: 'Name',
+              type: 'text',
+              required: true,
+              placeholder: 'Enter a name'
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  /**
+   * Obtener campos del paso actual
+   */
+  getCurrentStepFields() {
+    if (!this.wizardConfig) return [];
+    return this.wizardConfig.steps[this.currentStep]?.fields || [];
+  }
+
+  /**
+   * Obtener título del paso actual
+   */
+  getCurrentStepTitle(): string {
+    return this.wizardConfig?.steps[this.currentStep]?.title || '';
+  }
+
+  /**
+   * Obtener descripción del paso actual
+   */
+  getCurrentStepDescription(): string {
+    return this.wizardConfig?.steps[this.currentStep]?.description || '';
+  }
+
+  /**
+   * Siguiente paso
+   */
+  nextStep(): void {
+    if (!this.wizardConfig) return;
+    
+    if (this.currentStep < this.wizardConfig.steps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  /**
+   * Paso anterior
+   */
+  previousStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  /**
+   * Validar paso actual
+   */
+  isCurrentStepValid(): boolean {
+    const currentFields = this.getCurrentStepFields();
+    
+    return currentFields.every(field => {
+      const control = this.wizardForm.get(field.name);
+      return !field.required || (control && control.valid);
+    });
+  }
+
+  /**
+   * Verificar si es el último paso
+   */
+  isLastStep(): boolean {
+    return this.wizardConfig 
+      ? this.currentStep === this.wizardConfig.steps.length - 1
+      : true;
+  }
+
+  /**
+   * Generar preview
+   */
+  async generatePreview(): Promise<void> {
+    if (!this.wizardForm.valid) {
+      this.error = 'Please fill all required fields';
+      return;
+    }
+    
+    this.generating = true;
+    this.error = null;
+    
+    try {
+      const formData = this.wizardForm.value;
+      
+      // Transformar goals de string a array si es necesario
+      if (formData.goals && typeof formData.goals === 'string') {
+        formData.goals = [formData.goals];
+      }
+      
+      console.log('📤 Sending preview request:', formData);
+      
+      const response = await this.previewService.generatePreview(
+        this.moduleKey,
+        formData
+      ).toPromise();
+      
+      if (response.success) {
+        this.generatedPreview = response.preview;
+        console.log('✅ Preview generated:', this.generatedPreview);
+      }
+      
+    } catch (err: any) {
+      console.error('❌ Error generating preview:', err);
+      this.error = err.error?.error || 'Failed to generate preview';
+      
+    } finally {
+      this.generating = false;
+    }
+  }
+
+  /**
+   * Manejar conversión exitosa
+   */
+  handleConversion(result: any): void {
+    console.log('✅ Conversion successful:', result);
+    this.router.navigate([`/${this.moduleKey}`]);
+  }
+
+  /**
+   * Editar preview
+   */
+  editPreview(): void {
+    this.generatedPreview = null;
+    this.currentStep = 0;
+  }
+
+  /**
+   * Calcular progreso del wizard
+   */
+  getProgress(): number {
+    if (!this.wizardConfig) return 0;
+    return ((this.currentStep + 1) / this.wizardConfig.steps.length) * 100;
+  }
+}
