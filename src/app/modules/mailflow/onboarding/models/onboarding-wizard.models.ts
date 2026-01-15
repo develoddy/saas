@@ -48,6 +48,7 @@ export interface SequenceEmail {
 export interface GeneratedSequence {
   sequenceId: string;
   name: string;
+  sequenceName?: string; // Alias para compatibilidad
   emails: SequenceEmail[];
   estimatedContacts: number;
   status: 'draft' | 'active' | 'paused';

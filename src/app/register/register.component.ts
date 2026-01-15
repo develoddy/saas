@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SaasService } from '../core/saas.service';
 import { ModulePreviewService } from '../services/module-preview.service';
+import { TrackingService } from '../services/tracking.service';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,8 @@ export class RegisterComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private saasService: SaasService,
-    private previewService: ModulePreviewService
+    private previewService: ModulePreviewService,
+    private tracking: TrackingService
   ) {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -89,6 +91,30 @@ export class RegisterComponent implements OnInit {
       if (registerResponse && registerResponse.success) {
         console.log('✅ Trial started:', registerResponse);
         
+        // Track registration completed
+        const tenantId = registerResponse.tenant?.id;
+        const userId = registerResponse.tenant?.id; // Usar tenant.id como userId
+        
+        if (tenantId) {
+          // Identificar usuario con tenantId
+          this.tracking.identify(tenantId.toString(), tenantId, {
+            name,
+            email,
+            plan: 'trial',
+            module: this.moduleKey || 'mailflow',
+            from_preview: this.fromPreview
+          });
+          
+          // Track registration completed
+          this.tracking.registrationCompleted(this.moduleKey || 'mailflow', tenantId);
+        }
+        
+        // Esperar a que el token se guarde en localStorage (el SaasService lo guarda como 'tenant_token')
+        if (registerResponse.token) {
+          // Dar tiempo a que el observable complete el guardado
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+        
         // 2. Si viene desde preview, convertir preview en configuración real
         if (this.fromPreview && this.previewData && this.moduleKey) {
           await this.convertPreviewToReal();
@@ -129,6 +155,13 @@ export class RegisterComponent implements OnInit {
       ).toPromise();
       
       console.log('✅ Preview convertido:', result);
+      
+      // Track module activation
+      this.tracking.moduleActivated(this.moduleKey, {
+        converted_from_preview: true,
+        sequence_id: result.sequence?.id,
+        sequence_name: result.sequence?.name
+      });
       
       // Limpiar sessionStorage
       this.previewService.clearPreviewFromSession(this.moduleKey);

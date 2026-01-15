@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModulePreviewService } from '../../services/module-preview.service';
+import { TrackingService } from '../../services/tracking.service';
 
 /**
  * Module Preview Wizard Component
@@ -138,7 +139,8 @@ export class ModulePreviewWizardComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
-    private previewService: ModulePreviewService
+    private previewService: ModulePreviewService,
+    private tracking: TrackingService
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +149,12 @@ export class ModulePreviewWizardComponent implements OnInit {
       this.moduleKey = params['moduleKey'];
       this.loadModuleConfig();
       this.buildForm();
+      
+      // Track wizard started
+      this.tracking.pageView('preview_wizard', {
+        module: this.moduleKey,
+        source: 'preview'
+      });
     });
   }
 
@@ -240,6 +248,12 @@ export class ModulePreviewWizardComponent implements OnInit {
     if (!this.wizardConfig) return;
     
     if (this.currentStep < this.wizardConfig.steps.length - 1) {
+      // Track step completion before moving
+      this.tracking.wizardStep(this.currentStep + 1, this.moduleKey, {
+        stepTitle: this.getCurrentStepTitle(),
+        formData: this.getStepFormData()
+      });
+      
       this.currentStep++;
     }
   }
@@ -304,6 +318,14 @@ export class ModulePreviewWizardComponent implements OnInit {
       if (response.success) {
         this.generatedPreview = response.preview;
         console.log('✅ Preview generated:', this.generatedPreview);
+        
+        // Track preview generation
+        this.tracking.previewGenerated(this.moduleKey, {
+          industry: formData.industry,
+          goals: formData.goals,
+          totalEmails: response.preview.stats?.totalEmails,
+          duration: response.preview.stats?.estimatedDuration
+        });
       }
       
     } catch (err: any) {
@@ -337,5 +359,22 @@ export class ModulePreviewWizardComponent implements OnInit {
   getProgress(): number {
     if (!this.wizardConfig) return 0;
     return ((this.currentStep + 1) / this.wizardConfig.steps.length) * 100;
+  }
+
+  /**
+   * Obtener datos del formulario del step actual (para tracking)
+   */
+  private getStepFormData(): any {
+    const currentFields = this.getCurrentStepFields();
+    const stepData: any = {};
+    
+    currentFields.forEach(field => {
+      const value = this.wizardForm.get(field.name)?.value;
+      if (value) {
+        stepData[field.name] = value;
+      }
+    });
+    
+    return stepData;
   }
 }

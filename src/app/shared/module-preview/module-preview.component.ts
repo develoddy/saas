@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModulePreviewService, PreviewData } from '../../services/module-preview.service';
+import { TrackingService } from '../../services/tracking.service';
 
 /**
  * Module Preview Component
@@ -49,7 +50,8 @@ export class ModulePreviewComponent implements OnInit {
   
   constructor(
     private previewService: ModulePreviewService,
-    private router: Router
+    private router: Router,
+    private tracking: TrackingService
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +135,9 @@ export class ModulePreviewComponent implements OnInit {
    * Redirigir a login/registro con intención de conversión
    */
   redirectToAuth(): void {
+    // Track conversion intent
+    this.tracking.conversionStarted(this.moduleKey, 'preview');
+    
     // Guardar el preview en sessionStorage antes de redirigir
     if (this.previewData) {
       this.previewService.savePreviewToSession(this.previewData);

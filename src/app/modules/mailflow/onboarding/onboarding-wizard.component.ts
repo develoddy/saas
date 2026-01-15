@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MailflowService } from '../services/mailflow.service';
+import { TrackingService } from '../../../services/tracking.service';
 import {
   WizardStep,
   BusinessType,
@@ -62,13 +63,20 @@ export class OnboardingWizardComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private mailflowService: MailflowService,
-    private router: Router
+    private router: Router,
+    private tracking: TrackingService
   ) {
     this.initializeForms();
   }
 
   ngOnInit(): void {
     this.updateStepsValidity();
+    
+    // Track onboarding started
+    this.tracking.pageView('onboarding_wizard', {
+      module: 'mailflow',
+      source: 'onboarding'
+    });
   }
 
   private initializeForms(): void {
@@ -101,6 +109,13 @@ export class OnboardingWizardComponent implements OnInit {
   // Navegación
   nextStep(): void {
     if (this.isStepValid(this.currentStep)) {
+      // Track step completion before moving
+      this.tracking.wizardStep(this.currentStep, 'mailflow', {
+        stepTitle: this.steps[this.currentStep - 1].title,
+        source: 'onboarding',
+        formData: this.getStepFormData(this.currentStep)
+      });
+      
       if (this.currentStep === 3) {
         // Antes de ir al paso 4, generar la secuencia
         this.generateSequence();
@@ -254,6 +269,15 @@ export class OnboardingWizardComponent implements OnInit {
         .activateSequence(this.generatedSequence.sequenceId)
         .toPromise();
 
+      // Track sequence activation
+      this.tracking.moduleActivated('mailflow', {
+        sequence_id: this.generatedSequence.sequenceId,
+        sequence_name: this.generatedSequence.sequenceName || this.generatedSequence.name,
+        total_emails: this.generatedSequence.emails.length,
+        contacts_count: this.step3Form.value.contactsCount,
+        source: 'onboarding'
+      });
+
       // Redirigir a una página de éxito o dashboard
       alert('🚀 Sequence activated! Your contacts will start receiving emails.');
       // this.router.navigate(['/mailflow/dashboard']);
@@ -272,5 +296,22 @@ export class OnboardingWizardComponent implements OnInit {
     if (this.currentStep === step) return 'active';
     if (this.currentStep > step) return 'completed';
     return '';
+  }
+
+  // Helper para tracking
+  private getStepFormData(step: number): any {
+    switch (step) {
+      case 1:
+        return this.step1Form.value;
+      case 2:
+        return this.step2Form.value;
+      case 3:
+        return {
+          contactSource: this.step3Form.value.contactSource,
+          contactsCount: this.step3Form.value.contactsCount
+        };
+      default:
+        return {};
+    }
   }
 }

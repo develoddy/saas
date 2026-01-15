@@ -140,10 +140,21 @@ export class ModulePreviewService {
     previewData: PreviewData,
     autoActivate = true
   ): Observable<any> {
+    // Obtener token de autenticación
+    const token = localStorage.getItem('tenant_token');
+    
+    const headers: any = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     return this.http.post(`${this.API_URL}/modules/${moduleKey}/preview/convert`, {
       previewData,
       autoActivate
-    });
+    }, { headers });
   }
 
   // ========================================

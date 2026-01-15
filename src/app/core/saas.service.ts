@@ -48,6 +48,10 @@ export interface AuthResponse {
   token?: string; // Opcional cuando se devuelven modules
   dashboard_url?: string; // Opcional cuando se devuelven modules
   message?: string;
+  // Propiedades adicionales para tracking
+  userId?: string | number;
+  tenantId?: number;
+  user?: { id: string | number };
   // Respuesta para detección de múltiples módulos
   email?: string;
   modules?: ModuleInfo[];
