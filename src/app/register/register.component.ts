@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SaasService } from '../core/saas.service';
@@ -27,7 +27,8 @@ export class RegisterComponent implements OnInit {
     private router: Router,
     private saasService: SaasService,
     private previewService: ModulePreviewService,
-    private tracking: TrackingService
+    private tracking: TrackingService,
+    private cd: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -75,6 +76,7 @@ export class RegisterComponent implements OnInit {
     this.isSubmitting = true;
     this.error = '';
     this.success = '';
+    this.cd.detectChanges(); // 🔄 Forzar actualización
 
     const { name, email, password } = this.registerForm.value;
 
@@ -124,6 +126,7 @@ export class RegisterComponent implements OnInit {
         const dashboardUrl = registerResponse.dashboard_url?.replace('/app/', '/') || `/${this.moduleKey}`;
         
         this.success = '¡Cuenta creada! Redirigiendo a tu dashboard...';
+        this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje
         
         setTimeout(() => {
           this.router.navigate([dashboardUrl]);
@@ -132,12 +135,14 @@ export class RegisterComponent implements OnInit {
       } else {
         this.error = 'Error al crear la cuenta';
         this.isSubmitting = false;
+        this.cd.detectChanges(); // 🔄 Forzar actualización
       }
       
     } catch (err: any) {
       console.error('❌ Error en registro:', err);
       this.error = err.error?.error || 'Error al crear la cuenta. Intenta de nuevo.';
       this.isSubmitting = false;
+      this.cd.detectChanges(); // 🔄 Forzar actualización
     }
   }
 
