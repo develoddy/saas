@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SaasService } from '../core/saas.service';
@@ -28,8 +28,7 @@ export class RegisterComponent implements OnInit {
     private saasService: SaasService,
     private previewService: ModulePreviewService,
     private tracking: TrackingService,
-    private cd: ChangeDetectorRef,
-    private zone: NgZone
+    private cd: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -130,13 +129,11 @@ export class RegisterComponent implements OnInit {
         this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje
         
         setTimeout(() => {
-          this.zone.run(() => {
-            // 🔀 Cross-app navigation: el dashboard puede estar en otra app Angular
-            // Usar URL absoluta para redirección entre apps (app-saas → mailflow)
-            const absoluteUrl = `${window.location.origin}${dashboardUrl}`;
-            console.log('🔀 Redirigiendo a:', absoluteUrl);
-            window.location.href = absoluteUrl;
-          });
+          // 🔀 Cross-app navigation: el dashboard puede estar en otra app Angular
+          // Usar location.replace() para evitar que Angular Router intente resolver la ruta
+          const absoluteUrl = `${window.location.origin}${dashboardUrl}`;
+          console.log('🔀 Redirigiendo a:', absoluteUrl);
+          window.location.replace(absoluteUrl);
         }, 1500);
         
       } else {
