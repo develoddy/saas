@@ -82,15 +82,19 @@ export class LoginComponent implements OnInit {
                       queryParams: { email: email }
                     });
                   } else {
-                    // Verificar si hay returnUrl
+                    // Verificar si hay returnUrl válido (no la raíz)
                     const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-                    if (returnUrl) {
+                    const moduleKey = authResponse.tenant?.module_key || module.module_key;
+                    
+                    if (returnUrl && returnUrl !== '/' && returnUrl.length > 1) {
+                      // ReturnUrl específico (ej: /mailflow/settings)
+                      console.log('📍 Navegando a returnUrl:', returnUrl);
                       this.router.navigate([returnUrl]);
                     } else {
-                      // Usar dashboard_url del backend, o module_key como fallback
-                      const path = authResponse.dashboard_url 
-                        ? authResponse.dashboard_url.replace('/app/', '/') 
-                        : `/${authResponse.tenant?.module_key || 'dashboard'}`;
+                      // Sin returnUrl válido → usar module_key
+                      // El routing interno del módulo manejará la redirección a /onboarding
+                      const path = `/${moduleKey}`;
+                      console.log('📍 Navegando a módulo raíz:', path);
                       this.router.navigate([path]);
                     }
                   }
@@ -156,9 +160,8 @@ export class LoginComponent implements OnInit {
             
           } else if (response.tenant && response.token) {
             // Respuesta antigua (con moduleKey) - mantener compatibilidad
-            const path = response.dashboard_url 
-              ? response.dashboard_url.replace('/app/', '/') 
-              : `/${response.tenant.module_key || 'dashboard'}`;
+            // 🔧 Siempre usar module_key para construir la ruta
+            const path = `/${response.tenant.module_key}`;
             console.log('📍 Navegando a:', path);
             this.router.navigate([path]).then(() => {
               console.log('✅ Navegación completada');

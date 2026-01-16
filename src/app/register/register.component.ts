@@ -123,25 +123,9 @@ export class RegisterComponent implements OnInit {
         }
         
         // 3. Redirigir al dashboard del módulo
-        // 🎯 NORMALIZAR dashboard_url: puede venir como "/mailflow/dashboard", "mailflow", "/mailflow"
-        let dashboardUrl = registerResponse.dashboard_url?.replace('/app/', '/') || `/${this.moduleKey}`;
-        
-        // Normalizar: eliminar slashes dobles, asegurar que empiece con /
-        dashboardUrl = '/' + dashboardUrl.replace(/^\/+/, '').replace(/\/+/g, '/');
-        
-        // 🚨 FIX CRÍTICO: Si la ruta termina en /dashboard, verificar si existe
-        // Para mailflow, solo existe /mailflow y /mailflow/onboarding, NO /mailflow/dashboard
-        if (dashboardUrl.includes('/dashboard')) {
-          console.log('⚠️ URL contiene /dashboard, eliminando sufijo:', dashboardUrl);
-          // Eliminar /dashboard del final (puede ser /mailflow/dashboard → /mailflow)
-          dashboardUrl = dashboardUrl.replace(/\/dashboard$/, '');
-          console.log('✅ URL corregida:', dashboardUrl);
-        }
-        
-        // Si quedó vacío o solo slash, usar moduleKey
-        if (!dashboardUrl || dashboardUrl === '/') {
-          dashboardUrl = `/${this.moduleKey || 'mailflow'}`;
-        }
+        // 🔧 Siempre usar moduleKey para construir la ruta base
+        // El routing interno del módulo manejará la redirección a /onboarding si es necesario
+        const dashboardUrl = `/${this.moduleKey}`;
         
         this.success = '¡Cuenta creada! Redirigiendo a tu dashboard...';
         this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje

@@ -20,12 +20,24 @@ export class LayoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // 🔄 Sincronizar tenant: primero del localStorage, luego actualizar del backend
     this.saasService.currentTenant$.subscribe(tenant => {
       this.tenant = tenant;
+      // Detectar si necesita onboarding basado en el perfil
+      this.checkOnboardingMode(this.router.url);
     });
 
-    // Cargar perfil
-    this.saasService.getProfile().subscribe();
+    // 🔧 Cargar perfil actualizado del backend (esto actualiza el tenant$ automáticamente)
+    this.saasService.getProfile().subscribe({
+      error: (err) => {
+        console.error('Error loading profile:', err);
+        // Si el token es inválido, hacer logout
+        if (err.status === 401) {
+          this.saasService.logout();
+          this.router.navigate(['/login']);
+        }
+      }
+    });
 
     // Detectar modo onboarding basado en la ruta
     this.checkOnboardingMode(this.router.url);
