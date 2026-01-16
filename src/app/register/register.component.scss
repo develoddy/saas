@@ -328,3 +328,66 @@ form {
     }
   }
 }
+
+// 🎯 MVP: Preview CTA
+.preview-cta {
+  margin: 24px 0;
+  text-align: center;
+
+  .divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: #cbd5e0;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    span {
+      padding: 0 12px;
+      font-weight: 600;
+    }
+  }
+
+  .btn-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  .preview-hint {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #718096;
+    font-style: italic;
+  }
+}

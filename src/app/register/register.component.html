@@ -122,6 +122,18 @@
       </button>
     </form>
 
+    <!-- 🎯 MVP: Probar sin registrarse -->
+    <div class="preview-cta" *ngIf="!fromPreview">
+      <div class="divider">
+        <span>o</span>
+      </div>
+      <a [routerLink]="['/preview/mailflow']" class="btn-preview">
+        <i class="fas fa-play-circle"></i>
+        Probar MailFlow sin registrarte
+      </a>
+      <p class="preview-hint">👆 Experimenta primero, regístrate después</p>
+    </div>
+
     <!-- Trial benefits -->
     <div class="trial-benefits" *ngIf="!fromPreview">
       <h3>✨ Prueba MailFlow gratis:</h3>
