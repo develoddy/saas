@@ -131,7 +131,11 @@ export class RegisterComponent implements OnInit {
         
         setTimeout(() => {
           this.zone.run(() => {
-            this.router.navigate([dashboardUrl]);
+            // 🔀 Cross-app navigation: el dashboard puede estar en otra app Angular
+            // Usar URL absoluta para redirección entre apps (app-saas → mailflow)
+            const absoluteUrl = `${window.location.origin}${dashboardUrl}`;
+            console.log('🔀 Redirigiendo a:', absoluteUrl);
+            window.location.href = absoluteUrl;
           });
         }, 1500);
         
