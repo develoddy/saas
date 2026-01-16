@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SaasService } from '../core/saas.service';
@@ -28,7 +28,8 @@ export class RegisterComponent implements OnInit {
     private saasService: SaasService,
     private previewService: ModulePreviewService,
     private tracking: TrackingService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private zone: NgZone
   ) {
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -129,7 +130,9 @@ export class RegisterComponent implements OnInit {
         this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje
         
         setTimeout(() => {
-          this.router.navigate([dashboardUrl]);
+          this.zone.run(() => {
+            this.router.navigate([dashboardUrl]);
+          });
         }, 1500);
         
       } else {
