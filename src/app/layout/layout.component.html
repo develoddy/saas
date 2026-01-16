@@ -1,9 +1,9 @@
-<div class="layout-container" [class.sidebar-collapsed]="sidebarCollapsed">
+<div class="layout-container" [class.sidebar-collapsed]="sidebarCollapsed" [class.onboarding-mode]="onboardingMode">
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>LujanDev</h2>
-      <button class="sidebar-toggle" (click)="toggleSidebar()">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" [attr.aria-label]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
         <span>☰</span>
       </button>
     </div>
@@ -19,12 +19,15 @@
           <p class="user-email">{{ tenant.email }}</p>
           <span class="status-badge" [ngClass]="getStatusClass()">
             {{ getStatusBadge() }}
+            <span *ngIf="tenant.is_on_trial && getTrialDaysRemaining() !== null">
+              – {{ getTrialDaysRemaining() }} día{{ getTrialDaysRemaining() !== 1 ? 's' : '' }} restante{{ getTrialDaysRemaining() !== 1 ? 's' : '' }}
+            </span>
           </span>
         </div>
       </div>
 
-      <!-- Navigation -->
-      <nav class="sidebar-nav">
+      <!-- MODO NORMAL: Navegación completa -->
+      <nav class="sidebar-nav" *ngIf="!onboardingMode">
         <a [routerLink]="['/' + tenant?.module_key]" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
           <span class="nav-icon">📊</span>
           <span class="nav-label">Dashboard</span>
@@ -55,9 +58,21 @@
         </a>
         -->
       </nav>
+
+      <!-- MODO ONBOARDING: Solo mensaje informativo -->
+      <div class="onboarding-info" *ngIf="onboardingMode">
+        <div class="onboarding-message">
+          <span class="onboarding-icon">🚀</span>
+          <p class="onboarding-text">
+            <strong>Setting up your account</strong><br>
+            <small>Complete the wizard to get started</small>
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div class="sidebar-footer">
+    <!-- MODO NORMAL: Footer con logout -->
+    <div class="sidebar-footer" *ngIf="!onboardingMode">
       <button class="logout-btn" (click)="logout()">
         <span class="nav-icon">🚪</span>
         <span class="nav-label">Cerrar sesión</span>
