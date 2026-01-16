@@ -1,10 +1,21 @@
-<div class="layout-container" [class.sidebar-collapsed]="sidebarCollapsed" [class.onboarding-mode]="onboardingMode">
+<div class="layout-container" [class.sidebar-collapsed]="sidebarCollapsed" [class.onboarding-mode]="onboardingMode" [class.mobile-sidebar-open]="mobileSidebarOpen">
+  <!-- Mobile overlay -->
+  <div class="mobile-overlay" *ngIf="mobileSidebarOpen" (click)="closeMobileSidebar()"></div>
+  
+  <!-- Mobile menu button -->
+  <button class="mobile-menu-btn" (click)="toggleMobileSidebar()" *ngIf="!onboardingMode">
+    <span>☰</span>
+  </button>
+  
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2>LujanDev</h2>
       <button class="sidebar-toggle" (click)="toggleSidebar()" [attr.aria-label]="sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'">
         <span>☰</span>
+      </button>
+      <button class="mobile-close-btn" (click)="closeMobileSidebar()">
+        <span>✕</span>
       </button>
     </div>
 

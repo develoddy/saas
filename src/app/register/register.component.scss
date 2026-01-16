@@ -245,11 +245,86 @@ form {
 }
 
 @media (max-width: 640px) {
+  .register-container {
+    padding: 15px;
+  }
+
   .register-card {
     padding: 30px 20px;
   }
 
-  .register-header h1 {
-    font-size: 24px;
+  .register-header {
+    margin-bottom: 25px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    .preview-context {
+      font-size: 13px;
+      
+      i {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+
+    label {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input {
+      padding: 11px;
+      font-size: 16px; // Evita zoom en iOS
+    }
+  }
+
+  .btn-primary {
+    padding: 13px;
+    font-size: 15px;
+  }
+
+  .alert {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .register-footer {
+    margin-top: 20px;
+
+    p {
+      font-size: 13px;
+
+      &.terms {
+        font-size: 11px;
+        margin-top: 14px;
+      }
+    }
+  }
+
+  .preview-info {
+    padding: 12px;
+
+    h3 {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    ul li {
+      font-size: 13px;
+      margin-bottom: 6px;
+
+      i {
+        font-size: 14px;
+      }
+    }
   }
 }

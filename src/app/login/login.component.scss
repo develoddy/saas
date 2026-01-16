@@ -117,3 +117,50 @@
     }
   }
 }
+
+// ===== RESPONSIVE MOBILE =====
+@media (max-width: 480px) {
+  .login-container {
+    padding: 15px;
+  }
+
+  .login-card {
+    padding: 30px 20px;
+  }
+
+  .login-header {
+    margin-bottom: 25px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+
+    label {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input {
+      padding: 11px;
+      font-size: 16px; // Evita zoom en iOS
+    }
+  }
+
+  .btn-primary {
+    padding: 13px;
+    font-size: 15px;
+  }
+
+  .login-footer {
+    font-size: 13px;
+    margin-top: 18px;
+  }
+}

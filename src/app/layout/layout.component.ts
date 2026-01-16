@@ -12,6 +12,7 @@ export class LayoutComponent implements OnInit {
   tenant: TenantProfile | null = null;
   sidebarCollapsed = false;
   onboardingMode = false; // Detecta si estamos en onboarding
+  mobileSidebarOpen = false; // Control del sidebar en móvil
 
   constructor(
     private saasService: SaasService,
@@ -34,6 +35,7 @@ export class LayoutComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
       this.checkOnboardingMode(event.url);
+      this.closeMobileSidebar(); // Cerrar sidebar móvil al navegar
     });
   }
 
@@ -43,6 +45,14 @@ export class LayoutComponent implements OnInit {
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  toggleMobileSidebar(): void {
+    this.mobileSidebarOpen = !this.mobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.mobileSidebarOpen = false;
   }
 
   logout(): void {
