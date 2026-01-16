@@ -31,6 +31,7 @@ export class OnboardingWizardComponent implements OnInit {
   previewContacts: Array<{ email: string; name?: string }> = []; // Contactos para preview en Step 4
   isGenerating = false;
   generationError: string | null = null;
+  sequenceActivated = false; // Estado de activación de la secuencia
 
   // Estado del wizard
   steps: WizardStep[] = [
@@ -356,12 +357,11 @@ export class OnboardingWizardComponent implements OnInit {
         source: 'onboarding'
       });
 
-      // Redirigir a una página de éxito o dashboard
-      alert('🚀 Sequence activated! Your contacts will start receiving emails.');
-      // this.router.navigate(['/mailflow/dashboard']);
+      // Cambiar estado a activado (mostrar UI de éxito)
+      this.sequenceActivated = true;
     } catch (error: any) {
       console.error('Error activating sequence:', error);
-      alert('Failed to activate sequence. Please try again.');
+      this.generationError = 'Failed to activate sequence. Please try again.';
     }
   }
 

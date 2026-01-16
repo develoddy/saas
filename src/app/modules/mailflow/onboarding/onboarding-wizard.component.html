@@ -181,7 +181,7 @@
         <button class="btn-retry" (click)="generateSequence()">Try Again</button>
       </div>
 
-      <div *ngIf="generatedSequence && !isGenerating" class="sequence-preview">
+      <div *ngIf="generatedSequence && !isGenerating && !sequenceActivated" class="sequence-preview">
         <div class="sequence-header">
           <div class="sequence-info">
             <h3>{{ generatedSequence.name || 'Onboarding Sequence' }}</h3>
@@ -241,6 +241,71 @@
           </div>
         </div>
       </div>
+
+      <!-- SUCCESS VIEW: Sequence Activated -->
+      <div *ngIf="generatedSequence && sequenceActivated" class="sequence-activated">
+        <div class="activation-hero">
+          <div class="success-icon">🎉</div>
+          <h2>Your sequence is live!</h2>
+          <p class="hero-subtitle">Everything is ready and running automatically</p>
+        </div>
+
+        <div class="activation-summary">
+          <div class="summary-card success">
+            <span class="card-icon">✅</span>
+            <div class="card-content">
+              <strong>{{ previewContacts.length }} contacts queued</strong>
+              <small>Ready to receive emails</small>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <span class="card-icon">📧</span>
+            <div class="card-content">
+              <strong>{{ generatedSequence.emails?.length || 0 }} emails scheduled</strong>
+              <small>Automated delivery</small>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <span class="card-icon">🕒</span>
+            <div class="card-content">
+              <strong>First email: Immediate</strong>
+              <small>Next: {{ generatedSequence.emails && generatedSequence.emails[1]?.delayHours ? '+' + (generatedSequence.emails[1].delayHours / 24) + ' day' + (generatedSequence.emails[1].delayHours > 24 ? 's' : '') : 'N/A' }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="what-happens-next">
+          <h3>📬 What happens next</h3>
+          <div class="timeline-steps">
+            <div *ngFor="let email of generatedSequence.emails || []; let i = index" 
+                 class="timeline-step">
+              <div class="step-indicator">
+                <span class="step-number">{{ i + 1 }}</span>
+                <div class="step-line" *ngIf="i < (generatedSequence.emails?.length || 0) - 1"></div>
+              </div>
+              <div class="step-content">
+                <strong>{{ email.subject }}</strong>
+                <small>
+                  <span *ngIf="email.delayHours === 0">Will be sent immediately</span>
+                  <span *ngIf="email.delayHours === 24">Will be sent in 1 day</span>
+                  <span *ngIf="email.delayHours === 48">Will be sent in 2 days</span>
+                  <span *ngIf="email.delayHours === 72">Will be sent in 3 days</span>
+                  <span *ngIf="email.delayHours > 72">Will be sent in {{ email.delayHours / 24 }} days</span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="next-steps-cta">
+          <p class="cta-message">
+            <strong>✨ You're all set!</strong><br>
+            Your sequence is running automatically. You don't need to do anything else.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -252,7 +317,7 @@
       ← Back
     </button>
 
-    <button *ngIf="currentStep === 4 && generatedSequence" 
+    <button *ngIf="currentStep === 4 && generatedSequence && !sequenceActivated" 
             class="btn btn-secondary" 
             (click)="currentStep = 3">
       ← Back to Contacts
@@ -267,10 +332,24 @@
       {{ currentStep === 3 ? '✨ Generate Sequence' : 'Continue →' }}
     </button>
 
-    <button *ngIf="currentStep === 4 && generatedSequence && !isGenerating" 
+    <!-- ANTES DE ACTIVAR: Launch Sequence -->
+    <button *ngIf="currentStep === 4 && generatedSequence && !isGenerating && !sequenceActivated" 
             class="btn btn-success" 
             (click)="activateSequence()">
-      🚀 Launch Sequence
+      🚀 Launch Sequencex
+    </button>
+
+    <!-- DESPUÉS DE ACTIVAR: Nuevas acciones -->
+    <button *ngIf="currentStep === 4 && sequenceActivated" 
+            class="btn btn-secondary" 
+            (click)="currentStep = 3; sequenceActivated = false">
+      ✏️ Edit Sequence
+    </button>
+
+    <button *ngIf="currentStep === 4 && sequenceActivated" 
+            class="btn btn-primary" 
+            routerLink="/mailflow/dashboard">
+      📊 Go to Dashboard
     </button>
   </div>
 </div>
