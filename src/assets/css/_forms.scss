@@ -1,0 +1,104 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// ===== FORMS =====
+
+.form-group {
+  margin-bottom: $spacing-lg;
+
+  label {
+    display: block;
+    font-weight: $font-weight-semibold;
+    color: $color-text-secondary;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-base;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid $color-border;
+    border-radius: $radius-md;
+    font-size: $font-size-md;
+    transition: all $transition-fast;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary;
+      @include focus-ring;
+    }
+  }
+
+  .help-text {
+    display: block;
+    margin-top: $spacing-sm;
+    font-size: $font-size-base;
+    color: $color-text-secondary;
+  }
+
+  .error-message {
+    display: block;
+    margin-top: $spacing-sm;
+    font-size: $font-size-base;
+    color: $color-error;
+  }
+}
+
+// File upload zone
+.upload-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: $radius-lg;
+  padding: 3rem;
+  text-align: center;
+  background-color: $color-bg-secondary;
+  transition: all $transition-fast;
+  position: relative;
+
+  .file-input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-label {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  .upload-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+  }
+
+  .upload-text {
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+  }
+
+  .upload-hint {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+  }
+
+  .file-name {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+  }
+
+  &:hover {
+    border-color: $color-primary;
+    background-color: $color-primary-light;
+  }
+
+  &.has-file {
+    border-color: $color-success;
+    background-color: #d1fae5;
+  }
+}

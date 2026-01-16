@@ -1,0 +1,93 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// ===== LAYOUT UTILITIES =====
+
+// Cards
+.card {
+  border: 2px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  background-color: $color-bg-primary;
+  transition: all $transition-fast;
+
+  &.card-selectable {
+    cursor: pointer;
+
+    input[type="radio"],
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    @include card-hover;
+
+    &.selected {
+      border-color: $color-primary;
+      background-color: $color-primary-light;
+      box-shadow: $shadow-primary;
+    }
+  }
+}
+
+// Grids
+.grid-auto-fit {
+  @include grid-auto-fit;
+}
+
+// Flex utilities
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Spacing
+.mt-1 { margin-top: $spacing-sm; }
+.mt-2 { margin-top: $spacing-md; }
+.mt-3 { margin-top: $spacing-lg; }
+.mt-4 { margin-top: $spacing-xl; }
+
+.mb-1 { margin-bottom: $spacing-sm; }
+.mb-2 { margin-bottom: $spacing-md; }
+.mb-3 { margin-bottom: $spacing-lg; }
+.mb-4 { margin-bottom: $spacing-xl; }
+
+.p-1 { padding: $spacing-sm; }
+.p-2 { padding: $spacing-md; }
+.p-3 { padding: $spacing-lg; }
+.p-4 { padding: $spacing-xl; }
+
+// Stats card
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: 1.25rem;
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  border: 2px solid $color-border;
+
+  .stat-icon {
+    font-size: 2rem;
+  }
+
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    strong {
+      font-size: $font-size-xl;
+      color: $color-text-primary;
+    }
+
+    small {
+      font-size: $font-size-base;
+      color: $color-text-secondary;
+    }
+  }
+}

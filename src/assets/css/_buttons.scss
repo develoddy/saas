@@ -1,0 +1,64 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// ===== SISTEMA DE BOTONES =====
+
+.btn {
+  @include button-reset;
+  padding: 0.75rem 2rem;
+  border-radius: $radius-md;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-md;
+  transition: all $transition-fast;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.btn-secondary {
+    background-color: $color-bg-tertiary;
+    color: $color-text-secondary;
+
+    &:hover:not(:disabled) {
+      background-color: $color-border;
+    }
+  }
+
+  &.btn-primary {
+    background: $gradient-primary;
+    color: white;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-primary-lg;
+    }
+  }
+
+  &.btn-success {
+    background: $gradient-success;
+    color: white;
+    font-size: $font-size-lg;
+    padding: 1rem 2.5rem;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: $shadow-success;
+    }
+  }
+
+  &.btn-retry {
+    padding: 0.5rem 1rem;
+    background-color: $color-error;
+    color: white;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+}

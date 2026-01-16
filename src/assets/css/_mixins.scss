@@ -1,0 +1,72 @@
+@use 'variables' as *;
+
+// ===== MIXINS REUTILIZABLES =====
+
+// Card hover effect
+@mixin card-hover {
+  transition: all $transition-fast;
+  
+  &:hover {
+    border-color: $color-border-hover;
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+// Button reset
+@mixin button-reset {
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+// Flexbox center
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Truncate text
+@mixin truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Focus ring
+@mixin focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+}
+
+// Avatar circle
+@mixin avatar($size: 40px) {
+  @include flex-center;
+  width: $size;
+  height: $size;
+  border-radius: $radius-full;
+  font-weight: $font-weight-semibold;
+}
+
+// Grid auto-fit
+@mixin grid-auto-fit($min-width: 200px) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax($min-width, 1fr));
+  gap: $spacing-md;
+}
+
+// Responsive breakpoint
+@mixin mobile {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 1024px) {
+    @content;
+  }
+}

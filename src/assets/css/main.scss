@@ -1,0 +1,18 @@
+// ===== MAIN STYLESHEET =====
+// Design system centralizado para MailFlow SaaS
+
+// 1. Variables y tokens
+@forward 'variables';
+
+// 2. Mixins y utilidades
+@forward 'mixins';
+
+// 3. Componentes base
+@forward 'typography';
+@forward 'buttons';
+@forward 'badges';
+@forward 'forms';
+@forward 'layout';
+
+// 4. Componentes específicos
+@forward 'wizard';
