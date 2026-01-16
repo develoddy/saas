@@ -271,7 +271,7 @@
             <span class="card-icon">🕒</span>
             <div class="card-content">
               <strong>First email: Immediate</strong>
-              <small>Next: {{ generatedSequence.emails && generatedSequence.emails[1]?.delayHours ? '+' + (generatedSequence.emails[1].delayHours / 24) + ' day' + (generatedSequence.emails[1].delayHours > 24 ? 's' : '') : 'N/A' }}</small>
+              <small>Next: {{ generatedSequence.emails && generatedSequence.emails[1] && generatedSequence.emails[1].delayHours ? '+' + (generatedSequence.emails[1].delayHours / 24) + ' day' + (generatedSequence.emails[1].delayHours > 24 ? 's' : '') : 'N/A' }}</small>
             </div>
           </div>
         </div>
