@@ -123,9 +123,9 @@ export class RegisterComponent implements OnInit {
         }
         
         // 3. Redirigir al dashboard del módulo
-        // 🔧 Siempre usar moduleKey para construir la ruta base
-        // El routing interno del módulo manejará la redirección a /onboarding si es necesario
-        const dashboardUrl = `/${this.moduleKey}`;
+        // 🔧 Asegurar moduleKey con fallback a 'mailflow'
+        const moduleKey = this.moduleKey || 'mailflow';
+        const dashboardUrl = `/${moduleKey}`;
         
         this.success = '¡Cuenta creada! Redirigiendo a tu dashboard...';
         this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje
