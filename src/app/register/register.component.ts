@@ -123,17 +123,35 @@ export class RegisterComponent implements OnInit {
         }
         
         // 3. Redirigir al dashboard del módulo
-        const dashboardUrl = registerResponse.dashboard_url?.replace('/app/', '/') || `/${this.moduleKey}`;
+        // 🎯 NORMALIZAR dashboard_url: puede venir como "/mailflow/dashboard", "mailflow", "/mailflow"
+        let dashboardUrl = registerResponse.dashboard_url?.replace('/app/', '/') || `/${this.moduleKey}`;
+        
+        // Normalizar: eliminar slashes dobles, asegurar que empiece con /
+        dashboardUrl = '/' + dashboardUrl.replace(/^\/+/, '').replace(/\/+/g, '/');
+        
+        // 🚨 FIX CRÍTICO: Si la ruta termina en /dashboard, verificar si existe
+        // Para mailflow, solo existe /mailflow y /mailflow/onboarding, NO /mailflow/dashboard
+        if (dashboardUrl.includes('/dashboard')) {
+          console.log('⚠️ URL contiene /dashboard, eliminando sufijo:', dashboardUrl);
+          // Eliminar /dashboard del final (puede ser /mailflow/dashboard → /mailflow)
+          dashboardUrl = dashboardUrl.replace(/\/dashboard$/, '');
+          console.log('✅ URL corregida:', dashboardUrl);
+        }
+        
+        // Si quedó vacío o solo slash, usar moduleKey
+        if (!dashboardUrl || dashboardUrl === '/') {
+          dashboardUrl = `/${this.moduleKey || 'mailflow'}`;
+        }
         
         this.success = '¡Cuenta creada! Redirigiendo a tu dashboard...';
         this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje
         
         setTimeout(() => {
-          // 🔀 Cross-app navigation: el dashboard puede estar en otra app Angular
-          // Usar location.replace() para evitar que Angular Router intente resolver la ruta
           const absoluteUrl = `${window.location.origin}${dashboardUrl}`;
           console.log('🔀 Redirigiendo a:', absoluteUrl);
-          window.location.replace(absoluteUrl);
+          
+          // Hard redirect - Angular Router redirigirá automáticamente a /onboarding
+          window.location.href = absoluteUrl;
         }, 1500);
         
       } else {
