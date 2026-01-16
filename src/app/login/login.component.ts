@@ -87,7 +87,10 @@ export class LoginComponent implements OnInit {
                     if (returnUrl) {
                       this.router.navigate([returnUrl]);
                     } else {
-                      const path = authResponse.dashboard_url ? authResponse.dashboard_url.replace('/app/', '/') : '/newsletter-campaigns';
+                      // Usar dashboard_url del backend, o module_key como fallback
+                      const path = authResponse.dashboard_url 
+                        ? authResponse.dashboard_url.replace('/app/', '/') 
+                        : `/${authResponse.tenant?.module_key || 'dashboard'}`;
                       this.router.navigate([path]);
                     }
                   }
@@ -153,7 +156,9 @@ export class LoginComponent implements OnInit {
             
           } else if (response.tenant && response.token) {
             // Respuesta antigua (con moduleKey) - mantener compatibilidad
-            const path = response.dashboard_url ? response.dashboard_url.replace('/app/', '/') : '/newsletter-campaigns';
+            const path = response.dashboard_url 
+              ? response.dashboard_url.replace('/app/', '/') 
+              : `/${response.tenant.module_key || 'dashboard'}`;
             console.log('📍 Navegando a:', path);
             this.router.navigate([path]).then(() => {
               console.log('✅ Navegación completada');
