@@ -48,6 +48,15 @@ export class ModulePreviewComponent implements OnInit {
   expiresAt: Date | null = null;
   isExpired = false;
   
+  // MVP Validation Feedback
+  feedbackAnswer: 'si' | 'un_poco' | 'no' | null = null;
+  showCommentBox = false;
+  feedbackComment = '';
+  feedbackSubmitted = false;
+  showEmailCapture = false;
+  emailForSequence = '';
+  emailSubmitted = false;
+  
   constructor(
     private previewService: ModulePreviewService,
     private router: Router,
@@ -187,5 +196,95 @@ export class ModulePreviewComponent implements OnInit {
     if (this.isExpired) return 'Expired';
     if (this.converting) return 'Converting...';
     return 'Preview';
+  }
+
+  /**
+   * MVP Validation: Manejar respuesta de feedback
+   */
+  handleFeedbackAnswer(answer: 'si' | 'un_poco' | 'no'): void {
+    this.feedbackAnswer = answer;
+    this.showCommentBox = (answer === 'no');
+    
+    // Si no es "No", enviar tracking inmediatamente
+    if (answer !== 'no') {
+      this.submitFeedback();
+    }
+  }
+
+  /**
+   * MVP Validation: Enviar feedback con tracking
+   */
+  private submitFeedback(comment?: string): void {
+    if (!this.feedbackAnswer) return;
+    
+    const properties: any = {
+      answer: this.feedbackAnswer,
+      module: this.moduleKey,
+      source: 'preview'
+    };
+    
+    if (comment) {
+      properties.comment = comment;
+    }
+    
+    this.tracking.track('wizard_feedback_answered', properties);
+    this.feedbackSubmitted = true;
+    
+    console.log('✅ Feedback submitted:', properties);
+  }
+
+  /**
+   * MVP Validation: Enviar feedback con comentario (solo si respuesta es "No")
+   */
+  submitFeedbackWithComment(): void {
+    if (this.feedbackAnswer === 'no' && this.feedbackComment.trim()) {
+      this.submitFeedback(this.feedbackComment.trim());
+    } else if (this.feedbackAnswer === 'no' && !this.feedbackComment.trim()) {
+      // Si es "No" pero no hay comentario, enviar de todos modos
+      this.submitFeedback();
+    }
+  }
+
+  /**
+   * MVP Validation: Manejar clic en CTA "Obtener la secuencia completa"
+   */
+  handleGetFullSequence(): void {
+    this.tracking.track('get_full_sequence_clicked', {
+      module: this.moduleKey,
+      source: 'preview'
+    });
+    
+    this.showEmailCapture = true;
+    
+    console.log('✅ Get full sequence clicked');
+  }
+
+  /**
+   * MVP Validation: Enviar email para recibir secuencia
+   */
+  submitEmail(): void {
+    if (!this.emailForSequence || !this.emailForSequence.trim()) {
+      return;
+    }
+    
+    const email = this.emailForSequence.trim();
+    
+    // Validación básica de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      this.error = 'Por favor ingresa un email válido';
+      return;
+    }
+    
+    this.tracking.track('email_submitted', {
+      email,
+      module: this.moduleKey,
+      source: 'preview'
+    });
+    
+    this.emailSubmitted = true;
+    this.error = null;
+    
+    console.log('✅ Email submitted:', email);
   }
 }

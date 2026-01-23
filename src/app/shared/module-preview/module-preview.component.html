@@ -27,6 +27,107 @@
     <ng-content></ng-content>
   </div>
 
+  <!-- MVP Validation Feedback Block -->
+  <div class="mvp-feedback-block" *ngIf="!isAuthenticated && !isExpired">
+    
+    <!-- Feedback Question -->
+    <div class="feedback-question" *ngIf="!feedbackSubmitted">
+      <h4>¿Esto te ayudó a crear una secuencia de emails más rápido?</h4>
+      
+      <div class="feedback-options">
+        <label class="feedback-option">
+          <input 
+            type="radio" 
+            name="feedback" 
+            value="si"
+            [(ngModel)]="feedbackAnswer"
+            (change)="handleFeedbackAnswer('si')">
+          <span class="option-text">Sí</span>
+        </label>
+        
+        <label class="feedback-option">
+          <input 
+            type="radio" 
+            name="feedback" 
+            value="un_poco"
+            [(ngModel)]="feedbackAnswer"
+            (change)="handleFeedbackAnswer('un_poco')">
+          <span class="option-text">Un poco</span>
+        </label>
+        
+        <label class="feedback-option">
+          <input 
+            type="radio" 
+            name="feedback" 
+            value="no"
+            [(ngModel)]="feedbackAnswer"
+            (change)="handleFeedbackAnswer('no')">
+          <span class="option-text">No</span>
+        </label>
+      </div>
+      
+      <!-- Conditional Comment Box (only for "No" answer) -->
+      <div class="feedback-comment-box" *ngIf="showCommentBox">
+        <label for="feedbackComment">¿Qué faltó?</label>
+        <textarea 
+          id="feedbackComment"
+          [(ngModel)]="feedbackComment"
+          placeholder="Cuéntanos qué esperabas encontrar..."
+          rows="3"
+          class="form-control">
+        </textarea>
+        <button 
+          class="btn btn-sm btn-secondary mt-2"
+          (click)="submitFeedbackWithComment()"
+          [disabled]="!feedbackComment.trim()">
+          Enviar comentario
+        </button>
+      </div>
+    </div>
+    
+    <!-- Thank you message after feedback -->
+    <div class="feedback-thanks" *ngIf="feedbackSubmitted && !showEmailCapture">
+      <i class="fas fa-check-circle"></i>
+      <p>¡Gracias por tu feedback!</p>
+    </div>
+    
+    <!-- CTA Button -->
+    <div class="cta-block" *ngIf="feedbackSubmitted && !showEmailCapture">
+      <button 
+        class="btn btn-primary btn-lg btn-cta"
+        (click)="handleGetFullSequence()">
+        <i class="fas fa-envelope-open-text"></i>
+        Obtener la secuencia completa
+      </button>
+    </div>
+    
+    <!-- Email Capture -->
+    <div class="email-capture-block" *ngIf="showEmailCapture && !emailSubmitted">
+      <div class="email-capture-form">
+        <input 
+          type="email"
+          [(ngModel)]="emailForSequence"
+          placeholder="Tu email"
+          class="form-control form-control-lg"
+          (keyup.enter)="submitEmail()">
+        <button 
+          class="btn btn-success btn-lg"
+          (click)="submitEmail()"
+          [disabled]="!emailForSequence.trim()">
+          Enviármela
+        </button>
+      </div>
+    </div>
+    
+    <!-- Success message after email submission -->
+    <div class="email-success" *ngIf="emailSubmitted">
+      <i class="fas fa-paper-plane"></i>
+      <h4>¡Listo!</h4>
+      <p>Te enviaremos la secuencia completa a <strong>{{ emailForSequence }}</strong></p>
+    </div>
+    
+  </div>
+
   <!-- Error message -->
   <div class="alert alert-danger" *ngIf="error">
     <i class="fas fa-exclamation-circle"></i>
@@ -34,10 +135,10 @@
   </div>
 
   <!-- Actions -->
-  <div class="preview-actions">
+  <div class="preview-actions" *ngIf="isAuthenticated || isExpired">
     
-    <!-- Si no está autenticado -->
-    <div class="auth-required-actions" *ngIf="!isAuthenticated && !isExpired">
+    <!-- Si no está autenticado - ESTE BLOQUE AHORA ES REEMPLAZADO POR MVP FEEDBACK -->
+    <!-- <div class="auth-required-actions" *ngIf="!isAuthenticated && !isExpired">
       <p class="text-muted mb-3">
         <i class="fas fa-info-circle"></i>
         Sign up to save this configuration and start using {{ moduleName }}
@@ -58,7 +159,7 @@
         <i class="fas fa-edit"></i>
         Edit Preview
       </button>
-    </div>
+    </div> -->
 
     <!-- Si está autenticado -->
     <div class="authenticated-actions" *ngIf="isAuthenticated && !isExpired && showConvertButton">

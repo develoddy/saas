@@ -304,3 +304,259 @@
     justify-content: center;
   }
 }
+
+// ========================================
+// MVP VALIDATION FEEDBACK
+// ========================================
+.mvp-feedback-block {
+  margin-top: 32px;
+  padding: 24px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  border: 2px solid #dee2e6;
+}
+
+.feedback-question {
+  margin-bottom: 24px;
+  
+  h4 {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+  }
+}
+
+.feedback-options {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.feedback-option {
+  position: relative;
+  cursor: pointer;
+  
+  input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    
+    &:checked + .option-text {
+      background: #007bff;
+      color: white;
+      border-color: #007bff;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    }
+  }
+  
+  .option-text {
+    display: block;
+    padding: 12px 24px;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    text-align: center;
+    
+    &:hover {
+      border-color: #007bff;
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.feedback-comment-box {
+  margin-top: 20px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+  }
+  
+  textarea {
+    width: 100%;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+  }
+  
+  button {
+    margin-top: 8px;
+  }
+}
+
+.feedback-thanks {
+  text-align: center;
+  padding: 20px;
+  
+  i {
+    font-size: 48px;
+    color: #28a745;
+    margin-bottom: 12px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+}
+
+.cta-block {
+  text-align: center;
+  margin-top: 24px;
+  padding: 20px;
+}
+
+.btn-cta {
+  padding: 16px 48px;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  }
+  
+  i {
+    margin-right: 8px;
+  }
+}
+
+.email-capture-block {
+  margin-top: 24px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid #007bff;
+}
+
+.email-capture-form {
+  display: flex;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+  
+  input {
+    flex: 1;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    }
+  }
+  
+  button {
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}
+
+.email-success {
+  text-align: center;
+  padding: 32px;
+  
+  i {
+    font-size: 64px;
+    color: #28a745;
+    margin-bottom: 16px;
+    animation: flyAway 0.6s ease-in;
+  }
+  
+  h4 {
+    margin: 0 0 12px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #28a745;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 16px;
+    color: #6c757d;
+    
+    strong {
+      color: #2c3e50;
+    }
+  }
+}
+
+@keyframes flyAway {
+  0% {
+    transform: scale(0.5) translateY(20px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+// Responsive adjustments for feedback block
+@media (max-width: 768px) {
+  .feedback-options {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .feedback-option .option-text {
+    width: 100%;
+  }
+  
+  .email-capture-form {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  .btn-cta {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+}
