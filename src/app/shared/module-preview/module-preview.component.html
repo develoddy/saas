@@ -11,12 +11,12 @@
     
     <div class="header-right">
       <div class="preview-info" *ngIf="generatedAt && !isExpired">
-        <i class="far fa-clock"></i>
+        <i class="bi bi-clock"></i>
         <span>Generated {{ generatedAt | date:'short' }}</span>
       </div>
       
       <div class="preview-warning" *ngIf="isExpired">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="bi bi-exclamation-triangle"></i>
         <span>This preview has expired</span>
       </div>
     </div>
@@ -87,7 +87,7 @@
     
     <!-- Thank you message after feedback -->
     <div class="feedback-thanks" *ngIf="feedbackSubmitted && !showEmailCapture">
-      <i class="fas fa-check-circle"></i>
+      <i class="bi bi-check-circle"></i>
       <p>¡Gracias por tu feedback!</p>
     </div>
     
@@ -96,7 +96,7 @@
       <button 
         class="btn btn-primary btn-lg btn-cta"
         (click)="handleGetFullSequence()">
-        <i class="fas fa-envelope-open-text"></i>
+        <i class="bi bi-envelope-open"></i>
         Obtener la secuencia completa
       </button>
     </div>
@@ -121,7 +121,7 @@
     
     <!-- Success message after email submission -->
     <div class="email-success" *ngIf="emailSubmitted">
-      <i class="fas fa-paper-plane"></i>
+      <i class="bi bi-send"></i>
       <h4>¡Listo!</h4>
       <p>Te enviaremos la secuencia completa a <strong>{{ emailForSequence }}</strong></p>
     </div>
@@ -130,7 +130,7 @@
 
   <!-- Error message -->
   <div class="alert alert-danger" *ngIf="error">
-    <i class="fas fa-exclamation-circle"></i>
+    <i class="bi bi-exclamation-triangle"></i>
     {{ error }}
   </div>
 
@@ -168,11 +168,11 @@
         (click)="convertToReal()"
         [disabled]="converting">
         <span *ngIf="!converting">
-          <i class="fas fa-check"></i>
+          <i class="bi bi-check"></i>
           Save & Activate
         </span>
         <span *ngIf="converting">
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="bi bi-arrow-clockwise"></i>
           Converting...
         </span>
       </button>
@@ -181,7 +181,7 @@
         class="btn btn-outline-secondary ml-2"
         (click)="editPreview()"
         [disabled]="converting">
-        <i class="fas fa-edit"></i>
+        <i class="bi bi-pencil"></i>
         Edit
       </button>
     </div>
@@ -189,7 +189,7 @@
     <!-- Si expiró -->
     <div class="expired-actions" *ngIf="isExpired">
       <p class="text-danger mb-3">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="bi bi-exclamation-triangle"></i>
         This preview has expired. Please generate a new one.
       </p>
       
@@ -197,7 +197,7 @@
         class="btn btn-primary"
         (click)="regeneratePreview()"
         [disabled]="loading">
-        <i class="fas fa-redo"></i>
+        <i class="bi bi-arrow-clockwise"></i>
         Generate New Preview
       </button>
     </div>
@@ -207,7 +207,7 @@
   <!-- Footer info -->
   <div class="preview-footer" *ngIf="!isExpired">
     <div class="footer-note">
-      <i class="fas fa-shield-alt"></i>
+      <i class="bi bi-shield-check"></i>
       <span>
         This is a preview. Your data is stored temporarily and will be saved 
         permanently after you sign up.
@@ -215,7 +215,7 @@
     </div>
     
     <div class="expiration-timer" *ngIf="expiresAt">
-      <i class="far fa-hourglass"></i>
+      <i class="bi bi-hourglass"></i>
       <span>Expires: {{ expiresAt | date:'short' }}</span>
     </div>
   </div>
@@ -225,14 +225,14 @@
 <!-- Empty state -->
 <div class="empty-preview" *ngIf="!previewData">
   <div class="empty-icon">
-    <i class="fas fa-eye-slash"></i>
+    <i class="bi bi-eye-slash"></i>
   </div>
   <h4>No Preview Available</h4>
   <p class="text-muted">Generate a preview to see how your configuration will look.</p>
   <button 
     class="btn btn-primary"
     (click)="regeneratePreview()">
-    <i class="fas fa-magic"></i>
+    <i class="bi bi-lightning"></i>
     Generate Preview
   </button>
 </div>

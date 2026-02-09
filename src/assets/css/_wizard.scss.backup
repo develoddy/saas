@@ -160,20 +160,20 @@
 
       .label {
         font-weight: 600;
-        color: #000000;
+        color: #374151;
       }
     }
 
     &:hover {
-      border-color: #000000;
+      border-color: #4f46e5;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     &.selected {
-      border-color: #000000;
-      background-color: #f5f5f5;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      border-color: #4f46e5;
+      background-color: #eef2ff;
+      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.2);
     }
   }
 }
@@ -200,8 +200,8 @@
 
     &:focus {
       outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
   }
 
@@ -209,14 +209,14 @@
     display: block;
     margin-top: 0.5rem;
     font-size: 0.875rem;
-    color: #666666;
+    color: #6b7280;
   }
 
   .error-message {
     display: block;
     margin-top: 0.5rem;
     font-size: 0.875rem;
-    color: #000000;
+    color: #ef4444;
   }
 }
 
@@ -249,27 +249,27 @@
       h3 {
         font-size: 1.125rem;
         font-weight: 600;
-        color: #000000;
+        color: #1f2937;
         margin: 0;
       }
 
       p {
         font-size: 0.875rem;
-        color: #666666;
+        color: #6b7280;
         margin: 0;
       }
     }
 
     &:hover {
-      border-color: #000000;
+      border-color: #4f46e5;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     &.selected {
-      border-color: #000000;
-      background-color: #f5f5f5;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      border-color: #4f46e5;
+      background-color: #eef2ff;
+      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.2);
     }
   }
 }
@@ -308,30 +308,30 @@
 
       .upload-text {
         font-size: 1rem;
-        color: #000000;
+        color: #374151;
         margin: 0;
 
         .file-name {
           font-weight: 600;
-          color: #000000;
+          color: #4f46e5;
         }
       }
 
       .upload-hint {
         font-size: 0.875rem;
-        color: #666666;
+        color: #6b7280;
         margin: 0;
       }
     }
 
     &:hover {
-      border-color: #000000;
-      background-color: #f5f5f5;
+      border-color: #4f46e5;
+      background-color: #eef2ff;
     }
 
     &.has-file {
-      border-color: #000000;
-      background-color: #f5f5f5;
+      border-color: #10b981;
+      background-color: #ecfdf5;
     }
   }
 
@@ -370,13 +370,13 @@
         text-transform: uppercase;
 
         &.badge-csv {
-          background-color: #f5f5f5;
-          color: #000000;
+          background-color: #dbeafe;
+          color: #1e40af;
         }
 
         &.badge-sample {
-          background-color: #f5f5f5;
-          color: #666666;
+          background-color: #fef3c7;
+          color: #92400e;
         }
       }
     }
@@ -398,7 +398,7 @@
         transition: all 0.2s ease;
 
         &:hover {
-          border-color: #000000;
+          border-color: #6366f1;
           box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1);
         }
 
@@ -408,7 +408,7 @@
           justify-content: center;
           width: 36px;
           height: 36px;
-          background: #000000;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: #ffffff;
           border-radius: 50%;
           font-weight: 600;
@@ -429,7 +429,7 @@
 
           small {
             font-size: 0.8125rem;
-            color: #666666;
+            color: #6b7280;
           }
         }
 
@@ -441,12 +441,12 @@
 
     .help-text {
       font-size: 0.875rem;
-      color: #666666;
+      color: #6b7280;
       margin: 0;
       padding: 0.75rem;
-      background-color: #f9f9f9;
+      background-color: #fffbeb;
       border-radius: 6px;
-      border-left: 3px solid #999999;
+      border-left: 3px solid #f59e0b;
     }
   }
 }
@@ -460,7 +460,7 @@
     width: 50px;
     height: 50px;
     border: 4px solid #e5e7eb;
-    border-top-color: #000000;
+    border-top-color: #4f46e5;
     border-radius: 50%;
     margin: 0 auto 1rem;
     animation: spin 1s linear infinite;
@@ -469,12 +469,12 @@
   p {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #000000;
+    color: #374151;
     margin-bottom: 0.5rem;
   }
 
   small {
-    color: #666666;
+    color: #6b7280;
   }
 }
 
@@ -486,12 +486,12 @@
       h3 {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #000000;
+        color: #1f2937;
         margin-bottom: 0.5rem;
       }
 
       p {
-        color: #666666;
+        color: #6b7280;
       }
     }
   }
@@ -530,16 +530,16 @@
           width: 40px;
           height: 40px;
           border-radius: 50%;
-          background: #000000;
+          background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
           border: 4px solid white;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
           z-index: 1;
         }
 
         .marker-label {
           font-size: 0.75rem;
           font-weight: 600;
-          color: #666666;
+          color: #6b7280;
           white-space: nowrap;
         }
       }
@@ -572,12 +572,12 @@
 
         strong {
           font-size: 1.5rem;
-          color: #000000;
+          color: #1f2937;
         }
 
         small {
           font-size: 0.875rem;
-          color: #666666;
+          color: #6b7280;
         }
       }
     }
@@ -620,7 +620,7 @@
           justify-content: center;
           width: 28px;
           height: 28px;
-          background: #000000;
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
           color: #ffffff;
           border-radius: 50%;
           font-weight: 600;
@@ -645,7 +645,7 @@
 
           small {
             font-size: 0.6875rem;
-            color: #666666;
+            color: #6b7280;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -684,7 +684,7 @@
 
     &.btn-secondary {
       background-color: #f3f4f6;
-      color: #000000;
+      color: #374151;
 
       &:hover:not(:disabled) {
         background-color: #e5e7eb;
@@ -692,24 +692,24 @@
     }
 
     &.btn-primary {
-      background: #000000;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
       color: white;
 
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
       }
     }
 
     &.btn-success {
-      background: #000000;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: white;
       font-size: 1.125rem;
       padding: 1rem 2.5rem;
 
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
       }
     }
   }
@@ -722,14 +722,14 @@
   margin-bottom: 1.5rem;
 
   &.alert-warning {
-    background-color: #f5f5f5;
-    border: 2px solid #666666;
-    color: #666666;
+    background-color: #fef3c7;
+    border: 2px solid #fbbf24;
+    color: #92400e;
   }
 
   &.alert-error {
     background-color: #fee2e2;
-    border: 2px solid #000000;
+    border: 2px solid #ef4444;
     color: #991b1b;
   }
 
@@ -745,7 +745,7 @@
   .btn-retry {
     margin-top: 0.75rem;
     padding: 0.5rem 1rem;
-    background-color: #000000;
+    background-color: #ef4444;
     color: white;
     border: none;
     border-radius: 6px;
@@ -753,7 +753,7 @@
     cursor: pointer;
 
     &:hover {
-      background-color: #000000;
+      background-color: #dc2626;
     }
   }
 }
@@ -934,7 +934,7 @@
 
   .activation-hero {
     padding: 3rem 1rem;
-    background: #000000;
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
     border-radius: 16px;
     margin-bottom: 2rem;
 
@@ -947,13 +947,13 @@
     h2 {
       font-size: 2rem;
       font-weight: 700;
-      color: #000000;
+      color: #1f2937;
       margin-bottom: 0.5rem;
     }
 
     .hero-subtitle {
       font-size: 1.125rem;
-      color: #666666;
+      color: #6b7280;
       margin: 0;
     }
   }
@@ -976,8 +976,8 @@
       transition: all 0.2s ease;
 
       &.success {
-        border-color: #000000;
-        background-color: #f5f5f5;
+        border-color: #10b981;
+        background-color: #ecfdf5;
       }
 
       &:hover {
@@ -998,13 +998,13 @@
 
         strong {
           font-size: 1rem;
-          color: #000000;
+          color: #1f2937;
           font-weight: 600;
         }
 
         small {
           font-size: 0.875rem;
-          color: #666666;
+          color: #6b7280;
         }
       }
     }
@@ -1021,7 +1021,7 @@
     h3 {
       font-size: 1.25rem;
       font-weight: 600;
-      color: #000000;
+      color: #1f2937;
       margin-bottom: 1.5rem;
       text-align: center;
     }
@@ -1048,7 +1048,7 @@
             justify-content: center;
             width: 32px;
             height: 32px;
-            background: #000000;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
             border-radius: 50%;
             font-weight: 600;
@@ -1072,14 +1072,14 @@
           strong {
             display: block;
             font-size: 1rem;
-            color: #000000;
+            color: #1f2937;
             margin-bottom: 0.25rem;
           }
 
           small {
             display: block;
             font-size: 0.875rem;
-            color: #666666;
+            color: #6b7280;
           }
         }
       }
@@ -1087,15 +1087,15 @@
   }
 
   .next-steps-cta {
-    background: #000000;
-    border: 2px solid #999999;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
     border-radius: 12px;
     padding: 2rem;
     margin-bottom: 2rem;
 
     .cta-message {
       font-size: 1rem;
-      color: #666666;
+      color: #92400e;
       margin: 0;
 
       strong {
@@ -1131,7 +1131,7 @@
 
 .video-express-wizard {
   min-height: 100vh;
-  background: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding-bottom: 2rem;
   
   // Container
@@ -1149,7 +1149,7 @@
   .wizard-header {
     padding: 2rem 0;
     text-align: center;
-    color: #000000;
+    color: white;
     
     .wizard-title {
       font-size: 2rem;
@@ -1207,7 +1207,7 @@
         height: 40px;
         border-radius: 50%;
         background: #e5e7eb;
-        color: #666666;
+        color: #6b7280;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1218,7 +1218,7 @@
       
       .step-label {
         font-size: 0.75rem;
-        color: #666666;
+        color: #6b7280;
         font-weight: 500;
         
         @media (min-width: 768px) {
@@ -1227,13 +1227,13 @@
       }
       
       &.active .step-circle {
-        background: #000000;
+        background: #6366f1;
         color: white;
         transform: scale(1.1);
       }
       
       &.completed .step-circle {
-        background: #000000;
+        background: #10b981;
         color: white;
       }
     }
@@ -1247,7 +1247,7 @@
       transform: translateY(-1rem);
       
       &.active {
-        background: #000000;
+        background: #10b981;
       }
     }
   }
@@ -1270,7 +1270,7 @@
     
     .icon-alert {
       font-size: 1.25rem;
-      color: #999999;
+      color: #f59e0b;
       
       i {
         display: block;
@@ -1312,7 +1312,7 @@
     .step-title {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #000000;
+      color: #1f2937;
       margin: 0 0 0.75rem;
       text-align: center;
       
@@ -1323,7 +1323,7 @@
     
     .step-description {
       font-size: 1rem;
-      color: #666666;
+      color: #6b7280;
       text-align: center;
       margin: 0 0 2rem;
       line-height: 1.6;
@@ -1350,13 +1350,13 @@
       transition: all 0.3s ease;
       
       &:hover {
-        border-color: #000000;
+        border-color: #6366f1;
         background: #f9fafb;
       }
       
       &.drag-over {
-        border-color: #000000;
-        background: #f5f5f5;
+        border-color: #6366f1;
+        background: #eef2ff;
         transform: scale(1.02);
         box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
       }
@@ -1368,14 +1368,14 @@
       
       .upload-text {
         font-size: 1rem;
-        color: #000000;
+        color: #374151;
         margin: 0 0 0.5rem;
         font-weight: 500;
       }
       
       .upload-hint {
         font-size: 0.875rem;
-        color: #999999;
+        color: #9ca3af;
         margin: 0;
       }
     }
@@ -1393,7 +1393,7 @@
       
       .preview-filename {
         font-size: 0.875rem;
-        color: #666666;
+        color: #6b7280;
         margin-bottom: 1rem;
       }
       
@@ -1404,12 +1404,12 @@
         border-radius: 0.375rem;
         cursor: pointer;
         font-size: 0.875rem;
-        color: #666666;
+        color: #6b7280;
         transition: all 0.2s;
         
         &:hover {
-          border-color: #000000;
-          color: #000000;
+          border-color: #6366f1;
+          color: #6366f1;
         }
       }
     }
@@ -1440,11 +1440,11 @@
       &:hover {
         transform: scale(1.02);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        border-color: #000000;
+        border-color: #6366f1;
       }
       
       &.selected {
-        border-color: #000000;
+        border-color: #6366f1;
         background: #f0f9ff;
         box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
       }
@@ -1457,21 +1457,21 @@
       .card-title {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #000000;
+        color: #1f2937;
         margin: 0 0 0.5rem;
       }
       
       .card-intent {
         font-size: 1rem;
         font-weight: 600;
-        color: #000000;
+        color: #6366f1;
         margin: 0 0 0.75rem;
         font-style: italic;
       }
       
       .card-description {
         font-size: 0.875rem;
-        color: #666666;
+        color: #6b7280;
         line-height: 1.5;
         margin: 0;
       }
@@ -1483,7 +1483,7 @@
         width: 2rem;
         height: 2rem;
         border-radius: 50%;
-        background: #000000;
+        background: #10b981;
         color: white;
         display: flex;
         align-items: center;
@@ -1503,14 +1503,14 @@
     .selector-title {
       font-size: 1.25rem;
       font-weight: 600;
-      color: #000000;
+      color: #1f2937;
       margin: 0 0 0.5rem;
       text-align: center;
     }
     
     .selector-description {
       font-size: 0.875rem;
-      color: #666666;
+      color: #6b7280;
       text-align: center;
       margin: 0 0 1.5rem;
     }
@@ -1538,20 +1538,20 @@
         &:hover {
           transform: translateY(-4px);
           box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-          border-color: #333333;
+          border-color: #8b5cf6;
         }
         
         &.selected {
-          border-color: #333333;
+          border-color: #8b5cf6;
           background: #faf5ff;
           box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
         }
         
         &.recommended {
-          border-color: #999999;
+          border-color: #f59e0b;
           
           &.selected {
-            border-color: #333333;
+            border-color: #8b5cf6;
           }
         }
         
@@ -1563,13 +1563,13 @@
         .anim-label {
           font-size: 1rem;
           font-weight: 600;
-          color: #000000;
+          color: #1f2937;
           margin: 0 0 0.5rem;
         }
         
         .anim-description {
           font-size: 0.8rem;
-          color: #666666;
+          color: #6b7280;
           line-height: 1.4;
           margin: 0;
         }
@@ -1578,8 +1578,8 @@
           display: inline-block;
           margin-top: 0.5rem;
           padding: 0.25rem 0.75rem;
-          background: #f5f5f5;
-          color: #666666;
+          background: #fef3c7;
+          color: #92400e;
           border-radius: 9999px;
           font-size: 0.75rem;
           font-weight: 600;
@@ -1592,7 +1592,7 @@
           width: 1.75rem;
           height: 1.75rem;
           border-radius: 50%;
-          background: #000000;
+          background: #10b981;
           color: white;
           display: flex;
           align-items: center;
@@ -1635,7 +1635,7 @@
     
     .generating-message {
       font-size: 1.125rem;
-      color: #000000;
+      color: #6366f1;
       text-align: center;
       margin: 1rem 0;
       font-weight: 500;
@@ -1645,7 +1645,7 @@
     
     .generating-hint {
       font-size: 0.875rem;
-      color: #666666;
+      color: #6b7280;
       text-align: center;
       margin: 1rem 0 2rem;
     }
@@ -1659,7 +1659,7 @@
       
       .progress-bar-fill {
         height: 100%;
-        background: #000000;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6);
         transition: width 0.5s ease;
         border-radius: 4px;
       }
@@ -1703,10 +1703,10 @@
         align-items: center;
         gap: 0.75rem;
         font-size: 0.875rem;
-        color: #000000;
+        color: #374151;
         
         .icon-check {
-          color: #000000;
+          color: #10b981;
           font-size: 1.25rem;
           
           i {
@@ -1724,7 +1724,7 @@
       
       .feedback-question {
         font-size: 0.875rem;
-        color: #666666;
+        color: #6b7280;
         margin: 0 0 1rem;
       }
       
@@ -1749,14 +1749,14 @@
           
           &.btn-yes {
             &:hover {
-              border-color: #000000;
+              border-color: #10b981;
               background: #f0fdf4;
             }
           }
           
           &.btn-no {
             &:hover {
-              border-color: #666666;
+              border-color: #6b7280;
               background: #f9fafb;
             }
           }
@@ -1776,17 +1776,17 @@
         padding: 2rem;
         border-radius: 1rem;
         margin-bottom: 2rem;
-        background: #000000;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
         border: 2px solid #0ea5e9;
 
         &.positive {
-          background: #000000;
-          border-color: #000000;
+          background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+          border-color: #10b981;
         }
 
         &.negative {
-          background: #000000;
-          border-color: #999999;
+          background: linear-gradient(135deg, #fef3f2 0%, #fee2e2 100%);
+          border-color: #f59e0b;
         }
 
         .message-icon {
@@ -1798,13 +1798,13 @@
         h4 {
           font-size: 1.5rem;
           font-weight: 700;
-          color: #000000;
+          color: #1f2937;
           margin: 0 0 0.5rem;
         }
 
         .message-subtitle {
           font-size: 0.95rem;
-          color: #666666;
+          color: #6b7280;
           margin: 0;
         }
       }
@@ -1847,13 +1847,13 @@
               h6 {
                 font-size: 0.95rem;
                 font-weight: 600;
-                color: #000000;
+                color: #1f2937;
                 margin: 0 0 0.25rem;
               }
 
               p {
                 font-size: 0.8rem;
-                color: #666666;
+                color: #6b7280;
                 margin: 0;
                 line-height: 1.4;
               }
@@ -1866,7 +1866,7 @@
 
             &.primary {
               border-color: #3b82f6;
-              background: #000000;
+              background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
 
               &:hover {
                 border-color: #2563eb;
@@ -1880,7 +1880,7 @@
 
             &.secondary {
               &:hover {
-                border-color: #666666;
+                border-color: #6b7280;
               }
             }
           }
@@ -1944,11 +1944,11 @@
     }
     
     &.btn-primary {
-      background: #000000;
+      background: #6366f1;
       color: white;
       
       &:hover:not(:disabled) {
-        background: #000000;
+        background: #4f46e5;
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
       }
@@ -1971,8 +1971,8 @@
     
     &.btn-secondary {
       background: white;
-      color: #000000;
-      border: 1px solid #000000;
+      color: #6366f1;
+      border: 1px solid #6366f1;
       
       &:hover:not(:disabled) {
         background: #f0f9ff;
@@ -1998,7 +1998,7 @@
     height: 3rem;
     border-width: 3px;
     border-color: rgba(99, 102, 241, 0.3);
-    border-top-color: #000000;
+    border-top-color: #6366f1;
   }
   
   // Footer

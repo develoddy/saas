@@ -21,31 +21,35 @@
   }
 
   &.btn-secondary {
-    background-color: $color-bg-tertiary;
-    color: $color-text-secondary;
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
 
     &:hover:not(:disabled) {
-      background-color: $color-border;
+      background-color: #000000;
+      color: #ffffff;
     }
   }
 
   &.btn-primary {
-    background: $gradient-primary;
-    color: white;
+    background: #000000;
+    color: #ffffff;
 
     &:hover:not(:disabled) {
+      background: #333333;
       transform: translateY(-2px);
       box-shadow: $shadow-primary-lg;
     }
   }
 
   &.btn-success {
-    background: $gradient-success;
-    color: white;
+    background: #000000;
+    color: #ffffff;
     font-size: $font-size-lg;
     padding: 1rem 2.5rem;
 
     &:hover:not(:disabled) {
+      background: #333333;
       transform: translateY(-2px);
       box-shadow: $shadow-success;
     }
@@ -53,12 +57,12 @@
 
   &.btn-retry {
     padding: 0.5rem 1rem;
-    background-color: $color-error;
-    color: white;
+    background-color: #000000;
+    color: #ffffff;
     border-radius: $radius-sm;
 
     &:hover {
-      background-color: #dc2626;
+      background-color: #333333;
     }
   }
 }

@@ -46,7 +46,7 @@
 
 // File upload zone
 .upload-zone {
-  border: 2px dashed #e0e0e0;
+  border: 2px dashed #d1d5db;
   border-radius: $radius-lg;
   padding: 3rem;
   text-align: center;

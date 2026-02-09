@@ -19,7 +19,7 @@
 
   <!-- Error message -->
   <div class="alert alert-danger" *ngIf="error">
-    <i class="fas fa-exclamation-circle"></i>
+    <i class="bi bi-exclamation-triangle"></i>
     {{ error }}
   </div>
 
@@ -89,7 +89,7 @@
           class="btn btn-secondary"
           (click)="previousStep()"
           [disabled]="currentStep === 0">
-          <i class="fas fa-arrow-left"></i>
+          <i class="bi bi-arrow-left"></i>
           Previous
         </button>
         
@@ -100,7 +100,7 @@
           (click)="nextStep()"
           [disabled]="!isCurrentStepValid()">
           Next
-          <i class="fas fa-arrow-right"></i>
+          <i class="bi bi-arrow-right"></i>
         </button>
         
         <button 
@@ -110,11 +110,11 @@
           (click)="generatePreview()"
           [disabled]="!wizardForm.valid || generating">
           <span *ngIf="!generating">
-            <i class="fas fa-magic"></i>
+            <i class="bi bi-lightning"></i>
             Generate Preview
           </span>
           <span *ngIf="generating">
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="bi bi-arrow-clockwise"></i>
             Generating...
           </span>
         </button>
@@ -138,11 +138,11 @@
           <h4>{{ generatedPreview['sequenceName'] }}</h4>
           <div class="stats">
             <div class="stat">
-              <i class="fas fa-envelope"></i>
+              <i class="bi bi-envelope"></i>
               <span>{{ generatedPreview['stats'].totalEmails }} emails</span>
             </div>
             <div class="stat">
-              <i class="fas fa-clock"></i>
+              <i class="bi bi-clock"></i>
               <span>{{ generatedPreview['stats'].estimatedDuration }}</span>
             </div>
           </div>
