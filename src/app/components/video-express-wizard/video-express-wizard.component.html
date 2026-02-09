@@ -1,0 +1,312 @@
+<div class="video-express-wizard">
+  
+  <!-- Header -->
+  <header class="wizard-header">
+    <div class="container">
+      <h1 class="wizard-title">Video Express</h1>
+      <p class="wizard-subtitle">Convierte tu producto en video en minutos</p>
+    </div>
+  </header>
+
+  <!-- Main Wizard Container -->
+  <main class="wizard-container">
+    <div class="container">
+      
+      <!-- Progress Indicator (solo pasos 1-3) -->
+      <div class="progress-indicator" *ngIf="state.currentStep < 4">
+        <div class="progress-steps">
+          <div class="progress-step" 
+               [class.active]="state.currentStep >= 1"
+               [class.completed]="state.currentStep > 1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Imagen</span>
+          </div>
+          <div class="progress-line" [class.active]="state.currentStep > 1"></div>
+          <div class="progress-step" 
+               [class.active]="state.currentStep >= 2"
+               [class.completed]="state.currentStep > 2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Objetivo</span>
+          </div>
+          <div class="progress-line" [class.active]="state.currentStep > 2"></div>
+          <div class="progress-step" 
+               [class.active]="state.currentStep >= 3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Generar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message (Global) -->
+      <div class="alert alert-error" *ngIf="state.error">
+        <i class="icon-alert"></i>
+        <span>{{ state.error }}</span>
+        <button class="close-btn" (click)="state.error = null">&times;</button>
+      </div>
+
+      <!-- STEP 1: Upload Image -->
+      <section class="wizard-step" *ngIf="state.currentStep === 1">
+        <div class="step-content">
+          <h2 class="step-title">Sube la foto de tu producto</h2>
+          <p class="step-description">
+            En segundos convertiremos esta imagen en un video listo para publicar
+          </p>
+
+          <!-- Upload Area -->
+          <div class="upload-area">
+            <!-- Preview Mode (cuando ya hay imagen) -->
+            <div class="image-preview" *ngIf="state.imagePreviewUrl">
+              <img [src]="state.imagePreviewUrl" alt="Preview">
+              <div class="preview-filename">{{ state.uploadedImage?.name }}</div>
+              <button class="btn-change-image" (click)="changeImage()">
+                Cambiar imagen
+              </button>
+            </div>
+
+            <!-- Upload Mode (cuando no hay imagen) -->
+            <div class="upload-zone" *ngIf="!state.imagePreviewUrl">
+              <input 
+                type="file" 
+                #fileInput
+                accept="image/jpeg,image/png,image/jpg"
+                (change)="onFileChange($event)"
+                style="display: none;">
+              
+              <div class="upload-placeholder" (click)="fileInput.click()">
+                <div class="upload-icon">📸</div>
+                <p class="upload-text">
+                  Arrastra tu imagen aquí o haz clic para seleccionar
+                </p>
+                <p class="upload-hint">JPG o PNG hasta 10MB</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="step-actions">
+            <button 
+              class="btn btn-primary btn-large"
+              [disabled]="!canContinueStep1"
+              (click)="uploadImage()">
+              <span *ngIf="!state.loading">Continuar →</span>
+              <span *ngIf="state.loading">
+                <i class="spinner"></i> Subiendo...
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: Select Objective -->
+      <section class="wizard-step" *ngIf="state.currentStep === 2">
+        <div class="step-content">
+          <h2 class="step-title">¿Dónde quieres publicar este video?</h2>
+          <p class="step-description">
+            Nosotros optimizamos todo automáticamente según tu objetivo
+          </p>
+
+          <!-- Objective Cards -->
+          <div class="objective-cards">
+            
+            <!-- Organic Option -->
+            <div class="objective-card"
+                 [class.selected]="state.selectedObjective === 'organic'"
+                 (click)="selectObjective('organic')">
+              <div class="card-icon">📱</div>
+              <h3 class="card-title">Redes Sociales</h3>
+              <p class="card-intent">"Quiero más visitas"</p>
+              <p class="card-description">
+                Instagram · TikTok · Facebook<br>
+                Video optimizado para engagement y alcance
+              </p>
+              <div class="card-check" *ngIf="state.selectedObjective === 'organic'">
+                ✓
+              </div>
+            </div>
+
+            <!-- Ads Option -->
+            <div class="objective-card"
+                 [class.selected]="state.selectedObjective === 'ads'"
+                 (click)="selectObjective('ads')">
+              <div class="card-icon">🎯</div>
+              <h3 class="card-title">Anuncios</h3>
+              <p class="card-intent">"Quiero vender este producto"</p>
+              <p class="card-description">
+                Facebook Ads · Instagram Ads<br>
+                Video optimizado para conversión y ventas
+              </p>
+              <div class="card-check" *ngIf="state.selectedObjective === 'ads'">
+                ✓
+              </div>
+            </div>
+          </div>
+
+          <!-- Animation Style Selector -->
+          <div class="animation-selector" *ngIf="state.selectedObjective">
+            <h3 class="selector-title">Elige el estilo de movimiento</h3>
+            <p class="selector-description">
+              Cada estilo crea un efecto visual diferente
+            </p>
+
+            <div class="animation-cards">
+              <div class="animation-card"
+                   *ngFor="let anim of animationOptions"
+                   [class.selected]="state.selectedAnimation === anim.value"
+                   [class.recommended]="anim.recommended"
+                   (click)="selectAnimation(anim.value)">
+                <div class="anim-icon">{{ anim.icon }}</div>
+                <h4 class="anim-label">{{ anim.label }}</h4>
+                <p class="anim-description">{{ anim.description }}</p>
+                <span class="anim-badge" *ngIf="anim.recommended">Recomendado</span>
+                <div class="anim-check" *ngIf="state.selectedAnimation === anim.value">
+                  ✓
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="step-actions">
+            <button 
+              class="btn btn-primary btn-large"
+              [disabled]="!canContinueStep2"
+              (click)="generateVideo()">
+              <span *ngIf="!state.loading">Generar mi video →</span>
+              <span *ngIf="state.loading">
+                <i class="spinner"></i> Iniciando...
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3: Generating -->
+      <section class="wizard-step step-generating" *ngIf="state.currentStep === 3">
+        <div class="step-content">
+          
+          <!-- Product Image with Overlay -->
+          <div class="generating-preview">
+            <img 
+              [src]="state.imagePreviewUrl" 
+              alt="Tu producto"
+              class="generating-image">
+            <div class="generating-overlay">
+              <div class="spinner-large"></div>
+            </div>
+          </div>
+
+          <h2 class="step-title">Estamos creando tu video...</h2>
+          
+          <!-- Rotating Messages -->
+          <p class="generating-message">
+            {{ state.currentMessage }}
+          </p>
+
+          <p class="generating-hint">
+            Esto tomará entre 30 y 60 segundos.<br>
+            No cierres esta ventana.
+          </p>
+
+          <!-- Progress Bar -->
+          <div class="progress-bar-container">
+            <div 
+              class="progress-bar-fill"
+              [style.width.%]="state.generationProgress">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4: Video Ready -->
+      <section class="wizard-step step-ready" *ngIf="state.currentStep === 4">
+        <div class="step-content">
+          
+          <div class="success-icon">🎉</div>
+          
+          <h2 class="step-title">¡Listo para publicar!</h2>
+          <p class="step-description">
+            Tu video está optimizado y listo para subir directamente a tus redes
+          </p>
+
+          <!-- Video Player -->
+          <div class="video-player-container" *ngIf="state.videoResult">
+            <video 
+              [src]="state.videoResult.videoUrl"
+              controls
+              autoplay
+              muted
+              loop
+              playsinline
+              class="video-player">
+              Tu navegador no soporta reproducción de video.
+            </video>
+          </div>
+
+          <!-- Video Info -->
+          <div class="video-info">
+            <div class="info-item">
+              <i class="icon-check"></i>
+              <span>Formato 1080x1920 (perfecto para stories)</span>
+            </div>
+            <div class="info-item">
+              <i class="icon-check"></i>
+              <span>Optimizado para móvil</span>
+            </div>
+            <div class="info-item">
+              <i class="icon-check"></i>
+              <span>Sin marca de agua</span>
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="step-actions">
+            <button 
+              class="btn btn-primary btn-large"
+              [disabled]="isDownloading"
+              [class.loading]="isDownloading"
+              (click)="downloadVideo()">
+              <span *ngIf="!isDownloading">⬇️ Descargar Video</span>
+              <span *ngIf="isDownloading">
+                <span class="spinner"></span>
+                Descargando...
+              </span>
+            </button>
+            
+            <button 
+              class="btn btn-secondary"
+              (click)="createAnotherVideo()">
+              Crear otro video →
+            </button>
+          </div>
+
+          <!-- Feedback (Optional) -->
+          <div class="feedback-section">
+            <p class="feedback-question">¿Este video te ahorró tiempo?</p>
+            <div class="feedback-buttons">
+              <button 
+                class="btn-feedback btn-yes"
+                (click)="submitFeedback(true)">
+                👍 Sí
+              </button>
+              <button 
+                class="btn-feedback btn-no"
+                (click)="submitFeedback(false)">
+                👎 No
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="wizard-footer" *ngIf="state.currentStep < 4">
+    <p class="footer-text">
+      Sin registro · Sin tarjeta · Solo prueba
+    </p>
+  </footer>
+
+</div>

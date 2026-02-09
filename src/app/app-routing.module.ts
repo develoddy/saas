@@ -10,6 +10,7 @@ import { GenericDashboardComponent } from './generic-dashboard/generic-dashboard
 import { AccountComponent } from './account/account.component';
 import { TenantAuthGuard } from './core/tenant-auth.guard';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
+import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,18 @@ const routes: Routes = [
     component: UpgradeSuccessComponent
   },
   // 🎯 Rutas públicas de Preview (SIN autenticación)
+  // Video Express - Wizard específico con upload y generación de video
+  // Usa arquitectura de módulos pero con UI personalizada
+  {
+    path: 'preview/video-express',
+    component: VideoExpressWizardComponent,
+    data: { 
+      moduleKey: 'video-express',
+      title: 'Video Express - Preview',
+      description: 'Genera videos de producto con IA'
+    }
+  },
+  // Otros módulos - Wizard genérico basado en formularios
   {
     path: 'preview/:moduleKey',
     component: ModulePreviewWizardComponent

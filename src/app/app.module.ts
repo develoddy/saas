@@ -15,6 +15,7 @@ import { UpgradeSuccessComponent } from './upgrade-success/upgrade-success.compo
 import { GenericDashboardComponent } from './generic-dashboard/generic-dashboard.component';
 import { AccountComponent } from './account/account.component';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
+import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({
@@ -28,7 +29,8 @@ import { SharedModule } from './shared/shared.module';
     UpgradeSuccessComponent,
     GenericDashboardComponent,
     AccountComponent,
-    ModulePreviewWizardComponent
+    ModulePreviewWizardComponent,
+    VideoExpressWizardComponent
   ],
   imports: [
     BrowserModule,
