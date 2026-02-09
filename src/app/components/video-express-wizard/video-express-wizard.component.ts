@@ -361,11 +361,21 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
               downloadUrl: status.downloadUrl!
             };
             
-            // Track success
+            // Track success: video generado
             this.trackEvent('video_express_video_generated', {
               jobId: this.state.jobId,
               objective: this.state.selectedObjective,
               generationTime
+            });
+            
+            // ✅ Track wizard completion (definición MVP: video generado = wizard completado)
+            this.trackEvent('wizard_completed', {
+              step: 4,
+              completed: true,
+              module: this.moduleKey,
+              objective: this.state.selectedObjective,
+              animation: this.state.selectedAnimation,
+              jobId: this.state.jobId
             });
             
             // Detener polling y mensajes
