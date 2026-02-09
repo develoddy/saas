@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
         if (returnUrl) {
           this.router.navigate([returnUrl]);
         } else {
-          this.router.navigate([`/${tenant.module_key}`]);
+          this.router.navigate([`/app/${tenant.module_key}`]);
         }
       }
     }
@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
                     } else {
                       // Sin returnUrl válido → usar module_key
                       // El routing interno del módulo manejará la redirección a /onboarding
-                      const path = `/${moduleKey}`;
+                      const path = `/app/${moduleKey}`;
                       console.log('📍 Navegando a módulo raíz:', path);
                       this.router.navigate([path]);
                     }
@@ -161,7 +161,7 @@ export class LoginComponent implements OnInit {
           } else if (response.tenant && response.token) {
             // Respuesta antigua (con moduleKey) - mantener compatibilidad
             // 🔧 Siempre usar module_key para construir la ruta
-            const path = `/${response.tenant.module_key}`;
+            const path = `/app/${response.tenant.module_key}`;
             console.log('📍 Navegando a:', path);
             this.router.navigate([path]).then(() => {
               console.log('✅ Navegación completada');

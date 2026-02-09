@@ -125,7 +125,7 @@ export class RegisterComponent implements OnInit {
         // 3. Redirigir al dashboard del módulo
         // 🔧 Asegurar moduleKey con fallback a 'mailflow'
         const moduleKey = this.moduleKey || 'mailflow';
-        const dashboardUrl = `/${moduleKey}`;
+        const dashboardUrl = `/app/${moduleKey}`;
         
         this.success = '¡Cuenta creada! Redirigiendo a tu dashboard...';
         this.cd.detectChanges(); // 🔄 Forzar actualización para mostrar mensaje

@@ -1,0 +1,222 @@
+<div class="mvps-hub" [class.labs-mode]="isLabsMode" [class.store-mode]="isStoreMode">
+  <!-- Header Dinámico -->
+  <header class="hub-header">
+    <div class="container">
+      <div class="header-content">
+        
+        <!-- Labs Mode Branding -->
+        <div class="branding" *ngIf="isLabsMode || isLoading">
+          <div class="brand-icon"><i class="bi bi-gear-fill"></i></div>
+          <div class="brand-text">
+            <h1 class="brand-title">LujanDev Labs</h1>
+            <p class="brand-tagline">Construyendo micro-SaaS basados en uso real, no en ideas</p>
+          </div>
+        </div>
+
+        <!-- Store Mode Branding -->
+        <div class="branding" *ngIf="isStoreMode">
+          <h1 class="brand-title">MVPs en Validación</h1>
+          <p class="brand-tagline">Solo herramientas con señales reales de uso</p>
+        </div>
+        
+        <!-- Auth/User Actions (SOLO en Store Mode o si ya está autenticado) -->
+        <div class="auth-actions" *ngIf="!isAuthenticated && isStoreMode">
+          <button class="btn-link" (click)="goToLogin()">
+            Iniciar sesión
+          </button>
+          <button class="btn-primary" (click)="goToRegister()">
+            Crear cuenta
+          </button>
+        </div>
+
+        <div class="user-actions" *ngIf="isAuthenticated && currentTenant">
+          <div class="user-info">
+            <i class="bi bi-person-circle"></i>
+            <span>{{ currentTenant.name }}</span>
+          </div>
+          <button class="btn-primary" (click)="goToDashboard()">
+            <i class="bi bi-speedometer2"></i>
+            Mi Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="hub-main">
+    <div class="container">
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-state">
+        <p>Cargando experimentos...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="!isLoading && error" class="error-state">
+        <i class="bi bi-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+        <button class="btn-primary" (click)="retryLoad()">
+          <i class="bi bi-arrow-clockwise"></i>
+          Reintentar
+        </button>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- LABS MODE: Landing de laboratorio (no MVPs) -->
+      <!-- ============================================ -->
+      <section *ngIf="!isLoading && !error && isLabsMode" class="labs-landing">
+        
+        <!-- Estado del laboratorio -->
+        <div class="labs-status">
+          <div class="status-icon"><i class="bi bi-bar-chart"></i></div>
+          <h2>Estamos validando experimentos</h2>
+          <p class="status-description">
+            Las herramientas aparecen aquí solo cuando muestran <strong>señales reales de uso y retención</strong>.<br>
+            No publicamos demos. Solo lo que funciona.
+          </p>
+        </div>
+
+        <!-- Cómo funciona -->
+        <div class="labs-process">
+          <h3>Cómo funciona</h3>
+          <div class="process-steps">
+            <div class="step">
+              <div class="step-icon"><i class="bi bi-code-slash"></i></div>
+              <h4>Experimentamos</h4>
+              <p>Probamos ideas con usuarios reales</p>
+            </div>
+            <div class="step">
+              <div class="step-icon"><i class="bi bi-graph-up"></i></div>
+              <h4>Medimos</h4>
+              <p>Uso, retención, feedback, tenants</p>
+            </div>
+            <div class="step">
+              <div class="step-icon"><i class="bi bi-rocket-takeoff"></i></div>
+              <h4>Publicamos</h4>
+              <p>Solo lo que demuestra tracción</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Único (opcional) -->
+        <div class="labs-cta">
+          <div class="cta-icon"><i class="bi bi-bell"></i></div>
+          <p>¿Quieres saber cuándo hay algo listo?</p>
+          <button class="btn-notify" disabled title="Próximamente">
+            Avisarme cuando haya algo listo
+          </button>
+          <small class="cta-note">Por ahora estamos enfocados 100% en validar</small>
+        </div>
+      </section>
+
+      <!-- ============================================ -->
+      <!-- STORE MODE: Grid de MVPs (ya existe)        -->
+      <!-- ============================================ -->
+      <section *ngIf="!isLoading && !error && isStoreMode" class="store-section">
+        
+        <!-- Intro -->
+        <div class="intro-section">
+          <h2 class="section-title">Explora nuestros MVPs en validación</h2>
+          <p class="section-description">
+            Solo mostramos herramientas con <strong>señales reales de uso</strong>. 
+            Nada de demos técnicas. Solo MVPs que están funcionando.
+          </p>
+        </div>
+
+        <!-- MVPs Grid -->
+        <div class="mvps-grid">
+        <div *ngFor="let mvp of mvps" 
+             class="mvp-card"
+             [class.coming-soon]="mvp.status === 'coming-soon'"
+             [style.border-color]="mvp.color">
+          
+          <!-- Icon & Status -->
+          <div class="card-header">
+            <div class="mvp-icon" [style.background]="mvp.color">
+              <i [class]="mvp.icon"></i>
+            </div>
+            <span class="status-badge" *ngIf="mvp.status === 'coming-soon'">
+              Próximamente
+            </span>
+            <span class="status-badge live" *ngIf="mvp.status === 'live'">
+              <i class="bi bi-circle-fill"></i> En vivo
+            </span>
+          </div>
+
+          <!-- Content -->
+          <div class="card-content">
+            <h3 class="mvp-name">{{ mvp.name }}</h3>
+            <p class="mvp-tagline">{{ mvp.tagline }}</p>
+            <p class="mvp-description">{{ mvp.description }}</p>
+
+            <!-- Features List -->
+            <ul class="features-list">
+              <li *ngFor="let feature of mvp.features">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ feature }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- CTA -->
+          <div class="card-footer">
+            <button 
+              class="btn-preview"
+              [disabled]="mvp.status === 'coming-soon'"
+              [style.background]="mvp.status === 'live' ? mvp.color : '#d1d5db'"
+              (click)="goToPreview(mvp)">
+              <span *ngIf="mvp.status === 'live'">
+                <i class="bi bi-play-circle"></i>
+                Probar ahora
+              </span>
+              <span *ngIf="mvp.status === 'coming-soon'">
+                <i class="bi bi-clock"></i>
+                Muy pronto
+              </span>
+            </button>
+          </div>
+        </div>
+        </div> <!-- /mvps-grid -->
+
+        <!-- Bottom CTA (solo Store Mode) -->
+        <div class="cta-section" *ngIf="!isAuthenticated">
+          <div class="cta-card">
+            <h3 class="cta-title">¿Listo para empezar?</h3>
+            <p class="cta-description">
+              Crea tu cuenta gratis y prueba cualquier herramienta. 
+              Sin tarjeta, sin compromisos, solo validación.
+            </p>
+            <div class="cta-buttons">
+              <button class="btn-cta-primary" (click)="goToRegister()">
+                <i class="bi bi-rocket-takeoff"></i>
+                Crear cuenta gratis
+              </button>
+              <button class="btn-cta-secondary" (click)="goToLogin()">
+                Ya tengo cuenta
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section> <!-- /store-section -->
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="hub-footer">
+    <div class="container">
+      <div class="footer-content">
+        <p class="footer-text">
+          MVP Hub · Fase de validación · 
+          <a href="https://lujandev.com" target="_blank">lujandev.com</a>
+        </p>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Documentación</a>
+          <a href="#" class="footer-link">Soporte</a>
+          <a href="#" class="footer-link">Estado del servicio</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

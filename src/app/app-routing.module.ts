@@ -11,8 +11,14 @@ import { AccountComponent } from './account/account.component';
 import { TenantAuthGuard } from './core/tenant-auth.guard';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
 import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
+import { MvpsHubComponent } from './mvps-hub/mvps-hub.component';
 
 const routes: Routes = [
+  // 🏠 Ruta raíz pública - Hub de MVPs
+  {
+    path: '',
+    component: MvpsHubComponent
+  },
   {
     path: 'login',
     component: LoginComponent
@@ -50,8 +56,9 @@ const routes: Routes = [
     path: 'preview/:moduleKey',
     component: ModulePreviewWizardComponent
   },
+  // 🔒 Rutas protegidas con autenticación
   {
-    path: '',
+    path: 'app',
     component: LayoutComponent,
     canActivate: [TenantAuthGuard],
     children: [
@@ -73,7 +80,13 @@ const routes: Routes = [
           }
         ]
       }
-    ]
+   ,
+  // 🔄 Redirect para compatibilidad con rutas antiguas
+  {
+    path: ':moduleKey',
+    redirectTo: 'app/:moduleKey',
+    pathMatch: 'full'
+  } ]
   }
 ];
 
