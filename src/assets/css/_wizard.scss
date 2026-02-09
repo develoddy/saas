@@ -1776,16 +1776,16 @@
         padding: 2rem;
         border-radius: 1rem;
         margin-bottom: 2rem;
-        background: #000000;
-        border: 2px solid #0ea5e9;
+        background: #ffffff;
+        border: 2px solid #e5e7eb;
 
         &.positive {
-          background: #000000;
+          background: #ffffff;
           border-color: #000000;
         }
 
         &.negative {
-          background: #000000;
+          background: #ffffff;
           border-color: #999999;
         }
 
@@ -1865,16 +1865,16 @@
             }
 
             &.primary {
-              border-color: #3b82f6;
-              background: #000000;
+              border-color: #000000;
+              background: #ffffff;
 
               &:hover {
-                border-color: #2563eb;
-                box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+                border-color: #333333;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
               }
 
               .card-content h6 {
-                color: #2563eb;
+                color: #000000;
               }
             }
 
@@ -2008,7 +2008,7 @@
     
     .footer-text {
       font-size: 0.875rem;
-      color: rgba(255, 255, 255, 0.8);
+      color: #666666;
       margin: 0;
     }
   }
