@@ -46,26 +46,26 @@
         
         <!-- 🚫 MVP: Sin sistema de pagos por ahora
         <a *ngIf="tenant?.is_on_trial" routerLink="/upgrade" routerLinkActive="active" class="nav-item nav-item-upgrade">
-          <span class="nav-icon">🚀</span>
+          <span class="nav-icon"><i class="bi bi-rocket-takeoff"></i></span>
           <span class="nav-label">Actualizar Plan</span>
         </a>
         -->
         
         <!-- Placeholder for future sections
         <a [routerLink]="['/' + tenant?.module_key + '/campaigns']" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">📧</span>
+          <span class="nav-icon"><i class="bi bi-envelope"></i></span>
           <span class="nav-label">Campañas</span>
         </a>
         <a [routerLink]="['/' + tenant?.module_key + '/subscribers']" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">👥</span>
+          <span class="nav-icon"><i class="bi bi-people"></i></span>
           <span class="nav-label">Suscriptores</span>
         </a>
         <a [routerLink]="['/' + tenant?.module_key + '/analytics']" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">📈</span>
+          <span class="nav-icon"><i class="bi bi-graph-up"></i></span>
           <span class="nav-label">Estadísticas</span>
         </a>
         <a [routerLink]="['/' + tenant?.module_key + '/settings']" routerLinkActive="active" class="nav-item">
-          <span class="nav-icon">⚙️</span>
+          <span class="nav-icon"><i class="bi bi-gear"></i></span>
           <span class="nav-label">Configuración</span>
         </a>
         -->
@@ -74,7 +74,7 @@
       <!-- MODO ONBOARDING: Solo mensaje informativo -->
       <div class="onboarding-info" *ngIf="onboardingMode">
         <div class="onboarding-message">
-          <span class="onboarding-icon">🚀</span>
+          <span class="onboarding-icon"><i class="bi bi-rocket-takeoff"></i></span>
           <p class="onboarding-text">
             <strong>Setting up your account</strong><br>
             <small>Complete the wizard to get started</small>

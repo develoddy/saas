@@ -64,7 +64,12 @@
             </div>
 
             <!-- Upload Mode (cuando no hay imagen) -->
-            <div class="upload-zone" *ngIf="!state.imagePreviewUrl">
+            <div class="upload-zone" 
+                 *ngIf="!state.imagePreviewUrl"
+                 (drop)="onDrop($event)"
+                 (dragover)="onDragOver($event)"
+                 (dragleave)="onDragLeave($event)"
+                 [class.drag-over]="isDragOver">
               <input 
                 type="file" 
                 #fileInput
@@ -73,7 +78,7 @@
                 style="display: none;">
               
               <div class="upload-placeholder" (click)="fileInput.click()">
-                <div class="upload-icon">📸</div>
+                <div class="upload-icon"><i class="bi bi-cloud-upload"></i></div>
                 <p class="upload-text">
                   Arrastra tu imagen aquí o haz clic para seleccionar
                 </p>
@@ -112,7 +117,7 @@
             <div class="objective-card"
                  [class.selected]="state.selectedObjective === 'organic'"
                  (click)="selectObjective('organic')">
-              <div class="card-icon">📱</div>
+              <div class="card-icon"><i class="bi bi-phone"></i></div>
               <h3 class="card-title">Redes Sociales</h3>
               <p class="card-intent">"Quiero más visitas"</p>
               <p class="card-description">
@@ -128,7 +133,7 @@
             <div class="objective-card"
                  [class.selected]="state.selectedObjective === 'ads'"
                  (click)="selectObjective('ads')">
-              <div class="card-icon">🎯</div>
+              <div class="card-icon"><i class="bi bi-bullseye"></i></div>
               <h3 class="card-title">Anuncios</h3>
               <p class="card-intent">"Quiero vender este producto"</p>
               <p class="card-description">
@@ -154,7 +159,7 @@
                    [class.selected]="state.selectedAnimation === anim.value"
                    [class.recommended]="anim.recommended"
                    (click)="selectAnimation(anim.value)">
-                <div class="anim-icon">{{ anim.icon }}</div>
+                <div class="anim-icon"><i [class]="anim.icon"></i></div>
                 <h4 class="anim-label">{{ anim.label }}</h4>
                 <p class="anim-description">{{ anim.description }}</p>
                 <span class="anim-badge" *ngIf="anim.recommended">Recomendado</span>
@@ -221,7 +226,7 @@
       <section class="wizard-step step-ready" *ngIf="state.currentStep === 4">
         <div class="step-content">
           
-          <div class="success-icon">🎉</div>
+          <div class="success-icon"><i class="bi bi-check-circle"></i></div>
           
           <h2 class="step-title">¡Listo para publicar!</h2>
           <p class="step-description">
@@ -245,15 +250,15 @@
           <!-- Video Info -->
           <div class="video-info">
             <div class="info-item">
-              <i class="icon-check"></i>
+              <i class="bi bi-check-circle-fill"></i>
               <span>Formato 1080x1920 (perfecto para stories)</span>
             </div>
             <div class="info-item">
-              <i class="icon-check"></i>
+              <i class="bi bi-check-circle-fill"></i>
               <span>Optimizado para móvil</span>
             </div>
             <div class="info-item">
-              <i class="icon-check"></i>
+              <i class="bi bi-check-circle-fill"></i>
               <span>Sin marca de agua</span>
             </div>
           </div>
@@ -265,7 +270,9 @@
               [disabled]="isDownloading"
               [class.loading]="isDownloading"
               (click)="downloadVideo()">
-              <span *ngIf="!isDownloading">⬇️ Descargar Video</span>
+              <span *ngIf="!isDownloading">
+                <i class="bi bi-download"></i> Descargar Video
+              </span>
               <span *ngIf="isDownloading">
                 <span class="spinner"></span>
                 Descargando...
@@ -279,20 +286,82 @@
             </button>
           </div>
 
-          <!-- Feedback (Optional) -->
-          <div class="feedback-section">
+          <!-- Feedback Section (Before Submit) -->
+          <div class="feedback-section" *ngIf="!state.feedbackSubmitted">
             <p class="feedback-question">¿Este video te ahorró tiempo?</p>
             <div class="feedback-buttons">
               <button 
                 class="btn-feedback btn-yes"
                 (click)="submitFeedback(true)">
-                👍 Sí
+                <i class="bi bi-hand-thumbs-up"></i> Sí
               </button>
               <button 
                 class="btn-feedback btn-no"
                 (click)="submitFeedback(false)">
-                👎 No
+                <i class="bi bi-hand-thumbs-down"></i> No
               </button>
+            </div>
+          </div>
+
+          <!-- Post-Feedback Experience (After Submit) -->
+          <div class="feedback-success" *ngIf="state.feedbackSubmitted" [@fadeInUp]>
+            <!-- Mensaje personalizado -->
+            <div class="feedback-message" [class.positive]="state.feedbackHelpful" [class.negative]="!state.feedbackHelpful">
+              <div class="message-icon">
+                <i *ngIf="state.feedbackHelpful" class="bi bi-rocket-takeoff"></i>
+                <i *ngIf="!state.feedbackHelpful" class="bi bi-shield-check"></i>
+              </div>
+              <h4>{{ state.feedbackMessage }}</h4>
+              <p *ngIf="state.feedbackHelpful" class="message-subtitle">
+                Nos alegra saber que el video cumplió tus expectativas
+              </p>
+              <p *ngIf="!state.feedbackHelpful" class="message-subtitle">
+                Tu opinión nos ayuda a crear mejores herramientas
+              </p>
+            </div>
+
+            <!-- CTAs inteligentes según feedback -->
+            <div class="next-actions" *ngIf="state.feedbackHelpful">
+              <h5 class="next-actions-title">¿Qué quieres hacer ahora?</h5>
+              <div class="action-cards">
+                <button class="action-card primary" (click)="createAnotherVideo()">
+                  <div class="card-icon"><i class="bi bi-camera-video"></i></div>
+                  <div class="card-content">
+                    <h6>Crear otro video</h6>
+                    <p>Genera más contenido para tu negocio</p>
+                  </div>
+                </button>
+                
+                <button class="action-card secondary" (click)="shareOnSocial()">
+                  <div class="card-icon"><i class="bi bi-share"></i></div>
+                  <div class="card-content">
+                    <h6>Compartir ahora</h6>
+                    <p>Publica en tus redes sociales</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- CTA para feedback negativo: ofrecer ayuda -->
+            <div class="next-actions" *ngIf="!state.feedbackHelpful">
+              <h5 class="next-actions-title">¿Cómo podemos mejorar?</h5>
+              <div class="action-cards">
+                <button class="action-card primary" (click)="createAnotherVideo()">
+                  <div class="card-icon"><i class="bi bi-arrow-repeat"></i></div>
+                  <div class="card-content">
+                    <h6>Intentar con otra imagen</h6>
+                    <p>Prueba con un producto diferente</p>
+                  </div>
+                </button>
+                
+                <button class="action-card secondary" (click)="openSupportChat()">
+                  <div class="card-icon"><i class="bi bi-chat-dots"></i></div>
+                  <div class="card-content">
+                    <h6>Contáctanos</h6>
+                    <p>Cuéntanos qué podemos mejorar</p>
+                  </div>
+                </button>
+              </div>
             </div>
           </div>
 

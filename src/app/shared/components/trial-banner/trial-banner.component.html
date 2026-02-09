@@ -7,7 +7,7 @@
   <!-- Minimized View -->
   <div class="banner-minimized" *ngIf="isMinimized" (click)="toggleMinimize()">
     <div class="minimized-content">
-      <span class="icon">⏰</span>
+      <span class="icon"><i class="bi bi-clock"></i></span>
       <span class="text">{{ daysRemaining }} días restantes</span>
     </div>
   </div>
@@ -22,7 +22,7 @@
       <div class="banner-left">
         <div class="icon-section">
           <div class="icon-circle" [class.pulse]="isExpiringSoon">
-            <span class="icon">{{ isExpiredToday ? '⚠️' : '⏰' }}</span>
+            <span class="icon"><i [class]="isExpiredToday ? 'bi bi-exclamation-triangle' : 'bi bi-clock'"></i></span>
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { VideoExpressService, VideoStatusResponse } from '../../services/video-express.service';
 import { TrackingService } from '../../services/tracking.service';
 
@@ -49,6 +50,13 @@ interface WizardState {
     downloadUrl: string;
   } | null;
   
+  // Feedback & Tracking
+  videoCompletedAt: Date | null; // Timestamp cuando se completó el video
+  downloadedAt: Date | null; // Timestamp cuando el usuario descargó
+  feedbackSubmitted: boolean;
+  feedbackHelpful: boolean | null; // true = helpful, false = not helpful
+  feedbackMessage: string | null; // Mensaje personalizado post-feedback
+  
   // General
   error: string | null;
   loading: boolean;
@@ -57,7 +65,15 @@ interface WizardState {
 @Component({
   selector: 'app-video-express-wizard',
   templateUrl: './video-express-wizard.component.html',
-  styleUrls: ['./video-express-wizard.component.scss']
+  styleUrls: ['./video-express-wizard.component.scss'],
+  animations: [
+    trigger('fadeInUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ])
+  ]
 })
 export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   
@@ -69,11 +85,11 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   
   // Mensajes rotativos para step 3
   private readonly loadingMessages = [
-    '✨ Analizando tu producto...',
-    '🎬 Aplicando movimiento cinematográfico...',
-    '🎨 Optimizando para redes sociales...',
-    '⚡ Últimos detalles...',
-    '🎉 Ya casi está listo...'
+    'Analizando tu producto...',
+    'Aplicando movimiento cinematográfico...',
+    'Optimizando para redes sociales...',
+    'Últimos detalles...',
+    'Ya casi está listo...'
   ];
   
   private messageInterval: any;
@@ -81,6 +97,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   
   // Download state
   isDownloading: boolean = false;
+  
+  // Drag & drop state
+  isDragOver: boolean = false;
   
   // Opciones de animación disponibles (sync con admin panel)
   animationOptions: Array<{
@@ -93,20 +112,20 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     {
       value: 'parallax',
       label: 'Parallax 3D',
-      icon: '🎬',
+      icon: 'bi bi-badge-3d',
       description: 'Efecto de profundidad cinematográfico',
       recommended: true
     },
     {
       value: 'zoom_in',
       label: 'Zoom In',
-      icon: '🔍',
+      icon: 'bi bi-zoom-in',
       description: 'Acercamiento suave y profesional'
     },
     {
       value: 'subtle_float',
       label: 'Subtle Float',
-      icon: '✨',
+      icon: 'bi bi-arrows-move',
       description: 'Levitación delicada y elegante'
     }
   ];
@@ -122,6 +141,11 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     generationProgress: 0,
     currentMessage: this.loadingMessages[0],
     videoResult: null,
+    videoCompletedAt: null,
+    downloadedAt: null,
+    feedbackSubmitted: false,
+    feedbackHelpful: null,
+    feedbackMessage: null,
     error: null,
     loading: false
   };
@@ -176,6 +200,38 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     if (files && files.length > 0) {
       this.onImageSelected(files[0]);
     }
+  }
+
+  /**
+   * Maneja el evento drop (arrastrar y soltar)
+   */
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+    
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.onImageSelected(files[0]);
+    }
+  }
+
+  /**
+   * Maneja el evento dragover (cuando el archivo está sobre la zona)
+   */
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  /**
+   * Maneja el evento dragleave (cuando el archivo sale de la zona)
+   */
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
   }
 
   /**
@@ -361,6 +417,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
               downloadUrl: status.downloadUrl!
             };
             
+            // 📅 Guardar timestamp de completado (para calcular tiempo hasta feedback)
+            this.state.videoCompletedAt = new Date();
+            
             // Track success: video generado
             this.trackEvent('video_express_video_generated', {
               jobId: this.state.jobId,
@@ -457,6 +516,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
           link.click();
           window.URL.revokeObjectURL(url);
           
+          // 📅 Guardar timestamp de descarga (para calcular downloadTime en feedback)
+          this.state.downloadedAt = new Date();
+          
           this.isDownloading = false;
         },
         error: (error) => {
@@ -471,6 +533,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
    * Reinicia el wizard para crear otro video
    */
   createAnotherVideo(): void {
+    // Track acción de crear otro video
+    this.trackingService.track('create_another_video', {
+      module: this.moduleKey,
+      fromJobId: this.state.jobId,
+      hadFeedback: this.state.feedbackSubmitted,
+      feedbackWasPositive: this.state.feedbackHelpful
+    });
+    
     // Limpiar estado
     if (this.state.imagePreviewUrl) {
       this.videoExpressService.revokeImagePreview(this.state.imagePreviewUrl);
@@ -478,18 +548,23 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     
     this.videoExpressService.reset();
     
-    // Reset state
+    // Reset state completo
     this.state = {
       currentStep: 1,
       uploadedImage: null,
       imagePreviewUrl: null,
       imageId: null,
       selectedObjective: null,
-      selectedAnimation: 'parallax', // Reset a default
+      selectedAnimation: 'parallax',
       jobId: null,
       generationProgress: 0,
       currentMessage: this.loadingMessages[0],
       videoResult: null,
+      videoCompletedAt: null,
+      downloadedAt: null,
+      feedbackSubmitted: false,
+      feedbackHelpful: null,
+      feedbackMessage: null,
       error: null,
       loading: false
     };
@@ -498,11 +573,33 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Envía feedback sobre el video
+   * Envía feedback sobre el video con experiencia mejorada
    */
   submitFeedback(helpful: boolean): void {
-    if (!this.state.jobId) return;
+    if (!this.state.jobId || this.state.feedbackSubmitted) return;
     
+    // Calcular tiempo desde descarga (si aplica)
+    const downloadTime = this.state.downloadedAt 
+      ? Date.now() - this.state.downloadedAt.getTime()
+      : null;
+    
+    // Calcular tiempo desde que el video se completó
+    const timeToFeedback = this.state.videoCompletedAt
+      ? Date.now() - this.state.videoCompletedAt.getTime()
+      : null;
+    
+    // Actualizar estado inmediatamente para feedback visual
+    this.state.feedbackSubmitted = true;
+    this.state.feedbackHelpful = helpful;
+    
+    // Mensaje personalizado según feedback
+    if (helpful) {
+      this.state.feedbackMessage = '¡Gracias por tu feedback!';
+    } else {
+      this.state.feedbackMessage = 'Gracias por tu feedback. Lo usaremos para mejorar';
+    }
+    
+    // Enviar feedback al backend
     this.videoExpressService.submitFeedback({
       jobId: this.state.jobId,
       helpful
@@ -510,7 +607,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
-          // Track feedback usando sistema de módulos
+          // Track feedback básico (evento existente)
           this.trackingService.track('module_preview_feedback', {
             module: this.moduleKey,
             moduleName: this.moduleName,
@@ -518,10 +615,26 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
             helpful,
             objective: this.state.selectedObjective
           });
+          
+          // 🎯 NUEVO: Track avanzado post-download con métricas
+          this.trackingService.track('feedback_post_download', {
+            module: this.moduleKey,
+            moduleName: this.moduleName,
+            jobId: this.state.jobId,
+            helpful,
+            objective: this.state.selectedObjective,
+            animation: this.state.selectedAnimation,
+            downloadTime_ms: downloadTime,
+            timeToFeedback_ms: timeToFeedback,
+            wasDownloaded: !!this.state.downloadedAt,
+            step: 4
+          });
+          
+          console.log(`✅ Feedback enviado: ${helpful ? 'Positivo' : 'Negativo'}`);
         },
         error: (error) => {
           console.error('❌ Error enviando feedback:', error);
-          // No mostrar error al usuario, es opcional
+          // No resetear el estado aunque falle, mantener la UI
         }
       });
   }
@@ -570,5 +683,50 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     return !!this.state.selectedObjective && 
            !!this.state.selectedAnimation && 
            !this.state.loading;
+  }
+
+  // ==========================================
+  // Post-Feedback Actions
+  // ==========================================
+
+  /**
+   * Compartir video en redes sociales
+   */
+  shareOnSocial(): void {
+    // Track acción
+    this.trackingService.track('share_video_clicked', {
+      module: this.moduleKey,
+      jobId: this.state.jobId,
+      fromFeedback: true,
+      feedbackWasPositive: this.state.feedbackHelpful
+    });
+
+    // Abrir modal o compartir nativo
+    if (navigator.share && this.state.videoResult) {
+      navigator.share({
+        title: '¡Mira mi nuevo video de producto!',
+        text: 'Creé este video profesional en segundos con Video Express',
+        url: window.location.href
+      }).catch(err => console.log('Error sharing:', err));
+    } else {
+      // Fallback: mostrar opciones de compartir
+      alert('¡Comparte tu video en Instagram, Facebook o TikTok para maximizar su impacto! 🚀');
+    }
+  }
+
+  /**
+   * Abrir chat de soporte o formulario de feedback
+   */
+  openSupportChat(): void {
+    // Track acción
+    this.trackingService.track('support_chat_opened', {
+      module: this.moduleKey,
+      jobId: this.state.jobId,
+      fromNegativeFeedback: true
+    });
+
+    // Abrir chat (integrar con sistema de soporte real)
+    // Por ahora, placeholder
+    alert('Gracias por querer ayudarnos a mejorar. Pronto habilitaremos un chat directo. Por ahora, escríbenos a soporte@tudominio.com 💪');
   }
 }

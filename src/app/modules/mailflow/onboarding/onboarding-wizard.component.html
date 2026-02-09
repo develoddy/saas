@@ -123,7 +123,7 @@
           <div *ngIf="step3Form.value.contactsCount > 0" class="contacts-preview">
             <div class="preview-header">
               <h3>
-                <span class="icon">👥</span>
+                <span class="icon"><i class="bi bi-people"></i></span>
                 {{ step3Form.value.contactsCount }} contacts ready
               </h3>
               <span class="badge" [class.badge-csv]="step3Form.value.contactSource === 'csv'" 
@@ -141,12 +141,12 @@
                   <strong>{{ contact.name || 'Contact ' + (i + 1) }}</strong>
                   <small>{{ contact.email }}</small>
                 </div>
-                <div class="contact-status">✅</div>
+                <div class="contact-status"><i class="bi bi-check-circle-fill"></i></div>
               </div>
             </div>
 
             <p class="help-text">
-              💡 These contacts will receive your onboarding sequence when you activate it
+              <i class="bi bi-lightbulb"></i> These contacts will receive your onboarding sequence when you activate it
             </p>
           </div>
 
@@ -167,7 +167,7 @@
 
     <!-- Step 4: Preview & Launch -->
     <div *ngIf="currentStep === 4" class="wizard-step fade-in">
-      <h2>Your onboarding sequence is ready! 🎉</h2>
+      <h2>Your onboarding sequence is ready!</h2>
       <p class="subtitle">Review and customize your emails before launching</p>
 
       <div *ngIf="isGenerating" class="generating-loader">
@@ -212,14 +212,14 @@
 
         <div class="sequence-stats">
           <div class="stat-card">
-            <span class="stat-icon">📧</span>
+            <span class="stat-icon"><i class="bi bi-envelope"></i></span>
             <div class="stat-info">
               <strong>{{ previewContacts.length }}</strong>
               <small>contacts will receive this sequence</small>
             </div>
           </div>
           <div class="stat-card">
-            <span class="stat-icon">📅</span>
+            <span class="stat-icon"><i class="bi bi-calendar"></i></span>
             <div class="stat-info">
               <strong>{{ getTotalDurationDays() }}</strong>
               <small>days total duration</small>
@@ -229,7 +229,7 @@
 
         <!-- Preview de contactos -->
         <div *ngIf="previewContacts && previewContacts.length > 0" class="contacts-preview-summary">
-          <h4>📋 Target Contacts</h4>
+          <h4><i class="bi bi-clipboard"></i> Target Contacts</h4>
           <div class="contacts-mini-list">
             <div *ngFor="let contact of previewContacts || []; let i = index" class="mini-contact-item">
               <span class="mini-avatar">{{ i + 1 }}</span>
@@ -245,14 +245,14 @@
       <!-- SUCCESS VIEW: Sequence Activated -->
       <div *ngIf="generatedSequence && sequenceActivated" class="sequence-activated">
         <div class="activation-hero">
-          <div class="success-icon">🎉</div>
+          <div class="success-icon"><i class="bi bi-check-circle-fill"></i></div>
           <h2>Your sequence is live!</h2>
           <p class="hero-subtitle">Everything is ready and running automatically</p>
         </div>
 
         <div class="activation-summary">
           <div class="summary-card success">
-            <span class="card-icon">✅</span>
+            <span class="card-icon"><i class="bi bi-check-circle"></i></span>
             <div class="card-content">
               <strong>{{ previewContacts.length }} contacts queued</strong>
               <small>Ready to receive emails</small>
@@ -260,7 +260,7 @@
           </div>
 
           <div class="summary-card">
-            <span class="card-icon">📧</span>
+            <span class="card-icon"><i class="bi bi-envelope"></i></span>
             <div class="card-content">
               <strong>{{ generatedSequence.emails?.length || 0 }} emails scheduled</strong>
               <small>Automated delivery</small>
@@ -268,7 +268,7 @@
           </div>
 
           <div class="summary-card">
-            <span class="card-icon">🕒</span>
+            <span class="card-icon"><i class="bi bi-clock"></i></span>
             <div class="card-content">
               <strong>First email: Immediate</strong>
               <small>Next: {{ generatedSequence.emails && generatedSequence.emails[1] && generatedSequence.emails[1].delayHours ? '+' + (generatedSequence.emails[1].delayHours / 24) + ' day' + (generatedSequence.emails[1].delayHours > 24 ? 's' : '') : 'N/A' }}</small>
@@ -277,7 +277,7 @@
         </div>
 
         <div class="what-happens-next">
-          <h3>📬 What happens next</h3>
+          <h3><i class="bi bi-mailbox"></i> What happens next</h3>
           <div class="timeline-steps">
             <div *ngFor="let email of generatedSequence.emails || []; let i = index" 
                  class="timeline-step">
@@ -301,7 +301,7 @@
 
         <div class="next-steps-cta">
           <p class="cta-message">
-            <strong>✨ You're all set!</strong><br>
+            <strong><i class="bi bi-stars"></i> You're all set!</strong><br>
             Your sequence is running automatically. You don't need to do anything else.
           </p>
         </div>
@@ -329,21 +329,21 @@
             class="btn btn-primary" 
             [disabled]="!canProceed()"
             (click)="nextStep()">
-      {{ currentStep === 3 ? '✨ Generate Sequence' : 'Continue →' }}
+      {{ currentStep === 3 ? 'Generate Sequence' : 'Continue →' }}
     </button>
 
     <!-- ANTES DE ACTIVAR: Launch Sequence -->
     <button *ngIf="currentStep === 4 && generatedSequence && !isGenerating && !sequenceActivated" 
             class="btn btn-success" 
             (click)="activateSequence()">
-      🚀 Launch Sequencex
+      <i class="bi bi-rocket-takeoff"></i> Launch Sequencex
     </button>
 
     <!-- DESPUÉS DE ACTIVAR: Nuevas acciones -->
     <button *ngIf="currentStep === 4 && sequenceActivated" 
             class="btn btn-secondary" 
             (click)="currentStep = 3; sequenceActivated = false">
-      ✏️ Edit Sequence
+      <i class="bi bi-pencil"></i> Edit Sequence
     </button>
 
     <button *ngIf="currentStep === 4 && sequenceActivated" 
