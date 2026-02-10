@@ -8,7 +8,10 @@
     "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "./.devtools/deploy.sh"
+    "deploy": "./.devtools/deploy.sh",
+    "clean": "rm -rf .angular node_modules/.cache",
+    "clean:start": "npm run clean && npm start",
+    "restart": "npm run clean:start"
   },
   "private": true,
   "dependencies": {
