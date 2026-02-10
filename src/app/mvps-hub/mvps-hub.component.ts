@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SaasService } from '../core/saas.service';
 import { MvpHubService, MvpFeature } from '../services/mvp-hub.service';
+import { MvpAnalyticsService, MvpSummary } from '../services/mvp-analytics.service';
 
 @Component({
   selector: 'app-mvps-hub',
@@ -26,11 +27,17 @@ export class MvpsHubComponent implements OnInit {
   
   // Modal de acceso anticipado
   showEarlyAccessModal = false;
+  
+  // MVP Analytics Dashboard
+  mvpAnalytics: MvpSummary[] = [];
+  selectedPeriod: '7d' | '30d' | '90d' | 'all' = '30d';
+  hasMvpData = false;
 
   constructor(
     private router: Router,
     private saasService: SaasService,
-    private mvpHubService: MvpHubService
+    private mvpHubService: MvpHubService,
+    private mvpAnalyticsService: MvpAnalyticsService
   ) {}
 
   ngOnInit(): void {
@@ -47,6 +54,9 @@ export class MvpsHubComponent implements OnInit {
 
     // Load MVPs with real traction
     this.loadActiveMvps();
+    
+    // Load MVP Analytics Dashboard
+    this.loadMvpAnalytics();
   }
 
   /**
@@ -164,5 +174,73 @@ export class MvpsHubComponent implements OnInit {
    */
   closeEarlyAccessModal(): void {
     this.showEarlyAccessModal = false;
+  }
+  
+  /**
+   * Cargar analytics de MVPs
+   */
+  loadMvpAnalytics(): void {
+    this.mvpAnalyticsService.getAllMvps(this.selectedPeriod).subscribe({
+      next: (response) => {
+        if (response.success && response.mvps.length > 0) {
+          this.mvpAnalytics = response.mvps;
+          this.hasMvpData = true;
+          console.log('📊 MVPs con analytics cargados:', this.mvpAnalytics);
+        } else {
+          this.mvpAnalytics = [];
+          this.hasMvpData = false;
+          console.log('📊 No hay MVPs con datos de tracking');
+        }
+      },
+      error: (err) => {
+        // Si es 404, el endpoint no está implementado aún (silenciar error)
+        if (err.status === 404) {
+          console.log('ℹ️ Endpoint de analytics no disponible aún. Dashboard oculto.');
+          this.mvpAnalytics = [];
+          this.hasMvpData = false;
+        } else {
+          console.error('❌ Error cargando analytics de MVPs:', err);
+          this.mvpAnalytics = [];
+          this.hasMvpData = false;
+        }
+      }
+    });
+  }
+  
+  /**
+   * Cambiar período de análisis
+   */
+  changePeriod(period: '7d' | '30d' | '90d' | 'all'): void {
+    this.selectedPeriod = period;
+    this.loadMvpAnalytics();
+  }
+  
+  /**
+   * Ir a detalles del MVP
+   */
+  goToMvpDetails(moduleKey: string): void {
+    // Por ahora navegar a preview, en futuro se podría crear vista de detalles
+    this.router.navigate(['/preview', moduleKey]);
+  }
+  
+  /**
+   * Obtener clase de health score
+   */
+  getHealthScoreClass(score: number): string {
+    return this.mvpAnalyticsService.getHealthScoreColor(score);
+  }
+  
+  /**
+   * Obtener badge de estado
+   */
+  getStatusBadge(status: string): { class: string; icon: string; label: string } {
+    return this.mvpAnalyticsService.getStatusBadge(status);
+  }
+  
+  /**
+   * Obtener ícono de recomendación
+   */
+  getRecommendationIcon(action: string): string {
+    return this.mvpAnalyticsService.getRecommendationIcon(action);
   }
 }
