@@ -79,6 +79,7 @@ export class ModulePreviewWizardComponent implements OnInit {
   error: string | null = null;
   
   // Configuraciones específicas por módulo
+  // Cada módulo puede tener su config local sin depender de la BD
   private moduleConfigs: { [key: string]: ModuleWizardConfig } = {
     mailflow: {
       steps: [
@@ -134,6 +135,13 @@ export class ModulePreviewWizardComponent implements OnInit {
     }
     // Aquí se pueden agregar configuraciones para otros módulos
   };
+  
+  // Nombres de módulos (fallback si no hay config en BD)
+  private moduleNames: { [key: string]: string } = {
+    mailflow: 'MailFlow',
+    videoexpress: 'Video Express',
+    newsletter: 'Newsletter Campaigns'
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -160,18 +168,34 @@ export class ModulePreviewWizardComponent implements OnInit {
 
   /**
    * Cargar configuración del módulo
+   * 
+   * Estrategia:
+   * 1. Si tiene configuración local (moduleConfigs), usarla directamente
+   * 2. Si no, intentar cargar desde backend (tabla modules)
+   * 
+   * Esto permite que módulos como Mailflow funcionen sin depender de la BD
    */
   private async loadModuleConfig(): Promise<void> {
+    // ✅ ESTRATEGIA 1: Usar configuración local si existe
+    if (this.moduleConfigs[this.moduleKey]) {
+      console.log(`✅ Using local config for module: ${this.moduleKey}`);
+      this.wizardConfig = this.moduleConfigs[this.moduleKey];
+      this.moduleName = this.moduleNames[this.moduleKey] || this.moduleKey;
+      return;
+    }
+    
+    // ✅ ESTRATEGIA 2: Cargar desde backend (para módulos dinámicos)
     try {
+      console.log(`🔍 Loading config from backend for module: ${this.moduleKey}`);
       const response = await this.previewService.getPreviewConfig(this.moduleKey).toPromise();
       
       if (response.success) {
         this.moduleName = response.config.moduleName;
-        this.wizardConfig = this.moduleConfigs[this.moduleKey] || this.getDefaultConfig();
+        this.wizardConfig = this.getDefaultConfig();
       }
       
     } catch (error) {
-      console.error('Error loading module config:', error);
+      console.error('❌ Error loading module config:', error);
       this.error = 'Module not found or preview not available';
     }
   }
