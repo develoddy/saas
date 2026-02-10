@@ -77,7 +77,7 @@
 
 // MAIN
 .hub-main { flex: 1; padding: 4rem 0;
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+  .container { max-width: 1440px; margin: 0 auto; padding: 0 2rem; }
 }
 
 .intro-section {
@@ -104,9 +104,9 @@
 
 // LABS MODE
 .labs-landing {
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 3rem 0;
   
   .labs-status {
     text-align: center;
@@ -251,6 +251,14 @@
 
 // RESPONSIVE
 @media (max-width: 768px) {
+  .hub-main .container {
+    padding: 0 1.25rem;
+  }
+  
+  .labs-landing {
+    padding: 2rem 0;
+  }
+  
   .hub-header .header-content { flex-direction: column; text-align: center; }
   .intro-section { .section-title { font-size: 2rem; } .section-description { font-size: 1rem; } }
   .mvps-grid { grid-template-columns: 1fr; gap: 1.5rem; }
