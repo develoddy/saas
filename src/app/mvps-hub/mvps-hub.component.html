@@ -84,19 +84,37 @@
     <!-- Main Content -->
     <main class="hub-main">
         <div class="container">
-            <!-- Loading State -->
-            <div *ngIf="isLoading" class="loading-state">
-                <p>Cargando experimentos...</p>
+            <!-- Loading State (Mejorado) -->
+            <div *ngIf="isLoading" class="loading-state-enhanced">
+                <div class="loading-backdrop"></div>
+                <div class="loading-icon-container">
+                    <i class="bi bi-gear-fill loading-icon"></i>
+                    <span class="loading-ring"></span>
+                    <span class="loading-ring-2"></span>
+                </div>
+                <h3 class="loading-title">Cargando experimentos</h3>
+                <p class="loading-description">Conectando con el laboratorio...</p>
+                <div class="loading-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
             </div>
 
-            <!-- Error State -->
-            <div *ngIf="!isLoading && error" class="error-state">
-                <i class="bi bi-exclamation-triangle"></i>
-                <p>{{ error }}</p>
-                <button class="btn-primary" (click)="retryLoad()">
+            <!-- Error State (Mejorado) -->
+            <div *ngIf="!isLoading && error" class="error-state-enhanced">
+                <div class="error-backdrop"></div>
+                <div class="error-icon-container">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span class="error-pulse"></span>
+                </div>
+                <h3 class="error-title">Algo salió mal</h3>
+                <p class="error-message">{{ error }}</p>
+                <button class="btn-retry-enhanced" (click)="retryLoad()">
                     <i class="bi bi-arrow-clockwise"></i>
-                    Reintentar
+                    <span>Reintentar</span>
                 </button>
+                <p class="error-help">Si el problema persiste, <a href="#" class="error-link">contacta a soporte</a></p>
             </div>
 
             <!-- ============================================ -->
