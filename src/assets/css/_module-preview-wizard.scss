@@ -8,6 +8,18 @@
 
 .module-preview-wizard {
   // Inherits all .video-express-wizard styles automatically
+  
+  // Fix progress indicator layout for dynamic steps
+  .progress-indicator .progress-steps {
+    max-width: 600px; // Allow more space for multiple steps
+  }
+  
+  // Ensure progress lines are visible
+  .progress-line {
+    min-width: 40px; // Minimum width to ensure visibility
+    flex: 1;
+    max-width: 100px; // Prevent excessive stretching
+  }
 }
 
 // Success Badge (for preview result)
@@ -32,8 +44,8 @@
 .preview-result {
   background: white;
   border-radius: 1rem;
-    padding: 0rem;//   padding: 2rem;
-//   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   
   .result-header {
     text-align: center;

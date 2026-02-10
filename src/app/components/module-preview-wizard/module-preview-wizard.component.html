@@ -15,7 +15,7 @@
       <!-- Progress Indicator -->
       <div class="progress-indicator" *ngIf="!generatedPreview && wizardConfig">
         <div class="progress-steps">
-          <ng-container *ngFor="let step of wizardConfig.steps; let i = index">
+          <ng-container *ngFor="let step of wizardConfig.steps; let i = index; let last = last">
             <div class="progress-step" 
                  [class.active]="currentStep >= i"
                  [class.completed]="currentStep > i">
@@ -23,7 +23,7 @@
               <span class="step-label">{{ step.title }}</span>
             </div>
             <div class="progress-line" 
-                 *ngIf="i < wizardConfig.steps.length - 1"
+                 *ngIf="!last"
                  [class.active]="currentStep > i"></div>
           </ng-container>
         </div>
