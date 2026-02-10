@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModulePreviewService } from '../../services/module-preview.service';
@@ -63,7 +63,8 @@ interface GeneratedPreview {
 @Component({
   selector: 'app-module-preview-wizard',
   templateUrl: './module-preview-wizard.component.html',
-  styleUrls: ['./module-preview-wizard.component.scss']
+  styleUrls: ['./module-preview-wizard.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ModulePreviewWizardComponent implements OnInit {
   

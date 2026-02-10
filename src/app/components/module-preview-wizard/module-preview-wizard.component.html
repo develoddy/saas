@@ -1,168 +1,229 @@
-<div class="preview-wizard-container">
+<div class="video-express-wizard module-preview-wizard">
   
   <!-- Header -->
-  <div class="wizard-header">
-    <h2>{{ moduleName }} Preview</h2>
-    <p class="subtitle">Try before you buy - no signup required</p>
-  </div>
-
-  <!-- Progress bar -->
-  <div class="progress-container" *ngIf="!generatedPreview">
-    <div class="progress">
-      <div class="progress-bar" 
-           [style.width.%]="getProgress()"
-           role="progressbar">
-        Step {{ currentStep + 1 }} of {{ wizardConfig.steps.length }}
-      </div>
+  <header class="wizard-header">
+    <div class="container">
+      <h1 class="wizard-title">{{ moduleName }}</h1>
+      <p class="wizard-subtitle">Try before you buy - no signup required</p>
     </div>
-  </div>
+  </header>
 
-  <!-- Error message -->
-  <div class="alert alert-danger" *ngIf="error">
-    <i class="bi bi-exclamation-triangle"></i>
-    {{ error }}
-  </div>
-
-  <!-- Wizard Form -->
-  <div class="wizard-form" *ngIf="!generatedPreview && wizardConfig">
-    <form [formGroup]="wizardForm">
+  <!-- Main Wizard Container -->
+  <main class="wizard-container">
+    <div class="container">
       
-      <!-- Step content -->
-      <div class="step-content">
-        <h3>{{ getCurrentStepTitle() }}</h3>
-        <p class="step-description">{{ getCurrentStepDescription() }}</p>
-        
-        <div class="form-fields">
-          <div class="form-group" *ngFor="let field of getCurrentStepFields()">
-            <label [for]="field.name">
-              {{ field.label }}
-              <span class="required" *ngIf="field.required">*</span>
-            </label>
-            
-            <!-- Text input -->
-            <input 
-              *ngIf="field.type === 'text' || field.type === 'email'"
-              [type]="field.type"
-              [id]="field.name"
-              [formControlName]="field.name"
-              [placeholder]="field.placeholder"
-              class="form-control"
-              [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
-            
-            <!-- Select -->
-            <select 
-              *ngIf="field.type === 'select'"
-              [id]="field.name"
-              [formControlName]="field.name"
-              class="form-control"
-              [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
-              <option value="">{{ field.placeholder || 'Select an option' }}</option>
-              <option *ngFor="let option of field.options" [value]="option">
-                {{ option | titlecase }}
-              </option>
-            </select>
-            
-            <!-- Textarea -->
-            <textarea 
-              *ngIf="field.type === 'textarea'"
-              [id]="field.name"
-              [formControlName]="field.name"
-              [placeholder]="field.placeholder"
-              class="form-control"
-              rows="4"
-              [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
-            </textarea>
-            
-            <!-- Validation message -->
-            <div class="invalid-feedback" 
-                 *ngIf="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
-              This field is required
+      <!-- Progress Indicator -->
+      <div class="progress-indicator" *ngIf="!generatedPreview && wizardConfig">
+        <div class="progress-steps">
+          <ng-container *ngFor="let step of wizardConfig.steps; let i = index">
+            <div class="progress-step" 
+                 [class.active]="currentStep >= i"
+                 [class.completed]="currentStep > i">
+              <div class="step-circle">{{ i + 1 }}</div>
+              <span class="step-label">{{ step.title }}</span>
             </div>
-          </div>
+            <div class="progress-line" 
+                 *ngIf="i < wizardConfig.steps.length - 1"
+                 [class.active]="currentStep > i"></div>
+          </ng-container>
         </div>
       </div>
-      
-      <!-- Navigation buttons -->
-      <div class="wizard-navigation">
-        <button 
-          type="button"
-          class="btn btn-secondary"
-          (click)="previousStep()"
-          [disabled]="currentStep === 0">
-          <i class="bi bi-arrow-left"></i>
-          Previous
-        </button>
-        
-        <button 
-          type="button"
-          class="btn btn-primary"
-          *ngIf="!isLastStep()"
-          (click)="nextStep()"
-          [disabled]="!isCurrentStepValid()">
-          Next
-          <i class="bi bi-arrow-right"></i>
-        </button>
-        
-        <button 
-          type="button"
-          class="btn btn-success"
-          *ngIf="isLastStep()"
-          (click)="generatePreview()"
-          [disabled]="!wizardForm.valid || generating">
-          <span *ngIf="!generating">
-            <i class="bi bi-lightning"></i>
-            Generate Preview
-          </span>
-          <span *ngIf="generating">
-            <i class="bi bi-arrow-clockwise"></i>
-            Generating...
-          </span>
-        </button>
+
+      <!-- Error Message -->
+      <div class="alert alert-error" *ngIf="error">
+        <i class="icon-alert"></i>
+        <span>{{ error }}</span>
+        <button class="close-btn" (click)="error = null">&times;</button>
       </div>
-      
-    </form>
-  </div>
+
+      <!-- Wizard Form -->
+      <section class="wizard-step" *ngIf="!generatedPreview && wizardConfig">
+        <div class="step-content">
+          <h2 class="step-title">{{ getCurrentStepTitle() }}</h2>
+          <p class="step-description">{{ getCurrentStepDescription() }}</p>
+          
+          <form [formGroup]="wizardForm" class="wizard-form">
+            <div class="form-fields">
+              <div class="form-group" *ngFor="let field of getCurrentStepFields()">
+                <label [for]="field.name">
+                  {{ field.label }}
+                  <span class="required" *ngIf="field.required">*</span>
+                </label>
+                
+                <!-- Text input -->
+                <input 
+                  *ngIf="field.type === 'text' || field.type === 'email'"
+                  [type]="field.type"
+                  [id]="field.name"
+                  [formControlName]="field.name"
+                  [placeholder]="field.placeholder"
+                  class="form-control"
+                  [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+                
+                <!-- Select -->
+                <select 
+                  *ngIf="field.type === 'select'"
+                  [id]="field.name"
+                  [formControlName]="field.name"
+                  class="form-control"
+                  [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+                  <option value="">{{ field.placeholder || 'Select an option' }}</option>
+                  <option *ngFor="let option of field.options" [value]="option">
+                    {{ option | titlecase }}
+                  </option>
+                </select>
+                
+                <!-- Textarea -->
+                <textarea 
+                  *ngIf="field.type === 'textarea'"
+                  [id]="field.name"
+                  [formControlName]="field.name"
+                  [placeholder]="field.placeholder"
+                  class="form-control"
+                  rows="4"
+                  [class.is-invalid]="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+                </textarea>
+                
+                <!-- Validation message -->
+                <div class="invalid-feedback" 
+                     *ngIf="wizardForm.get(field.name)?.invalid && wizardForm.get(field.name)?.touched">
+                  This field is required
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation buttons -->
+            <div class="step-actions">
+              <button 
+                type="button"
+                class="btn btn-secondary"
+                *ngIf="currentStep > 0"
+                (click)="previousStep()">
+                <i class="bi bi-arrow-left"></i>
+                Previous
+              </button>
+              
+              <button 
+                type="button"
+                class="btn btn-primary btn-large"
+                *ngIf="!isLastStep()"
+                (click)="nextStep()"
+                [disabled]="!isCurrentStepValid()">
+                <span>Next →</span>
+              </button>
+              
+              <button 
+                type="button"
+                class="btn btn-success btn-large"
+                *ngIf="isLastStep()"
+                (click)="generatePreview()"
+                [disabled]="!wizardForm.valid || generating">
+                <span *ngIf="!generating">
+                  <i class="bi bi-lightning"></i>
+                  Generate Preview
+                </span>
+                <span *ngIf="generating">
+                  <i class="spinner"></i> Generating...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
 
   <!-- Generated Preview -->
-  <div class="generated-preview" *ngIf="generatedPreview">
-    <app-module-preview
-      [moduleKey]="moduleKey"
-      [previewData]="generatedPreview"
-      [isAuthenticated]="false"
-      (onConvert)="handleConversion($event)"
-      (onEdit)="editPreview()">
-      
-      <!-- Contenido específico de MailFlow -->
-      <div class="mailflow-preview" *ngIf="moduleKey === 'mailflow'">
-        <div class="sequence-info">
-          <h4>{{ generatedPreview['sequenceName'] }}</h4>
-          <div class="stats">
-            <div class="stat">
-              <i class="bi bi-envelope"></i>
-              <span>{{ generatedPreview['stats'].totalEmails }} emails</span>
+      <section class="wizard-step" *ngIf="generatedPreview">
+        <div class="preview-result">
+          <div class="result-header">
+            <div class="success-badge">
+              <i class="bi bi-check-circle"></i>
+              <span>Preview Ready!</span>
             </div>
-            <div class="stat">
-              <i class="bi bi-clock"></i>
-              <span>{{ generatedPreview['stats'].estimatedDuration }}</span>
+            <h2 class="step-title">Your {{ moduleName }} Preview</h2>
+            <p class="step-description">
+              Below is your generated preview. You can test it now or sign up to save and customize it further.
+            </p>
+          </div>
+
+          <app-module-preview
+            [moduleKey]="moduleKey"
+            [previewData]="generatedPreview"
+            [isAuthenticated]="false"
+            (onConvert)="handleConversion($event)"
+            (onEdit)="editPreview()">
+            
+            <!-- Contenido específico de MailFlow -->
+            <div class="mailflow-preview" *ngIf="moduleKey === 'mailflow'">
+              <div class="sequence-info">
+                <h4>{{ generatedPreview['sequenceName'] }}</h4>
+                <div class="stats">
+                  <div class="stat">
+                    <i class="bi bi-envelope"></i>
+                    <span>{{ generatedPreview['stats'].totalEmails }} emails</span>
+                  </div>
+                  <div class="stat">
+                    <i class="bi bi-clock"></i>
+                    <span>{{ generatedPreview['stats'].estimatedDuration }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="emails-list">
+                <div class="email-card" *ngFor="let email of generatedPreview['emails']; let i = index">
+                  <div class="email-header">
+                    <span class="email-order">Email {{ i + 1 }}</span>
+                    <span class="email-delay">Day {{ email.delayHours / 24 }}</span>
+                  </div>
+                  <h5>{{ email.subject }}</h5>
+                  <p class="email-preview">{{ email.bodyText | slice:0:150 }}...</p>
+                </div>
+              </div>
             </div>
+          </app-module-preview>
+
+          <div class="result-actions">
+            <button 
+              class="btn btn-secondary"
+              (click)="editPreview()">
+              <i class="bi bi-arrow-left"></i>
+              Start Over
+            </button>
+            <button 
+              class="btn btn-primary btn-large"
+              (click)="handleConversion(generatedPreview)">
+              <i class="bi bi-lightning"></i>
+              Sign Up to Save
+            </button>
           </div>
         </div>
-        
-        <div class="emails-list">
-          <div class="email-card" *ngFor="let email of generatedPreview['emails']; let i = index">
-            <div class="email-header">
-              <span class="email-order">Email {{ i + 1 }}</span>
-              <span class="email-delay">Day {{ email.delayHours / 24 }}</span>
-            </div>
-            <h5>{{ email.subject }}</h5>
-            <p class="email-preview">{{ email.bodyText | slice:0:150 }}...</p>
-          </div>
+      </section>
+
+    </div>
+  </main>
+  <!-- Footer Enhanced -->
+  <footer class="wizard-footer-enhanced" *ngIf="!generatedPreview">
+    <div class="footer-container">
+      <div class="footer-features">
+        <div class="feature-badge">
+          <i class="bi bi-shield-check"></i>
+          <span>No registration</span>
+        </div>
+        <div class="feature-badge">
+          <i class="bi bi-credit-card-2-back"></i>
+          <span>No credit card</span>
+        </div>
+        <div class="feature-badge">
+          <i class="bi bi-lightning-charge"></i>
+          <span>Just try</span>
         </div>
       </div>
-      
-      <!-- Aquí otros módulos pueden inyectar su propio contenido -->
-      
-    </app-module-preview>
-  </div>
+      <div class="footer-cta">
+        <p class="footer-message">
+          <i class="bi bi-arrow-up-circle"></i>
+          <span>Start testing <strong>{{ moduleName }}</strong> in seconds</span>
+        </p>
+      </div>
+    </div>
+  </footer>
 
 </div>

@@ -17,14 +17,13 @@
                             <span class="title-secondary">Labs</span>
                         </h1>
                         <p class="brand-tagline-enhanced">
-                            Construyendo micro-SaaS basados en <strong>uso real</strong>, no en ideas
-                        </p>
+                        Building micro-SaaS based on <strong>real usage</strong>, not ideas
 
                         <!-- Sistema Activo Badge (Mejorado) -->
                         <div class="system-status-enhanced" *ngIf="!isLoading">
                             <div class="status-badge-live">
                                 <span class="status-dot"></span>
-                                <span class="status-text">Sistema activo</span>
+                                <span class="status-text">System active</span>
                             </div>
                             <div class="status-detail-enhanced">
                                 <i class="bi bi-clock-history"></i>
@@ -41,11 +40,11 @@
                     </div>
                     <div class="brand-text-enhanced">
                         <h1 class="brand-title-enhanced">
-                            <span class="title-primary">MVPs en</span>
-                            <span class="title-secondary">Validación</span>
+                            <span class="title-primary">MVPs in</span>
+                            <span class="title-secondary">Validation</span>
                         </h1>
                         <p class="brand-tagline-enhanced">
-                            Solo herramientas con <strong>señales reales de uso</strong>
+                            Only tools with <strong>real usage signals</strong>
                         </p>
                     </div>
                 </div>
@@ -54,11 +53,11 @@
                 <div class="auth-actions-enhanced" *ngIf="!isAuthenticated && isStoreMode">
                     <button class="btn-link-enhanced" (click)="goToLogin()">
                         <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Iniciar sesión</span>
+                        <span>Sign in</span>
                     </button>
                     <button class="btn-primary-enhanced" (click)="goToRegister()">
                         <i class="bi bi-person-plus"></i>
-                        <span>Crear cuenta</span>
+                        <span>Create account</span>
                     </button>
                 </div>
 
@@ -69,12 +68,12 @@
                         </div>
                         <div class="user-details">
                             <span class="user-name">{{ currentTenant.name }}</span>
-                            <span class="user-role">Tenant activo</span>
+                            <span class="user-role">Active tenant</span>
                         </div>
                     </div>
                     <button class="btn-dashboard-enhanced" (click)="goToDashboard()">
                         <i class="bi bi-speedometer2"></i>
-                        <span>Mi Dashboard</span>
+                        <span>My Dashboard</span>
                     </button>
                 </div>
             </div>
@@ -92,8 +91,8 @@
                     <span class="loading-ring"></span>
                     <span class="loading-ring-2"></span>
                 </div>
-                <h3 class="loading-title">Cargando experimentos</h3>
-                <p class="loading-description">Conectando con el laboratorio...</p>
+                <h3 class="loading-title">Loading experiments</h3>
+                <p class="loading-description">Connecting to the lab...</p>
                 <div class="loading-dots">
                     <span class="dot"></span>
                     <span class="dot"></span>
@@ -108,13 +107,13 @@
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     <span class="error-pulse"></span>
                 </div>
-                <h3 class="error-title">Algo salió mal</h3>
+                <h3 class="error-title">Something went wrong</h3>
                 <p class="error-message">{{ error }}</p>
                 <button class="btn-retry-enhanced" (click)="retryLoad()">
                     <i class="bi bi-arrow-clockwise"></i>
-                    <span>Reintentar</span>
+                    <span>Retry</span>
                 </button>
-                <p class="error-help">Si el problema persiste, <a href="#" class="error-link">contacta a soporte</a></p>
+                <p class="error-help">If the problem persists, <a href="#" class="error-link">contact support</a></p>
             </div>
 
             <!-- ============================================ -->
@@ -129,22 +128,22 @@
                         <i class="bi bi-bar-chart"></i>
                         <span class="icon-glow"></span>
                     </div>
-                    <h2 class="status-title-enhanced">Estamos validando experimentos</h2>
+                    <h2 class="status-title-enhanced">We're validating experiments</h2>
                     <p class="status-description-enhanced">
-                        Las herramientas aparecen aquí solo cuando muestran <strong>señales reales de uso y retención</strong>.<br>
-                        No publicamos demos. Solo lo que funciona.
+                        Tools appear here only when they show <strong>real usage and retention signals</strong>.<br>
+                        We don't publish demos. Only what works.
                     </p>
                     <div class="status-badge-enhanced">
                         <span class="badge-dot"></span>
-                        <span>Modo validación activo</span>
+                        <span>Validation mode active</span>
                     </div>
                 </div>
 
                 <!-- Cómo funciona (Mejorado) -->
                 <div class="labs-process-enhanced">
                     <div class="process-header-enhanced">
-                        <h3>Cómo funciona</h3>
-                        <p class="process-subtitle">Nuestro proceso de validación data-driven</p>
+                        <h3>How it works</h3>
+                        <p class="process-subtitle">Our data-driven validation process</p>
                     </div>
                     <div class="process-steps-enhanced">
                         <div class="step-card-enhanced">
@@ -152,8 +151,8 @@
                             <div class="step-icon-enhanced">
                                 <i class="bi bi-code-slash"></i>
                             </div>
-                            <h4 class="step-title">Experimentamos</h4>
-                            <p class="step-description">Probamos ideas con usuarios reales</p>
+                            <h4 class="step-title">We experiment</h4>
+                            <p class="step-description">We test ideas with real users</p>
                             <div class="step-bar"></div>
                         </div>
                         <div class="step-card-enhanced">
@@ -161,8 +160,8 @@
                             <div class="step-icon-enhanced">
                                 <i class="bi bi-graph-up"></i>
                             </div>
-                            <h4 class="step-title">Medimos</h4>
-                            <p class="step-description">Uso real, retención y señales de mercado antes de crear tenants</p>
+                            <h4 class="step-title">We measure</h4>
+                            <p class="step-description">Real usage, retention and market signals before creating tenants</p>
                             <div class="step-bar"></div>
                         </div>
                         <div class="step-card-enhanced">
@@ -170,8 +169,8 @@
                             <div class="step-icon-enhanced">
                                 <i class="bi bi-rocket-takeoff"></i>
                             </div>
-                            <h4 class="step-title">Publicamos</h4>
-                            <p class="step-description">Solo lo que demuestra tracción</p>
+                            <h4 class="step-title">We publish</h4>
+                            <p class="step-description">Only what shows traction</p>
                             <div class="step-bar"></div>
                         </div>
                     </div>
@@ -182,22 +181,22 @@
                 <!-- ============================================ -->
                 <section class="mvp-analytics-dashboard" *ngIf="hasMvpData">
                     <div class="dashboard-header">
-                        <h3>Experimentos en Validación</h3>
-                        <p class="dashboard-subtitle">Estamos probando estas ideas con usuarios reales</p>
+                        <h3>Experiments in Validation</h3>
+                        <p class="dashboard-subtitle">We're testing these ideas with real users</p>
 
                         <!-- Period Selector -->
                         <div class="period-selector">
                             <button [class.active]="selectedPeriod === '7d'" (click)="changePeriod('7d')">
-                                7 días
+                                7 days
                             </button>
                             <button [class.active]="selectedPeriod === '30d'" (click)="changePeriod('30d')">
-                                30 días
+                                30 days
                             </button>
                             <button [class.active]="selectedPeriod === '90d'" (click)="changePeriod('90d')">
-                                90 días
+                                90 days
                             </button>
                             <button [class.active]="selectedPeriod === 'all'" (click)="changePeriod('all')">
-                                Todo
+                                All
                             </button>
                         </div>
                     </div>
@@ -213,7 +212,7 @@
                             <div class="card-header">
                                 <div class="mvp-info">
                                     <h4 class="mvp-name">{{ mvp.module_name }}</h4>
-                                    <span class="mvp-slug">Experimento en validación</span>
+                                    <span class="mvp-slug">Experiment in validation</span>
                                 </div>
                                 <div class="health-score" [class]="'badge-' + getPublicHealthLevel(mvp.health_score)">
                                     {{ getPublicHealthLabel(mvp.health_score) }}
@@ -244,11 +243,11 @@
                             <div class="validation-indicators">
                                 <div class="indicator-item" [class.active]="mvp.total_sessions > 0">
                                     <i class="bi bi-eye"></i>
-                                    <span>Uso real</span>
+                                    <span>Real usage</span>
                                 </div>
                                 <div class="indicator-item" [class.active]="mvp.wizard_completions > 0">
                                     <i class="bi bi-check-circle"></i>
-                                    <span>Completado</span>
+                                    <span>Completed</span>
                                 </div>
                                 <div class="indicator-item" [class.active]="mvp.total_feedback > 0">
                                     <i class="bi bi-chat-left-heart"></i>
@@ -273,8 +272,8 @@
                     <!-- Empty State dentro de section si mvpAnalytics está vacío -->
                     <div class="empty-analytics" *ngIf="mvpAnalytics.length === 0">
                         <i class="bi bi-inbox"></i>
-                        <p>Estamos preparando nuevos experimentos</p>
-                        <small>Vuelve pronto para ver qué estamos validando</small>
+                        <p>We're preparing new experiments</p>
+                        <small>Come back soon to see what we're validating</small>
                     </div>
                 </section>
 
@@ -286,17 +285,17 @@
                         <span class="icon-ring"></span>
                         <span class="icon-ring-2"></span>
                     </div>
-                    <h3 class="cta-title-enhanced">¿Quieres acceso cuando un experimento esté listo?</h3>
+                    <h3 class="cta-title-enhanced">Want access when an experiment is ready?</h3>
                     <p class="cta-description-enhanced">
-                        Te avisaremos cuando tengamos algo con señales reales de uso lista para probar
+                        We'll let you know when we have something with real usage signals ready to try
                     </p>
                     <button class="btn-notify-enhanced" (click)="requestEarlyAccess()">
                         <i class="bi bi-envelope-heart"></i>
-                        <span>Avisarme cuando haya algo listo</span>
+                        <span>Notify me when something is ready</span>
                     </button>
                     <div class="cta-note-enhanced">
                         <i class="bi bi-info-circle"></i>
-                        <span>No es una beta pública, solo señal temprana de validación</span>
+                        <span>Not a public beta, just early validation signal</span>
                     </div>
                 </div>
                 
@@ -309,10 +308,10 @@
 
                 <!-- Intro -->
                 <div class="intro-section">
-                    <h2 class="section-title">Explora nuestros MVPs en validación</h2>
+                    <h2 class="section-title">Explore our MVPs in validation</h2>
                     <p class="section-description">
-                        Solo mostramos herramientas con <strong>señales reales de uso</strong>.
-                        Nada de demos técnicas. Solo MVPs que están funcionando.
+                        We only show tools with <strong>real usage signals</strong>.
+                        No technical demos. Only MVPs that are working.
                     </p>
                 </div>
 
@@ -326,10 +325,10 @@
                                 <i [class]="mvp.icon"></i>
                             </div>
                             <span class="status-badge" *ngIf="mvp.status === 'coming-soon'">
-                                Próximamente
+                                Coming soon
                             </span>
                             <span class="status-badge live" *ngIf="mvp.status === 'live'">
-                                <i class="bi bi-circle-fill"></i> En vivo
+                                <i class="bi bi-circle-fill"></i> Live
                             </span>
                         </div>
 
@@ -353,11 +352,11 @@
                             <button class="btn-preview" [disabled]="mvp.status === 'coming-soon'" [style.background]="mvp.status === 'live' ? mvp.color : '#d1d5db'" (click)="goToPreview(mvp)">
                                 <span *ngIf="mvp.status === 'live'">
                                     <i class="bi bi-play-circle"></i>
-                                    Probar ahora
+                                    Try now
                                 </span>
                                 <span *ngIf="mvp.status === 'coming-soon'">
                                     <i class="bi bi-clock"></i>
-                                    Muy pronto
+                                    Very soon
                                 </span>
                             </button>
                         </div>
@@ -367,18 +366,18 @@
                 <!-- Bottom CTA (solo Store Mode) -->
                 <div class="cta-section" *ngIf="!isAuthenticated">
                     <div class="cta-card">
-                        <h3 class="cta-title">¿Listo para empezar?</h3>
+                        <h3 class="cta-title">Ready to get started?</h3>
                         <p class="cta-description">
-                            Crea tu cuenta gratis y prueba cualquier herramienta.
-                            Sin tarjeta, sin compromisos, solo validación.
+                            Create your free account and try any tool.
+                            No credit card, no commitments, just validation.
                         </p>
                         <div class="cta-buttons">
                             <button class="btn-cta-primary" (click)="goToRegister()">
                                 <i class="bi bi-rocket-takeoff"></i>
-                                Crear cuenta gratis
+                                Create free account
                             </button>
                             <button class="btn-cta-secondary" (click)="goToLogin()">
-                                Ya tengo cuenta
+                                I already have an account
                             </button>
                         </div>
                     </div>
@@ -394,13 +393,13 @@
         <div class="container">
             <div class="footer-content">
                 <p class="footer-text">
-                    MVP Hub · Fase de validación ·
+                    MVP Hub · Validation phase ·
                     <a href="https://lujandev.com" target="_blank">lujandev.com</a>
                 </p>
                 <div class="footer-links">
-                    <a href="#" class="footer-link">Documentación</a>
-                    <a href="#" class="footer-link">Soporte</a>
-                    <a href="#" class="footer-link">Estado del servicio</a>
+                    <a href="#" class="footer-link">Documentation</a>
+                    <a href="#" class="footer-link">Support</a>
+                    <a href="#" class="footer-link">Service status</a>
                 </div>
             </div>
         </div>
@@ -414,27 +413,27 @@
                 <div class="modal-icon">
                     <i class="bi bi-check-circle"></i>
                 </div>
-                <button class="modal-close" (click)="closeEarlyAccessModal()" aria-label="Cerrar">
+                <button class="modal-close" (click)="closeEarlyAccessModal()" aria-label="Close">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
 
             <!-- Content -->
             <div class="modal-body">
-                <h3 class="modal-title">¡Gracias por tu interés!</h3>
+                <h3 class="modal-title">Thanks for your interest!</h3>
                 <p class="modal-message">
-                    Te avisaremos cuando tengamos un experimento listo para probar.
+                    We'll let you know when we have an experiment ready to try.
                 </p>
                 <p class="modal-note">
-                    Por ahora estamos 100% enfocados en validación con usuarios reales.
-                    Solo publicamos lo que demuestra tracción.
+                    For now we're 100% focused on validation with real users.
+                    We only publish what shows traction.
                 </p>
             </div>
 
             <!-- Footer -->
             <div class="modal-footer">
                 <button class="btn-modal-primary" (click)="closeEarlyAccessModal()">
-                    Entendido
+                    Got it
                 </button>
             </div>
         </div>
