@@ -522,14 +522,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       organic: {
         goalLabel: 'Engagement',
         bestPlatform: 'Instagram Reels',
-        suggestedCaption: 'Así es como los clientes aman este producto 👇',
-        suggestedCTA: 'Guárdalo para más tarde'
+        suggestedCaption: 'Esto es lo que pasa cuando tus clientes aman tu producto 👇',
+        suggestedCTA: 'Guárdalo y compártelo'
       },
       ads: {
         goalLabel: 'Ventas',
         bestPlatform: 'Instagram Ads',
-        suggestedCaption: '¿Aún lo estás pensando? Aquí te mostramos por qué vale la pena.',
-        suggestedCTA: 'Comprar ahora'
+        suggestedCaption: 'El producto que necesitas, al precio que mereces 💙',
+        suggestedCTA: 'Conseguir el mío'
       }
     };
 
