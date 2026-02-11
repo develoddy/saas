@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModulePreviewService } from '../../services/module-preview.service';
@@ -66,7 +66,7 @@ interface GeneratedPreview {
   styleUrls: ['./module-preview-wizard.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ModulePreviewWizardComponent implements OnInit {
+export class ModulePreviewWizardComponent implements OnInit, OnDestroy {
   
   moduleKey = '';
   moduleName = '';
@@ -76,8 +76,26 @@ export class ModulePreviewWizardComponent implements OnInit {
   wizardConfig: ModuleWizardConfig = { steps: [] };
   
   generating = false;
+  showGeneratingScreen = false; // Nueva pantalla de "momento whoo"
+  generatingProgress = 0; // Progreso simulado
+  currentGeneratingMessage = ''; // Mensaje rotativo
   generatedPreview: GeneratedPreview | null = null;
   error: string | null = null;
+  
+  // Mensajes rotativos para "momento whoo"
+  private readonly generatingMessages = [
+    'Analyzing your business...',
+    'Crafting your email sequence...',
+    'Optimizing subject lines...',
+    'Personalizing content...',
+    'Almost ready...'
+  ];
+  
+  private messageInterval: any;
+  private currentMessageIndex = 0;
+  
+  // Configuración del delay (en ms)
+  private readonly WHOO_MOMENT_DELAY = 2500; // 2.5 segundos
   
   // Configuraciones específicas por módulo
   // Cada módulo puede tener su config local sin depender de la BD
@@ -314,7 +332,7 @@ export class ModulePreviewWizardComponent implements OnInit {
   }
 
   /**
-   * Generar preview
+   * Generar preview con "momento whoo"
    */
   async generatePreview(): Promise<void> {
     if (!this.wizardForm.valid) {
@@ -341,6 +359,28 @@ export class ModulePreviewWizardComponent implements OnInit {
       ).toPromise();
       
       if (response.success) {
+        // 🎉 MOMENTO WHOO: Mostrar pantalla de generación antes del preview
+        this.showGeneratingScreen = true;
+        this.startGeneratingAnimation();
+        
+        // Simular progreso mientras se "genera"
+        const progressInterval = setInterval(() => {
+          if (this.generatingProgress < 95) {
+            this.generatingProgress += 5;
+          }
+        }, 100);
+        
+        // Esperar el delay configurado para el "momento whoo"
+        await new Promise(resolve => setTimeout(resolve, this.WHOO_MOMENT_DELAY));
+        
+        // Limpiar intervalo de progreso
+        clearInterval(progressInterval);
+        this.generatingProgress = 100;
+        
+        // Ocultar pantalla de generación y mostrar preview real
+        this.showGeneratingScreen = false;
+        this.stopGeneratingAnimation();
+        
         this.generatedPreview = response.preview;
         console.log('✅ Preview generated:', this.generatedPreview);
         
@@ -356,10 +396,36 @@ export class ModulePreviewWizardComponent implements OnInit {
     } catch (err: any) {
       console.error('❌ Error generating preview:', err);
       this.error = err.error?.error || 'Failed to generate preview';
+      this.showGeneratingScreen = false;
+      this.stopGeneratingAnimation();
       
     } finally {
       this.generating = false;
     }
+  }
+  
+  /**
+   * Iniciar animación de mensajes rotativos
+   */
+  private startGeneratingAnimation(): void {
+    this.currentMessageIndex = 0;
+    this.currentGeneratingMessage = this.generatingMessages[0];
+    
+    this.messageInterval = setInterval(() => {
+      this.currentMessageIndex = (this.currentMessageIndex + 1) % this.generatingMessages.length;
+      this.currentGeneratingMessage = this.generatingMessages[this.currentMessageIndex];
+    }, 500); // Cambiar cada 500ms para sensación de actividad
+  }
+  
+  /**
+   * Detener animación de mensajes
+   */
+  private stopGeneratingAnimation(): void {
+    if (this.messageInterval) {
+      clearInterval(this.messageInterval);
+      this.messageInterval = null;
+    }
+    this.generatingProgress = 0;
   }
 
   /**
@@ -401,5 +467,12 @@ export class ModulePreviewWizardComponent implements OnInit {
     });
     
     return stepData;
+  }
+  
+  /**
+   * Limpiar recursos al destruir el componente
+   */
+  ngOnDestroy(): void {
+    this.stopGeneratingAnimation();
   }
 }

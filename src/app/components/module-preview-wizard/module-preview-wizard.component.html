@@ -131,8 +131,32 @@
         </div>
       </section>
 
+      <!-- 🎉 MOMENTO WHOO: Pantalla de generación animada -->
+      <section class="wizard-step generating-screen" *ngIf="showGeneratingScreen">
+        <div class="generating-container">
+          <div class="generating-animation">
+            <div class="pulse-circle"></div>
+            <div class="pulse-circle pulse-circle-2"></div>
+            <div class="pulse-circle pulse-circle-3"></div>
+            <div class="icon-center">
+              <i class="bi bi-lightning-charge-fill"></i>
+            </div>
+          </div>
+          
+          <h2 class="generating-title">Creating Your Preview</h2>
+          <p class="generating-message">{{ currentGeneratingMessage }}</p>
+          
+          <!-- Barra de progreso -->
+          <div class="progress-bar-container">
+            <div class="progress-bar" [style.width.%]="generatingProgress"></div>
+          </div>
+          
+          <p class="generating-tip">✨ This will only take a moment...</p>
+        </div>
+      </section>
+
   <!-- Generated Preview -->
-      <section class="wizard-step" *ngIf="generatedPreview">
+      <section class="wizard-step" *ngIf="generatedPreview && !showGeneratingScreen">
         <div class="preview-result">
           <div class="result-header">
             <div class="success-badge">

@@ -263,16 +263,16 @@
             </div>
           </div>
 
-          <!-- C\u00f3mo usar este video (Usage Guidance) -->
+          <!-- How to Use This Video (Usage Guidance) -->
           <div class="video-usage-guidance" *ngIf="state.usageGuidance">
             <div class="usage-header">
               <i class="bi bi-lightbulb"></i>
-              <h3 class="usage-title">C\u00f3mo usar este video</h3>
+              <h3 class="usage-title">How to Use This Video</h3>
             </div>
             
             <div class="usage-content">
               <div class="usage-section">
-                <div class="usage-label">Mejor plataforma</div>
+                <div class="usage-label">Best Platform</div>
                 <div class="usage-value platform">
                   <i class="bi bi-instagram"></i>
                   {{ state.usageGuidance.bestPlatform }}
@@ -280,10 +280,10 @@
               </div>
 
               <div class="usage-section">
-                <div class="usage-label">Texto sugerido</div>
+                <div class="usage-label">Suggested Caption</div>
                 <div class="usage-value caption">
                   <div class="caption-text">{{ state.usageGuidance.suggestedCaption }}</div>
-                  <button class="btn-copy" (click)="copyCaption(state.usageGuidance.suggestedCaption)" title="Copiar">
+                  <button class="btn-copy" (click)="copyCaption(state.usageGuidance.suggestedCaption)" title="Copy">
                     <i class="bi bi-clipboard"></i>
                   </button>
                 </div>
@@ -299,7 +299,7 @@
 
             <div class="usage-footer">
               <i class="bi bi-info-circle"></i>
-              <span>Esta gu\u00eda est\u00e1 optimizada para tu objetivo: <strong>{{ state.usageGuidance.goalLabel }}</strong></span>
+              <span>This guide is optimized for your goal: <strong>{{ state.usageGuidance.goalLabel }}</strong></span>
             </div>
           </div>
 
@@ -468,5 +468,26 @@
       </div>
     </div>
   </footer>
+
+  <!-- Notification System (Toast) -->
+  <div class="notification-container">
+    <div class="notification" 
+         *ngFor="let notification of notifications"
+         [class.notification-success]="notification.type === 'success'"
+         [class.notification-error]="notification.type === 'error'"
+         [class.notification-info]="notification.type === 'info'"
+         [@fadeInUp]>
+      <div class="notification-content">
+        <i class="notification-icon" 
+           [class.bi-check-circle-fill]="notification.type === 'success'"
+           [class.bi-exclamation-triangle-fill]="notification.type === 'error'"
+           [class.bi-info-circle-fill]="notification.type === 'info'"></i>
+        <span class="notification-message">{{ notification.message }}</span>
+      </div>
+      <button class="notification-close" (click)="closeNotification(notification.id)">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+  </div>
 
 </div>

@@ -35,6 +35,16 @@ interface VideoUsageGuidance {
   suggestedCTA: string;
 }
 
+/**
+ * Sistema de notificaciones profesional (reemplaza alert())
+ */
+interface Notification {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'info';
+  duration?: number;
+}
+
 interface WizardState {
   currentStep: 1 | 2 | 3 | 4;
   
@@ -104,11 +114,11 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   
   // Mensajes rotativos para step 3
   private readonly loadingMessages = [
-    'Analizando tu producto...',
-    'Aplicando movimiento cinematográfico...',
-    'Optimizando para redes sociales...',
-    'Últimos detalles...',
-    'Ya casi está listo...'
+    'Analyzing your product...',
+    'Applying cinematic motion...',
+    'Optimizing for social media...',
+    'Final touches...',
+    'Almost ready...'
   ];
   
   private messageInterval: any;
@@ -116,6 +126,10 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   
   // Download state
   isDownloading: boolean = false;
+  
+  // Notification system
+  notifications: Notification[] = [];
+  private notificationIdCounter = 0;
   
   // Drag & drop state
   isDragOver: boolean = false;
@@ -132,20 +146,20 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       value: 'parallax',
       label: 'Parallax 3D',
       icon: 'bi bi-badge-3d',
-      description: 'Efecto de profundidad cinematográfico',
+      description: 'Cinematic depth effect',
       recommended: true
     },
     {
       value: 'zoom_in',
       label: 'Zoom In',
       icon: 'bi bi-zoom-in',
-      description: 'Acercamiento suave y profesional'
+      description: 'Smooth professional zoom'
     },
     {
       value: 'subtle_float',
       label: 'Subtle Float',
       icon: 'bi bi-arrows-move',
-      description: 'Levitación delicada y elegante'
+      description: 'Delicate elegant levitation'
     }
   ];
   
@@ -287,7 +301,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
    */
   uploadImage(): void {
     if (!this.state.uploadedImage) {
-      this.state.error = 'Por favor selecciona una imagen';
+      this.state.error = 'Please select an image';
       return;
     }
     
@@ -314,7 +328,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('❌ Error subiendo imagen:', error);
-          this.state.error = error.message || 'No pudimos procesar tu imagen. Intenta de nuevo.';
+          this.state.error = error.message || 'We could not process your image. Try again.';
           this.state.loading = false;
         }
       });
@@ -358,12 +372,12 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
    */
   generateVideo(): void {
     if (!this.state.imageId || !this.state.selectedObjective) {
-      this.state.error = 'Selecciona un objetivo';
+      this.state.error = 'Select a goal';
       return;
     }
     
     if (!this.state.selectedAnimation) {
-      this.state.error = 'Selecciona un estilo de animación';
+      this.state.error = 'Select an animation style';
       return;
     }
     
@@ -476,14 +490,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
           
           // Si falló
           if (status.status === 'failed') {
-            this.state.error = status.error || 'No pudimos generar tu video';
+            this.state.error = status.error || 'We could not generate your video';
             this.stopRotatingMessages();
             this.videoExpressService.stopPolling();
           }
         },
         error: (error) => {
           console.error('❌ Error en polling:', error);
-          this.state.error = 'Perdimos la conexión. Intenta de nuevo.';
+          this.state.error = 'We lost the connection. Try again.';
           this.stopRotatingMessages();
         }
       });
@@ -531,8 +545,8 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       organic: {
         goalLabel: 'Engagement',
         bestPlatform: 'Instagram Reels',
-        suggestedCaption: 'Esto es lo que pasa cuando tus clientes aman tu producto 👇',
-        suggestedCTA: 'Guárdalo y compártelo'
+        suggestedCaption: 'This is what happens when your customers love your product 👇',
+        suggestedCTA: 'Save it and share it'
       },
       ads: {
         goalLabel: 'Ventas',
@@ -797,7 +811,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       }).catch(err => console.log('Error sharing:', err));
     } else {
       // Fallback: mostrar opciones de compartir
-      alert('¡Comparte tu video en Instagram, Facebook o TikTok para maximizar su impacto! 🚀');
+      this.showNotification('🚀 Share your video on Instagram, Facebook or TikTok to maximize its impact!', 'info', 4000);
     }
   }
 
@@ -818,16 +832,16 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
             source: 'preview'
           });
           
-          // Feedback visual (puedes mejorar esto con un toast/notification)
-          alert('¡Texto copiado! Ahora pégalo en tu publicación.');
+          // Feedback visual profesional
+          this.showNotification('✅ Caption copied! Now paste it in your post.', 'success', 3000);
         })
         .catch(err => {
           console.error('Error copiando al portapapeles:', err);
-          alert('No pudimos copiar el texto. Inténtalo manualmente.');
+          this.showNotification('⚠️ Could not copy the text. Try manually.', 'error', 4000);
         });
     } else {
       // Fallback para navegadores antiguos
-      alert('Copia este texto:\n\n' + caption);
+      this.showNotification('Copy this text:\n\n' + caption, 'info', 6000);
     }
   }
 
@@ -843,7 +857,34 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     });
 
     // Abrir chat (integrar con sistema de soporte real)
-    // Por ahora, placeholder
-    alert('Gracias por querer ayudarnos a mejorar. Pronto habilitaremos un chat directo. Por ahora, escríbenos a soporte@tudominio.com 💪');
+    this.showNotification('We will enable direct chat soon. For now, email us at support@yourdomain.com 💪', 'info', 6000);
+  }
+  
+  /**
+   * Sistema de notificaciones profesional (reemplaza alert)
+   */
+  showNotification(message: string, type: 'success' | 'error' | 'info' = 'info', duration: number = 3000): void {
+    const notification: Notification = {
+      id: ++this.notificationIdCounter,
+      message,
+      type,
+      duration
+    };
+    
+    this.notifications.push(notification);
+    
+    // Auto-remover después de duration
+    if (duration > 0) {
+      setTimeout(() => {
+        this.closeNotification(notification.id);
+      }, duration);
+    }
+  }
+  
+  /**
+   * Cerrar notificación específica
+   */
+  closeNotification(id: number): void {
+    this.notifications = this.notifications.filter(n => n.id !== id);
   }
 }
