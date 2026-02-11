@@ -31,56 +31,46 @@
   <div class="mvp-feedback-block" *ngIf="!isAuthenticated && !isExpired">
     
     <!-- Feedback Question -->
-    <div class="feedback-question" *ngIf="!feedbackSubmitted">
-      <h4>¿Esto te ayudó a crear una secuencia de emails más rápido?</h4>
+    <div class="feedback-section" *ngIf="!feedbackSubmitted">
+      <h4 class="feedback-question">Did this preview help you get started faster?</h4>
       
-      <div class="feedback-options">
-        <label class="feedback-option">
-          <input 
-            type="radio" 
-            name="feedback" 
-            value="si"
-            [(ngModel)]="feedbackAnswer"
-            (change)="handleFeedbackAnswer('si')">
-          <span class="option-text">Sí</span>
-        </label>
+      <div class="feedback-buttons">
+        <button 
+          class="btn-feedback btn-yes"
+          [class.selected]="feedbackAnswer === 'yes'"
+          (click)="handleFeedbackAnswer('yes')">
+          <i class="bi bi-hand-thumbs-up-fill"></i> Yes
+        </button>
         
-        <label class="feedback-option">
-          <input 
-            type="radio" 
-            name="feedback" 
-            value="un_poco"
-            [(ngModel)]="feedbackAnswer"
-            (change)="handleFeedbackAnswer('un_poco')">
-          <span class="option-text">Un poco</span>
-        </label>
+        <button 
+          class="btn-feedback btn-partial"
+          [class.selected]="feedbackAnswer === 'partial'"
+          (click)="handleFeedbackAnswer('partial')">
+          <i class="bi bi-emoji-neutral"></i> Somewhat
+        </button>
         
-        <label class="feedback-option">
-          <input 
-            type="radio" 
-            name="feedback" 
-            value="no"
-            [(ngModel)]="feedbackAnswer"
-            (change)="handleFeedbackAnswer('no')">
-          <span class="option-text">No</span>
-        </label>
+        <button 
+          class="btn-feedback btn-no"
+          [class.selected]="feedbackAnswer === 'no'"
+          (click)="handleFeedbackAnswer('no')">
+          <i class="bi bi-hand-thumbs-down-fill"></i> No
+        </button>
       </div>
       
-      <!-- Conditional Comment Box (only for "No" answer) -->
+      <!-- Conditional Comment Box (for "No" or "Somewhat" answer) -->
       <div class="feedback-comment-box" *ngIf="showCommentBox">
-        <label for="feedbackComment">¿Qué faltó?</label>
+        <label for="feedbackComment" class="comment-label">What was missing?</label>
         <textarea 
           id="feedbackComment"
           [(ngModel)]="feedbackComment"
-          placeholder="Cuéntanos qué esperabas encontrar..."
+          placeholder="Tell us what you expected to find..."
           rows="3"
-          class="form-control">
+          class="comment-textarea">
         </textarea>
         <button 
-          class="btn btn-sm btn-secondary mt-2"
-          (click)="submitFeedbackWithComment()"
-          [disabled]="!feedbackComment.trim()">
-          Enviar comentario
+          class="btn btn-primary btn-small"
+          (click)="submitFeedbackWithComment()">
+          Send feedback
         </button>
       </div>
     </div>
@@ -88,7 +78,7 @@
     <!-- Thank you message after feedback -->
     <div class="feedback-thanks" *ngIf="feedbackSubmitted && !showEmailCapture">
       <i class="bi bi-check-circle"></i>
-      <p>¡Gracias por tu feedback!</p>
+      <p>Thank you for your feedback!</p>
     </div>
     
     <!-- CTA Button -->
@@ -97,7 +87,7 @@
         class="btn btn-primary btn-lg btn-cta"
         (click)="handleGetFullSequence()">
         <i class="bi bi-envelope-open"></i>
-        Obtener la secuencia completa
+        Get the full sequence
       </button>
     </div>
     
@@ -107,14 +97,14 @@
         <input 
           type="email"
           [(ngModel)]="emailForSequence"
-          placeholder="Tu email"
+          placeholder="Your email"
           class="form-control form-control-lg"
           (keyup.enter)="submitEmail()">
         <button 
           class="btn btn-success btn-lg"
           (click)="submitEmail()"
           [disabled]="!emailForSequence.trim()">
-          Enviármela
+          Send it to me
         </button>
       </div>
     </div>
@@ -122,8 +112,8 @@
     <!-- Success message after email submission -->
     <div class="email-success" *ngIf="emailSubmitted">
       <i class="bi bi-send"></i>
-      <h4>¡Listo!</h4>
-      <p>Te enviaremos la secuencia completa a <strong>{{ emailForSequence }}</strong></p>
+      <h4>All set!</h4>
+      <p>We'll send the full sequence to <strong>{{ emailForSequence }}</strong></p>
     </div>
     
   </div>

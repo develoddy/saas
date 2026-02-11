@@ -326,42 +326,74 @@
             </button>
           </div>
 
-          <!-- Feedback Section (Before Submit) -->
+          <!-- Feedback Section (Before Submit) - MVP Validation con 3 opciones -->
           <div class="feedback-section" *ngIf="!state.feedbackSubmitted">
-            <p class="feedback-question">Did this video save you time?</p>
+            <p class="feedback-question">Did this video meet your expectations?</p>
             <div class="feedback-buttons">
               <button 
                 class="btn-feedback btn-yes"
-                (click)="submitFeedback(true)">
-                <i class="bi bi-hand-thumbs-up"></i> Yes
+                [class.selected]="state.feedbackAnswer === 'yes'"
+                (click)="handleFeedbackAnswer('yes')">
+                <i class="bi bi-hand-thumbs-up-fill"></i> Yes
+              </button>
+              <button 
+                class="btn-feedback btn-partial"
+                [class.selected]="state.feedbackAnswer === 'partial'"
+                (click)="handleFeedbackAnswer('partial')">
+                <i class="bi bi-emoji-neutral"></i> Somewhat
               </button>
               <button 
                 class="btn-feedback btn-no"
-                (click)="submitFeedback(false)">
-                <i class="bi bi-hand-thumbs-down"></i> No
+                [class.selected]="state.feedbackAnswer === 'no'"
+                (click)="handleFeedbackAnswer('no')">
+                <i class="bi bi-hand-thumbs-down-fill"></i> No
+              </button>
+            </div>
+            
+            <!-- Comment Box (only if 'no' or 'partial') -->
+            <div class="feedback-comment-box" *ngIf="state.showCommentBox" [@fadeInUp]>
+              <label for="feedbackComment" class="comment-label">What was missing?</label>
+              <textarea 
+                id="feedbackComment"
+                [(ngModel)]="state.feedbackComment"
+                placeholder="Tell us what you expected to find..."
+                rows="3"
+                class="comment-textarea">
+              </textarea>
+              <button 
+                class="btn btn-primary btn-small"
+                (click)="submitFeedbackWithComment()">
+                Send feedback
               </button>
             </div>
           </div>
 
           <!-- Post-Feedback Experience (After Submit) -->
           <div class="feedback-success" *ngIf="state.feedbackSubmitted" [@fadeInUp]>
-            <!-- Mensaje personalizado -->
-            <div class="feedback-message" [class.positive]="state.feedbackHelpful" [class.negative]="!state.feedbackHelpful">
+            <!-- Personalized message -->
+            <div class="feedback-message" 
+                 [class.positive]="state.feedbackAnswer === 'yes'" 
+                 [class.partial]="state.feedbackAnswer === 'partial'"
+                 [class.negative]="state.feedbackAnswer === 'no'">
               <div class="message-icon">
-                <i *ngIf="state.feedbackHelpful" class="bi bi-rocket-takeoff"></i>
-                <i *ngIf="!state.feedbackHelpful" class="bi bi-shield-check"></i>
+                <i *ngIf="state.feedbackAnswer === 'yes'" class="bi bi-rocket-takeoff"></i>
+                <i *ngIf="state.feedbackAnswer === 'partial'" class="bi bi-emoji-smile"></i>
+                <i *ngIf="state.feedbackAnswer === 'no'" class="bi bi-shield-check"></i>
               </div>
               <h4>{{ state.feedbackMessage }}</h4>
-              <p *ngIf="state.feedbackHelpful" class="message-subtitle">
+              <p *ngIf="state.feedbackAnswer === 'yes'" class="message-subtitle">
                 We're glad to know the video met your expectations
               </p>
-              <p *ngIf="!state.feedbackHelpful" class="message-subtitle">
+              <p *ngIf="state.feedbackAnswer === 'partial'" class="message-subtitle">
+                Your feedback helps us improve the tool
+              </p>
+              <p *ngIf="state.feedbackAnswer === 'no'" class="message-subtitle">
                 Your feedback helps us create better tools
               </p>
             </div>
 
-            <!-- CTAs inteligentes según feedback -->
-            <div class="next-actions" *ngIf="state.feedbackHelpful">
+            <!-- Smart CTAs based on feedback -->
+            <div class="next-actions" *ngIf="state.feedbackAnswer === 'yes'">
               <h5 class="next-actions-title">What do you want to do now?</h5>
               <div class="action-cards">
                 <button class="action-card primary" (click)="createAnotherVideo()">
@@ -382,8 +414,8 @@
               </div>
             </div>
 
-            <!-- CTA para feedback negativo: ofrecer ayuda -->
-            <div class="next-actions" *ngIf="!state.feedbackHelpful">
+            <!-- CTA for partial or negative feedback: offer help -->
+            <div class="next-actions" *ngIf="state.feedbackAnswer === 'partial' || state.feedbackAnswer === 'no'">
               <h5 class="next-actions-title">How can we improve?</h5>
               <div class="action-cards">
                 <button class="action-card primary" (click)="createAnotherVideo()">

@@ -182,8 +182,10 @@
 // FOOTER
 // ========================================
 .preview-footer {
-  margin-top: 24px;
-  padding-top: 16px;
+  // margin-top: 24px;
+  // padding-top: 16px;
+  margin-top: 3rem;
+  padding-top: 2rem;
   border-top: 1px solid #f0f0f0;
   display: flex;
   justify-content: space-between;
@@ -306,107 +308,127 @@
 }
 
 // ========================================
-// MVP VALIDATION FEEDBACK
+// MVP VALIDATION FEEDBACK (shared DNA with Video Express)
 // ========================================
 .mvp-feedback-block {
   margin-top: 32px;
-  padding: 24px;
+  // padding: 24px;
   background: #ffffff;
-  border-radius: 12px;
-  border: 2px solid #e0e0e0;
+  // border-radius: 12px;
+  // border: 2px solid #e0e0e0;
+
+  border-top: 1px solid #e5e7eb;
+  margin-top: 3rem;
+  padding-top: 2rem;
 }
 
-.feedback-question {
-  margin-bottom: 24px;
-  
-  h4 {
-    margin: 0 0 20px 0;
-    font-size: 18px;
+.feedback-section {
+  .feedback-question {
+    font-size: 0.9375rem;
     font-weight: 600;
     color: #000000;
+    margin: 0 0 1.5rem;
     text-align: center;
   }
-}
-
-.feedback-options {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.feedback-option {
-  position: relative;
-  cursor: pointer;
   
-  input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
+  .feedback-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
     
-    &:checked + .option-text {
-      background: #000000;
-      color: #ffffff;
-      border-color: #000000;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    .btn-feedback {
+      padding: 0.75rem 1.75rem;
+      border: 2px solid #d1d5db;
+      border-radius: 0.5rem;
+      background: white;
+      cursor: pointer;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      i {
+        font-size: 1.25rem;
+      }
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.selected {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      
+      &.btn-yes {
+        &:hover, &.selected {
+          border-color: #10b981;
+          background: #d1fae5;
+          color: #065f46;
+        }
+      }
+      
+      &.btn-partial {
+        &:hover, &.selected {
+          border-color: #f59e0b;
+          background: #fef3c7;
+          color: #92400e;
+        }
+      }
+      
+      &.btn-no {
+        &:hover, &.selected {
+          border-color: #ef4444;
+          background: #fee2e2;
+          color: #991b1b;
+        }
+      }
     }
   }
   
-  .option-text {
-    display: block;
-    padding: 12px 24px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    background: white;
-    color: #000000;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    min-width: 100px;
-    text-align: center;
+  // Comment Box (appears if 'no' or 'partial')
+  .feedback-comment-box {
+    margin-top: 1.5rem;
+    text-align: left;
     
-    &:hover {
-      border-color: #000000;
-      transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    .comment-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #000000;
+      margin-bottom: 0.5rem;
     }
-  }
-}
-
-.feedback-comment-box {
-  margin-top: 20px;
-  padding: 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
-  
-  label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #000000;
-    font-size: 14px;
-  }
-  
-  textarea {
-    width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 14px;
-    resize: vertical;
-    transition: border-color 0.3s ease;
     
-    &:focus {
-      outline: none;
-      border-color: #000000;
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    .comment-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      resize: vertical;
+      margin-bottom: 1rem;
+      
+      &:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      
+      &::placeholder {
+        color: #9ca3af;
+      }
     }
-  }
-  
-  button {
-    margin-top: 8px;
+    
+    .btn-small {
+      padding: 0.625rem 1.5rem;
+      font-size: 0.875rem;
+    }
   }
 }
 
@@ -416,7 +438,7 @@
   
   i {
     font-size: 48px;
-    color: #000000;
+    color: #10b981;
     margin-bottom: 12px;
   }
   

@@ -1860,43 +1860,108 @@
       text-align: center;
       
       .feedback-question {
-        font-size: 0.875rem;
-        color: #666666;
-        margin: 0 0 1rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: #000000;
+        margin: 0 0 1.5rem;
       }
       
       .feedback-buttons {
         display: flex;
         gap: 1rem;
         justify-content: center;
+        flex-wrap: wrap;
         
         .btn-feedback {
-          padding: 0.5rem 1.5rem;
-          border: 1px solid #d1d5db;
-          border-radius: 0.375rem;
+          padding: 0.75rem 1.75rem;
+          border: 2px solid #d1d5db;
+          border-radius: 0.5rem;
           background: white;
           cursor: pointer;
-          font-size: 0.875rem;
+          font-size: 0.9375rem;
+          font-weight: 600;
           transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          
+          i {
+            font-size: 1.25rem;
+          }
           
           &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+          
+          &.selected {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
           }
           
           &.btn-yes {
-            &:hover {
-              border-color: #3b82f6;
-              background: #eff6ff;
+            &:hover, &.selected {
+              border-color: #10b981;
+              background: #d1fae5;
+              color: #065f46;
+            }
+          }
+          
+          &.btn-partial {
+            &:hover, &.selected {
+              border-color: #f59e0b;
+              background: #fef3c7;
+              color: #92400e;
             }
           }
           
           &.btn-no {
-            &:hover {
-              border-color: #666666;
-              background: #f9fafb;
+            &:hover, &.selected {
+              border-color: #ef4444;
+              background: #fee2e2;
+              color: #991b1b;
             }
           }
+        }
+      }
+      
+      // Comment Box (aparece si seleccionan 'no' o 'partial')
+      .feedback-comment-box {
+        margin-top: 1.5rem;
+        text-align: left;
+        
+        .comment-label {
+          display: block;
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #000000;
+          margin-bottom: 0.5rem;
+        }
+        
+        .comment-textarea {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+          font-family: inherit;
+          resize: vertical;
+          margin-bottom: 1rem;
+          
+          &:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          }
+          
+          &::placeholder {
+            color: #9ca3af;
+          }
+        }
+        
+        .btn-small {
+          padding: 0.625rem 1.5rem;
+          font-size: 0.875rem;
         }
       }
     }
@@ -1917,13 +1982,18 @@
         border: 2px solid #e5e7eb;
 
         &.positive {
-          background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-          border-color: #3b82f6;
+          background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+          border-color: #10b981;
+        }
+
+        &.partial {
+          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+          border-color: #f59e0b;
         }
 
         &.negative {
-          background: #ffffff;
-          border-color: #999999;
+          background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+          border-color: #ef4444;
         }
 
         .message-icon {
@@ -2113,7 +2183,7 @@
       border: 1px solid #000000;
       
       &:hover:not(:disabled) {
-        background: #f0f9ff;
+        background: #000;
       }
     }
   }

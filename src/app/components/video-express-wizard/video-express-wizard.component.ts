@@ -64,12 +64,17 @@ interface WizardState {
   // Video Usage Guidance (deterministic)
   usageGuidance: VideoUsageGuidance | null;
   
-  // Feedback & Tracking
+  // Feedback & Tracking (MVP Validation - igual que Mailflow)
   videoCompletedAt: Date | null; // Timestamp cuando se completó el video
   downloadedAt: Date | null; // Timestamp cuando el usuario descargó
+  feedbackAnswer: 'yes' | 'partial' | 'no' | null; // 3 opciones como Mailflow
   feedbackSubmitted: boolean;
-  feedbackHelpful: boolean | null; // true = helpful, false = not helpful
+  showCommentBox: boolean; // Mostrar input de comentario si answer es 'no' o 'partial'
+  feedbackComment: string; // Comentario del usuario
   feedbackMessage: string | null; // Mensaje personalizado post-feedback
+  
+  // Tracking flags para evitar duplicados
+  usageGuidanceViewed: boolean;
   
   // General
   error: string | null;
@@ -158,9 +163,12 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     usageGuidance: null,
     videoCompletedAt: null,
     downloadedAt: null,
+    feedbackAnswer: null,
     feedbackSubmitted: false,
-    feedbackHelpful: null,
+    showCommentBox: false,
+    feedbackComment: '',
     feedbackMessage: null,
+    usageGuidanceViewed: false,
     error: null,
     loading: false
   };
@@ -436,8 +444,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
             this.state.usageGuidance = this.getVideoUsageGuidance(this.state.selectedObjective!);
             
             // �📅 Guardar timestamp de completado (para calcular tiempo hasta feedback)
-            this.state.videoCompletedAt = new Date();
-            
+            this.state.videoCompletedAt = new Date();            
+            // 📊 Track que el bloque de guidance será visible (tracking cuando avance a step 4)
+            // Lo hacemos en goToStep(4) para asegurar que se muestre            
             // Track success: video generado
             this.trackEvent('video_express_video_generated', {
               jobId: this.state.jobId,
@@ -544,9 +553,11 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     
     this.isDownloading = true;
     
-    // Track download
-    this.trackEvent('video_express_video_downloaded', {
-      jobId: this.state.jobId
+    // Track download con estructura completa (igual que otros eventos)
+    this.trackEvent('video_downloaded', {
+      video_id: this.state.jobId,
+      objective: this.state.selectedObjective,
+      caption_version: 'v1'
     });
     
     const filename = `product-video-${Date.now()}.mp4`;
@@ -585,7 +596,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       module: this.moduleKey,
       fromJobId: this.state.jobId,
       hadFeedback: this.state.feedbackSubmitted,
-      feedbackWasPositive: this.state.feedbackHelpful
+      feedbackAnswer: this.state.feedbackAnswer
     });
     
     // Limpiar estado
@@ -610,9 +621,12 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       usageGuidance: null,
       videoCompletedAt: null,
       downloadedAt: null,
+      feedbackAnswer: null,
       feedbackSubmitted: false,
-      feedbackHelpful: null,
+      showCommentBox: false,
+      feedbackComment: '',
       feedbackMessage: null,
+      usageGuidanceViewed: false,
       error: null,
       loading: false
     };
@@ -621,70 +635,82 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Envía feedback sobre el video con experiencia mejorada
+   * MVP Validation: Manejar respuesta de feedback (patrón Mailflow)
+   * @param answer - 'yes' | 'partial' | 'no'
    */
-  submitFeedback(helpful: boolean): void {
-    if (!this.state.jobId || this.state.feedbackSubmitted) return;
+  handleFeedbackAnswer(answer: 'yes' | 'partial' | 'no'): void {
+    this.state.feedbackAnswer = answer;
+    this.state.showCommentBox = (answer === 'no' || answer === 'partial');
     
-    // Calcular tiempo desde descarga (si aplica)
-    const downloadTime = this.state.downloadedAt 
-      ? Date.now() - this.state.downloadedAt.getTime()
-      : null;
+    // Si es "yes", enviar tracking inmediatamente
+    if (answer === 'yes') {
+      this.submitFeedback();
+    }
+  }
+
+  /**
+   * MVP Validation: Enviar feedback con tracking (igual estructura que Mailflow)
+   */
+  private submitFeedback(comment?: string): void {
+    if (!this.state.feedbackAnswer || !this.state.jobId) return;
     
-    // Calcular tiempo desde que el video se completó
-    const timeToFeedback = this.state.videoCompletedAt
-      ? Date.now() - this.state.videoCompletedAt.getTime()
-      : null;
+    const properties: any = {
+      answer: this.state.feedbackAnswer,
+      module: this.moduleKey,
+      source: 'preview',
+      video_id: this.state.jobId,
+      objective: this.state.selectedObjective,
+      caption_version: 'v1'
+    };
     
-    // Actualizar estado inmediatamente para feedback visual
-    this.state.feedbackSubmitted = true;
-    this.state.feedbackHelpful = helpful;
-    
-    // Mensaje personalizado según feedback
-    if (helpful) {
-      this.state.feedbackMessage = '¡Gracias por tu feedback!';
-    } else {
-      this.state.feedbackMessage = 'Gracias por tu feedback. Lo usaremos para mejorar';
+    if (comment) {
+      properties.comment = comment;
     }
     
-    // Enviar feedback al backend
-    this.videoExpressService.submitFeedback({
-      jobId: this.state.jobId,
-      helpful
-    })
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          // Track feedback básico (evento existente)
-          this.trackingService.track('module_preview_feedback', {
-            module: this.moduleKey,
-            moduleName: this.moduleName,
-            jobId: this.state.jobId,
-            helpful,
-            objective: this.state.selectedObjective
-          });
-          
-          // 🎯 NUEVO: Track avanzado post-download con métricas
-          this.trackingService.track('feedback_post_download', {
-            module: this.moduleKey,
-            moduleName: this.moduleName,
-            jobId: this.state.jobId,
-            helpful,
-            objective: this.state.selectedObjective,
-            animation: this.state.selectedAnimation,
-            downloadTime_ms: downloadTime,
-            timeToFeedback_ms: timeToFeedback,
-            wasDownloaded: !!this.state.downloadedAt,
-            step: 4
-          });
-          
-          console.log(`✅ Feedback enviado: ${helpful ? 'Positivo' : 'Negativo'}`);
-        },
-        error: (error) => {
-          console.error('❌ Error enviando feedback:', error);
-          // No resetear el estado aunque falle, mantener la UI
-        }
+    // Track con estructura idéntica a Mailflow
+    this.trackingService.track('wizard_feedback_answered', properties);
+    
+    this.state.feedbackSubmitted = true;
+    
+    // Mensaje personalizado según feedback
+    if (this.state.feedbackAnswer === 'yes') {
+      this.state.feedbackMessage = 'Thank you for your feedback!';
+    } else if (this.state.feedbackAnswer === 'partial') {
+      this.state.feedbackMessage = "Thanks. We'll keep improving the system";
+    } else {
+      this.state.feedbackMessage = "Thank you for your feedback. We'll use it to improve";
+    }
+    
+    console.log('✅ Feedback submitted:', properties);
+  }
+
+  /**
+   * MVP Validation: Enviar feedback con comentario (si es 'no' o 'partial')
+   */
+  submitFeedbackWithComment(): void {
+    if (!this.state.feedbackComment.trim() && this.state.feedbackAnswer !== 'yes') {
+      // Si no hay comentario pero ya seleccionó respuesta, enviar de todos modos
+      this.submitFeedback();
+      return;
+    }
+    
+    const comment = this.state.feedbackComment.trim();
+    
+    // Enviar feedback principal con comentario
+    this.submitFeedback(comment);
+    
+    // Track evento adicional de comentario enviado
+    if (comment) {
+      this.trackingService.track('wizard_feedback_comment_submitted', {
+        comment,
+        answer: this.state.feedbackAnswer,
+        video_id: this.state.jobId,
+        objective: this.state.selectedObjective,
+        caption_version: 'v1',
+        module: this.moduleKey,
+        source: 'preview'
       });
+    }
   }
 
   // ==========================================
@@ -696,6 +722,19 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
    */
   private goToStep(step: 1 | 2 | 3 | 4): void {
     this.state.currentStep = step;
+    
+    // Track cuando se muestra el bloque de "Cómo usar este video" (paso 4)
+    if (step === 4 && !this.state.usageGuidanceViewed && this.state.usageGuidance) {
+      this.trackingService.track('usage_guidance_viewed', {
+        video_id: this.state.jobId,
+        objective: this.state.selectedObjective,
+        caption_version: 'v1',
+        module: this.moduleKey,
+        source: 'preview'
+      });
+      this.state.usageGuidanceViewed = true;
+    }
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -746,7 +785,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       module: this.moduleKey,
       jobId: this.state.jobId,
       fromFeedback: true,
-      feedbackWasPositive: this.state.feedbackHelpful
+      feedbackAnswer: this.state.feedbackAnswer
     });
 
     // Abrir modal o compartir nativo
@@ -769,10 +808,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(caption)
         .then(() => {
-          // Track acción
-          this.trackEvent('caption_copied', {
+          // Track acción con estructura completa (igual que otros eventos)
+          this.trackingService.track('caption_copied', {
+            video_id: this.state.jobId,
             objective: this.state.selectedObjective,
-            caption
+            caption_version: 'v1',
+            caption: caption,
+            module: this.moduleKey,
+            source: 'preview'
           });
           
           // Feedback visual (puedes mejorar esto con un toast/notification)

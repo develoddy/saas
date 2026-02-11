@@ -48,8 +48,8 @@ export class ModulePreviewComponent implements OnInit {
   expiresAt: Date | null = null;
   isExpired = false;
   
-  // MVP Validation Feedback
-  feedbackAnswer: 'si' | 'un_poco' | 'no' | null = null;
+  // MVP Validation Feedback (same structure as Video Express)
+  feedbackAnswer: 'yes' | 'partial' | 'no' | null = null;
   showCommentBox = false;
   feedbackComment = '';
   feedbackSubmitted = false;
@@ -201,12 +201,12 @@ export class ModulePreviewComponent implements OnInit {
   /**
    * MVP Validation: Manejar respuesta de feedback
    */
-  handleFeedbackAnswer(answer: 'si' | 'un_poco' | 'no'): void {
+  handleFeedbackAnswer(answer: 'yes' | 'partial' | 'no'): void {
     this.feedbackAnswer = answer;
-    this.showCommentBox = (answer === 'no');
+    this.showCommentBox = (answer === 'no' || answer === 'partial');
     
-    // Si no es "No", enviar tracking inmediatamente
-    if (answer !== 'no') {
+    // Si es "yes", enviar tracking inmediatamente
+    if (answer === 'yes') {
       this.submitFeedback();
     }
   }
@@ -234,14 +234,28 @@ export class ModulePreviewComponent implements OnInit {
   }
 
   /**
-   * MVP Validation: Enviar feedback con comentario (solo si respuesta es "No")
+   * MVP Validation: Enviar feedback con comentario (si es 'no' o 'partial')
    */
   submitFeedbackWithComment(): void {
-    if (this.feedbackAnswer === 'no' && this.feedbackComment.trim()) {
-      this.submitFeedback(this.feedbackComment.trim());
-    } else if (this.feedbackAnswer === 'no' && !this.feedbackComment.trim()) {
-      // Si es "No" pero no hay comentario, enviar de todos modos
+    if (!this.feedbackComment.trim() && this.feedbackAnswer !== 'yes') {
+      // Si no hay comentario pero ya seleccionó respuesta, enviar de todos modos
       this.submitFeedback();
+      return;
+    }
+    
+    const comment = this.feedbackComment.trim();
+    
+    // Enviar feedback principal con comentario
+    this.submitFeedback(comment);
+    
+    // Track evento adicional de comentario enviado
+    if (comment) {
+      this.tracking.track('wizard_feedback_comment_submitted', {
+        comment,
+        answer: this.feedbackAnswer,
+        module: this.moduleKey,
+        source: 'preview'
+      });
     }
   }
 
