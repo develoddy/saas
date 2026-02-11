@@ -263,6 +263,46 @@
             </div>
           </div>
 
+          <!-- C\u00f3mo usar este video (Usage Guidance) -->
+          <div class="video-usage-guidance" *ngIf="state.usageGuidance">
+            <div class="usage-header">
+              <i class="bi bi-lightbulb"></i>
+              <h3 class="usage-title">C\u00f3mo usar este video</h3>
+            </div>
+            
+            <div class="usage-content">
+              <div class="usage-section">
+                <div class="usage-label">Mejor plataforma</div>
+                <div class="usage-value platform">
+                  <i class="bi bi-instagram"></i>
+                  {{ state.usageGuidance.bestPlatform }}
+                </div>
+              </div>
+
+              <div class="usage-section">
+                <div class="usage-label">Texto sugerido</div>
+                <div class="usage-value caption">
+                  <div class="caption-text">{{ state.usageGuidance.suggestedCaption }}</div>
+                  <button class="btn-copy" (click)="copyCaption(state.usageGuidance.suggestedCaption)" title="Copiar">
+                    <i class="bi bi-clipboard"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="usage-section">
+                <div class="usage-label">Call to Action (CTA)</div>
+                <div class="usage-value cta">
+                  <span class="cta-badge">{{ state.usageGuidance.suggestedCTA }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="usage-footer">
+              <i class="bi bi-info-circle"></i>
+              <span>Esta gu\u00eda est\u00e1 optimizada para tu objetivo: <strong>{{ state.usageGuidance.goalLabel }}</strong></span>
+            </div>
+          </div>
+
           <!-- CTAs -->
           <div class="step-actions">
             <button 

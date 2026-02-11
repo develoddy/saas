@@ -1723,6 +1723,136 @@
       }
     }
     
+    // Video Usage Guidance (C\u00f3mo usar este video)
+    .video-usage-guidance {
+      margin: 2rem 0;
+      padding: 2rem;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border-radius: 1rem;
+      border: 2px solid #fbbf24;
+      
+      .usage-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        
+        i {
+          font-size: 1.75rem;
+          color: #d97706;
+        }
+        
+        .usage-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #000000;
+          margin: 0;
+        }
+      }
+      
+      .usage-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        
+        .usage-section {
+          .usage-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+          }
+          
+          .usage-value {
+            font-size: 1rem;
+            color: #000000;
+            
+            &.platform {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              font-weight: 600;
+              font-size: 1.125rem;
+              
+              i {
+                color: #c026d3;
+                font-size: 1.5rem;
+              }
+            }
+            
+            &.caption {
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+              background: white;
+              padding: 1rem;
+              border-radius: 0.5rem;
+              
+              .caption-text {
+                flex: 1;
+                font-size: 0.9375rem;
+                line-height: 1.5;
+              }
+              
+              .btn-copy {
+                flex-shrink: 0;
+                padding: 0.5rem 0.75rem;
+                background: #3b82f6;
+                color: white;
+                border: none;
+                border-radius: 0.375rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                
+                &:hover {
+                  background: #2563eb;
+                  transform: scale(1.05);
+                }
+                
+                i {
+                  font-size: 1rem;
+                }
+              }
+            }
+            
+            &.cta {
+              .cta-badge {
+                display: inline-block;
+                padding: 0.5rem 1rem;
+                background: #10b981;
+                color: white;
+                font-weight: 600;
+                border-radius: 0.375rem;
+                font-size: 0.9375rem;
+              }
+            }
+          }
+        }
+      }
+      
+      .usage-footer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(217, 119, 6, 0.3);
+        font-size: 0.8125rem;
+        color: #92400e;
+        
+        i {
+          font-size: 1rem;
+        }
+        
+        strong {
+          font-weight: 700;
+          color: #000000;
+        }
+      }
+    }
+    
     .feedback-section {
       margin-top: 3rem;
       padding-top: 2rem;

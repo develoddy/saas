@@ -24,6 +24,17 @@ import { TrackingService } from '../../services/tracking.service';
  * @module components/video-express-wizard
  */
 
+/**
+ * Guidance para uso del video generado
+ * Sistema determinista basado en reglas para eliminar fatiga de decisión
+ */
+interface VideoUsageGuidance {
+  goalLabel: string;
+  bestPlatform: string;
+  suggestedCaption: string;
+  suggestedCTA: string;
+}
+
 interface WizardState {
   currentStep: 1 | 2 | 3 | 4;
   
@@ -49,6 +60,9 @@ interface WizardState {
     fileSize: number;
     downloadUrl: string;
   } | null;
+  
+  // Video Usage Guidance (deterministic)
+  usageGuidance: VideoUsageGuidance | null;
   
   // Feedback & Tracking
   videoCompletedAt: Date | null; // Timestamp cuando se completó el video
@@ -141,6 +155,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     generationProgress: 0,
     currentMessage: this.loadingMessages[0],
     videoResult: null,
+    usageGuidance: null,
     videoCompletedAt: null,
     downloadedAt: null,
     feedbackSubmitted: false,
@@ -417,7 +432,10 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
               downloadUrl: status.downloadUrl!
             };
             
-            // 📅 Guardar timestamp de completado (para calcular tiempo hasta feedback)
+            // � Calcular guía de uso (determinista, basada en objetivo)
+            this.state.usageGuidance = this.getVideoUsageGuidance(this.state.selectedObjective!);
+            
+            // �📅 Guardar timestamp de completado (para calcular tiempo hasta feedback)
             this.state.videoCompletedAt = new Date();
             
             // Track success: video generado
@@ -490,6 +508,35 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   // ==========================================
 
   /**
+   * Obtiene la guía de uso determinista del video basada en el objetivo
+   * 
+   * Sistema simple de reglas para eliminar fatiga de decisión.
+   * NO genera texto dinámico, solo mapea objetivos a sugerencias predefinidas.
+   * 
+   * @param objective - El objetivo seleccionado por el usuario
+   * @returns VideoUsageGuidance con plataforma, caption y CTA recomendados
+   */
+  private getVideoUsageGuidance(objective: 'organic' | 'ads'): VideoUsageGuidance {
+    // Mapeo determinista: objetivo → guía de uso
+    const guidanceMap: Record<'organic' | 'ads', VideoUsageGuidance> = {
+      organic: {
+        goalLabel: 'Engagement',
+        bestPlatform: 'Instagram Reels',
+        suggestedCaption: 'Así es como los clientes aman este producto 👇',
+        suggestedCTA: 'Guárdalo para más tarde'
+      },
+      ads: {
+        goalLabel: 'Ventas',
+        bestPlatform: 'Instagram Ads',
+        suggestedCaption: '¿Aún lo estás pensando? Aquí te mostramos por qué vale la pena.',
+        suggestedCTA: 'Comprar ahora'
+      }
+    };
+
+    return guidanceMap[objective];
+  }
+
+  /**
    * Descarga el video generado
    */
   downloadVideo(): void {
@@ -560,6 +607,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       generationProgress: 0,
       currentMessage: this.loadingMessages[0],
       videoResult: null,
+      usageGuidance: null,
       videoCompletedAt: null,
       downloadedAt: null,
       feedbackSubmitted: false,
@@ -711,6 +759,32 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     } else {
       // Fallback: mostrar opciones de compartir
       alert('¡Comparte tu video en Instagram, Facebook o TikTok para maximizar su impacto! 🚀');
+    }
+  }
+
+  /**
+   * Copiar caption sugerido al portapapeles
+   */
+  copyCaption(caption: string): void {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(caption)
+        .then(() => {
+          // Track acción
+          this.trackEvent('caption_copied', {
+            objective: this.state.selectedObjective,
+            caption
+          });
+          
+          // Feedback visual (puedes mejorar esto con un toast/notification)
+          alert('¡Texto copiado! Ahora pégalo en tu publicación.');
+        })
+        .catch(err => {
+          console.error('Error copiando al portapapeles:', err);
+          alert('No pudimos copiar el texto. Inténtalo manualmente.');
+        });
+    } else {
+      // Fallback para navegadores antiguos
+      alert('Copia este texto:\n\n' + caption);
     }
   }
 
