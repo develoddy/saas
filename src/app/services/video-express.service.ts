@@ -43,6 +43,8 @@ export interface VideoStatusResponse {
   fileSize?: number;
   downloadUrl?: string;
   error?: string;
+  isSimulated?: boolean; // true si es video placeholder (SIMULATION_MODE o límite alcanzado)
+  limitReached?: boolean; // true si se alcanzó el límite de créditos
 }
 
 export interface FeedbackRequest {
@@ -53,6 +55,20 @@ export interface FeedbackRequest {
 export interface FeedbackResponse {
   success: boolean;
   message: string;
+}
+
+export interface CreditStatusResponse {
+  real_videos_generated: number;
+  limit: number;
+  remaining: number;
+  percentage_used: number;
+  can_generate: boolean;
+  last_reset: string | null;
+  history: Array<{
+    requestId: string;
+    timestamp: string;
+    count: number;
+  }>;
 }
 
 @Injectable({
@@ -260,6 +276,37 @@ export class VideoExpressService {
 
     console.error('❌ VideoExpressService Error:', error);
     return throwError(() => new Error(errorMessage));
+  }
+
+  /**
+   * Obtiene el estado actual del contador de créditos
+   * (Solo disponible para usuarios autenticados)
+   * 
+   * @returns Observable con el estado del contador
+   */
+  getCreditStatus(): Observable<CreditStatusResponse> {
+    return this.http.get<{ status: number; data: CreditStatusResponse }>(
+      `${environment.API_URL}/video-express/credit-status`
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * Resetea el contador de créditos
+   * (Solo disponible para administradores)
+   * 
+   * @returns Observable con el nuevo estado del contador
+   */
+  resetCreditCounter(): Observable<CreditStatusResponse> {
+    return this.http.post<{ status: number; message: string; data: CreditStatusResponse }>(
+      `${environment.API_URL}/video-express/credit-reset`,
+      {}
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
   }
 
   /**
