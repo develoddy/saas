@@ -193,7 +193,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     selectedObjective: null,
     selectedAnimation: 'parallax', // Default: Parallax 3D
     jobId: null,
-    generationProgress: 0,
+    generationProgress: 5, // 🎯 Iniciar en 5% para feedback inmediato
     currentMessage: this.loadingMessages[0],
     videoResult: null,
     usageGuidance: null,
@@ -299,10 +299,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   onImageSelected(file: File): void {
     this.state.error = null;
     
+    // 🚀 Activar loading inmediatamente
+    this.state.loading = true;
+    
     // Validar imagen
     const validation = this.videoExpressService.validateImageFile(file);
     if (validation !== true) {
       this.state.error = validation;
+      this.state.loading = false; // Desactivar loading si hay error
       return;
     }
     
@@ -311,11 +315,15 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       this.videoExpressService.revokeImagePreview(this.state.imagePreviewUrl);
     }
     
-    // Guardar imagen y crear preview
+    // Guardar imagen
     this.state.uploadedImage = file;
-    this.state.imagePreviewUrl = this.videoExpressService.createImagePreview(file);
     
-    console.log('✅ Imagen seleccionada:', file.name);
+    // 🚀 Crear preview con setTimeout para mostrar loading (mejora UX)
+    setTimeout(() => {
+      this.state.imagePreviewUrl = this.videoExpressService.createImagePreview(file);
+      this.state.loading = false;
+      console.log('✅ Imagen procesada:', file.name);
+    }, 600); // 600ms mínimo para percepción suave del skeleton
   }
 
   /**
@@ -367,6 +375,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     this.state.uploadedImage = null;
     this.state.imagePreviewUrl = null;
     this.state.error = null;
+    this.state.loading = false;
   }
 
   // ==========================================
@@ -462,9 +471,16 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
         next: (status: VideoStatusResponse) => {
           console.log('📊 Estado del video:', status);
           
-          // Actualizar progreso
-          if (status.progress !== undefined) {
+          // Actualizar progreso (garantizar que siempre haya un valor)
+          if (status.progress !== undefined && status.progress !== null) {
             this.state.generationProgress = status.progress;
+            console.log(`📈 Progreso actualizado: ${status.progress}%`);
+          } else {
+            // Fallback: incrementar progreso localmente si el backend no envía
+            console.log('⚠️ Backend no envió progreso, usando fallback local');
+            if (this.state.generationProgress < 90) {
+              this.state.generationProgress += 2; // Incremento lento
+            }
           }
           
           // Si completó

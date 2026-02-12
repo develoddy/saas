@@ -54,8 +54,20 @@
 
           <!-- Upload Area -->
           <div class="upload-area">
+            <!-- Loading State (🚀 NUEVO - mientras procesa imagen) -->
+            <div class="image-loading" *ngIf="state.loading && !state.imagePreviewUrl">
+              <div class="loading-skeleton">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-text"></div>
+              </div>
+              <p class="loading-message">
+                <i class="spinner"></i>
+                Processing image...
+              </p>
+            </div>
+            
             <!-- Preview Mode (cuando ya hay imagen) -->
-            <div class="image-preview" *ngIf="state.imagePreviewUrl">
+            <div class="image-preview" *ngIf="state.imagePreviewUrl && !state.loading">
               <img [src]="state.imagePreviewUrl" alt="Preview">
               <div class="preview-filename">{{ state.uploadedImage?.name }}</div>
               <button class="btn-change-image" (click)="changeImage()">
@@ -65,7 +77,7 @@
 
             <!-- Upload Mode (cuando no hay imagen) -->
             <div class="upload-zone" 
-                 *ngIf="!state.imagePreviewUrl"
+                 *ngIf="!state.imagePreviewUrl && !state.loading"
                  (drop)="onDrop($event)"
                  (dragover)="onDragOver($event)"
                  (dragleave)="onDragLeave($event)"
