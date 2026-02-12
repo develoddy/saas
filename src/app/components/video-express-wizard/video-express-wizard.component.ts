@@ -449,11 +449,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     
     const startTime = Date.now();
     
+    // 🔔 Solicitar permisos de notificaciones del browser
+    this.requestNotificationPermission();
+    
     // Iniciar mensajes rotativos
     this.startRotatingMessages();
     
-    // Polling cada 5 segundos
-    this.videoExpressService.pollVideoStatus(this.state.jobId, 5000)
+    // Polling cada 2 segundos (optimizado para reducir latencia)
+    this.videoExpressService.pollVideoStatus(this.state.jobId, 2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (status: VideoStatusResponse) => {
@@ -503,6 +506,10 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
             // Detener polling y mensajes
             this.videoExpressService.stopPolling();
             this.stopRotatingMessages();
+            
+            // 🔔 Mostrar notificación del browser
+            this.showBrowserNotification('Your video is ready!', 
+              'Click here to view your cinematic product video');
             
             // Avanzar a paso 4
             setTimeout(() => {
@@ -908,6 +915,73 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
    */
   closeNotification(id: number): void {
     this.notifications = this.notifications.filter(n => n.id !== id);
+  }
+  
+  // ==========================================
+  // Browser Notifications (🚀 UX OPTIMIZADO)
+  // ==========================================
+  
+  /**
+   * Solicitar permisos de notificaciones del browser
+   */
+  private requestNotificationPermission(): void {
+    if (!('Notification' in window)) {
+      console.log('❌ Browser no soporta notificaciones');
+      return;
+    }
+    
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        console.log('🔔 Permisos de notificación:', permission);
+        
+        // Track si el usuario acepta o rechaza
+        this.trackingService.track('notification_permission_response', {
+          permission,
+          module: this.moduleKey,
+          context: 'video_generation'
+        });
+      });
+    }
+  }
+  
+  /**
+   * Mostrar notificación del browser
+   */
+  private showBrowserNotification(title: string, body: string): void {
+    if (!('Notification' in window)) {
+      return;
+    }
+    
+    if (Notification.permission === 'granted') {
+      const notification = new Notification(title, {
+        body,
+        icon: '/assets/icons/video-express-icon.png',
+        badge: '/assets/icons/badge.png',
+        tag: 'video-ready',
+        requireInteraction: false,
+        silent: false
+      });
+      
+      // Click en notificación = volver a la pestaña
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+        
+        // Track click en notificación
+        this.trackingService.track('browser_notification_clicked', {
+          module: this.moduleKey,
+          jobId: this.state.jobId
+        });
+      };
+      
+      // Auto-cerrar después de 5 segundos
+      setTimeout(() => notification.close(), 5000);
+      
+      console.log('🔔 Notificación del browser mostrada');
+    } else if (Notification.permission === 'default') {
+      // Si todavía no han respondido, solicitar permisos
+      this.requestNotificationPermission();
+    }
   }
   
   // ==========================================

@@ -189,34 +189,56 @@
       <section class="wizard-step step-generating" *ngIf="state.currentStep === 3">
         <div class="step-content">
           
-          <!-- Product Image with Overlay -->
+          <!-- Product Image with Enhanced Overlay (🚀 UX OPTIMIZADO) -->
           <div class="generating-preview">
             <img 
               [src]="state.imagePreviewUrl" 
-              alt="Tu producto"
+              alt="Your product"
               class="generating-image">
             <div class="generating-overlay">
-              <div class="spinner-large"></div>
+              <div class="overlay-content">
+                <div class="spinner-large"></div>
+                <div class="progress-label">{{ state.generationProgress }}%</div>
+                <div class="progress-status">{{ state.currentMessage }}</div>
+              </div>
             </div>
           </div>
 
-          <h2 class="step-title">We're creating your video...</h2>
+          <h2 class="step-title">Creating your cinematic video...</h2>
           
           <!-- Rotating Messages -->
           <p class="generating-message">
-            {{ state.currentMessage }}
+            <i class="bi bi-magic"></i> {{ state.currentMessage }}
           </p>
 
           <p class="generating-hint">
-            This will take between 30 and 60 seconds.<br>
-            Don't close this window.
+            <i class="bi bi-clock-history"></i>
+            This usually takes 60-90 seconds.<br>
+            <strong>Don't close this window</strong> – we'll notify you when it's ready!
           </p>
 
-          <!-- Progress Bar -->
+          <!-- Progress Bar with Percentage (🚀 UX OPTIMIZADO) -->
           <div class="progress-bar-container">
-            <div 
-              class="progress-bar-fill"
-              [style.width.%]="state.generationProgress">
+            <div class="progress-bar-wrapper">
+              <div 
+                class="progress-bar-fill"
+                [style.width.%]="state.generationProgress">
+              </div>
+              <div class="progress-percentage">{{ state.generationProgress }}%</div>
+            </div>
+            <div class="progress-steps">
+              <span class="step-label" [class.active]="state.generationProgress >= 25">
+                <i class="bi bi-check-circle-fill"></i> Analyzing
+              </span>
+              <span class="step-label" [class.active]="state.generationProgress >= 50">
+                <i class="bi bi-check-circle-fill"></i> Applying motion
+              </span>
+              <span class="step-label" [class.active]="state.generationProgress >= 75">
+                <i class="bi bi-check-circle-fill"></i> Optimizing
+              </span>
+              <span class="step-label" [class.active]="state.generationProgress >= 95">
+                <i class="bi bi-check-circle-fill"></i> Finalizing
+              </span>
             </div>
           </div>
         </div>
