@@ -219,6 +219,83 @@ export class TrackingService {
     return `sess_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
+  // ==========================================
+  // Monetization Validation Events (Lean MVP)
+  // ==========================================
+  
+  /**
+   * Track cuando usuario hace clic en "Upgrade to Pro"
+   * Evento clave para medir willingness to pay
+   */
+  trackMonetizationIntent(data: {
+    module: string;
+    source: string;
+    feature: string;
+    [key: string]: any;
+  }): void {
+    this.track('monetization_intent_clicked', {
+      ...data
+    });
+    
+    console.log('💰 Monetization intent tracked:', data);
+  }
+  
+  /**
+   * Track cuando usuario submit email en Pro modal
+   * Conversión crítica: intent → qualified lead
+   */
+  trackProEmailSubmitted(data: {
+    email: string;
+    module: string;
+    source: string;
+    offer: string;
+  }): void {
+    // Hash email básico (client-side) para privacidad
+    const emailHash = this.simpleHash(data.email);
+    
+    this.track('pro_email_submitted', {
+      email_hash: emailHash,
+      email_domain: data.email.split('@')[1],
+      module: data.module,
+      source: data.source,
+      offer: data.offer
+    });
+    
+    console.log('📧 Pro email submitted:', {
+      email_domain: data.email.split('@')[1],
+      module: data.module
+    });
+  }
+  
+  /**
+   * Track cuando usuario cierra Pro modal sin convertir
+   * Importante para calcular drop-off rate
+   */
+  trackProModalDismissed(data: {
+    module: string;
+    reason?: 'close_button' | 'overlay_click' | 'timeout';
+    time_spent?: number;
+  }): void {
+    this.track('pro_modal_dismissed', {
+      module: data.module,
+      reason: data.reason || 'unknown',
+      time_spent: data.time_spent
+    });
+  }
+  
+  /**
+   * Simple hash function (FNV-1a) para emails
+   * No es criptográfico, solo para anonimización básica
+   */
+  private simpleHash(str: string): string {
+    let hash = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      hash ^= str.charCodeAt(i);
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+    return (hash >>> 0).toString(16);
+  }
+
   private loadUserContext(): void {
     const userId = localStorage.getItem('tracking_user_id');
     const tenantId = localStorage.getItem('tracking_tenant_id');

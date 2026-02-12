@@ -392,6 +392,21 @@
               </p>
             </div>
 
+            <!-- 💰 Pro Upgrade Block (Monetization Experiment) -->
+            <app-pro-upgrade-block
+              *ngIf="proFeatures.length > 0"
+              [module]="moduleKey"
+              [features]="proFeatures"
+              [contextData]="{
+                module: moduleKey,
+                source: 'preview',
+                feature: 'pro_upgrade',
+                objective: state.selectedObjective,
+                animation: state.selectedAnimation
+              }"
+              (onUpgradeClick)="handleProUpgrade($event)">
+            </app-pro-upgrade-block>
+
             <!-- Smart CTAs based on feedback -->
             <div class="next-actions" *ngIf="state.feedbackAnswer === 'yes'">
               <h5 class="next-actions-title">What do you want to do now?</h5>
@@ -468,6 +483,14 @@
       </div>
     </div>
   </footer>
+
+  <!-- Pro Modal (Soft Gate) -->
+  <app-pro-modal
+    [module]="moduleKey"
+    [isVisible]="showProModal"
+    (onClose)="handleProModalClose()"
+    (onEmailSubmit)="handleProEmailSubmit($event)">
+  </app-pro-modal>
 
   <!-- Notification System (Toast) -->
   <div class="notification-container">

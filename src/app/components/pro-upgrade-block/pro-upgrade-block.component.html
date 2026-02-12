@@ -1,0 +1,35 @@
+<div class="pro-upgrade-block" [class]="'variant-' + variant">
+  <div class="pro-header">
+    <div class="pro-badge">
+      <i class="bi bi-star-fill"></i>
+      <span>PRO</span>
+    </div>
+    <h3 class="pro-title">Unlock Pro Version</h3>
+    <p class="pro-subtitle">Get access to advanced features and automation</p>
+  </div>
+  
+  <div class="pro-features">
+    <div class="feature-item" *ngFor="let feature of features">
+      <i class="feature-icon" [class]="feature.icon"></i>
+      <div class="feature-content">
+        <span class="feature-label">{{ feature.label }}</span>
+        <span class="feature-description" *ngIf="feature.description">
+          {{ feature.description }}
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <button 
+    class="btn-upgrade"
+    (click)="handleUpgradeClick()">
+    <i class="bi bi-unlock-fill"></i>
+    <span>{{ ctaText }}</span>
+    <i class="bi bi-arrow-right"></i>
+  </button>
+  
+  <div class="pro-footer">
+    <i class="bi bi-shield-check"></i>
+    <span>Beta access with <strong>50% discount</strong></span>
+  </div>
+</div>

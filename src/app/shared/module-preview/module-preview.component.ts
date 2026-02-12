@@ -2,6 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModulePreviewService, PreviewData } from '../../services/module-preview.service';
 import { TrackingService } from '../../services/tracking.service';
+import { ProFeature, MonetizationContext } from '../../components/pro-upgrade-block/pro-upgrade-block.component';
+import { ProEmailData } from '../../components/pro-modal/pro-modal.component';
 
 /**
  * Module Preview Component
@@ -57,6 +59,11 @@ export class ModulePreviewComponent implements OnInit {
   emailForSequence = '';
   emailSubmitted = false;
   
+  // Monetization Experiment (Lean MVP)
+  showProModal = false;
+  proFeatures: ProFeature[] = [];
+  proContextData: MonetizationContext | null = null;
+  
   constructor(
     private previewService: ModulePreviewService,
     private router: Router,
@@ -72,6 +79,9 @@ export class ModulePreviewComponent implements OnInit {
     if (this.previewData) {
       this.extractMetadata();
     }
+    
+    // Configurar features Pro según módulo
+    this.setupProFeatures();
   }
 
   /**
@@ -300,5 +310,99 @@ export class ModulePreviewComponent implements OnInit {
     this.error = null;
     
     console.log('✅ Email submitted:', email);
+  }
+  
+  // ==========================================
+  // Monetization Experiment Methods
+  // ==========================================
+  
+  /**
+   * Configurar features Pro según el módulo
+   */
+  private setupProFeatures(): void {
+    // Mapeo dinámico de features por módulo
+    const featuresMap: Record<string, ProFeature[]> = {
+      mailflow: [
+        {
+          icon: 'bi bi-envelope-paper-fill',
+          label: 'Generate 10-email sequence',
+          description: 'Get complete automation-ready flows'
+        },
+        {
+          icon: 'bi bi-download',
+          label: 'Export to Mailchimp',
+          description: 'One-click integration with your ESP'
+        },
+        {
+          icon: 'bi bi-graph-up-arrow',
+          label: 'Advanced analytics',
+          description: 'Track opens, clicks, and conversions'
+        }
+      ],
+      'video-express': [
+        {
+          icon: 'bi bi-collection-play-fill',
+          label: 'Batch video generation',
+          description: 'Upload 50+ images at once'
+        },
+        {
+          icon: 'bi bi-badge-hd-fill',
+          label: '4K export quality',
+          description: 'Professional-grade output'
+        },
+        {
+          icon: 'bi bi-palette-fill',
+          label: 'Custom branding',
+          description: 'Add logos, colors, and fonts'
+        }
+      ]
+    };
+    
+    this.proFeatures = featuresMap[this.moduleKey] || [];
+  }
+  
+  /**
+   * Handle click en "Upgrade to Pro"
+   */
+  handleProUpgrade(contextData: MonetizationContext): void {
+    // Track monetization intent
+    this.tracking.trackMonetizationIntent({
+      ...contextData,
+      industry: (this.previewData as any)?.industry || 'unknown'
+    });
+    
+    // Guardar contexto y mostrar modal
+    this.proContextData = contextData;
+    this.showProModal = true;
+    
+    console.log('💰 Pro upgrade clicked:', contextData);
+  }
+  
+  /**
+   * Handle submit de email en Pro Modal
+   */
+  handleProEmailSubmit(emailData: ProEmailData): void {
+    // Track conversion (intent → email)
+    this.tracking.trackProEmailSubmitted(emailData);
+    
+    console.log('📧 Pro email submitted:', emailData);
+    
+    // Modal se cerrará automáticamente después de 3 segundos
+  }
+  
+  /**
+   * Handle cierre de Pro Modal
+   */
+  handleProModalClose(): void {
+    if (!this.showProModal) return;
+    
+    // Track dismissal para medir drop-off
+    this.tracking.trackProModalDismissed({
+      module: this.moduleKey,
+      reason: 'close_button'
+    });
+    
+    this.showProModal = false;
+    this.proContextData = null;
   }
 }

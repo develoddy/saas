@@ -1,0 +1,114 @@
+<div class="pro-modal-overlay" 
+     *ngIf="isVisible"
+     (click)="closeModal()"
+     [@fadeIn]>
+  
+  <div class="pro-modal" 
+       (click)="stopPropagation($event)"
+       [@slideUp]>
+    
+    <!-- Close Button -->
+    <button class="modal-close" 
+            (click)="closeModal()" 
+            [disabled]="isSubmitting"
+            aria-label="Close modal">
+      <i class="bi bi-x"></i>
+    </button>
+    
+    <!-- ===== SUCCESS STATE ===== -->
+    <div class="modal-content success-state" *ngIf="isSuccess">
+      <div class="success-icon">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      
+      <h2 class="modal-title">You're In! 🎉</h2>
+      
+      <p class="modal-description">
+        Your spot is reserved. We'll email you the moment Pro launches with your 
+        exclusive <strong>50% founding discount</strong>.
+      </p>
+      
+      <div class="success-badge">
+        <i class="bi bi-shield-check"></i>
+        <span>Founding Member Access</span>
+      </div>
+    </div>
+    
+    <!-- ===== FORM STATE ===== -->
+    <div class="modal-content form-state" *ngIf="!isSuccess">
+      
+      <!-- Header -->
+      <div class="modal-header">
+        <div class="pro-badge">
+          <i class="bi bi-star-fill"></i>
+          <span>Beta Launch</span>
+        </div>
+        
+        <h2 class="modal-title">Join the Founding Members</h2>
+        
+        <p class="modal-description">
+          Lock in <strong>lifetime 50% discount</strong> when you reserve your spot now. 
+          Limited to first 100 members.
+        </p>
+      </div>
+      
+      <!-- Benefits -->
+      <div class="modal-benefits">
+        <div class="benefit-item">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>First access to all Pro features</span>
+        </div>
+        <div class="benefit-item">
+          <i class="bi bi-infinity"></i>
+          <span>50% off forever (no auto-renewal tricks)</span>
+        </div>
+        <div class="benefit-item">
+          <i class="bi bi-headset"></i>
+          <span>Direct line to founder support</span>
+        </div>
+      </div>
+      
+      <!-- Form -->
+      <form [formGroup]="emailForm" (ngSubmit)="submitEmail()" class="modal-form">
+        <div class="form-group">
+          <label for="proEmail">Your work email</label>
+          <input 
+            type="email" 
+            id="proEmail"
+            formControlName="email"
+            placeholder="you@company.com"
+            autocomplete="email"
+            class="form-control"
+            [class.is-invalid]="emailForm.get('email')?.invalid && emailForm.get('email')?.touched"
+            [disabled]="isSubmitting">
+          <div class="invalid-feedback" 
+               *ngIf="emailForm.get('email')?.invalid && emailForm.get('email')?.touched">
+            Please enter a valid email
+          </div>
+        </div>
+        
+        <button 
+          type="submit"
+          class="btn-submit"
+          [disabled]="emailForm.invalid || isSubmitting">
+          <span *ngIf="!isSubmitting">
+            <i class="bi bi-lightning-charge-fill"></i>
+            Reserve Founding Member Spot
+          </span>
+          <span *ngIf="isSubmitting">
+            <i class="spinner"></i>
+            Securing your spot...
+          </span>
+        </button>
+      </form>
+      
+      <!-- Footer -->
+      <div class="modal-footer">
+        <i class="bi bi-shield-fill-check"></i>
+        <span>Zero spam. Cancel anytime. Your data stays yours.</span>
+      </div>
+      
+    </div>
+    
+  </div>
+</div>

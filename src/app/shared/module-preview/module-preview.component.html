@@ -81,6 +81,20 @@
       <p>Thank you for your feedback!</p>
     </div>
     
+    <!-- 💰 Pro Upgrade Block (Monetization Experiment) -->
+    <app-pro-upgrade-block
+      *ngIf="feedbackSubmitted && !isAuthenticated && !isExpired && proFeatures.length > 0"
+      [module]="moduleKey"
+      [features]="proFeatures"
+      [contextData]="{
+        module: moduleKey,
+        source: 'preview',
+        feature: 'pro_upgrade',
+        industry: previewData['industry']
+      }"
+      (onUpgradeClick)="handleProUpgrade($event)">
+    </app-pro-upgrade-block>
+    
     <!-- CTA Button -->
     <div class="cta-block" *ngIf="feedbackSubmitted && !showEmailCapture">
       <button 
@@ -226,3 +240,11 @@
     Generate Preview
   </button>
 </div>
+
+<!-- Pro Modal (Soft Gate) -->
+<app-pro-modal
+  [module]="moduleKey"
+  [isVisible]="showProModal"
+  (onClose)="handleProModalClose()"
+  (onEmailSubmit)="handleProEmailSubmit($event)">
+</app-pro-modal>

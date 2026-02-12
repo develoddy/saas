@@ -5,6 +5,8 @@ import { takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { VideoExpressService, VideoStatusResponse } from '../../services/video-express.service';
 import { TrackingService } from '../../services/tracking.service';
+import { ProFeature, MonetizationContext } from '../pro-upgrade-block/pro-upgrade-block.component';
+import { ProEmailData } from '../pro-modal/pro-modal.component';
 
 /**
  * Video Express Wizard Component
@@ -130,6 +132,26 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   // Notification system
   notifications: Notification[] = [];
   private notificationIdCounter = 0;
+  
+  // Monetization Experiment (Lean MVP)
+  showProModal = false;
+  proFeatures: ProFeature[] = [
+    {
+      icon: 'bi bi-collection-play-fill',
+      label: 'Batch video generation',
+      description: 'Upload 50+ images at once'
+    },
+    {
+      icon: 'bi bi-badge-hd-fill',
+      label: '4K export quality',
+      description: 'Professional-grade output'
+    },
+    {
+      icon: 'bi bi-palette-fill',
+      label: 'Custom branding',
+      description: 'Add logos, colors, and fonts'
+    }
+  ];
   
   // Drag & drop state
   isDragOver: boolean = false;
@@ -886,5 +908,54 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
    */
   closeNotification(id: number): void {
     this.notifications = this.notifications.filter(n => n.id !== id);
+  }
+  
+  // ==========================================
+  // Monetization Experiment Methods
+  // ==========================================
+  
+  /**
+   * Handle click en "Upgrade to Pro"
+   */
+  handleProUpgrade(contextData: MonetizationContext): void {
+    // Track monetization intent
+    this.trackingService.trackMonetizationIntent({
+      ...contextData,
+      video_id: this.state.jobId,
+      objective: this.state.selectedObjective,
+      animation: this.state.selectedAnimation
+    });
+    
+    // Mostrar modal
+    this.showProModal = true;
+    
+    console.log('💰 Pro upgrade clicked:', contextData);
+  }
+  
+  /**
+   * Handle submit de email en Pro Modal
+   */
+  handleProEmailSubmit(emailData: ProEmailData): void {
+    // Track conversion (intent → email)
+    this.trackingService.trackProEmailSubmitted(emailData);
+    
+    console.log('📧 Pro email submitted:', emailData);
+    
+    // Modal se cerrará automáticamente después de 3 segundos
+  }
+  
+  /**
+   * Handle cierre de Pro Modal
+   */
+  handleProModalClose(): void {
+    if (!this.showProModal) return;
+    
+    // Track dismissal para medir drop-off
+    this.trackingService.trackProModalDismissed({
+      module: this.moduleKey,
+      reason: 'close_button'
+    });
+    
+    this.showProModal = false;
   }
 }

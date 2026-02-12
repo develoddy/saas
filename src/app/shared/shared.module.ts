@@ -5,11 +5,15 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { TrialBannerComponent } from './components/trial-banner/trial-banner.component';
 import { ModulePreviewComponent } from './module-preview/module-preview.component';
+import { ProUpgradeBlockComponent } from '../components/pro-upgrade-block/pro-upgrade-block.component';
+import { ProModalComponent } from '../components/pro-modal/pro-modal.component';
 
 @NgModule({
   declarations: [
     TrialBannerComponent,
-    ModulePreviewComponent
+    ModulePreviewComponent,
+    ProUpgradeBlockComponent,
+    ProModalComponent
   ],
   imports: [
     CommonModule,
@@ -19,7 +23,9 @@ import { ModulePreviewComponent } from './module-preview/module-preview.componen
   ],
   exports: [
     TrialBannerComponent,
-    ModulePreviewComponent
+    ModulePreviewComponent,
+    ProUpgradeBlockComponent,
+    ProModalComponent
   ]
 })
 export class SharedModule { }
