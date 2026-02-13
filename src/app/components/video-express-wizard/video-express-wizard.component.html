@@ -435,7 +435,7 @@
               [features]="proFeatures"
               [contextData]="{
                 module: moduleKey,
-                source: 'preview',
+                source: isInternalAccess ? 'admin' : 'preview',
                 feature: 'pro_upgrade',
                 objective: state.selectedObjective,
                 animation: state.selectedAnimation

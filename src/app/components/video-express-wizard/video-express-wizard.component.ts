@@ -118,6 +118,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   
   private destroy$ = new Subject<void>();
   
+  // 🎯 FASE 2: Tracking Source (admin vs preview)
+  public isInternalAccess: boolean = false; // true si acceso con ?internal=true
+  
   // Mensajes rotativos para step 3
   private readonly loadingMessages = [
     'Analyzing your product...',
@@ -238,7 +241,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     this.trackingService.pageView('module_preview_started', {
       module: this.moduleKey,
       moduleName: this.moduleName,
-      source: 'preview',
+      source: this.isInternalAccess ? 'admin' : 'preview',
       wizardType: 'custom'
     });
     
@@ -284,7 +287,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   private async validateModuleStatus(): Promise<boolean> {
     try {
       // Detectar si es acceso interno desde Admin Panel
-      const isInternalAccess = this.route.snapshot.queryParams['internal'] === 'true';
+      this.isInternalAccess = this.route.snapshot.queryParams['internal'] === 'true';
       
       let moduleStatus: string;
       
@@ -314,12 +317,12 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       console.log('🔒 Video Express - Status validation:', {
         module: this.moduleKey,
         status: moduleStatus,
-        isInternalAccess
+        isInternalAccess: this.isInternalAccess
       });
       
       // ❌ Bloquear acceso si:
       // - Status = 'testing' Y NO tiene acceso interno autorizado
-      if (moduleStatus === 'testing' && !isInternalAccess) {
+      if (moduleStatus === 'testing' && !this.isInternalAccess) {
         console.warn(`⚠️ Module '${this.moduleKey}' is in testing - public access blocked`);
         return false;
       }
@@ -811,7 +814,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     const properties: any = {
       answer: this.state.feedbackAnswer,
       module: this.moduleKey,
-      source: 'preview',
+      source: this.isInternalAccess ? 'admin' : 'preview',
       video_id: this.state.jobId,
       objective: this.state.selectedObjective,
       caption_version: 'v1'
@@ -862,7 +865,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
         objective: this.state.selectedObjective,
         caption_version: 'v1',
         module: this.moduleKey,
-        source: 'preview'
+        source: this.isInternalAccess ? 'admin' : 'preview'
       });
     }
   }
@@ -884,7 +887,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
         objective: this.state.selectedObjective,
         caption_version: 'v1',
         module: this.moduleKey,
-        source: 'preview'
+        source: this.isInternalAccess ? 'admin' : 'preview'
       });
       this.state.usageGuidanceViewed = true;
     }
@@ -969,7 +972,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
             caption_version: 'v1',
             caption: caption,
             module: this.moduleKey,
-            source: 'preview'
+            source: this.isInternalAccess ? 'admin' : 'preview'
           });
           
           // Feedback visual profesional
