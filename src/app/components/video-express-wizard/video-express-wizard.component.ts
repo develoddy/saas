@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { VideoExpressService, VideoStatusResponse } from '../../services/video-express.service';
 import { TrackingService } from '../../services/tracking.service';
+import { ModulePreviewService } from '../../services/module-preview.service';
 import { ProFeature, MonetizationContext } from '../pro-upgrade-block/pro-upgrade-block.component';
 import { ProEmailData } from '../pro-modal/pro-modal.component';
 
@@ -87,6 +88,9 @@ interface WizardState {
   
   // Tracking flags para evitar duplicados
   usageGuidanceViewed: boolean;
+  
+  // Module Access Control (FASE 1)
+  isBlocked: boolean; // True si el módulo está bloqueado (testing sin ?internal=true)
   
   // General
   error: string | null;
@@ -205,6 +209,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     feedbackComment: '',
     feedbackMessage: null,
     usageGuidanceViewed: false,
+    isBlocked: false,
     error: null,
     loading: false
   };
@@ -212,10 +217,23 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   constructor(
     private videoExpressService: VideoExpressService,
     private trackingService: TrackingService,
-    private router: Router
+    private previewService: ModulePreviewService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    // ✅ FASE 1: Validar status del módulo antes de permitir acceso
+    const isAccessAllowed = await this.validateModuleStatus();
+    
+    if (!isAccessAllowed) {
+      // Bloquear wizard completamente - NO permitir interacción
+      this.state.isBlocked = true;
+      this.state.error = '🚀 Coming soon! This module is in private testing.';
+      this.state.loading = false;
+      return;
+    }
+    
     // Track wizard started con integración de módulos
     this.trackingService.pageView('module_preview_started', {
       module: this.moduleKey,
@@ -243,6 +261,82 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     }
     
     this.videoExpressService.stopPolling();
+  }
+
+  // ==========================================
+  // MODULE STATUS VALIDATION (FASE 1)
+  // ==========================================
+
+  /**
+   * Validar status del módulo antes de permitir acceso
+   * 
+   * Lógica:
+   * - status='testing' + NO ?internal=true → ❌ Bloquear (coming soon)
+   * - status='testing' + ?internal=true → ✅ Permitir (Admin Panel)
+   * - status='live' → ✅ Permitir (público)
+   * 
+   * Fallback para módulos custom (video-express):
+   * - Si no hay config en BD, usar status hardcoded (live por defecto)
+   * - Esto permite que wizards custom funcionen sin depender de BD
+   * 
+   * @returns true si el acceso está permitido, false si debe bloquearse
+   */
+  private async validateModuleStatus(): Promise<boolean> {
+    try {
+      // Detectar si es acceso interno desde Admin Panel
+      const isInternalAccess = this.route.snapshot.queryParams['internal'] === 'true';
+      
+      let moduleStatus: string;
+      
+      // Intentar obtener configuración del módulo desde backend
+      try {
+        const response = await this.previewService.getPreviewConfig(this.moduleKey).toPromise();
+        
+        if (response && response.success && response.config) {
+          moduleStatus = response.config.status;
+          console.log('✅ Loaded module config from backend:', { moduleKey: this.moduleKey, status: moduleStatus });
+        } else {
+          throw new Error('Config not found in backend');
+        }
+        
+      } catch (backendError) {
+        // ✅ FALLBACK: Si no hay config en BD, usar status hardcoded
+        // Esto permite que módulos custom como video-express funcionen sin depender de BD
+        console.warn(`⚠️ No backend config for '${this.moduleKey}', using hardcoded status`);
+        
+        // Por defecto: 'live' (wizard custom ya está en producción)
+        // Si se requiere testing, agregar el módulo a la tabla modules en BD
+        moduleStatus = 'live';
+        
+        console.log('✅ Using hardcoded status:', { moduleKey: this.moduleKey, status: moduleStatus });
+      }
+      
+      console.log('🔒 Video Express - Status validation:', {
+        module: this.moduleKey,
+        status: moduleStatus,
+        isInternalAccess
+      });
+      
+      // ❌ Bloquear acceso si:
+      // - Status = 'testing' Y NO tiene acceso interno autorizado
+      if (moduleStatus === 'testing' && !isInternalAccess) {
+        console.warn(`⚠️ Module '${this.moduleKey}' is in testing - public access blocked`);
+        return false;
+      }
+      
+      // ✅ Permitir acceso si:
+      // - Status = 'live' (público)
+      // - Status = 'testing' CON ?internal=true (Admin Panel)
+      console.log(`✅ Access granted to module '${this.moduleKey}'`);
+      return true;
+      
+    } catch (error) {
+      console.error('❌ Error validating module status:', error);
+      // En caso de error crítico, permitir acceso (fail-safe para módulos custom)
+      // Video Express ya está funcionando en producción, no debe bloquearse por error de validación
+      console.warn('⚠️ Bypassing validation due to error (custom module)');
+      return true;
+    }
   }
 
   // ==========================================
@@ -686,6 +780,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       feedbackComment: '',
       feedbackMessage: null,
       usageGuidanceViewed: false,
+      isBlocked: false,
       error: null,
       loading: false
     };

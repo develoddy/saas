@@ -189,13 +189,15 @@ export class ModulePreviewWizardComponent implements OnInit, OnDestroy {
    * Cargar configuración del módulo
    * 
    * Estrategia:
-   * 1. Si tiene configuración local (moduleConfigs), usarla directamente
+   * 1. Si tiene configuración local (moduleConfigs), usarla directamente (legacy/dev)
    * 2. Si no, intentar cargar desde backend (tabla modules)
+   * 3. Validar status del módulo para proteger testing de acceso público
    * 
    * Esto permite que módulos como Mailflow funcionen sin depender de la BD
    */
   private async loadModuleConfig(): Promise<void> {
-    // ✅ ESTRATEGIA 1: Usar configuración local si existe
+    // ✅ ESTRATEGIA 1: Usar configuración local si existe (legacy/dev)
+    // Módulos hardcodeados como mailflow no requieren validación de status
     if (this.moduleConfigs[this.moduleKey]) {
       console.log(`✅ Using local config for module: ${this.moduleKey}`);
       this.wizardConfig = this.moduleConfigs[this.moduleKey];
@@ -208,10 +210,36 @@ export class ModulePreviewWizardComponent implements OnInit, OnDestroy {
       console.log(`🔍 Loading config from backend for module: ${this.moduleKey}`);
       const response = await this.previewService.getPreviewConfig(this.moduleKey).toPromise();
       
-      if (response.success) {
-        this.moduleName = response.config.moduleName;
-        this.wizardConfig = this.getDefaultConfig();
+      if (!response.success || !response.config) {
+        this.error = 'Module not found or preview not available';
+        return;
       }
+      
+      // ✅ VALIDACIÓN DE STATUS (CRÍTICO)
+      const moduleStatus = response.config.status;
+      const isInternalAccess = this.route.snapshot.queryParams['internal'] === 'true';
+      
+      console.log('🔒 Status validation:', {
+        module: this.moduleKey,
+        status: moduleStatus,
+        isInternalAccess
+      });
+      
+      // ❌ Bloquear acceso si:
+      // - Status = 'testing' Y NO tiene acceso interno autorizado
+      if (moduleStatus === 'testing' && !isInternalAccess) {
+        console.warn(`⚠️ Module '${this.moduleKey}' is in testing - public access blocked`);
+        this.error = '🚀 Coming soon! This module is in private testing.';
+        return;
+      }
+      
+      // ✅ Permitir acceso si:
+      // - Status = 'live' (público)
+      // - Status = 'testing' CON ?internal=true (Admin Panel)
+      console.log(`✅ Access granted to module '${this.moduleKey}'`);
+      
+      this.moduleName = response.config.moduleName;
+      this.wizardConfig = this.getDefaultConfig();
       
     } catch (error) {
       console.error('❌ Error loading module config:', error);

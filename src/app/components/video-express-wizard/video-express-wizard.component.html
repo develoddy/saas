@@ -13,7 +13,7 @@
     <div class="container">
       
       <!-- Progress Indicator (solo pasos 1-3) -->
-      <div class="progress-indicator" *ngIf="state.currentStep < 4">
+      <div class="progress-indicator" *ngIf="!state.isBlocked && state.currentStep < 4">
         <div class="progress-steps">
           <div class="progress-step" 
                [class.active]="state.currentStep >= 1"
@@ -41,11 +41,12 @@
       <div class="alert alert-error" *ngIf="state.error">
         <i class="icon-alert"></i>
         <span>{{ state.error }}</span>
-        <button class="close-btn" (click)="state.error = null">&times;</button>
+        <!-- Solo permitir cerrar si NO está bloqueado (es un error temporal) -->
+        <button class="close-btn" *ngIf="!state.isBlocked" (click)="state.error = null">&times;</button>
       </div>
 
       <!-- STEP 1: Upload Image -->
-      <section class="wizard-step" *ngIf="state.currentStep === 1">
+      <section class="wizard-step" *ngIf="!state.isBlocked && state.currentStep === 1">
         <div class="step-content">
           <h2 class="step-title">Upload your product image</h2>
           <p class="step-description">
@@ -115,7 +116,7 @@
       </section>
 
       <!-- STEP 2: Select Objective -->
-      <section class="wizard-step" *ngIf="state.currentStep === 2">
+      <section class="wizard-step" *ngIf="!state.isBlocked && state.currentStep === 2">
         <div class="step-content">
           <h2 class="step-title">Where do you want to publish this video?</h2>
           <p class="step-description">
@@ -198,7 +199,7 @@
       </section>
 
       <!-- STEP 3: Generating -->
-      <section class="wizard-step step-generating" *ngIf="state.currentStep === 3">
+      <section class="wizard-step step-generating" *ngIf="!state.isBlocked && state.currentStep === 3">
         <div class="step-content">
           
           <!-- Product Image with Enhanced Overlay (🚀 UX OPTIMIZADO) -->
@@ -257,7 +258,7 @@
       </section>
 
       <!-- STEP 4: Video Ready -->
-      <section class="wizard-step step-ready" *ngIf="state.currentStep === 4">
+      <section class="wizard-step step-ready" *ngIf="!state.isBlocked && state.currentStep === 4">
         <div class="step-content">
           
           <div class="success-icon"><i class="bi bi-check-circle"></i></div>

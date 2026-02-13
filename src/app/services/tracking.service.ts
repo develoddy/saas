@@ -41,11 +41,15 @@ export class TrackingService {
 
   /**
    * Track event principal
+   * ✅ FASE 2: Detecta acceso interno (?internal=true) para source='admin'
    */
   track(eventName: string, properties?: { [key: string]: any }): void {
     // Extraer module y source de properties para enviarlos al nivel raíz
     const module = properties?.['module'];
-    const source = properties?.['source'];
+    
+    // ✅ IMPORTANTE: Detectar si es acceso interno (Admin Panel)
+    // Si viene con ?internal=true, source debe ser 'admin'
+    const source = properties?.['source'] || this.getSource();
     
     const event: TrackingEvent = {
       event: eventName,
@@ -55,7 +59,7 @@ export class TrackingService {
       userId: this.userId || undefined,
       tenantId: this.tenantId || undefined,
       module: module || undefined,
-      source: source || undefined
+      source: source  // Puede ser 'admin' (interno) o 'preview' (público)
     };
     
     // Agregar a buffer local
@@ -69,7 +73,11 @@ export class TrackingService {
     
     // Log en desarrollo
     if (!environment.production) {
-      console.log('📊 [Tracking]', eventName, properties);
+      console.log('📊 [Tracking]', eventName, {
+        ...properties,
+        source,
+        isInternal: source === 'admin'
+      });
     }
   }
 
@@ -304,14 +312,26 @@ export class TrackingService {
     if (tenantId) this.tenantId = parseInt(tenantId, 10);
   }
 
+  /**
+   * Detectar source del tracking
+   * ✅ FASE 2: Detecta ?internal=true para marcar como 'admin' (tracking interno)
+   */
   private getSource(): string {
     const path = window.location.pathname;
+    const queryParams = new URLSearchParams(window.location.search);
     
+    // ✅ CRÍTICO: Si viene con ?internal=true, es acceso desde Admin Panel
+    // Este tracking debe marcarse como 'admin' para excluirlo de métricas públicas
+    if (queryParams.get('internal') === 'true') {
+      return 'admin';
+    }
+    
+    // Source público según ruta
     if (path.includes('/preview/')) return 'preview';
     if (path.includes('/onboarding')) return 'onboarding';
     if (path.includes('/mailflow')) return 'dashboard';
     
-    return 'unknown';
+    return 'preview';  // Default: preview (público)
   }
 
   private hasPreviewInSession(module: string): boolean {
