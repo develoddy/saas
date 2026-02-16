@@ -1,0 +1,424 @@
+<div class="smart-chat-wizard">
+  
+  <!-- Header -->
+  <header class="wizard-header">
+    <div class="container">
+      <h1 class="wizard-title"><i class="bi bi-chat-dots"></i> Smart Chat</h1>
+      <p class="wizard-subtitle">Stop answering the same questions every day</p>
+    </div>
+  </header>
+
+  <!-- Main Wizard Container -->
+  <main class="wizard-container">
+    <div class="container">
+      
+      <!-- Coming Soon Message (cuando isBlocked = true) -->
+      <div class="coming-soon-banner" *ngIf="isBlocked" @fadeInUp>
+        <div class="coming-soon-icon">
+          <i class="bi bi-clock-history"></i>
+        </div>
+        <h2 class="coming-soon-title">Coming Soon</h2>
+        <p class="coming-soon-message">
+          Smart Chat is currently in internal testing mode.<br>
+          We're validating the experience before opening to the public.
+        </p>
+        <p class="coming-soon-hint">
+          Stay tuned! We'll announce when it's ready to try.
+        </p>
+        <button class="btn-back-home" (click)="goBackToHub()">
+          <i class="bi bi-arrow-left"></i>
+          Back to MVP Hub
+        </button>
+      </div>
+      
+      <!-- Progress Indicator -->
+      <div class="progress-indicator" *ngIf="!isBlocked && state.currentStep < 4">
+        <div class="progress-steps">
+          <div class="progress-step" 
+               [class.active]="state.currentStep >= 1"
+               [class.completed]="state.currentStep > 1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Problem</span>
+          </div>
+          <div class="progress-line" [class.active]="state.currentStep > 1"></div>
+          
+          <div class="progress-step" 
+               [class.active]="state.currentStep >= 2"
+               [class.completed]="state.currentStep > 2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Solution</span>
+          </div>
+          <div class="progress-line" [class.active]="state.currentStep > 2"></div>
+          
+          <div class="progress-step" 
+               [class.active]="state.currentStep >= 3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Try it</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 1: El Problema -->
+      <section class="wizard-step" *ngIf="!isBlocked && state.currentStep === 1" @fadeInUp>
+        <div class="step-content">
+          <h2 class="step-title">Do you answer the same questions every day?</h2>
+          <p class="step-description">
+            These are the most repeated messages in e-commerce:
+          </p>
+
+          <!-- Problema Visual -->
+          <div class="problem-showcase">
+            <div class="inbox-simulation">
+              <div class="inbox-header">
+                <i class="bi bi-envelope-fill"></i>
+                <span>Inbox - Last 30 days</span>
+              </div>
+              
+              <div class="repeated-questions">
+                <div class="question-item" *ngFor="let q of frequentQuestions" @fadeInUp>
+                  <div class="question-text">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span>{{ q.question }}</span>
+                  </div>
+                  <div class="question-count">
+                    <span class="count-badge">{{ q.count }}×</span>
+                    <span class="count-label">this month</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="inbox-footer">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>{{ frequentQuestions.length * 20 }}+ messages answering the same thing</span>
+              </div>
+            </div>
+
+            <!-- Impacto -->
+            <div class="problem-impact">
+              <div class="impact-stat">
+                <div class="stat-value">~3h</div>
+                <div class="stat-label">lost per day</div>
+              </div>
+              <div class="impact-stat">
+                <div class="stat-value">47%</div>
+                <div class="stat-label">repeated questions</div>
+              </div>
+              <div class="impact-stat">
+                <div class="stat-value">€560</div>
+                <div class="stat-label">monthly cost</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="step-actions">
+            <p class="action-hint">
+              <i class="bi bi-lightbulb-fill"></i>
+              We'll show you how in 30 seconds
+            </p>
+            <button class="btn btn-primary btn-large" 
+                    (click)="acknowledgeProble(); nextStep()"
+                    [disabled]="!canContinueStep1 && state.problemUnderstanding">
+              Yes, I need to automate this
+            </button>
+            
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: WOW Moment - Simulación -->
+      <section class="wizard-step" *ngIf="!isBlocked && state.currentStep === 2" @fadeInUp>
+        <div class="step-content">
+          <h2 class="step-title">See how it works</h2>
+          <p class="step-description">
+            Real-time simulation of Smart Chat responding automatically
+          </p>
+
+          <!-- Chat Widget Simulado -->
+          <div class="chat-simulation-container">
+            <div class="chat-widget">
+              <div class="chat-header">
+                <div class="chat-status">
+                  <span class="status-dot"></span>
+                  <span>Online - Auto-responding</span>
+                </div>
+                <i class="bi bi-x-lg"></i>
+              </div>
+
+              <div class="chat-messages">
+                <div class="message" 
+                     *ngFor="let msg of state.simulationMessages"
+                     [class.user-message]="msg.sender === 'user'"
+                     [class.bot-message]="msg.sender === 'bot'"
+                     @messageSlideIn>
+                  <div class="message-bubble">
+                    <div class="message-text">{{ msg.message }}</div>
+                    <div class="message-time">{{ msg.timestamp | date: 'HH:mm' }}</div>
+                  </div>
+                </div>
+
+                <!-- Typing indicator -->
+                <div class="typing-indicator" 
+                     *ngIf="state.simulationStarted && !state.simulationCompleted && state.currentSimulationIndex < simulationScript.length && simulationScript[state.currentSimulationIndex].sender === 'bot'">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+
+              <div class="chat-input">
+                <input type="text" placeholder="Write a message..." disabled>
+                <button disabled><i class="bi bi-send-fill"></i></button>
+              </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="simulation-explanation">
+              <div class="explanation-card">
+                <i class="bi bi-lightning-charge-fill wow-icon"></i>
+                <h3>What's happening?</h3>
+                <ul class="explanation-list">
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Customer asks about their order</span>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Smart Chat identifies the intent</span>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Auto-responds with real data</span>
+                  </li>
+                  <li>
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Resolution time: <strong>3 seconds</strong></span>
+                  </li>
+                </ul>
+                
+                <div class="time-saved">
+                  <div class="time-value">3 sec</div>
+                  <div class="time-label">vs. 8 min manual</div>
+                </div>
+              </div>
+
+              <!-- Replay button -->
+              <button class="btn btn-outline" 
+                      *ngIf="state.simulationCompleted"
+                      (click)="replaySimulation()">
+                <i class="bi bi-arrow-clockwise"></i>
+                Watch again
+              </button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="step-actions">
+            <button class="btn btn-secondary" (click)="goBack()">
+              <i class="bi bi-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-primary btn-large" 
+                    (click)="nextStep()"
+                    [disabled]="!canContinueStep2">
+              I want to try it myself
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3: Preview Interactivo -->
+      <section class="wizard-step" *ngIf="!isBlocked && state.currentStep === 3" @fadeInUp>
+        <div class="step-content">
+          <h2 class="step-title">Try it yourself</h2>
+          <p class="step-description">
+            Write a typical customer question and see how it responds
+          </p>
+
+          <!-- Interactive Chat -->
+          <div class="interactive-chat-container">
+            <div class="chat-widget interactive">
+              <div class="chat-header">
+                <div class="chat-status">
+                  <span class="status-dot"></span>
+                  <span>Modo prueba - Escribe libremente</span>
+                </div>
+              </div>
+
+              <div class="chat-messages">
+                <!-- Welcome message -->
+                <div class="message bot-message" *ngIf="state.interactiveMessages.length === 0">
+                  <div class="message-bubble">
+                    <div class="message-text">
+                      Hi! Ask me something typical from e-commerce. For example:
+                    </div>
+                  </div>
+                </div>
+
+                <!-- User & Bot messages -->
+                <div class="message" 
+                     *ngFor="let msg of state.interactiveMessages"
+                     [class.user-message]="msg.sender === 'user'"
+                     [class.bot-message]="msg.sender === 'bot'"
+                     @messageSlideIn>
+                  <div class="message-bubble">
+                    <div class="message-text">{{ msg.message }}</div>
+                    <div class="message-time">{{ msg.timestamp | date: 'HH:mm' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chat-input">
+                <input type="text" 
+                       [(ngModel)]="state.userQuestion"
+                       (keyup.enter)="askQuestion()"
+                       placeholder="Write your question..."
+                       [disabled]="state.loading">
+                <button (click)="askQuestion()" 
+                        [disabled]="!state.userQuestion.trim() || state.loading">
+                  <i class="bi bi-send-fill"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Questions -->
+            <div class="quick-questions">
+              <h4>Or try these:</h4>
+              <button class="quick-question-btn" 
+                      *ngFor="let q of frequentQuestions.slice(0, 3)"
+                      (click)="useQuickQuestion(q.question)">
+                <i class="bi bi-lightning-fill"></i>
+                {{ q.question }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="step-actions">
+            <button class="btn btn-secondary" (click)="goBack()">
+              <i class="bi bi-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-primary btn-large" 
+                    (click)="nextStep()"
+                    [disabled]="!canContinueStep3">
+              I want to install it!
+            </button>
+          </div>
+          <div class="step-actions">
+            <p class="action-hint" *ngIf="!canContinueStep3">
+              <i class="bi bi-info-circle-fill"></i>
+              Try asking at least one question
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4: CTA & Install -->
+      <section class="wizard-step" *ngIf="!isBlocked && state.currentStep === 4" @fadeInUp>
+        <div class="step-content">
+          <div class="success-hero">
+            <i class="bi bi-check-circle-fill success-icon"></i>
+            <h2 class="step-title">Ready to install!</h2>
+            <p class="step-description">
+              Installs in 30 seconds and works immediately
+            </p>
+          </div>
+
+          <!-- Benefits -->
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <i class="bi bi-clock-fill"></i>
+              <h4>Quick install</h4>
+              <p>Copy and paste the code. Ready in 30 seconds.</p>
+            </div>
+            <div class="benefit-card">
+              <i class="bi bi-shield-check-fill"></i>
+              <h4>Won't affect your site</h4>
+              <p>Doesn't interfere with your existing store.</p>
+            </div>
+            <div class="benefit-card">
+              <i class="bi bi-palette-fill"></i>
+              <h4>100% customizable</h4>
+              <p>Colors, position, messages to your liking.</p>
+            </div>
+          </div>
+
+          <!-- Embed Code -->
+          <div class="embed-section">
+            <button class="btn btn-outline btn-block" 
+                    (click)="showCode()"
+                    *ngIf="!state.showEmbedCode">
+              <i class="bi bi-code-slash"></i>
+              View installation code
+            </button>
+
+            <div class="embed-code-container" *ngIf="state.showEmbedCode" @fadeInUp>
+              <div class="code-header">
+                <span>Installation code</span>
+                <button class="btn btn-sm" 
+                        (click)="copyEmbedCode()"
+                        [class.copied]="state.embedCodeCopied">
+                  <i class="bi" [class.bi-clipboard]="!state.embedCodeCopied" 
+                                [class.bi-check2]="state.embedCodeCopied"></i>
+                  {{ state.embedCodeCopied ? 'Copied!' : 'Copy' }}
+                </button>
+              </div>
+              <pre class="code-block"><code>{{ getEmbedCode() }}</code></pre>
+              <div class="code-footer">
+                <i class="bi bi-info-circle-fill"></i>
+                Paste it before the closing &lt;/body&gt; tag in your HTML
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA Principal -->
+          <div class="cta-section">
+            <button class="btn btn-primary btn-large" (click)="activateChat()">
+              <i class="bi bi-rocket-takeoff-fill"></i>
+              Activate Smart Chat now
+            </button>
+            <p class="cta-subtitle">Free for 14 days. No credit card required.</p>
+          </div>
+
+          <!-- Feedback -->
+          <div class="feedback-section" *ngIf="!state.feedbackSubmitted">
+            <h4>Is Smart Chat useful for you?</h4>
+            <div class="feedback-buttons">
+              <button class="feedback-btn" (click)="submitFeedback('yes')">
+                Yes, I need it
+              </button>
+              <button class="feedback-btn" (click)="submitFeedback('partial')">
+                Maybe
+              </button>
+              <button class="feedback-btn" (click)="submitFeedback('no')">
+                Not convinced
+              </button>
+            </div>
+          </div>
+
+          <!-- Feedback Comment -->
+          <div class="feedback-comment" *ngIf="state.feedbackAnswer && !state.feedbackSubmitted && (state.feedbackAnswer === 'partial' || state.feedbackAnswer === 'no')" @fadeInUp>
+            <p>{{ state.feedbackMessage }}</p>
+            <textarea 
+              [(ngModel)]="state.feedbackComment"
+              placeholder="Tell us what you would improve..."
+              rows="3"></textarea>
+            <button class="btn btn-primary" (click)="submitComment()">
+              Send feedback
+            </button>
+          </div>
+
+          <!-- Feedback Success -->
+          <div class="feedback-success" *ngIf="state.feedbackSubmitted" @fadeInUp>
+            <i class="bi bi-check-circle-fill"></i>
+            <p>{{ state.feedbackMessage }}</p>
+          </div>
+
+          <!-- Back to start -->
+          <div class="step-actions">
+            <button class="btn btn-secondary" (click)="goToStep(1)">
+              <i class="bi bi-arrow-left"></i> See everything from the beginning
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

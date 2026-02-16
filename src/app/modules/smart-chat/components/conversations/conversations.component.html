@@ -1,0 +1,70 @@
+<div class="conversations-container">
+  <div class="conversations-sidebar">
+    <div class="sidebar-header">
+      <h2>💬 Conversaciones</h2>
+      <button class="btn-refresh" (click)="loadConversations()">🔄</button>
+    </div>
+
+    <div class="conversations-list" *ngIf="!loading">
+      <div 
+        class="conversation-item" 
+        *ngFor="let conv of conversations"
+        [class.active]="selectedConversation?.id === conv.id"
+        (click)="selectConversation(conv)"
+      >
+        <div class="conversation-header">
+          <h4>Conversación #{{ conv.id }}</h4>
+          <span class="conversation-time">{{ formatTime(conv.updated_at) }}</span>
+        </div>
+        <p class="last-message">{{ conv.last_message || 'Sin mensajes' }}</p>
+        <span class="unread-badge" *ngIf="conv.unread_count > 0">{{ conv.unread_count }}</span>
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <div class="messages-panel">
+    <div class="panel-header" *ngIf="selectedConversation">
+      <h3>Conversación #{{ selectedConversation.id }}</h3>
+      <span class="status-badge">{{ selectedConversation.status }}</span>
+    </div>
+
+    <div class="empty-state" *ngIf="!selectedConversation">
+      <p>Selecciona una conversación para ver los mensajes</p>
+    </div>
+
+    <div class="messages-container" *ngIf="selectedConversation">
+      <div 
+        class="message" 
+        *ngFor="let msg of messages"
+        [class.message-agent]="msg.sender_type === 'agent'"
+        [class.message-user]="msg.sender_type === 'user'"
+      >
+        <div class="message-bubble">
+          <p>{{ msg.message }}</p>
+          <span class="message-time">{{ formatTime(msg.created_at) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-input" *ngIf="selectedConversation">
+      <input 
+        type="text" 
+        [(ngModel)]="newMessage"
+        (keyup.enter)="sendMessage()"
+        placeholder="Escribe un mensaje..."
+        [disabled]="sendingMessage"
+      />
+      <button 
+        class="btn-send" 
+        (click)="sendMessage()"
+        [disabled]="!newMessage.trim() || sendingMessage"
+      >
+        {{ sendingMessage ? '...' : '📤' }}
+      </button>
+    </div>
+  </div>
+</div>

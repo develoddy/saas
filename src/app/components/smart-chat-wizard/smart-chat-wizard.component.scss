@@ -1,0 +1,38 @@
+// ========================================
+// Smart Chat Wizard - Estilos Específicos
+// ========================================
+//
+// IMPORTANTE: Este componente NO debe contener estilos.
+// 
+// Estructura de estilos compartidos (ADN de MVPs):
+// - src/assets/css/_wizard.scss          → Estilos base de todos los wizards
+// - src/assets/css/_mvps-hub.scss        → Componentes reutilizables (chat, cards, feedback, etc.)
+// - src/assets/css/_buttons.scss         → Botones compartidos
+// - src/assets/css/_forms.scss           → Formularios compartidos
+//
+// Todos los estilos de este wizard están en _mvps-hub.scss para ser
+// reutilizados por otros MVPs (Email Automation, SMS, WhatsApp, etc.)
+//
+// Los componentes incluidos en _mvps-hub.scss:
+// - .chat-widget (cabecera, mensajes, input)
+// - .chat-simulation-container
+// - .simulation-explanation
+// - .explanation-card
+// - .problem-showcase & .inbox-simulation
+// - .problem-impact & .impact-stat
+// - .interactive-chat-container & .quick-questions
+// - .success-hero
+// - .benefits-grid & .benefit-card
+// - .embed-section & .embed-code-container
+// - .cta-section
+// - .feedback-section, .feedback-comment, .feedback-success
+// - Animaciones: pulse, slideIn, typing
+//
+// Si necesitas override específico solo para Smart Chat:
+// 1. Agrega el estilo aquí con un comentario explicando por qué
+// 2. Usa selectores específicos para evitar afectar otros componentes
+// 3. Mantén este archivo lo más pequeño posible
+//
+// ========================================
+
+// (No styles - all shared in _mvps-hub.scss)

@@ -1,0 +1,216 @@
+<div class="wizard-container">
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+  </div>
+
+  <div class="wizard-content">
+    <!-- Header -->
+    <div class="wizard-header">
+      <h1 class="wizard-title">Configuración de Smart Chat</h1>
+      <p class="wizard-subtitle">Paso {{ currentStep }} de {{ totalSteps }}</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" *ngIf="error">
+      ❌ {{ error }}
+    </div>
+
+    <!-- PASO 1: Configuración del Widget -->
+    <div class="wizard-step" *ngIf="currentStep === 1">
+      <h2 class="step-title">🎨 Personaliza tu Widget</h2>
+      <p class="step-description">Configura la apariencia y mensajes del chat</p>
+
+      <form [formGroup]="step1Form" class="wizard-form">
+        <!-- Color del Widget -->
+        <div class="form-group">
+          <label for="widget_color">Color Principal</label>
+          <div class="color-picker-wrapper">
+            <input 
+              type="color" 
+              id="widget_color" 
+              formControlName="widget_color"
+              class="color-input"
+            />
+            <span class="color-value">{{ step1Form.get('widget_color')?.value }}</span>
+          </div>
+        </div>
+
+        <!-- Posición del Widget -->
+        <div class="form-group">
+          <label>Posición en Pantalla</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input 
+                type="radio" 
+                formControlName="widget_position" 
+                value="bottom-right"
+              />
+              <span>Abajo Derecha</span>
+            </label>
+            <label class="radio-label">
+              <input 
+                type="radio" 
+                formControlName="widget_position" 
+                value="bottom-left"
+              />
+              <span>Abajo Izquierda</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Mensaje de Bienvenida -->
+        <div class="form-group">
+          <label for="welcome_message">Mensaje de Bienvenida</label>
+          <textarea 
+            id="welcome_message" 
+            formControlName="welcome_message"
+            rows="3"
+            maxlength="250"
+            class="textarea-input"
+            placeholder="👋 ¡Hola! ¿En qué podemos ayudarte?"
+          ></textarea>
+          <small class="char-count">
+            {{ step1Form.get('welcome_message')?.value?.length || 0 }} / 250
+          </small>
+        </div>
+
+        <!-- Auto Respuesta -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              formControlName="auto_response_enabled"
+            />
+            <span>Activar respuestas automáticas fuera de horario</span>
+          </label>
+        </div>
+
+        <!-- Capturar Leads -->
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              formControlName="capture_leads"
+            />
+            <span>Solicitar email cuando estamos offline</span>
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <!-- PASO 2: Horarios de Atención -->
+    <div class="wizard-step" *ngIf="currentStep === 2">
+      <h2 class="step-title">🕐 Horarios de Atención</h2>
+      <p class="step-description">Define cuándo tu equipo está disponible</p>
+
+      <form [formGroup]="step2Form" class="wizard-form">
+        <!-- Timezone -->
+        <div class="form-group">
+          <label for="timezone">Zona Horaria</label>
+          <select id="timezone" formControlName="timezone" class="select-input">
+            <option value="Europe/Madrid">Europa/Madrid (GMT+1)</option>
+            <option value="America/New_York">América/Nueva York (GMT-5)</option>
+            <option value="America/Mexico_City">América/Ciudad de México (GMT-6)</option>
+            <option value="America/Los_Angeles">América/Los Ángeles (GMT-8)</option>
+          </select>
+        </div>
+
+        <!-- Días de la semana -->
+        <div class="business-hours">
+          <div class="day-row" *ngFor="let day of ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']">
+            <label class="checkbox-label day-name">
+              <input 
+                type="checkbox" 
+                [formControlName]="day + '_enabled'"
+              />
+              <span>{{ getDayLabel(day) }}</span>
+            </label>
+            
+            <div class="time-inputs" *ngIf="step2Form.get(day + '_enabled')?.value">
+              <input 
+                type="time" 
+                [formControlName]="day + '_open'"
+                class="time-input"
+              />
+              <span class="time-separator">hasta</span>
+              <input 
+                type="time" 
+                [formControlName]="day + '_close'"
+                class="time-input"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- PASO 3: Preview y Código Embed -->
+    <div class="wizard-step" *ngIf="currentStep === 3">
+      <h2 class="step-title">🚀 ¡Listo para Instalar!</h2>
+      <p class="step-description">Copia el código e instálalo en tu sitio web</p>
+
+      <!-- Vista Previa -->
+      <div class="preview-section">
+        <h3>Vista Previa</h3>
+        <div class="preview-widget" [style.background-color]="config.widget_color">
+          <div class="preview-bubble">💬</div>
+        </div>
+        <p class="preview-message">{{ config.welcome_message }}</p>
+      </div>
+
+      <!-- Código Embed -->
+      <div class="embed-section">
+        <h3>Código de Instalación</h3>
+        <div class="code-block">
+          <pre><code>{{ embedCode }}</code></pre>
+          <button class="copy-button" (click)="copyToClipboard()">
+            📋 Copiar Código
+          </button>
+        </div>
+        <p class="code-instructions">
+          Pega este código antes del cierre de la etiqueta <code>&lt;/body&gt;</code> en tu sitio web.
+        </p>
+      </div>
+
+      <!-- URL de Preview -->
+      <div class="preview-link-section">
+        <h3>Link de Prueba</h3>
+        <a [href]="previewUrl" target="_blank" class="preview-link">
+          {{ previewUrl }}
+        </a>
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="wizard-navigation">
+      <button 
+        class="btn btn-secondary" 
+        (click)="prevStep()" 
+        [disabled]="currentStep === 1 || loading"
+        *ngIf="currentStep < totalSteps"
+      >
+        ← Atrás
+      </button>
+
+      <button 
+        class="btn btn-primary" 
+        (click)="nextStep()" 
+        [disabled]="(currentStep === 1 && step1Form.invalid) || (currentStep === 2 && step2Form.invalid) || loading"
+        *ngIf="currentStep < totalSteps"
+      >
+        Siguiente →
+      </button>
+
+      <button 
+        class="btn btn-success" 
+        (click)="saveAndFinish()" 
+        [disabled]="loading"
+        *ngIf="currentStep === totalSteps"
+      >
+        <span *ngIf="!loading">✓ Guardar y Finalizar</span>
+        <span *ngIf="loading">Guardando...</span>
+      </button>
+    </div>
+  </div>
+</div>

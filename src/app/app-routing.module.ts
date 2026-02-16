@@ -11,6 +11,7 @@ import { AccountComponent } from './account/account.component';
 import { TenantAuthGuard } from './core/tenant-auth.guard';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
 import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
+import { SmartChatWizardComponent } from './components/smart-chat-wizard/smart-chat-wizard.component';
 import { MvpsHubComponent } from './mvps-hub/mvps-hub.component';
 
 const routes: Routes = [
@@ -51,6 +52,16 @@ const routes: Routes = [
       description: 'Genera videos de producto con IA'
     }
   },
+  // Smart Chat - Wizard MVP de validación WOW
+  {
+    path: 'preview/smart-chat',
+    component: SmartChatWizardComponent,
+    data: { 
+      moduleKey: 'smart-chat',
+      title: 'Smart Chat - Preview',
+      description: 'Automatiza respuestas de atención al cliente'
+    }
+  },
   // Otros módulos - Wizard genérico basado en formularios
   {
     path: 'preview/:moduleKey',
@@ -66,6 +77,11 @@ const routes: Routes = [
         path: 'mailflow',
         loadChildren: () => import('./modules/mailflow/mailflow.module')
           .then(m => m.MailflowModule)
+      },
+      {
+        path: 'smart-chat',
+        loadChildren: () => import('./modules/smart-chat/smart-chat.module')
+          .then(m => m.SmartChatModule)
       },
       {
         path: ':moduleKey',

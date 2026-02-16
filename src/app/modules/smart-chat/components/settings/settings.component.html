@@ -1,0 +1,119 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>⚙️ Configuración</h1>
+    <a routerLink="../dashboard" class="btn btn-secondary">← Volver al Dashboard</a>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="alert alert-success" *ngIf="success">{{ success }}</div>
+  <div class="alert alert-error" *ngIf="error">{{ error }}</div>
+
+  <div class="settings-content">
+    <!-- Widget Configuration -->
+    <div class="settings-section">
+      <h2>🎨 Configuración del Widget</h2>
+      
+      <form [formGroup]="configForm" (ngSubmit)="saveSettings()">
+        <div class="form-group">
+          <label for="widget_color">Color Principal</label>
+          <div class="color-picker-wrapper">
+            <input type="color" id="widget_color" formControlName="widget_color" />
+            <span class="color-value">{{ configForm.get('widget_color')?.value }}</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Posición</label>
+          <div class="radio-group">
+            <label class="radio-label">
+              <input type="radio" formControlName="widget_position" value="bottom-right" />
+              <span>Abajo Derecha</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" formControlName="widget_position" value="bottom-left" />
+              <span>Abajo Izquierda</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="welcome_message">Mensaje de Bienvenida</label>
+          <textarea 
+            id="welcome_message" 
+            formControlName="welcome_message"
+            rows="3"
+            maxlength="250"
+          ></textarea>
+          <small>{{ configForm.get('welcome_message')?.value?.length || 0 }} / 250</small>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="auto_response_enabled" />
+            <span>Respuestas automáticas</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="capture_leads" />
+            <span>Capturar email offline</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="is_active" />
+            <span>Widget activo</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="saving || configForm.invalid">
+          {{ saving ? 'Guardando...' : '💾 Guardar Cambios' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Agents Management -->
+    <div class="settings-section">
+      <h2>👥 Gestión de Agentes</h2>
+
+      <div class="agents-list" *ngIf="agents.length > 0">
+        <div class="agent-item" *ngFor="let agent of agents">
+          <div class="agent-info">
+            <h4>{{ agent.agent_name }}</h4>
+            <p>{{ agent.agent_email }}</p>
+          </div>
+          <span class="agent-status">{{ getStatusLabel(agent.status) }}</span>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="agents.length === 0">
+        <p>No hay agentes registrados</p>
+      </div>
+
+      <div class="invite-agent-form">
+        <h3>✉️ Invitar Nuevo Agente</h3>
+        <form [formGroup]="agentForm" (ngSubmit)="inviteAgent()">
+          <div class="form-row">
+            <input 
+              type="text" 
+              formControlName="agent_name"
+              placeholder="Nombre del agente"
+              class="form-input"
+            />
+            <input 
+              type="email" 
+              formControlName="agent_email"
+              placeholder="Email del agente"
+              class="form-input"
+            />
+            <button type="submit" class="btn btn-primary" [disabled]="agentForm.invalid">
+              + Invitar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
