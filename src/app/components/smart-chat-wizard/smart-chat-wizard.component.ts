@@ -105,21 +105,21 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   
   // Preguntas frecuentes reales de e-commerce
   readonly frequentQuestions = [
-    { question: '¿Dónde está mi pedido?', count: 127 },
-    { question: '¿Tienen envío a Canarias?', count: 89 },
-    { question: '¿Puedo cambiar la talla?', count: 56 },
-    { question: '¿Cuándo llega mi paquete?', count: 134 },
-    { question: '¿Aceptan devoluciones?', count: 72 }
+    { question: 'Where is my order?', count: 127 },
+    { question: 'Do you ship to the Canary Islands?', count: 89 },
+    { question: 'Can I change the size?', count: 56 },
+    { question: 'When will my package arrive?', count: 134 },
+    { question: 'Do you accept returns?', count: 72 }
   ];
   
-  // Mensajes predefinidos para simulación WOW
+  // Predefined messages for WOW simulation
   readonly simulationScript: Omit<SimulatedMessage, 'id' | 'timestamp'>[] = [
-    { sender: 'user', message: '¿Dónde está mi pedido?', delay: 0 },
-    { sender: 'bot', message: 'Hola! Déjame buscarlo. ¿Cuál es tu número de pedido?', delay: 1200 },
+    { sender: 'user', message: 'Where is my order?', delay: 0 },
+    { sender: 'bot', message: 'Hi! Let me check that. What\'s your order number?', delay: 1200 },
     { sender: 'user', message: '#12345', delay: 2500 },
-    { sender: 'bot', message: 'Encontrado! Tu pedido está en camino. Llegará mañana entre 9h-14h. ¿Necesitas algo más?', delay: 1800 },
-    { sender: 'user', message: 'No, gracias!', delay: 2000 },
-    { sender: 'bot', message: '¡Perfecto! Que tengas un gran día 😊', delay: 1000 }
+    { sender: 'bot', message: 'Found it! Your order is on its way. It will arrive tomorrow between 9am-2pm. Anything else?', delay: 1800 },
+    { sender: 'user', message: 'No, thanks!', delay: 2000 },
+    { sender: 'bot', message: 'Perfect! Have a great day 😊', delay: 1000 }
   ];
   
   state: WizardState = {
@@ -400,25 +400,29 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   private generateBotResponse(question: string): string {
     const lowerQ = question.toLowerCase();
     
-    // Respuestas inteligentes basadas en keywords
-    if (lowerQ.includes('pedido') || lowerQ.includes('envío') || lowerQ.includes('paquete')) {
-      return 'Puedo consultar tu pedido. ¿Cuál es tu número de pedido o email?';
+    // Smart responses based on keywords
+    if (lowerQ.includes('order') || lowerQ.includes('package') || lowerQ.includes('shipping') || lowerQ.includes('where')) {
+      return 'I can check your order. What\'s your order number or email?';
     }
     
-    if (lowerQ.includes('canarias') || lowerQ.includes('envío')) {
-      return 'Sí, enviamos a Canarias. El plazo es de 3-5 días laborables.';
+    if (lowerQ.includes('canary') || lowerQ.includes('canarias') || lowerQ.includes('islands')) {
+      return 'Yes, we ship to the Canary Islands. Delivery takes 3-5 business days.';
     }
     
-    if (lowerQ.includes('devolución') || lowerQ.includes('cambio')) {
-      return 'Tienes 30 días para devoluciones gratuitas. ¿Qué producto quieres devolver?';
+    if (lowerQ.includes('return') || lowerQ.includes('refund') || lowerQ.includes('change') || lowerQ.includes('size')) {
+      return 'You have 30 days for free returns. Which product would you like to return?';
     }
     
-    if (lowerQ.includes('horario') || lowerQ.includes('contacto')) {
-      return 'Nuestro horario de atención es L-V de 9h a 18h. ¿En qué puedo ayudarte?';
+    if (lowerQ.includes('hours') || lowerQ.includes('contact') || lowerQ.includes('schedule')) {
+      return 'Our customer service hours are Mon-Fri 9am-6pm. How can I help you?';
     }
     
-    // Respuesta genérica
-    return '¡Claro! Déjame conectarte con un agente disponible. ¿Cuál es tu email?';
+    if (lowerQ.includes('@') || lowerQ.includes('email')) {
+      return 'Thanks! I\'ll connect you with an available agent. They\'ll contact you at that email shortly.';
+    }
+    
+    // Generic response
+    return 'Sure! Let me connect you with an available agent. What\'s your email?';
   }
   
   useQuickQuestion(question: string): void {
