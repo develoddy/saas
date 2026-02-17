@@ -1351,26 +1351,6 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
   }
   
   /**
-   * 🧪 DEBUG: Copiar URL al clipboard
-   */
-  copyToClipboard(text: string): void {
-    navigator.clipboard.writeText(text).then(() => {
-      console.log('✅ URL copiada al clipboard:', text);
-      this.showNotification('URL copied to clipboard', 'success');
-    }).catch(err => {
-      console.error('❌ Error copiando al clipboard:', err);
-    });
-  }
-  
-  /**
-   * 🧪 DEBUG: Abrir video en nueva pestaña
-   */
-  openVideoInNewTab(url: string): void {
-    console.log('🔗 Abriendo video en nueva pestaña:', url);
-    window.open(url, '_blank');
-  }
-  
-  /**
    * Obtener mensaje de error legible según el código
    */
   private getVideoErrorMessage(errorCode: number): string {
