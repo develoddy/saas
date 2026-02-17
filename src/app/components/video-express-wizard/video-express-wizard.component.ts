@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -110,13 +110,29 @@ interface WizardState {
     ])
   ]
 })
-export class VideoExpressWizardComponent implements OnInit, OnDestroy {
+export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterViewChecked {
   
   // Integración con sistema de módulos
   readonly moduleKey = 'video-express';
   readonly moduleName = 'Video Express';
   
   private destroy$ = new Subject<void>();
+  
+  // 🎯 ViewChild para el elemento de video (control de reproducción en móviles)
+  @ViewChild('videoPlayer', { static: false }) videoPlayer?: ElementRef<HTMLVideoElement>;
+  private videoLoadAttempted = false;
+  private videoRetryCount = 0;
+  private readonly MAX_VIDEO_RETRIES = 3;
+  
+  // Estado de reproducción de video
+  videoPlaybackState = {
+    canPlay: false,
+    isPlaying: false,
+    hasError: false,
+    errorMessage: null as string | null,
+    needsManualPlay: false, // Si autoplay falló y necesita click manual
+    isMobile: false // Detectar si es móvil
+  };
   
   // 🎯 FASE 2: Tracking Source (admin vs preview)
   public isInternalAccess: boolean = false; // true si acceso con ?internal=true
@@ -226,6 +242,10 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    // 🎯 Detectar si es móvil
+    this.videoPlaybackState.isMobile = this.isMobileDevice();
+    console.log('📱 Device detection:', { isMobile: this.videoPlaybackState.isMobile });
+    
     // ✅ FASE 1: Validar status del módulo antes de permitir acceso
     const isAccessAllowed = await this.validateModuleStatus();
     
@@ -248,6 +268,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     this.trackEvent('video_express_wizard_started', {
       module: this.moduleKey
     });
+  }
+  
+  ngAfterViewChecked(): void {
+    // 🎯 Cuando el video element aparece (paso 4), configurar event listeners
+    if (this.videoPlayer && !this.videoLoadAttempted && this.state.currentStep === 4) {
+      this.videoLoadAttempted = true;
+      this.setupVideoPlayer();
+    }
   }
 
   ngOnDestroy(): void {
@@ -764,6 +792,18 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
     
     this.videoExpressService.reset();
     
+    // 🎬 Reset video player state
+    this.videoLoadAttempted = false;
+    this.videoRetryCount = 0;
+    this.videoPlaybackState = {
+      canPlay: false,
+      isPlaying: false,
+      hasError: false,
+      errorMessage: null,
+      needsManualPlay: false,
+      isMobile: this.videoPlaybackState.isMobile // Mantener detección de móvil
+    };
+    
     // Reset state completo
     this.state = {
       currentStep: 1,
@@ -1098,6 +1138,198 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       // Si todavía no han respondido, solicitar permisos
       this.requestNotificationPermission();
     }
+  }
+  
+  // ==========================================
+  // VIDEO PLAYER MANAGEMENT (Mobile Compatibility)
+  // ==========================================
+  
+  /**
+   * Detectar si es dispositivo móvil
+   */
+  private isMobileDevice(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+  
+  /**
+   * Configurar video player con event listeners robustos
+   * Maneja autoplay failures y errores específicos de móviles
+   */
+  private setupVideoPlayer(): void {
+    if (!this.videoPlayer) return;
+    
+    const video = this.videoPlayer.nativeElement;
+    
+    console.log('🎬 Setting up video player...', {
+      src: video.src,
+      isMobile: this.videoPlaybackState.isMobile,
+      readyState: video.readyState
+    });
+    
+    // Event: Video puede reproducirse
+    video.addEventListener('loadedmetadata', () => {
+      console.log('📊 Video metadata loaded:', {
+        duration: video.duration,
+        videoWidth: video.videoWidth,
+        videoHeight: video.videoHeight
+      });
+    });
+    
+    video.addEventListener('canplay', () => {
+      console.log('✅ Video can play');
+      this.videoPlaybackState.canPlay = true;
+      
+      // Intentar autoplay
+      this.attemptAutoplay();
+    });
+    
+    // Event: Reproducción iniciada
+    video.addEventListener('play', () => {
+      console.log('▶️ Video playing');
+      this.videoPlaybackState.isPlaying = true;
+      this.videoPlaybackState.needsManualPlay = false;
+    });
+    
+    // Event: Reproducción pausada
+    video.addEventListener('pause', () => {
+      console.log('⏸️ Video paused');
+      this.videoPlaybackState.isPlaying = false;
+    });
+    
+    // Event: Error de reproducción
+    video.addEventListener('error', (e) => {
+      console.error('❌ Video error:', {
+        error: video.error,
+        code: video.error?.code,
+        message: video.error?.message,
+        networkState: video.networkState,
+        readyState: video.readyState
+      });
+      
+      this.videoPlaybackState.hasError = true;
+      this.videoPlaybackState.errorMessage = this.getVideoErrorMessage(video.error?.code || 0);
+      
+      // Si hay error, mostrar botón manual
+      this.videoPlaybackState.needsManualPlay = true;
+      
+      // Track error
+      this.trackEvent('video_express_playback_error', {
+        errorCode: video.error?.code,
+        errorMessage: video.error?.message,
+        isMobile: this.videoPlaybackState.isMobile,
+        videoUrl: video.src
+      });
+    });
+    
+    // Event: Stalled (buffering problems)
+    video.addEventListener('stalled', () => {
+      console.warn('⚠️ Video stalled (buffering issues)');
+      
+      // Retry después de 2 segundos
+      if (this.videoRetryCount < this.MAX_VIDEO_RETRIES) {
+        setTimeout(() => {
+          console.log(`🔄 Retrying video load (attempt ${this.videoRetryCount + 1})`);
+          video.load();
+          this.videoRetryCount++;
+        }, 2000);
+      }
+    });
+    
+    // Si el video ya tiene metadata, intentar reproducir inmediatamente
+    if (video.readyState >= 2) { // HAVE_CURRENT_DATA
+      console.log('📊 Video already has data, attempting immediate playback');
+      this.attemptAutoplay();
+    }
+  }
+  
+  /**
+   * Intentar autoplay con manejo de errores
+   * En móviles, autoplay puede fallar incluso con muted
+   */
+  private attemptAutoplay(): void {
+    if (!this.videoPlayer) return;
+    
+    const video = this.videoPlayer.nativeElement;
+    
+    console.log('🎬 Attempting autoplay...', {
+      muted: video.muted,
+      playsInline: video.playsInline,
+      isMobile: this.videoPlaybackState.isMobile
+    });
+    
+    const playPromise = video.play();
+    
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          console.log('✅ Autoplay succeeded');
+          this.videoPlaybackState.isPlaying = true;
+          this.videoPlaybackState.needsManualPlay = false;
+          
+          // Track autoplay success
+          this.trackEvent('video_express_autoplay_success', {
+            isMobile: this.videoPlaybackState.isMobile
+          });
+        })
+        .catch(error => {
+          console.warn('⚠️ Autoplay failed:', error.message);
+          
+          // Autoplay falló - mostrar botón manual
+          this.videoPlaybackState.needsManualPlay = true;
+          
+          // Track autoplay failure
+          this.trackEvent('video_express_autoplay_failed', {
+            error: error.message,
+            isMobile: this.videoPlaybackState.isMobile
+          });
+          
+          // En móviles, mostrar notificación
+          if (this.videoPlaybackState.isMobile) {
+            this.showNotification('Tap the video to play', 'info');
+          }
+        });
+    }
+  }
+  
+  /**
+   * Play manual desde el template (cuando el usuario hace click)
+   */
+  playVideoManually(): void {
+    if (!this.videoPlayer) return;
+    
+    const video = this.videoPlayer.nativeElement;
+    
+    console.log('👆 Manual play triggered');
+    
+    video.play()
+      .then(() => {
+        console.log('✅ Manual play succeeded');
+        this.videoPlaybackState.isPlaying = true;
+        this.videoPlaybackState.needsManualPlay = false;
+        
+        // Track manual play
+        this.trackEvent('video_express_manual_play', {
+          isMobile: this.videoPlaybackState.isMobile
+        });
+      })
+      .catch(error => {
+        console.error('❌ Manual play failed:', error);
+        this.showNotification('Unable to play video. Try downloading it.', 'error');
+      });
+  }
+  
+  /**
+   * Obtener mensaje de error legible según el código
+   */
+  private getVideoErrorMessage(errorCode: number): string {
+    const errorMessages: { [key: number]: string } = {
+      1: 'Video loading aborted',
+      2: 'Network error while loading video',
+      3: 'Video decoding error',
+      4: 'Video format not supported'
+    };
+    
+    return errorMessages[errorCode] || 'Unknown video error';
   }
   
   // ==========================================

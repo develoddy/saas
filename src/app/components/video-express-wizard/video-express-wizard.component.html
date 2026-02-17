@@ -271,6 +271,7 @@
           <!-- Video Player -->
           <div class="video-player-container" *ngIf="state.videoResult">
             <video 
+              #videoPlayer
               [src]="state.videoResult.videoUrl"
               controls
               autoplay
@@ -285,6 +286,30 @@
               <source [src]="state.videoResult.videoUrl" type="video/mp4">
               Your browser doesn't support video playback.
             </video>
+            
+            <!-- Manual Play Overlay (si autoplay falló) -->
+            <div 
+              class="video-play-overlay" 
+              *ngIf="videoPlaybackState.needsManualPlay && !videoPlaybackState.isPlaying"
+              (click)="playVideoManually()">
+              <div class="play-button">
+                <i class="bi bi-play-circle-fill"></i>
+              </div>
+              <p class="play-hint">Tap to play</p>
+            </div>
+            
+            <!-- Error Overlay -->
+            <div 
+              class="video-error-overlay" 
+              *ngIf="videoPlaybackState.hasError">
+              <div class="error-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+              </div>
+              <p class="error-message">{{ videoPlaybackState.errorMessage }}</p>
+              <button class="btn btn-secondary btn-small" (click)="downloadVideo()">
+                <i class="bi bi-download"></i> Download instead
+              </button>
+            </div>
           </div>
 
           <!-- Video Info -->
