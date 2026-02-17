@@ -270,6 +270,22 @@
 
           <!-- Video Player -->
           <div class="video-player-container" *ngIf="state.videoResult">
+            <!-- 🧪 DEBUG: Mostrar URL del video -->
+            <div style="background: #fef3c7; padding: 12px; margin-bottom: 16px; border-radius: 8px; font-size: 12px; font-family: monospace; word-break: break-all;">
+              <strong>🧪 DEBUG MODE:</strong><br>
+              Video URL: {{ state.videoResult.videoUrl }}<br>
+              <button 
+                style="margin-top: 8px; padding: 4px 8px; font-size: 11px;"
+                (click)="copyToClipboard(state.videoResult.videoUrl)">
+                Copy URL
+              </button>
+              <button 
+                style="margin-left: 8px; padding: 4px 8px; font-size: 11px;"
+                (click)="openVideoInNewTab(state.videoResult.videoUrl)">
+                Open in New Tab
+              </button>
+            </div>
+            
             <video 
               #videoPlayer
               [src]="state.videoResult.videoUrl"

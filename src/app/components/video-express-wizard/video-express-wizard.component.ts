@@ -614,13 +614,28 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
           if (status.status === 'completed') {
             const generationTime = Math.round((Date.now() - startTime) / 1000);
             
-            console.log('🎬 Video completado:', {
-              videoUrl: status.videoUrl,
-              downloadUrl: status.downloadUrl,
-              isSimulated: status.isSimulated,
-              limitReached: status.limitReached,
-              duration: status.duration
-            });
+            console.log('='.repeat(60));
+            console.log('🎬 DEBUG: Video completado - Response del backend:');
+            console.log('   videoUrl:', status.videoUrl);
+            console.log('   downloadUrl:', status.downloadUrl);
+            console.log('   isSimulated:', status.isSimulated);
+            console.log('   limitReached:', status.limitReached);
+            console.log('   duration:', status.duration);
+            console.log('='.repeat(60));
+            
+            // Verificar que la URL sea válida
+            if (!status.videoUrl) {
+              console.error('❌ ERROR: Backend no devolvió videoUrl');
+              this.state.error = 'Error: No video URL received';
+              return;
+            }
+            
+            // Verificar que sea una URL absoluta (http/https)
+            if (!status.videoUrl.startsWith('http://') && !status.videoUrl.startsWith('https://')) {
+              console.error('❌ ERROR: videoUrl no es una URL absoluta:', status.videoUrl);
+              this.state.error = 'Error: Invalid video URL format';
+              return;
+            }
             
             this.state.videoResult = {
               videoUrl: status.videoUrl!,
@@ -629,6 +644,8 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
               fileSize: status.fileSize!,
               downloadUrl: status.downloadUrl!
             };
+            
+            console.log('✅ State actualizado, videoResult.videoUrl:', this.state.videoResult.videoUrl);
             
             // � Calcular guía de uso (determinista, basada en objetivo)
             this.state.usageGuidance = this.getVideoUsageGuidance(this.state.selectedObjective!);
@@ -1169,14 +1186,16 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
     const video = this.videoPlayer.nativeElement;
     const isExternalCDN = video.src.startsWith('http') && !video.src.includes(window.location.hostname);
     
-    console.log('🎬 Setting up video player...', {
-      src: video.src,
-      isExternalCDN: isExternalCDN,
-      isMobile: this.videoPlaybackState.isMobile,
-      readyState: video.readyState,
-      networkState: video.networkState,
-      currentSrc: video.currentSrc
-    });
+    console.log('='.repeat(60));
+    console.log('🎬 DEBUG: Setting up video player');
+    console.log('   video.src:', video.src);
+    console.log('   video.currentSrc:', video.currentSrc);
+    console.log('   isExternalCDN:', isExternalCDN);
+    console.log('   isMobile:', this.videoPlaybackState.isMobile);
+    console.log('   readyState:', video.readyState, '(0=HAVE_NOTHING, 1=HAVE_METADATA, 2=HAVE_CURRENT_DATA, 3=HAVE_FUTURE_DATA, 4=HAVE_ENOUGH_DATA)');
+    console.log('   networkState:', video.networkState, '(0=NETWORK_EMPTY, 1=NETWORK_IDLE, 2=NETWORK_LOADING, 3=NETWORK_NO_SOURCE)');
+    console.log('   error:', video.error);
+    console.log('='.repeat(60));
     
     // Event: Video puede reproducirse
     video.addEventListener('loadedmetadata', () => {
@@ -1329,6 +1348,26 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
         console.error('❌ Manual play failed:', error);
         this.showNotification('Unable to play video. Try downloading it.', 'error');
       });
+  }
+  
+  /**
+   * 🧪 DEBUG: Copiar URL al clipboard
+   */
+  copyToClipboard(text: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      console.log('✅ URL copiada al clipboard:', text);
+      this.showNotification('URL copied to clipboard', 'success');
+    }).catch(err => {
+      console.error('❌ Error copiando al clipboard:', err);
+    });
+  }
+  
+  /**
+   * 🧪 DEBUG: Abrir video en nueva pestaña
+   */
+  openVideoInNewTab(url: string): void {
+    console.log('🔗 Abriendo video en nueva pestaña:', url);
+    window.open(url, '_blank');
   }
   
   /**
