@@ -566,17 +566,19 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (status: VideoStatusResponse) => {
-          console.log('📊 Estado del video:', status);
           
-          // Actualizar progreso (garantizar que siempre haya un valor)
+          // Actualizar progreso con valor real del backend
           if (status.progress !== undefined && status.progress !== null) {
             this.state.generationProgress = status.progress;
-            console.log(`📈 Progreso actualizado: ${status.progress}%`);
+            
+            // Log solo cuando hay cambios significativos (cada 10%)
+            if (status.progress % 10 === 0 || status.progress === 100) {
+              console.log(`📈 Video generation: ${status.progress}%`);
+            }
           } else {
-            // Fallback: incrementar progreso localmente si el backend no envía
-            console.log('⚠️ Backend no envió progreso, usando fallback local');
-            if (this.state.generationProgress < 90) {
-              this.state.generationProgress += 2; // Incremento lento
+            // Fallback local solo si backend no envía progreso
+            if (this.state.generationProgress < 85) {
+              this.state.generationProgress += 2;
             }
           }
           
