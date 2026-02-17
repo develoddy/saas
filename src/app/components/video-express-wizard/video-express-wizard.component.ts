@@ -614,6 +614,14 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
           if (status.status === 'completed') {
             const generationTime = Math.round((Date.now() - startTime) / 1000);
             
+            console.log('🎬 Video completado:', {
+              videoUrl: status.videoUrl,
+              downloadUrl: status.downloadUrl,
+              isSimulated: status.isSimulated,
+              limitReached: status.limitReached,
+              duration: status.duration
+            });
+            
             this.state.videoResult = {
               videoUrl: status.videoUrl!,
               thumbnailUrl: status.thumbnailUrl!,
@@ -1159,11 +1167,15 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
     if (!this.videoPlayer) return;
     
     const video = this.videoPlayer.nativeElement;
+    const isExternalCDN = video.src.startsWith('http') && !video.src.includes(window.location.hostname);
     
     console.log('🎬 Setting up video player...', {
       src: video.src,
+      isExternalCDN: isExternalCDN,
       isMobile: this.videoPlaybackState.isMobile,
-      readyState: video.readyState
+      readyState: video.readyState,
+      networkState: video.networkState,
+      currentSrc: video.currentSrc
     });
     
     // Event: Video puede reproducirse
@@ -1171,7 +1183,8 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
       console.log('📊 Video metadata loaded:', {
         duration: video.duration,
         videoWidth: video.videoWidth,
-        videoHeight: video.videoHeight
+        videoHeight: video.videoHeight,
+        src: video.src
       });
     });
     
