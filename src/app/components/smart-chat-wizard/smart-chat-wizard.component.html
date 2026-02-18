@@ -262,6 +262,17 @@
                     <div class="message-text">{{ msg.message }}</div>
                     <div class="message-time">{{ msg.timestamp | date: 'HH:mm' }}</div>
                   </div>
+                  
+                  <!-- Suggested Questions (Quick-Reply Chips) -->
+                  <div class="suggested-questions" *ngIf="msg.sender === 'bot' && msg.suggestedQuestions && msg.suggestedQuestions.length > 0">
+                    <button 
+                      *ngFor="let suggestion of msg.suggestedQuestions"
+                      class="suggestion-chip"
+                      (click)="askSuggestedQuestion(suggestion)"
+                      type="button">
+                      {{ suggestion }}
+                    </button>
+                  </div>
                 </div>
               </div>
 

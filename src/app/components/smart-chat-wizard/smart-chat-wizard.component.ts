@@ -33,6 +33,7 @@ interface SimulatedMessage {
   message: string;
   timestamp: Date;
   delay?: number; // ms antes de mostrar
+  suggestedQuestions?: string[]; // Quick-reply buttons for guidance
 }
 
 interface WizardState {
@@ -355,10 +356,12 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
       return;
     }
     
+    const currentQuestion = this.state.userQuestion.trim();
+    
     const userMessage: SimulatedMessage = {
       id: this.state.interactiveMessages.length + 1,
       sender: 'user',
-      message: this.state.userQuestion,
+      message: currentQuestion,
       timestamp: new Date()
     };
     
@@ -367,62 +370,202 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     // Track primera interacción
     if (!this.state.hasTriedInteractive) {
       this.trackEvent('interactive_first_question', {
-        question: this.state.userQuestion
+        question: currentQuestion
       });
       this.state.hasTriedInteractive = true;
     } else {
       this.trackEvent('interactive_question_asked', {
-        question: this.state.userQuestion,
+        question: currentQuestion,
         question_number: Math.floor(this.state.interactiveMessages.length / 2) + 1
       });
     }
     
+    // Limpiar input ANTES del setTimeout
+    this.state.userQuestion = '';
+    
     // Generar respuesta automática simulada
     setTimeout(() => {
-      const botResponse = this.generateBotResponse(this.state.userQuestion);
+      const botResponse = this.generateBotResponse(currentQuestion);
       
       const botMessage: SimulatedMessage = {
         id: this.state.interactiveMessages.length + 1,
         sender: 'bot',
-        message: botResponse,
-        timestamp: new Date()
+        message: botResponse.message,
+        timestamp: new Date(),
+        suggestedQuestions: botResponse.suggestions
       };
       
       this.state.interactiveMessages.push(botMessage);
       this.scrollToBottom();
     }, 1200);
     
-    // Limpiar input
-    this.state.userQuestion = '';
     this.scrollToBottom();
   }
   
-  private generateBotResponse(question: string): string {
+  // Handle suggested question chip clicks
+  askSuggestedQuestion(question: string): void {
+    this.state.userQuestion = question;
+    this.askQuestion();
+  }
+  
+  private generateBotResponse(question: string): { message: string; suggestions?: string[] } {
     const lowerQ = question.toLowerCase();
     
-    // Smart responses based on keywords
-    if (lowerQ.includes('order') || lowerQ.includes('package') || lowerQ.includes('shipping') || lowerQ.includes('where')) {
-      return 'I can check your order. What\'s your order number or email?';
+    // 🎯 Intent Detection with Contextual Responses
+    // Each response includes specific simulated data to maintain WOW
+    
+    // 💬 GREETINGS - Quick acknowledgment + redirect to value
+    if (/^(hi|hola|hey|hello|buenos dias|good morning)[\s!?]*$/i.test(lowerQ.trim())) {
+      return {
+        message: `Hi! 👋 I'm designed to handle the repetitive questions that usually take hours every day — like order tracking, shipping, and returns. Want to see how fast I can answer one?`,
+        suggestions: ['Where is my order?', 'How much is shipping?', 'Can I return this?']
+      };
     }
     
-    if (lowerQ.includes('canary') || lowerQ.includes('canarias') || lowerQ.includes('islands')) {
-      return 'Yes, we ship to the Canary Islands. Delivery takes 3-5 business days.';
+    // 🤝 REQUEST FOR HUMAN - Acknowledge + show value
+    if (lowerQ.includes('person') || lowerQ.includes('agent') || lowerQ.includes('human') || 
+        lowerQ.includes('hablar con') || lowerQ.includes('speak to')) {
+      return {
+        message: `Absolutely! I'm built to handle quick questions like order status, returns, or shipping — filtering out repetitive queries so your team focuses on complex issues. For anything else, I'd instantly connect you to a real person. Want to test the quick-answer flow?`,
+        suggestions: ['Where is my order?', 'Shipping costs?', 'Return policy?']
+      };
     }
     
-    if (lowerQ.includes('return') || lowerQ.includes('refund') || lowerQ.includes('change') || lowerQ.includes('size')) {
-      return 'You have 30 days for free returns. Which product would you like to return?';
+    // 😤 FRUSTRATION - Empathy + clear expectations
+    if (lowerQ.includes('not working') || lowerQ.includes('useless') || lowerQ.includes('help me') || 
+        lowerQ.includes('broken') || lowerQ.includes('no funciona')) {
+      return {
+        message: `I'm still learning! Right now I'm built to handle common ecommerce questions. Want to try one of these?`,
+        suggestions: ['Where is my order?', 'Can I return this?', 'Shipping costs?']
+      };
     }
     
-    if (lowerQ.includes('hours') || lowerQ.includes('contact') || lowerQ.includes('schedule')) {
-      return 'Our customer service hours are Mon-Fri 9am-6pm. How can I help you?';
+    // 🤔 PERSONAL / OFF-TOPIC - Friendly redirect
+    if (lowerQ.includes('name') || lowerQ.includes('who are you') || lowerQ.includes('de donde') || 
+        lowerQ.includes('where from') || lowerQ.includes('quien eres')) {
+      return {
+        message: `I'm a smart assistant focused on ecommerce support — the questions that eat up 3-4 hours daily. Want to test me?`,
+        suggestions: ['Where is my order?', 'How much is shipping?', 'Return policy?']
+      };
     }
     
-    if (lowerQ.includes('@') || lowerQ.includes('email')) {
-      return 'Thanks! I\'ll connect you with an available agent. They\'ll contact you at that email shortly.';
+    // ORDER TRACKING - Most common query
+    if (lowerQ.includes('order') || lowerQ.includes('package') || lowerQ.includes('track') || 
+        lowerQ.includes('where') || lowerQ.includes('delivery') || lowerQ.includes('pedido')) {
+      const orderNum = this.generateRandomOrderNumber();
+      const deliveryDate = this.getTomorrowDate();
+      return {
+        message: `I found your order #${orderNum}! It shipped yesterday and will arrive ${deliveryDate} between 9am-2pm. Want me to send tracking details to your email?`
+      };
     }
     
-    // Generic response
-    return 'Sure! Let me connect you with an available agent. What\'s your email?';
+    // SHIPPING LOCATIONS - General shipping to specific places
+    if ((lowerQ.includes('ship') || lowerQ.includes('deliver') || lowerQ.includes('send')) && 
+        (lowerQ.includes(' to ') || lowerQ.includes('madrid') || lowerQ.includes('barcelona') || 
+         lowerQ.includes('valencia') || lowerQ.includes('spain') || lowerQ.includes('españa'))) {
+      // Specific for Canary Islands (already handled above if user asks specifically)
+      if (lowerQ.includes('canary') || lowerQ.includes('canarias') || lowerQ.includes('islands')) {
+        return {
+          message: `Yes! We ship to the Canary Islands. Delivery takes 4-6 business days and shipping is €12.99. You won't pay VAT, but customs may apply local IGIC (around 7%).`
+        };
+      }
+      // General Spain shipping
+      return {
+        message: `Yes! We ship nationwide across Spain. Standard delivery (2-4 days) is €4.99, free on orders over €50. Express next-day delivery available for €9.99. Orders placed before 2pm ship same day!`
+      };
+    }
+    
+    // SHIPPING COSTS
+    if (lowerQ.includes('shipping') || lowerQ.includes('cost') || lowerQ.includes('envío') || 
+        lowerQ.includes('gastos') || lowerQ.includes('free')) {
+      return {
+        message: `Free shipping on orders over €50. Standard delivery (2-4 days) is €4.99, and Express (next day) is €9.99. Orders placed before 2pm ship same day!`
+      };
+    }
+    
+    // RETURNS & REFUNDS
+    if (lowerQ.includes('return') || lowerQ.includes('refund') || lowerQ.includes('devolv') || 
+        lowerQ.includes('change') || lowerQ.includes('size') || lowerQ.includes('wrong')) {
+      return {
+        message: `Returns are easy! You have 30 days to return any item for free. We'll email you a prepaid return label within 5 minutes. Refunds are processed in 2-3 business days after we receive the item.`
+      };
+    }
+    
+    // PAYMENT METHODS
+    if (lowerQ.includes('pay') || lowerQ.includes('credit') || lowerQ.includes('paypal') || 
+        lowerQ.includes('payment') || lowerQ.includes('card')) {
+      return {
+        message: `We accept Visa, Mastercard, American Express, PayPal, Apple Pay, and Google Pay. All payments are secure and encrypted. You can also pay in 3 installments with Klarna!`
+      };
+    }
+    
+    // PRODUCT AVAILABILITY
+    if (lowerQ.includes('stock') || lowerQ.includes('available') || lowerQ.includes('color') || 
+        lowerQ.includes('disponib')) {
+      return {
+        message: `Most items are in stock and ship within 24 hours! If something specific is out of stock, we restock weekly. Want me to notify you when a particular item is back?`
+      };
+    }
+    
+    // BUSINESS HOURS / CONTACT
+    if (lowerQ.includes('hours') || lowerQ.includes('contact') || lowerQ.includes('schedule') || 
+        lowerQ.includes('phone') || lowerQ.includes('horario')) {
+      return {
+        message: `Our support team is available Mon-Fri 9am-7pm and Sat 10am-2pm. You can also email us 24/7 at support@yourstore.com or call +34 900 123 456. Average response time: under 2 hours!`
+      };
+    }
+    
+    // DISCOUNTS / PROMO CODES
+    if (lowerQ.includes('discount') || lowerQ.includes('coupon') || lowerQ.includes('promo') || 
+        lowerQ.includes('code') || lowerQ.includes('descuento') || lowerQ.includes('offer')) {
+      return {
+        message: `Great timing! Use code WELCOME10 for 10% off your first order. We also have a loyalty program where you earn 1 point per €1 spent. 100 points = €5 discount!`
+      };
+    }
+    
+    // WARRANTY / GUARANTEE
+    if (lowerQ.includes('warranty') || lowerQ.includes('guarantee') || lowerQ.includes('garantía') || 
+        lowerQ.includes('defect')) {
+      return {
+        message: `All products come with a 2-year manufacturer warranty. If anything breaks, we'll replace it for free. We also offer a 100% satisfaction guarantee - if you're not happy, return it anytime within 30 days.`
+      };
+    }
+    
+    // ACCOUNT / LOGIN ISSUES
+    if (lowerQ.includes('account') || lowerQ.includes('login') || lowerQ.includes('password') || 
+        lowerQ.includes('reset') || lowerQ.includes('cuenta')) {
+      return {
+        message: `Having trouble logging in? I can send you a password reset link right now. Just confirm your email address and check your inbox in the next 2 minutes. Still stuck? Our tech team is here to help!`
+      };
+    }
+    
+    // 🎯 COMPLEX QUERIES - Acknowledge complexity + show handoff
+    if (lowerQ.includes('tax') || lowerQ.includes('vat') || lowerQ.includes('customs') || 
+        lowerQ.includes('export') || lowerQ.includes('import') || lowerQ.includes('legal')) {
+      return {
+        message: `That's a specialized question that needs expert handling. I'm focused on the 80% of questions that are repetitive — like tracking, returns, and shipping. For complex queries like this, I'd connect you with a real person who can help.`,
+        suggestions: ['Where is my order?', 'Return policy?', 'Shipping costs?']
+      };
+    }
+    
+    // FALLBACK - Intelligent default that reinforces value
+    return {
+      message: `I'm built to answer customer questions like shipping, returns, and order tracking — the things that usually steal hours every day. Want to try one?`,
+      suggestions: ['Where is my order?', 'How much is shipping?', 'Can I return this?']
+    };
+  }
+  
+  // Helper: Generate realistic order number
+  private generateRandomOrderNumber(): string {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+  }
+  
+  // Helper: Get tomorrow's date in readable format
+  private getTomorrowDate(): string {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+    return tomorrow.toLocaleDateString('en-US', options);
   }
   
   useQuickQuestion(question: string): void {
