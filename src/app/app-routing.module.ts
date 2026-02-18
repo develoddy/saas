@@ -41,16 +41,22 @@ const routes: Routes = [
     component: UpgradeSuccessComponent
   },
   // 🎯 Rutas públicas de Preview (SIN autenticación)
-  // Video Express - Wizard específico con upload y generación de video
+  // ProductClip (formerly Video Express) - Wizard específico con upload y generación de video
   // Usa arquitectura de módulos pero con UI personalizada
   {
-    path: 'preview/video-express',
+    path: 'preview/productclip',
     component: VideoExpressWizardComponent,
     data: { 
-      moduleKey: 'video-express',
-      title: 'Video Express - Preview',
-      description: 'Genera videos de producto con IA'
+      moduleKey: 'productclip',
+      title: 'ProductClip - Preview',
+      description: 'Transform product photos into scroll-stopping video clips'
     }
+  },
+  // 🔄 Redirect legacy URL (backward compatibility)
+  {
+    path: 'preview/video-express',
+    redirectTo: 'preview/productclip',
+    pathMatch: 'full'
   },
   // Smart Chat - Wizard MVP de validación WOW
   {

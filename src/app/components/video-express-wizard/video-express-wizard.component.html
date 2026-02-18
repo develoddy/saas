@@ -3,8 +3,17 @@
   <!-- Header -->
   <header class="wizard-header">
     <div class="container">
-      <h1 class="wizard-title">Video Express</h1>
-      <p class="wizard-subtitle">Turn your product into a video in minutes</p>
+      <!-- Skeleton loader mientras carga config -->
+      <div *ngIf="!moduleConfigLoaded" class="header-skeleton">
+        <div class="skeleton skeleton-title"></div>
+        <div class="skeleton skeleton-subtitle"></div>
+      </div>
+      
+      <!-- Contenido real cuando carga -->
+      <div *ngIf="moduleConfigLoaded">
+        <h1 class="wizard-title">{{ moduleName }}</h1>
+        <p class="wizard-subtitle">{{ moduleTagline }}</p>
+      </div>
     </div>
   </header>
 

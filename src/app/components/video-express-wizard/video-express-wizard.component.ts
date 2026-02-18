@@ -10,7 +10,7 @@ import { ProFeature, MonetizationContext } from '../pro-upgrade-block/pro-upgrad
 import { ProEmailData } from '../pro-modal/pro-modal.component';
 
 /**
- * Video Express Wizard Component
+ * ProductClip Wizard Component
  * 
  * Wizard MVP de 3 pasos para generar videos cortos de producto
  * sin autenticación ni configuración técnica.
@@ -21,7 +21,8 @@ import { ProEmailData } from '../pro-modal/pro-modal.component';
  * 3. Generación con polling automático
  * 4. Preview y descarga del video
  * 
- * Ruta: /preview/video-express
+ * Ruta: /preview/productclip
+ * Ruta legacy (redirect): /preview/video-express → /preview/productclip
  * 
  * @author LujanDev
  * @module components/video-express-wizard
@@ -113,8 +114,10 @@ interface WizardState {
 export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterViewChecked {
   
   // Integración con sistema de módulos
-  readonly moduleKey = 'video-express';
-  readonly moduleName = 'Video Express';
+  readonly moduleKey = 'productclip'; // 🎯 Changed from 'video-express' to 'productclip'
+  moduleName: string = ''; // 🎯 Loaded dynamically from backend
+  moduleTagline: string = ''; // 🎯 Loaded dynamically from backend
+  moduleConfigLoaded: boolean = false; // Flag para skeleton loader
   
   private destroy$ = new Subject<void>();
   
@@ -259,6 +262,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
       return;
     }
     
+    // 🎯 FASE 2: Cargar nombre del módulo dinámicamente desde backend
+    await this.loadModuleName();
+    
     // Track wizard started con integración de módulos
     this.trackingService.pageView('module_preview_started', {
       module: this.moduleKey,
@@ -267,7 +273,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
       wizardType: 'custom'
     });
     
-    this.trackEvent('video_express_wizard_started', {
+    this.trackEvent('wizard_started', {
       module: this.moduleKey
     });
     
@@ -300,6 +306,51 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
     }
     
     this.videoExpressService.stopPolling();
+  }
+
+  // ==========================================
+  // MODULE CONFIGURATION (DYNAMIC LOADING)
+  // ==========================================
+
+  /**
+   * Cargar nombre del módulo dinámicamente desde backend
+   * Esto permite actualizar el nombre en admin panel sin deploy de código
+   * 
+   * Fallback: Si el backend no devuelve nombre, usa 'Video Express' (hardcoded)
+   */
+  private async loadModuleName(): Promise<void> {
+    try {
+      const response = await this.previewService.getPreviewConfig(this.moduleKey).toPromise();
+      
+      if (response && response.success && response.config) {
+        // Cargar nombre del módulo
+        if (response.config.moduleName) {
+          this.moduleName = response.config.moduleName;
+          console.log(`✅ Module name loaded from backend: "${this.moduleName}"`);
+        } else {
+          this.moduleName = 'Video Express'; // Fallback si no hay nombre en BD
+        }
+        
+        // Cargar tagline del módulo
+        if (response.config.tagline) {
+          this.moduleTagline = response.config.tagline;
+          console.log(`✅ Module tagline loaded from backend: "${this.moduleTagline}"`);
+        } else {
+          this.moduleTagline = 'Turn your product into a video in minutes'; // Fallback si no hay tagline en BD
+        }
+      } else {
+        console.log(`⚠️ No module config in backend, using fallbacks`);
+        this.moduleName = 'Video Express';
+        this.moduleTagline = 'Turn your product into a video in minutes';
+      }
+    } catch (error) {
+      console.warn(`⚠️ Error loading module config, using fallbacks`, error);
+      this.moduleName = 'Video Express';
+      this.moduleTagline = 'Turn your product into a video in minutes';
+    } finally {
+      // Marcar config como cargada (para ocultar skeleton)
+      this.moduleConfigLoaded = true;
+    }
   }
 
   // ==========================================
@@ -481,7 +532,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
           this.state.loading = false;
           
           // Track event
-          this.trackEvent('video_express_image_uploaded', {
+          this.trackEvent('image_uploaded', {
             fileSize: this.state.uploadedImage!.size,
             fileType: this.state.uploadedImage!.type
           });
@@ -562,7 +613,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
           this.state.loading = false;
           
           // Track event
-          this.trackEvent('video_express_objective_selected', {
+          this.trackEvent('objective_selected', {
             objective: this.state.selectedObjective,
             animation: this.state.selectedAnimation
           });
@@ -663,7 +714,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
             // 📊 Track que el bloque de guidance será visible (tracking cuando avance a step 4)
             // Lo hacemos en goToStep(4) para asegurar que se muestre            
             // Track success: video generado
-            this.trackEvent('video_express_video_generated', {
+            this.trackEvent('video_generated', {
               jobId: this.state.jobId,
               objective: this.state.selectedObjective,
               generationTime
@@ -1304,7 +1355,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
       this.videoPlaybackState.needsManualPlay = true;
       
       // Track error
-      this.trackEvent('video_express_playback_error', {
+      this.trackEvent('video_playback_error', {
         errorCode: video.error?.code,
         errorMessage: video.error?.message,
         isMobile: this.videoPlaybackState.isMobile,
@@ -1358,7 +1409,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
           this.videoPlaybackState.needsManualPlay = false;
           
           // Track autoplay success
-          this.trackEvent('video_express_autoplay_success', {
+          this.trackEvent('video_autoplay_success', {
             isMobile: this.videoPlaybackState.isMobile
           });
         })
@@ -1369,7 +1420,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
           this.videoPlaybackState.needsManualPlay = true;
           
           // Track autoplay failure
-          this.trackEvent('video_express_autoplay_failed', {
+          this.trackEvent('video_autoplay_failed', {
             error: error.message,
             isMobile: this.videoPlaybackState.isMobile
           });
@@ -1399,7 +1450,7 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
         this.videoPlaybackState.needsManualPlay = false;
         
         // Track manual play
-        this.trackEvent('video_express_manual_play', {
+        this.trackEvent('video_manual_play', {
           isMobile: this.videoPlaybackState.isMobile
         });
       })

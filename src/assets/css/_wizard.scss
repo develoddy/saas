@@ -1291,6 +1291,48 @@
         font-size: 1.125rem;
       }
     }
+    
+    // Skeleton loader para header mientras carga config
+    .header-skeleton {
+      .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s ease-in-out infinite;
+        border-radius: 0.5rem;
+        
+        &.skeleton-title {
+          height: 2.5rem;
+          width: 280px;
+          max-width: 70%;
+          margin: 0 auto 0.75rem;
+          
+          @media (min-width: 768px) {
+            height: 3rem;
+            width: 350px;
+          }
+        }
+        
+        &.skeleton-subtitle {
+          height: 1.5rem;
+          width: 320px;
+          max-width: 80%;
+          margin: 0 auto;
+          
+          @media (min-width: 768px) {
+            width: 400px;
+          }
+        }
+      }
+      
+      @keyframes skeleton-loading {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+    }
   }
   
   // Main Container
