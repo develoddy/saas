@@ -49,8 +49,8 @@
                     </div>
                 </div>
 
-                <!-- Auth/User Actions (Mejorados) -->
-                <div class="auth-actions-enhanced" *ngIf="!isAuthenticated && isStoreMode">
+                <!-- Auth/User Actions (Mejorados) - OCULTO TEMPORALMENTE -->
+                <!-- <div class="auth-actions-enhanced" *ngIf="!isAuthenticated && isStoreMode">
                     <button class="btn-link-enhanced" (click)="goToLogin()">
                         <i class="bi bi-box-arrow-in-right"></i>
                         <span>Sign in</span>
@@ -59,7 +59,7 @@
                         <i class="bi bi-person-plus"></i>
                         <span>Create account</span>
                     </button>
-                </div>
+                </div> -->
 
                 <div class="user-actions-enhanced" *ngIf="isAuthenticated && currentTenant">
                     <div class="user-info-enhanced">
@@ -363,8 +363,8 @@
                     </div>
                 </div> <!-- /mvps-grid -->
 
-                <!-- Bottom CTA (solo Store Mode) -->
-                <div class="cta-section" *ngIf="!isAuthenticated">
+                <!-- Bottom CTA (solo Store Mode) - OCULTO TEMPORALMENTE -->
+                <!-- <div class="cta-section" *ngIf="!isAuthenticated">
                     <div class="cta-card">
                         <h3 class="cta-title">Ready to get started?</h3>
                         <p class="cta-description">
@@ -381,7 +381,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
             </section> <!-- /store-section -->
 
