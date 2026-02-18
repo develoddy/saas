@@ -137,13 +137,15 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
   // 🎯 FASE 2: Tracking Source (admin vs preview)
   public isInternalAccess: boolean = false; // true si acceso con ?internal=true
   
-  // Mensajes rotativos para step 3
+  // Mensajes rotativos para step 3 (premium perception)
+  // Cada mensaje transmite valor técnico específico + progreso implícito
   private readonly loadingMessages = [
-    'Analyzing your product...',
-    'Applying cinematic motion...',
-    'Optimizing for social media...',
-    'Final touches...',
-    'Almost ready...'
+    'Analyzing product depth layers...',      // 0-20%: Technical + specific
+    'Applying 3D parallax motion...',         // 20-40%: Specialization signal
+    'Optimizing frame composition...',        // 40-60%: Professional process
+    'Rendering cinematic transitions...',     // 60-80%: High-value output
+    'Encoding for Instagram/TikTok...',       // 80-95%: Platform-specific
+    'Finalizing your video...'                // 95-100%: Completion
   ];
   
   private messageInterval: any;
@@ -268,6 +270,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
     this.trackEvent('video_express_wizard_started', {
       module: this.moduleKey
     });
+    
+    // 🎯 Track abandonment when user leaves without completing
+    this.setupAbandonmentTracking();
   }
   
   ngAfterViewChecked(): void {
@@ -279,6 +284,9 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngOnDestroy(): void {
+    // 🎯 Track abandonment if wizard not completed
+    this.trackAbandonmentIfIncomplete();
+    
     // Cleanup
     this.destroy$.next();
     this.destroy$.complete();
@@ -935,6 +943,57 @@ export class VideoExpressWizardComponent implements OnInit, OnDestroy, AfterView
         source: this.isInternalAccess ? 'admin' : 'preview'
       });
     }
+  }
+
+  // ==========================================
+  // Abandonment Tracking (Critical for MVP Validation)
+  // ==========================================
+  
+  /**
+   * Setup abandonment tracking via beforeunload event
+   * Captures exact step and context when user leaves
+   */
+  private setupAbandonmentTracking(): void {
+    window.addEventListener('beforeunload', () => {
+      this.trackAbandonmentIfIncomplete();
+    });
+  }
+  
+  /**
+   * Track abandonment if wizard not completed
+   * Only fires if user hasn't reached step 4 or submitted feedback
+   */
+  private trackAbandonmentIfIncomplete(): void {
+    // Don't track if wizard completed (reached step 4 with feedback or download)
+    const isCompleted = this.state.currentStep === 4 && 
+                       (this.state.feedbackSubmitted || this.state.downloadedAt !== null);
+    
+    if (!isCompleted) {
+      this.trackEvent('wizard_abandoned', {
+        step: this.state.currentStep,
+        step_name: this.getStepName(this.state.currentStep),
+        had_uploaded_image: !!this.state.imageId,
+        had_selected_objective: !!this.state.selectedObjective,
+        had_selected_animation: !!this.state.selectedAnimation,
+        video_generation_progress: this.state.generationProgress,
+        video_was_generated: !!this.state.videoResult,
+        module: this.moduleKey,
+        source: this.isInternalAccess ? 'admin' : 'preview'
+      });
+    }
+  }
+  
+  /**
+   * Get human-readable step name for analytics
+   */
+  private getStepName(step: number): string {
+    const stepNames: Record<number, string> = {
+      1: 'upload_image',
+      2: 'select_objective',
+      3: 'video_generation',
+      4: 'video_preview'
+    };
+    return stepNames[step] || 'unknown';
   }
 
   // ==========================================
