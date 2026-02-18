@@ -3447,6 +3447,70 @@
 } // END .smart-chat-wizard
 
 // ========================================
+// RESPONSIVE: Mobile Optimization
+// ========================================
+@media (max-width: 768px) {
+  .smart-chat-wizard {
+    // Chat Widget - Altura adaptativa para móviles
+    .chat-widget {
+      height: 60vh; // Usar viewport height en lugar de px fijo
+      min-height: 450px; // Altura mínima garantizada
+      max-height: 600px; // No exceder el viewport
+    }
+
+    .chat-messages {
+      flex: 1;
+      min-height: 300px; // Asegurar área de mensajes visible
+    }
+
+    // Simulation container - Stack vertical en móvil
+    .chat-simulation-container {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .simulation-explanation {
+      width: 100%;
+    }
+
+    // Interactive chat container - Stack vertical
+    .interactive-chat-container {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    // Quick questions - Botones apilados
+    .quick-questions {
+      .quick-question-btn {
+        width: 100%;
+        text-align: left;
+      }
+    }
+  }
+}
+
+// Móviles pequeños - Ajustes adicionales
+@media (max-width: 480px) {
+  .smart-chat-wizard {
+    .chat-widget {
+      height: 55vh;
+      min-height: 400px;
+    }
+
+    .chat-messages {
+      min-height: 250px;
+      padding: 1rem; // Reducir padding en pantallas muy pequeñas
+    }
+
+    .message {
+      .message-bubble {
+        max-width: 85%; // Más ancho en móviles pequeños
+      }
+    }
+  }
+}
+
+// ========================================
 // SHARED ANIMATIONS
 // ========================================
 @keyframes pulse {
