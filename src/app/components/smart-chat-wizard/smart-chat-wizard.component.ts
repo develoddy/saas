@@ -695,10 +695,13 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     
     this.trackEvent('email_submitted', {
       email: this.state.userEmail.trim(),
-      plan: 'starter',
-      price: 49,
+      plan: 'beta',
+      price: 0,
+      price_anchor: 49,
+      currency: 'EUR',
       intent: 'early_access',
-      step: 3
+      step: 3,
+      beta_pricing: true
     });
     
     this.state.emailSubmitted = true;
@@ -707,7 +710,7 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     // Mostrar mensaje de éxito
     setTimeout(() => {
       this.state.showEmailCapture = false;
-      this.state.feedbackMessage = '🎉 Thanks! We\'ll notify you when Inbox Zero is ready for beta testing.';
+      this.state.feedbackMessage = '🎉 Thanks! We\'ll send you free beta access in 48h.';
     }, 1500);
     
     // Track wizard completion (submit email = conversión completa)
