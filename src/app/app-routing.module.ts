@@ -41,6 +41,19 @@ const routes: Routes = [
     component: UpgradeSuccessComponent
   },
   // 🎯 Rutas públicas de Preview (SIN autenticación)
+  
+  // 🔄 REDIRECTS: URLs antiguas → URLs nuevas (DEBEN IR PRIMERO)
+  {
+    path: 'preview/smart-chat',
+    redirectTo: 'preview/inbox-zero',
+    pathMatch: 'full'
+  },
+  {
+    path: 'preview/video-express',
+    redirectTo: 'preview/productclip',
+    pathMatch: 'full'
+  },
+  
   // ProductClip - Wizard específico con upload y generación de video
   // Usa arquitectura de módulos pero con UI personalizada
   {
