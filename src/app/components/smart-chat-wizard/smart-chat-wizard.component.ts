@@ -7,20 +7,22 @@ import { TrackingService } from '../../services/tracking.service';
 import { ModulePreviewService } from '../../services/module-preview.service';
 
 /**
- * Smart Chat Wizard Component
+ * Inbox Zero Wizard Component (formerly Smart Chat)
  * 
- * Wizard MVP de 4 pasos para validar el interés en chat automatizado
+ * Wizard MVP de 3 pasos para validar interés en automatización de soporte
  * sin autenticación ni configuración técnica.
  * 
+ * Tagline: "Turn repetitive customer questions into zero-second responses"
+ * 
  * Flow (WOW-oriented):
- * 1. Mostrar problema real del comerciante
- * 2. Simulación en vivo de chat automático (WOW moment)
- * 3. Preview interactivo - probar con preguntas reales
- * 4. CTA con código embebible para instalación rápida
+ * 1. Mostrar problema real del comerciante (mensajes repetitivos)
+ * 2. Simulación WOW + Preview interactivo (fusionados para mantener momentum)
+ * 3. CTA + Pricing blocker (señal de WTP)
  * 
- * Ruta: /preview/smart-chat
+ * Ruta: /preview/smart-chat (legacy)
+ * Ruta: /preview/inbox-zero (nuevo)
  * 
- * Objetivo: Validar VALOR PERCIBIDO antes de construir producto completo
+ * Objetivo: Validar VALOR PERCIBIDO + WILLINGNESS TO PAY
  * Medición: tracking_events en /lab/analytics
  * 
  * @author LujanDev
@@ -37,7 +39,7 @@ interface SimulatedMessage {
 }
 
 interface WizardState {
-  currentStep: 1 | 2 | 3 | 4;
+  currentStep: 1 | 2 | 3; // 🎯 Reducido de 4 a 3 pasos (fusionamos 2+3)
   
   // Paso 1: Problema
   problemUnderstanding: boolean;
@@ -48,14 +50,19 @@ interface WizardState {
   currentSimulationIndex: number;
   simulationCompleted: boolean;
   
-  // Paso 3: Preview Interactivo
+  // Paso 2: Simulación + Preview Interactivo (fusionados)
   userQuestion: string;
   interactiveMessages: SimulatedMessage[];
   hasTriedInteractive: boolean;
+  isInteractiveMode: boolean; // True cuando termina simulación y pasa a modo interactivo
   
-  // Paso 4: CTA & Install
+  // Paso 3: CTA + Pricing (WTP signal)
   showEmbedCode: boolean;
   embedCodeCopied: boolean;
+  showPricingModal: boolean; // Modal de pricing (€49/mes)
+  showEmailCapture: boolean; // Modal para early access
+  userEmail: string; // Email capturado
+  emailSubmitted: boolean;
   
   // Feedback & Tracking (MVP Validation)
   feedbackAnswer: 'yes' | 'partial' | 'no' | null;
@@ -67,9 +74,12 @@ interface WizardState {
   simulationViewed: boolean;
   interactiveUsed: boolean;
   
+  // Loading states premium (WOW perception)
+  loading: boolean;
+  loadingStage: 'thinking' | 'analyzing' | 'generating' | null;
+  
   // General
   error: string | null;
-  loading: boolean;
 }
 
 @Component({
@@ -94,8 +104,9 @@ interface WizardState {
 export class SmartChatWizardComponent implements OnInit, OnDestroy {
   
   // Integración con sistema de módulos
-  readonly moduleKey = 'smart-chat';
-  readonly moduleName = 'Smart Chat';
+  readonly moduleKey = 'inbox-zero'; // 🎯 Nuevo identificador de producto
+  readonly moduleName = 'Inbox Zero'; // 🎯 Nuevo nombre de producto
+  readonly moduleTagline = 'Turn repetitive customer questions into zero-second responses';
   
   private destroy$ = new Subject<void>();
   private simulationInterval: any;
@@ -133,16 +144,22 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     userQuestion: '',
     interactiveMessages: [],
     hasTriedInteractive: false,
+    isInteractiveMode: false,
     showEmbedCode: false,
     embedCodeCopied: false,
+    showPricingModal: false,
+    showEmailCapture: false,
+    userEmail: '',
+    emailSubmitted: false,
     feedbackAnswer: null,
     feedbackSubmitted: false,
     feedbackComment: '',
     feedbackMessage: null,
     simulationViewed: false,
     interactiveUsed: false,
-    error: null,
-    loading: false
+    loading: false,
+    loadingStage: null,
+    error: null
   };
   
   constructor(
@@ -168,13 +185,18 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
       moduleName: this.moduleName
     });
     
-    this.trackEvent('smart_chat_wizard_started', {
+    this.trackEvent('wizard_started', {
       source: this.isInternalAccess ? 'admin' : 'preview',
       timestamp: Date.now()
     });
+    
+    // 🎯 Track abandonment when user leaves without completing
+    this.setupAbandonmentTracking();
   }
   
   ngOnDestroy(): void {
+    // 🎯 Track abandonment if wizard not completed
+    this.trackAbandonmentIfIncomplete();
     this.destroy$.next();
     this.destroy$.complete();
     
@@ -242,7 +264,7 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   // Navegación entre pasos
   // ==========================================
   
-  goToStep(step: 1 | 2 | 3 | 4): void {
+  goToStep(step: 1 | 2 | 3): void {
     this.state.currentStep = step;
     
     // Track cambio de paso
@@ -258,8 +280,8 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   }
   
   nextStep(): void {
-    if (this.state.currentStep < 4) {
-      const nextStep = (this.state.currentStep + 1) as 2 | 3 | 4;
+    if (this.state.currentStep < 3) {
+      const nextStep = (this.state.currentStep + 1) as 2 | 3;
       
       // Track paso completado
       this.trackEvent(`step_${this.state.currentStep}_completed`, {
@@ -317,6 +339,9 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
         this.state.simulationViewed = true;
       }
       
+      // 🎯 NO AUTO-TRANSITION: El usuario decide cuándo continuar haciendo clic en "Try it yourself"
+      // La activación de modo interactivo solo ocurre vía activateInteractiveMode()
+      
       return;
     }
     
@@ -345,6 +370,20 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   replaySimulation(): void {
     this.trackEvent('simulation_replayed', {});
     this.startSimulation();
+  }
+  
+  /**
+   * Activa modo interactivo manualmente
+   * El ÚNICO método para activar el modo interactivo (no hay auto-transition)
+   */
+  activateInteractiveMode(): void {
+    // Activar modo interactivo
+    this.state.isInteractiveMode = true;
+    
+    // Track activación manual
+    this.trackEvent('interactive_mode_activated', {
+      manual_click: true
+    });
   }
   
   // ==========================================
@@ -383,8 +422,25 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     // Limpiar input ANTES del setTimeout
     this.state.userQuestion = '';
     
-    // Generar respuesta automática simulada
+    // 🎯 LOADING STATES PREMIUM (WOW perception)
+    this.state.loading = true;
+    this.state.loadingStage = 'thinking';
+    
+    // Stage 1: Thinking... (400ms)
     setTimeout(() => {
+      this.state.loadingStage = 'analyzing';
+    }, 400);
+    
+    // Stage 2: Analyzing context... (400ms)
+    setTimeout(() => {
+      this.state.loadingStage = 'generating';
+    }, 800);
+    
+    // Stage 3: Generating response... then show response (400ms)
+    setTimeout(() => {
+      this.state.loading = false;
+      this.state.loadingStage = null;
+      
       const botResponse = this.generateBotResponse(currentQuestion);
       
       const botMessage: SimulatedMessage = {
@@ -575,14 +631,114 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   }
   
   // ==========================================
-  // Paso 4: CTA & Install
+  // Paso 3: CTA + Pricing Blocker (WTP Signal)
+  // ==========================================
+  
+  /**
+   * Mostrar modal de pricing (Beta gratuita con ancla €49/mes)
+   * Este es el PRIMER punto de validación de WTP
+   */
+  showPricing(): void {
+    this.state.showPricingModal = true;
+    
+    this.trackEvent('pricing_modal_viewed', {
+      step: 3,
+      beta_pricing: true
+    });
+  }
+  
+  /**
+   * Usuario hace click en "Claim Free Beta Access"
+   * Track WTP signal + mostrar email capture
+   */
+  handlePricingClick(): void {
+    this.trackEvent('pricing_clicked', {
+      plan: 'beta',
+      price: 0,
+      price_anchor: 49,
+      currency: 'EUR',
+      step: 3,
+      beta_pricing: true
+    });
+    
+    // Cerrar pricing modal y mostrar email capture
+    this.state.showPricingModal = false;
+    this.state.showEmailCapture = true;
+  }
+  
+  /**
+   * Cerrar pricing modal sin conversión
+   */
+  closePricingModal(): void {
+    this.trackEvent('pricing_dismissed', {
+      step: 3
+    });
+    
+    this.state.showPricingModal = false;
+  }
+  
+  /**
+   * Submit email para early access
+   */
+  submitEmail(): void {
+    if (!this.state.userEmail.trim()) {
+      this.state.error = 'Please enter a valid email';
+      return;
+    }
+    
+    // Validación simple de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.state.userEmail.trim())) {
+      this.state.error = 'Please enter a valid email';
+      return;
+    }
+    
+    this.trackEvent('email_submitted', {
+      email: this.state.userEmail.trim(),
+      plan: 'starter',
+      price: 49,
+      intent: 'early_access',
+      step: 3
+    });
+    
+    this.state.emailSubmitted = true;
+    this.state.error = null;
+    
+    // Mostrar mensaje de éxito
+    setTimeout(() => {
+      this.state.showEmailCapture = false;
+      this.state.feedbackMessage = '🎉 Thanks! We\'ll notify you when Inbox Zero is ready for beta testing.';
+    }, 1500);
+    
+    // Track wizard completion (submit email = conversión completa)
+    this.trackEvent('wizard_completed', {
+      step: 3,
+      completed: true,
+      email_captured: true,
+      pricing_accepted: true
+    });
+  }
+  
+  /**
+   * Cerrar email capture modal
+   */
+  closeEmailCapture(): void {
+    this.trackEvent('email_capture_dismissed', {
+      step: 3
+    });
+    
+    this.state.showEmailCapture = false;
+  }
+  
+  // ==========================================
+  // Legacy: Embed Code (opcional, secundario al pricing)
   // ==========================================
   
   showCode(): void {
     this.state.showEmbedCode = true;
     
     this.trackEvent('embed_code_viewed', {
-      step: 4
+      step: 3
     });
   }
   
@@ -603,19 +759,18 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   }
   
   getEmbedCode(): string {
-    return `<!-- Smart Chat Widget -->
+    return `<!-- Inbox Zero Widget -->
 <script>
   (function() {
-    window.SmartChatConfig = {
+    window.InboxZeroConfig = {
       tenantId: 'YOUR_TENANT_ID',
       color: '#4F46E5',
       position: 'bottom-right'
     };
     var script = document.createElement('script');
-    script.src = 'https://cdn.smartchat.app/widget.js';
+    script.src = 'https://cdn.inboxzero.app/widget.js';
     script.async = true;
-    dosource: this.isInternalAccess ? 'admin' : 'preview', // ✅ Marcar tracking interno vs público
-      cument.head.appendChild(script);
+    document.head.appendChild(script);
   })();
 </script>`;
   }
@@ -699,7 +854,60 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   }
   
   get canContinueStep2(): boolean {
-    return this.state.simulationCompleted;
+    // Paso 2 fusionado: requiere simulación completada + al menos 1 pregunta interactiva
+    return this.state.simulationCompleted && this.state.hasTriedInteractive;
+  }
+  
+  // ==========================================
+  // Abandonment Tracking (PMF Validation)
+  // ==========================================
+  
+  /**
+   * Setup abandonment tracking via beforeunload event
+   * Captures exact step and context when user leaves
+   */
+  private setupAbandonmentTracking(): void {
+    window.addEventListener('beforeunload', () => {
+      this.trackAbandonmentIfIncomplete();
+    });
+  }
+  
+  /**
+   * Track abandonment if wizard not completed
+   * Only fires if user hasn't submitted email (complete conversion)
+   */
+  private trackAbandonmentIfIncomplete(): void {
+    // Don't track if wizard completed (email submitted)
+    const isCompleted = this.state.emailSubmitted || this.state.feedbackSubmitted;
+    
+    if (!isCompleted) {
+      this.trackEvent('wizard_abandoned', {
+        step: this.state.currentStep,
+        step_name: this.getStepName(this.state.currentStep),
+        problem_acknowledged: this.state.problemUnderstanding,
+        simulation_completed: this.state.simulationCompleted,
+        simulation_viewed: this.state.simulationViewed,
+        interactive_used: this.state.hasTriedInteractive,
+        interactive_mode_activated: this.state.isInteractiveMode,
+        questions_asked: Math.floor(this.state.interactiveMessages.length / 2),
+        pricing_viewed: this.state.showPricingModal,
+        email_capture_shown: this.state.showEmailCapture,
+        module: this.moduleKey,
+        source: this.isInternalAccess ? 'admin' : 'preview'
+      });
+    }
+  }
+  
+  /**
+   * Get human-readable step name for analytics
+   */
+  private getStepName(step: number): string {
+    const stepNames: Record<number, string> = {
+      1: 'problem_understanding',
+      2: 'simulation_and_interactive',
+      3: 'pricing_and_conversion'
+    };
+    return stepNames[step] || 'unknown';
   }
   
   get canContinueStep3(): boolean {

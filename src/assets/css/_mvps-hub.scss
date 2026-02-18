@@ -3110,6 +3110,100 @@
     }
   }
   
+  // Simulation actions (botones de control después de simulación)
+  .simulation-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    
+    .btn {
+      flex: 1;
+      justify-content: center;
+      
+      &.btn-primary {
+        background: #000000;
+        color: #ffffff;
+        border: 2px solid #000000;
+        
+        &:hover {
+          background: #333333;
+          border-color: #333333;
+        }
+      }
+      
+      &.btn-outline {
+        background: transparent;
+        color: #495057;
+        border: 2px solid #dee2e6;
+        
+        &:hover {
+          background: #f8f9fa;
+          border-color: #adb5bd;
+        }
+      }
+    }
+  }
+  
+  // Auto-transition message (between simulation and interactive)
+  .auto-transition-message {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #000000;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+    
+    i {
+      font-size: 2rem;
+      color: #000000;
+      display: block;
+      margin-bottom: 0.75rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 1rem;
+      color: #212529;
+      
+      &:first-of-type {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      
+      &.transition-hint {
+        font-size: 0.875rem;
+        color: #6c757d;
+      }
+    }
+  }
+  
+  // Step hint (instructional message)
+  .step-hint {
+    margin: 1rem 0 0;
+    padding: 1rem 1.5rem;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    i {
+      font-size: 1.25rem;
+      color: #856404;
+      flex-shrink: 0;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #856404;
+      line-height: 1.5;
+    }
+  }
+  
   // ========================================
   // PROBLEM SHOWCASE
   // ========================================
@@ -3391,6 +3485,22 @@
   .cta-section {
     text-align: center;
     margin: 3rem 0;
+    
+    .beta-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: #ffffff;
+      padding: 0.5rem 1.25rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+      
+      i {
+        margin-right: 0.25rem;
+      }
+    }
   
     .btn-xl {
       padding: 1.25rem 3rem;
@@ -3402,6 +3512,12 @@
       margin-top: 1rem;
       font-size: 0.875rem;
       color: #9ca3af;
+      
+      .price-anchor {
+        text-decoration: line-through;
+        color: #6c757d;
+        font-weight: 500;
+      }
     }
   }
   
@@ -3545,6 +3661,360 @@
 }
 
 // ========================================
+// 🎯 LOADING STATES (Premium UX)
+// ========================================
+.loading-stage-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+  .loading-icon {
+    font-size: 1.25rem;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  .loading-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #495057;
+  }
+  
+  .loading-dots {
+    display: flex;
+    gap: 0.25rem;
+    
+    span {
+      width: 6px;
+      height: 6px;
+      background: #6c757d;
+      border-radius: 50%;
+      animation: pulsingDot 1.4s ease-in-out infinite;
+      
+      &:nth-child(2) { animation-delay: 0.2s; }
+      &:nth-child(3) { animation-delay: 0.4s; }
+    }
+  }
+}
+
+// ========================================
+// 🎯 PRICING MODAL (WTP Validation)
+// ========================================
+.pricing-modal {
+  max-width: 480px;
+  
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #adb5bd;
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    z-index: 10;
+    
+    &:hover {
+      background: #f8f9fa;
+      color: #343a40;
+    }
+  }
+  
+  .modal-header {
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #212529;
+      margin: 0 0 0.5rem;
+    }
+    
+    p {
+      font-size: 1rem;
+      color: #6c757d;
+      margin: 0;
+    }
+  }
+}
+
+.pricing-card {
+  padding: 0 2rem 2rem;
+  
+  &.featured {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+  
+  .pricing-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #000000 0%, #333333 100%);
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    
+    &.beta-badge {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+  }
+  
+  .pricing-plan-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 1rem;
+  }
+  
+  .pricing-amount {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    
+    .currency {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #495057;
+    }
+    
+    .price {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #000000;
+      line-height: 1;
+      margin: 0 0.25rem;
+    }
+    
+    .period {
+      font-size: 1.125rem;
+      color: #6c757d;
+    }
+    
+    // Beta pricing con precio original tachado
+    &.beta-pricing {
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      .original-price {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        text-decoration: line-through;
+        opacity: 0.5;
+        
+        .currency {
+          font-size: 1rem;
+        }
+        
+        .price {
+          font-size: 1.75rem;
+        }
+        
+        .period {
+          font-size: 0.875rem;
+        }
+      }
+      
+      .beta-price {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        
+        .price {
+          font-size: 3.5rem;
+          font-weight: 700;
+          color: #28a745;
+          line-height: 1;
+        }
+        
+        .period {
+          font-size: 1rem;
+          color: #6c757d;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+  
+  .pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+    
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      font-size: 1rem;
+      color: #495057;
+      
+      i {
+        color: #28a745;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
+    }
+  }
+  
+  .btn-block {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.125rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    
+    &:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .pricing-guarantee {
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin: 1rem 0 0;
+    
+    i {
+      color: #28a745;
+      margin-right: 0.25rem;
+    }
+  }
+}
+
+// ========================================
+// 🎯 EMAIL CAPTURE MODAL (Beta Access)
+// ========================================
+.email-modal {
+  max-width: 440px;
+  
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #adb5bd;
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    z-index: 10;
+    
+    &:hover {
+      background: #f8f9fa;
+      color: #343a40;
+    }
+  }
+  
+  .modal-header {
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+    
+    .email-icon {
+      font-size: 3rem;
+      color: #000000;
+      margin-bottom: 1rem;
+    }
+    
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #212529;
+      margin: 0 0 0.5rem;
+    }
+    
+    p {
+      font-size: 1rem;
+      color: #6c757d;
+      margin: 0;
+      line-height: 1.6;
+    }
+  }
+  
+  .email-form {
+    padding: 0 2rem 2rem;
+    
+    .email-input {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1rem;
+      border: 2px solid #dee2e6;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s;
+      
+      &:focus {
+        outline: none;
+        border-color: #000000;
+        box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+      }
+      
+      &.error {
+        border-color: #dc3545;
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+      }
+    }
+    
+    .email-error {
+      font-size: 0.875rem;
+      color: #dc3545;
+      margin: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .btn-block {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.125rem;
+      margin-top: 1rem;
+      
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+    
+    .email-guarantee {
+      text-align: center;
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin: 1rem 0 0;
+      
+      i {
+        color: #28a745;
+        margin-right: 0.25rem;
+      }
+    }
+  }
+}
+
+// ========================================
 // SHARED ANIMATIONS
 // ========================================
 @keyframes pulse {
@@ -3553,6 +4023,17 @@
   }
   50% {
     opacity: 0.5;
+  }
+}
+
+@keyframes pulsingDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
   }
 }
 

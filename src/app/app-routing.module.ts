@@ -41,7 +41,7 @@ const routes: Routes = [
     component: UpgradeSuccessComponent
   },
   // 🎯 Rutas públicas de Preview (SIN autenticación)
-  // ProductClip (formerly Video Express) - Wizard específico con upload y generación de video
+  // ProductClip - Wizard específico con upload y generación de video
   // Usa arquitectura de módulos pero con UI personalizada
   {
     path: 'preview/productclip',
@@ -52,22 +52,17 @@ const routes: Routes = [
       description: 'Transform product photos into scroll-stopping video clips'
     }
   },
-  // 🔄 Redirect legacy URL (backward compatibility)
+  // Inbox Zero - Wizard MVP de validación WOW + WTP
   {
-    path: 'preview/video-express',
-    redirectTo: 'preview/productclip',
-    pathMatch: 'full'
-  },
-  // Smart Chat - Wizard MVP de validación WOW
-  {
-    path: 'preview/smart-chat',
+    path: 'preview/inbox-zero',
     component: SmartChatWizardComponent,
     data: { 
-      moduleKey: 'smart-chat',
-      title: 'Smart Chat - Preview',
-      description: 'Automatiza respuestas de atención al cliente'
+      moduleKey: 'inbox-zero',
+      title: 'Inbox Zero - Preview',
+      description: 'Turn repetitive customer questions into zero-second responses'
     }
   },
+
   // Otros módulos - Wizard genérico basado en formularios
   {
     path: 'preview/:moduleKey',
