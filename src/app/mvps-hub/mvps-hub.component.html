@@ -1,12 +1,12 @@
-<div class="mvps-hub" [class.labs-mode]="isLabsMode" [class.store-mode]="isStoreMode">
-    <!-- Header Profesional Mejorado -->
+<div class="mvps-hub labs-mode">
+    <!-- Header Profesional -->
     <header class="hub-header-enhanced">
         <div class="header-backdrop"></div>
         <div class="container">
             <div class="header-content-enhanced">
 
-                <!-- Labs Mode Branding (Mejorado) -->
-                <div class="branding-enhanced" *ngIf="isLabsMode || isLoading">
+                <!-- Labs Mode Branding -->
+                <div class="branding-enhanced">
                     <div class="brand-icon-enhanced">
                         <i class="bi bi-gear-fill"></i>
                         <span class="icon-pulse"></span>
@@ -19,7 +19,7 @@
                         <p class="brand-tagline-enhanced">
                         Building micro-SaaS based on <strong>real usage</strong>, not ideas
 
-                        <!-- Sistema Activo Badge (Mejorado) -->
+                        <!-- Sistema Activo Badge -->
                         <div class="system-status-enhanced" *ngIf="!isLoading">
                             <div class="status-badge-live">
                                 <span class="status-dot"></span>
@@ -32,34 +32,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Store Mode Branding (Mejorado) -->
-                <div class="branding-enhanced store-variant" *ngIf="isStoreMode">
-                    <div class="brand-icon-enhanced">
-                        <i class="bi bi-rocket-takeoff-fill"></i>
-                    </div>
-                    <div class="brand-text-enhanced">
-                        <h1 class="brand-title-enhanced">
-                            <span class="title-primary">MVPs in</span>
-                            <span class="title-secondary">Validation</span>
-                        </h1>
-                        <p class="brand-tagline-enhanced">
-                            Only tools with <strong>real usage signals</strong>
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Auth/User Actions (Mejorados) - OCULTO TEMPORALMENTE -->
-                <!-- <div class="auth-actions-enhanced" *ngIf="!isAuthenticated && isStoreMode">
-                    <button class="btn-link-enhanced" (click)="goToLogin()">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Sign in</span>
-                    </button>
-                    <button class="btn-primary-enhanced" (click)="goToRegister()">
-                        <i class="bi bi-person-plus"></i>
-                        <span>Create account</span>
-                    </button>
-                </div> -->
 
                 <div class="user-actions-enhanced" *ngIf="isAuthenticated && currentTenant">
                     <div class="user-info-enhanced">
@@ -117,9 +89,9 @@
             </div>
 
             <!-- ============================================ -->
-            <!-- LABS MODE: Landing de laboratorio (no MVPs) -->
+            <!-- VALIDATION LAB: Analytics Dashboard         -->
             <!-- ============================================ -->
-            <section *ngIf="!isLoading && !error && isLabsMode" class="labs-landing">
+            <section *ngIf="!isLoading && !error" class="labs-landing">
 
                 <!-- Estado del laboratorio (Mejorado) -->
                 <div class="labs-status-enhanced">
@@ -301,89 +273,7 @@
                 
             </section>
 
-            <!-- ============================================ -->
-            <!-- STORE MODE: Grid de MVPs (ya existe)        -->
-            <!-- ============================================ -->
-            <section *ngIf="!isLoading && !error && isStoreMode" class="store-section">
 
-                <!-- Intro -->
-                <div class="intro-section">
-                    <h2 class="section-title">Explore our MVPs in validation</h2>
-                    <p class="section-description">
-                        We only show tools with <strong>real usage signals</strong>.
-                        No technical demos. Only MVPs that are working.
-                    </p>
-                </div>
-
-                <!-- MVPs Grid -->
-                <div class="mvps-grid">
-                    <div *ngFor="let mvp of mvps" class="mvp-card" [class.coming-soon]="mvp.status === 'coming-soon'" [style.border-color]="mvp.color">
-
-                        <!-- Icon & Status -->
-                        <div class="card-header">
-                            <div class="mvp-icon" [style.background]="mvp.color">
-                                <i [class]="mvp.icon"></i>
-                            </div>
-                            <span class="status-badge" *ngIf="mvp.status === 'coming-soon'">
-                                Coming soon
-                            </span>
-                            <span class="status-badge live" *ngIf="mvp.status === 'live'">
-                                <i class="bi bi-circle-fill"></i> Live
-                            </span>
-                        </div>
-
-                        <!-- Content -->
-                        <div class="card-content">
-                            <h3 class="mvp-name">{{ mvp.name }}</h3>
-                            <p class="mvp-tagline">{{ mvp.tagline }}</p>
-                            <p class="mvp-description">{{ mvp.description }}</p>
-
-                            <!-- Features List -->
-                            <ul class="features-list">
-                                <li *ngFor="let feature of mvp.features">
-                                    <i class="bi bi-check-circle-fill"></i>
-                                    <span>{{ feature }}</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- CTA -->
-                        <div class="card-footer">
-                            <button class="btn-preview" [disabled]="mvp.status === 'coming-soon'" [style.background]="mvp.status === 'live' ? mvp.color : '#d1d5db'" (click)="goToPreview(mvp)">
-                                <span *ngIf="mvp.status === 'live'">
-                                    <i class="bi bi-play-circle"></i>
-                                    Try now
-                                </span>
-                                <span *ngIf="mvp.status === 'coming-soon'">
-                                    <i class="bi bi-clock"></i>
-                                    Very soon
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </div> <!-- /mvps-grid -->
-
-                <!-- Bottom CTA (solo Store Mode) - OCULTO TEMPORALMENTE -->
-                <!-- <div class="cta-section" *ngIf="!isAuthenticated">
-                    <div class="cta-card">
-                        <h3 class="cta-title">Ready to get started?</h3>
-                        <p class="cta-description">
-                            Create your free account and try any tool.
-                            No credit card, no commitments, just validation.
-                        </p>
-                        <div class="cta-buttons">
-                            <button class="btn-cta-primary" (click)="goToRegister()">
-                                <i class="bi bi-rocket-takeoff"></i>
-                                Create free account
-                            </button>
-                            <button class="btn-cta-secondary" (click)="goToLogin()">
-                                I already have an account
-                            </button>
-                        </div>
-                    </div>
-                </div> -->
-
-            </section> <!-- /store-section -->
 
         </div>
     </main>

@@ -18,10 +18,6 @@ export class MvpsHubComponent implements OnInit {
   isLoading = true;
   error: string = '';
   
-  // Labs Mode vs Store Mode
-  isLabsMode = false; // TRUE cuando no hay MVPs con tracción
-  isStoreMode = false; // TRUE cuando hay MVPs con tracción
-  
   // Sistema vivo - indicadores de actividad
   lastActivityTime!: Date;
   systemActive = true;
@@ -60,29 +56,19 @@ export class MvpsHubComponent implements OnInit {
   }
 
   /**
-   * Cargar MVPs activos con señales reales de tracción
-   * Activa Labs Mode o Store Mode según el resultado
+   * Cargar MVPs activos (solo para compatibilidad futura)
+   * En fase de validación, el dashboard de analytics es la fuente principal
    */
   loadActiveMvps(): void {
     this.isLoading = true;
     this.error = '';
-    this.isLabsMode = false;
-    this.isStoreMode = false;
 
     this.mvpHubService.getMvps(false, 'all').subscribe({
       next: (response) => {
         if (response.success) {
-          if (response.count > 0) {
-            // STORE MODE: Hay MVPs con tracción real
-            this.mvps = response.mvps;
-            this.isStoreMode = true;
-            if (!environment.production) {
-              console.log(`✅ Store Mode: ${response.count} MVPs activos`);
-            }
-          } else {
-            // LABS MODE: No hay MVPs con señales reales (honesto)
-            this.mvps = [];
-            this.isLabsMode = true;
+          this.mvps = response.mvps;
+          if (!environment.production) {
+            console.log(`✅ ${response.count} MVP(s) disponibles`);
           }
         } else {
           this.error = response.message || 'No se pudieron cargar los MVPs';
