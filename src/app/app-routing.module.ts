@@ -9,6 +9,7 @@ import { UpgradeSuccessComponent } from './upgrade-success/upgrade-success.compo
 import { GenericDashboardComponent } from './generic-dashboard/generic-dashboard.component';
 import { AccountComponent } from './account/account.component';
 import { TenantAuthGuard } from './core/tenant-auth.guard';
+import { ModuleActiveGuard } from './guards/module-active.guard';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
 import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
 import { SmartChatWizardComponent } from './components/smart-chat-wizard/smart-chat-wizard.component';
@@ -59,6 +60,7 @@ const routes: Routes = [
   {
     path: 'preview/productclip',
     component: VideoExpressWizardComponent,
+    canActivate: [ModuleActiveGuard], // ✅ Validar que esté activo en admin
     data: { 
       moduleKey: 'productclip',
       title: 'ProductClip - Preview',
@@ -69,6 +71,7 @@ const routes: Routes = [
   {
     path: 'preview/inbox-zero',
     component: SmartChatWizardComponent,
+    canActivate: [ModuleActiveGuard], // ✅ Validar que esté activo en admin
     data: { 
       moduleKey: 'inbox-zero',
       title: 'Inbox Zero - Preview',
@@ -79,7 +82,8 @@ const routes: Routes = [
   // Otros módulos - Wizard genérico basado en formularios
   {
     path: 'preview/:moduleKey',
-    component: ModulePreviewWizardComponent
+    component: ModulePreviewWizardComponent,
+    canActivate: [ModuleActiveGuard] // ✅ Validar cualquier módulo dinámico
   },
   // 🔒 Rutas protegidas con autenticación
   {
