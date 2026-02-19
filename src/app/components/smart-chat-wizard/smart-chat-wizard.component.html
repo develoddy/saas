@@ -221,6 +221,32 @@
             </div>
           </div>
           
+          <!-- 🎯 MODAL CTA: Prompt interactivo después de simulación -->
+          <div class="interactive-prompt-overlay" 
+               *ngIf="state.showInteractivePrompt" 
+               @fadeInUp>
+            <div class="interactive-prompt-modal" (click)="$event.stopPropagation()">
+              <div class="prompt-header">
+                <h3>🎯 Now see if YOU can achieve Inbox Zero!</h3>
+                <p>Try asking a typical customer question:</p>
+              </div>
+              
+              <div class="prompt-questions">
+                <button *ngFor="let q of frequentQuestions.slice(0, 3)" 
+                        class="quick-question-btn"
+                        (click)="acceptInteractivePrompt(q.question)">
+                  <i class="bi bi-chat-dots"></i>
+                  <span>{{ q.question }}</span>
+                  <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+              
+              <button class="skip-btn" (click)="dismissInteractivePrompt()">
+                Skip for now
+              </button>
+            </div>
+          </div>
+          
           <!-- Interactive Mode (después de simulación) -->
           <div *ngIf="state.isInteractiveMode" @fadeInUp>
             <h2 class="step-title">Try it yourself</h2>

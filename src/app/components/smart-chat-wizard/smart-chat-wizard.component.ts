@@ -55,6 +55,7 @@ interface WizardState {
   interactiveMessages: SimulatedMessage[];
   hasTriedInteractive: boolean;
   isInteractiveMode: boolean; // True cuando termina simulación y pasa a modo interactivo
+  showInteractivePrompt: boolean; // Modal CTA después de simulación completada
   
   // Paso 3: CTA + Pricing (WTP signal)
   showEmbedCode: boolean;
@@ -145,6 +146,7 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     interactiveMessages: [],
     hasTriedInteractive: false,
     isInteractiveMode: false,
+    showInteractivePrompt: false,
     showEmbedCode: false,
     embedCodeCopied: false,
     showPricingModal: false,
@@ -339,8 +341,15 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
         this.state.simulationViewed = true;
       }
       
-      // 🎯 NO AUTO-TRANSITION: El usuario decide cuándo continuar haciendo clic en "Try it yourself"
-      // La activación de modo interactivo solo ocurre vía activateInteractiveMode()
+      // 🔥 Mostrar modal CTA agresivo para activar modo interactivo
+      // Mejora: aumentar tasa de activación de 66.7% a >90%
+      setTimeout(() => {
+        this.state.showInteractivePrompt = true;
+        this.trackEvent('interactive_prompt_shown', {
+          step: 2,
+          after_simulation: true
+        });
+      }, 800);
       
       return;
     }
@@ -383,6 +392,49 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     // Track activación manual
     this.trackEvent('interactive_mode_activated', {
       manual_click: true
+    });
+  }
+  
+  /**
+   * 🎯 Aceptar prompt interactivo con quick question
+   * Mejora tasa de activación de modo interactivo (de 66.7% a >90%)
+   */
+  acceptInteractivePrompt(question: string): void {
+    // Cerrar modal
+    this.state.showInteractivePrompt = false;
+    
+    // Track aceptación
+    this.trackEvent('interactive_prompt_accepted', {
+      question: question,
+      step: 2
+    });
+    
+    // Activar modo interactivo
+    this.state.isInteractiveMode = true;
+    this.trackEvent('interactive_mode_activated', {
+      manual_click: false,
+      via_prompt: true
+    });
+    
+    // Auto-llenar la pregunta seleccionada
+    this.state.userQuestion = question;
+    
+    // Auto-enviar la pregunta con delay para UX natural
+    setTimeout(() => {
+      this.askQuestion();
+    }, 300);
+  }
+  
+  /**
+   * 🎯 Cerrar prompt sin activar
+   */
+  dismissInteractivePrompt(): void {
+    this.state.showInteractivePrompt = false;
+    
+    // Track dismissal (señal de desinterés)
+    this.trackEvent('interactive_prompt_dismissed', {
+      step: 2,
+      after_simulation: true
     });
   }
   

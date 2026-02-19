@@ -36,3 +36,167 @@
 // ========================================
 
 // (No styles - all shared in _mvps-hub.scss)
+
+// ========================================
+// 🎯 Override específico: Interactive Prompt Modal
+// ========================================
+// Modal CTA después de simulación para aumentar tasa de activación
+// de modo interactivo (de 66.7% a >90% basado en analytics)
+//
+// Fecha: Feb 2026
+// Razón: Mejora específica de conversión Step 2
+// ========================================
+
+.interactive-prompt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.interactive-prompt-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  
+  .prompt-header {
+    text-align: center;
+    margin-bottom: 24px;
+    
+    h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0 0 8px 0;
+      line-height: 1.3;
+    }
+    
+    p {
+      font-size: 16px;
+      color: #666;
+      margin: 0;
+    }
+  }
+  
+  .prompt-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .quick-question-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    
+    i.bi-chat-dots {
+      font-size: 20px;
+      color: #6366f1;
+      flex-shrink: 0;
+    }
+    
+    span {
+      flex: 1;
+    }
+    
+    i.bi-arrow-right {
+      font-size: 18px;
+      color: #6366f1;
+      opacity: 0;
+      transform: translateX(-5px);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    
+    &:hover {
+      background: #fff;
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+      
+      i.bi-arrow-right {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  .skip-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #666;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive
+@media (max-width: 640px) {
+  .interactive-prompt-modal {
+    padding: 24px;
+    
+    .prompt-header h3 {
+      font-size: 20px;
+    }
+    
+    .quick-question-btn {
+      padding: 14px 16px;
+      font-size: 15px;
+    }
+  }
+}
