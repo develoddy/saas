@@ -41,3 +41,4 @@ testem.log
 .DS_Store
 ._*
 Thumbs.db
+*.md

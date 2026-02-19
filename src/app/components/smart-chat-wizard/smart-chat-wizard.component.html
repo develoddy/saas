@@ -61,9 +61,10 @@
       <!-- STEP 1: El Problema -->
       <section class="wizard-step" *ngIf="!isBlocked && state.currentStep === 1" @fadeInUp>
         <div class="step-content">
-          <h2 class="step-title">Do you answer the same questions every day?</h2>
+          <h2 class="step-title">Spending 3 hours/day on the same 5 questions?</h2>
           <p class="step-description">
-            These are the most repeated messages in e-commerce:
+            <i class="bi bi-lightning-charge-fill" style="color: #f59e0b; margin-right: 0.375rem;"></i>
+            <strong>See how top stores automate this in 30 seconds</strong> ↓
           </p>
 
           <!-- Problema Visual -->
@@ -97,31 +98,31 @@
             <div class="problem-impact">
               <div class="impact-stat">
                 <div class="stat-value">~3h</div>
-                <div class="stat-label">lost per day</div>
+                <div class="stat-label">wasted/day</div>
               </div>
               <div class="impact-stat">
                 <div class="stat-value">47%</div>
-                <div class="stat-label">repeated questions</div>
+                <div class="stat-label">are repeats</div>
               </div>
               <div class="impact-stat">
                 <div class="stat-value">€560</div>
-                <div class="stat-label">monthly cost</div>
+                <div class="stat-label">monthly waste</div>
               </div>
             </div>
           </div>
 
           <!-- CTA -->
           <div class="step-actions">
-            <p class="action-hint">
-              <i class="bi bi-lightbulb-fill"></i>
-              We'll show you how in 30 seconds
-            </p>
-            <button class="btn btn-primary btn-large" 
+            <button class="btn btn-primary btn-large btn-pulse" 
                     (click)="acknowledgeProble(); nextStep()"
                     [disabled]="!canContinueStep1 && state.problemUnderstanding">
-              Yes, I need to automate this
+              <span class="btn-text">Show me how</span>
+              <i class="bi bi-arrow-right" style="margin-left: 0.5rem; font-size: 1.125rem;"></i>
             </button>
-            
+            <p class="action-hint" style="margin-top: 1rem; margin-bottom: 0;">
+              <i class="bi bi-clock-fill" style="color: #10b981;"></i>
+              Takes 30 seconds • No signup required
+            </p>
           </div>
         </div>
       </section>
