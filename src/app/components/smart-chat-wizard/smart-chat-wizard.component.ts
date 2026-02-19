@@ -116,6 +116,11 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   public isInternalAccess: boolean = false; // true si acceso con ?internal=true
   public isBlocked: boolean = false; // true si módulo bloqueado (status=testing sin ?internal)
   
+  // 🎯 UTM Tracking para medir canales de distribución
+  private utmSource: string = 'direct';
+  private utmCampaign: string = ''; // 🔧 Vacío por defecto (no 'organic')
+  private utmMedium: string = '';
+  
   // Preguntas frecuentes reales de e-commerce
   readonly frequentQuestions = [
     { question: 'Where is my order?', count: 127 },
@@ -172,7 +177,7 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   ) {}
   
   async ngOnInit(): Promise<void> {
-    // 🎯 CAPTURAR UTM PARAMS para tracking de canales
+    // 🎯 CAPTURAR UTM PARAMS para tracking de canales (PRIMERO)
     this.captureUTMParams();
     
     // ✅ VALIDAR STATUS DEL MÓDULO ANTES DE PERMITIR ACCESO
@@ -184,11 +189,14 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
       return; // No continuar con el wizard
     }
     
-    // Track inicio del wizard
+    // 🔧 Track inicio del wizard (DESPUÉS de capturar UTM params)
     this.trackingService.pageView('module_preview_started', {
       module: this.moduleKey,
       moduleName: this.moduleName,
-      source: this.utmSource
+      source: this.utmSource,
+      campaign: this.utmCampaign,
+      medium: this.utmMedium,
+      is_internal_access: this.isInternalAccess
     });
     
     this.trackEvent('wizard_started', {
@@ -895,32 +903,38 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
    */
   private captureUTMParams(): void {
     this.route.queryParams.subscribe(params => {
-      // Capturar UTM source (canal: twitter, reddit, discord, etc.)
-      this.utmSource = params['utm_source'] || 
-                       sessionStorage.getItem('inbox_zero_utm_source') || 
-                       'direct';
-      
-      // Capturar UTM campaign (campaña específica)
-      this.utmCampaign = params['utm_campaign'] || 
-                         sessionStorage.getItem('inbox_zero_utm_campaign') || 
-                         'organic';
-      
-      // Capturar UTM medium (medio: social, email, etc.)
-      this.utmMedium = params['utm_medium'] || 
-                       sessionStorage.getItem('inbox_zero_utm_medium') || 
-                       '';
-      
-      // Guardar en sessionStorage para persistir durante toda la sesión
-      sessionStorage.setItem('inbox_zero_utm_source', this.utmSource);
-      sessionStorage.setItem('inbox_zero_utm_campaign', this.utmCampaign);
-      if (this.utmMedium) {
-        sessionStorage.setItem('inbox_zero_utm_medium', this.utmMedium);
+      // Si hay params en la URL, usarlos (nueva visita con UTM)
+      if (params['utm_source']) {
+        this.utmSource = params['utm_source'];
+        this.utmCampaign = params['utm_campaign'] || ''; // 🔧 Vacío si no hay campaign
+        this.utmMedium = params['utm_medium'] || '';
+        
+        // Guardar en sessionStorage para persistir durante reloads
+        sessionStorage.setItem('inbox_zero_utm_source', this.utmSource);
+        if (this.utmCampaign) {
+          sessionStorage.setItem('inbox_zero_utm_campaign', this.utmCampaign);
+        }
+        if (this.utmMedium) {
+          sessionStorage.setItem('inbox_zero_utm_medium', this.utmMedium);
+        }
+      } 
+      // Si NO hay params en URL → usar 'direct' (nueva visita sin UTM)
+      else {
+        this.utmSource = 'direct';
+        this.utmCampaign = ''; // 🔧 Vacío (NO 'organic')
+        this.utmMedium = '';
+        
+        // Limpiar sessionStorage para evitar contaminación de visitas anteriores
+        sessionStorage.removeItem('inbox_zero_utm_source');
+        sessionStorage.removeItem('inbox_zero_utm_campaign');
+        sessionStorage.removeItem('inbox_zero_utm_medium');
       }
       
       console.log('📊 UTM Tracking captured:', {
         source: this.utmSource,
         campaign: this.utmCampaign,
-        medium: this.utmMedium
+        medium: this.utmMedium,
+        hasUrlParams: !!params['utm_source']
       });
     });
   }
@@ -933,6 +947,7 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
       source: this.utmSource,
       campaign: this.utmCampaign,
       medium: this.utmMedium,
+      is_internal_access: this.isInternalAccess, // 🔒 Diferenciar admin vs público
       timestamp: Date.now()
     });
   }
