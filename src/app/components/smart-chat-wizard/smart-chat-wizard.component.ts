@@ -172,6 +172,9 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   ) {}
   
   async ngOnInit(): Promise<void> {
+    // 🎯 CAPTURAR UTM PARAMS para tracking de canales
+    this.captureUTMParams();
+    
     // ✅ VALIDAR STATUS DEL MÓDULO ANTES DE PERMITIR ACCESO
     const canAccess = await this.validateModuleStatus();
     
@@ -184,11 +187,11 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
     // Track inicio del wizard
     this.trackingService.pageView('module_preview_started', {
       module: this.moduleKey,
-      moduleName: this.moduleName
+      moduleName: this.moduleName,
+      source: this.utmSource
     });
     
     this.trackEvent('wizard_started', {
-      source: this.isInternalAccess ? 'admin' : 'preview',
       timestamp: Date.now()
     });
     
@@ -886,11 +889,50 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   // Helpers
   // ==========================================
   
+  /**
+   * 🎯 Capturar UTM params para tracking de canales
+   * Se ejecuta una sola vez al inicio del wizard
+   */
+  private captureUTMParams(): void {
+    this.route.queryParams.subscribe(params => {
+      // Capturar UTM source (canal: twitter, reddit, discord, etc.)
+      this.utmSource = params['utm_source'] || 
+                       sessionStorage.getItem('inbox_zero_utm_source') || 
+                       'direct';
+      
+      // Capturar UTM campaign (campaña específica)
+      this.utmCampaign = params['utm_campaign'] || 
+                         sessionStorage.getItem('inbox_zero_utm_campaign') || 
+                         'organic';
+      
+      // Capturar UTM medium (medio: social, email, etc.)
+      this.utmMedium = params['utm_medium'] || 
+                       sessionStorage.getItem('inbox_zero_utm_medium') || 
+                       '';
+      
+      // Guardar en sessionStorage para persistir durante toda la sesión
+      sessionStorage.setItem('inbox_zero_utm_source', this.utmSource);
+      sessionStorage.setItem('inbox_zero_utm_campaign', this.utmCampaign);
+      if (this.utmMedium) {
+        sessionStorage.setItem('inbox_zero_utm_medium', this.utmMedium);
+      }
+      
+      console.log('📊 UTM Tracking captured:', {
+        source: this.utmSource,
+        campaign: this.utmCampaign,
+        medium: this.utmMedium
+      });
+    });
+  }
+  
   private trackEvent(eventName: string, data: any = {}): void {
     this.trackingService.track(eventName, {
       ...data,
       module: this.moduleKey,
       moduleName: this.moduleName,
+      source: this.utmSource,
+      campaign: this.utmCampaign,
+      medium: this.utmMedium,
       timestamp: Date.now()
     });
   }
@@ -946,9 +988,7 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
         interactive_mode_activated: this.state.isInteractiveMode,
         questions_asked: Math.floor(this.state.interactiveMessages.length / 2),
         pricing_viewed: this.state.showPricingModal,
-        email_capture_shown: this.state.showEmailCapture,
-        module: this.moduleKey,
-        source: this.isInternalAccess ? 'admin' : 'preview'
+        email_capture_shown: this.state.showEmailCapture
       });
     }
   }
