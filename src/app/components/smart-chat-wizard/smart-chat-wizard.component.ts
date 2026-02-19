@@ -909,8 +909,8 @@ export class SmartChatWizardComponent implements OnInit, OnDestroy {
   }
   
   get canContinueStep2(): boolean {
-    // Paso 2 fusionado: requiere simulación completada + al menos 1 pregunta interactiva
-    return this.state.simulationCompleted && this.state.hasTriedInteractive;
+    // MVP LEAN: Usuario decide cuándo continuar (no bloqueamos, solo sugerimos probar)
+    return this.state.simulationCompleted;
   }
   
   // ==========================================

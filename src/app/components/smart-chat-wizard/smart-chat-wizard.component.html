@@ -53,7 +53,7 @@
           <div class="progress-step" 
                [class.active]="state.currentStep >= 3">
             <div class="step-circle">3</div>
-            <span class="step-label">Activate</span>
+            <span class="step-label">Join Beta</span>
           </div>
         </div>
       </div>
@@ -345,21 +345,20 @@
               </div>
             </div>
 
-            <!-- Actions -->
+            <!-- Actions: Usuario decide cuándo continuar -->
             <div class="step-actions">
               <button class="btn btn-secondary" (click)="goBack(); state.isInteractiveMode = false;">
                 <i class="bi bi-arrow-left"></i> Back to simulation
               </button>
               <button class="btn btn-primary btn-large" 
-                      (click)="nextStep()"
-                      [disabled]="!canContinueStep2">
-                <i class="bi bi-check-circle-fill"></i>
-                Continue to activate
+                      (click)="nextStep()">
+                <i class="bi bi-arrow-right"></i>
+                Continue
               </button>
             </div>
-            <div class="step-hint" *ngIf="!canContinueStep2">
-              <i class="bi bi-info-circle-fill"></i>
-              <p>Ask at least one question to see how it works, then you can continue</p>
+            <div class="step-hint" *ngIf="!state.hasTriedInteractive">
+              <i class="bi bi-lightbulb-fill"></i>
+              <p>Try asking a question to see how it responds, or continue when ready</p>
             </div>
           </div>
         </div>
@@ -370,9 +369,9 @@
         <div class="step-content">
           <div class="success-hero">
             <i class="bi bi-check-circle-fill success-icon"></i>
-            <h2 class="step-title">Ready to activate {{ moduleName }}!</h2>
+            <h2 class="step-title">Join the {{ moduleName }} Beta</h2>
             <p class="step-description">
-              Join the beta and get early access
+              Get early access and help shape the product
             </p>
           </div>
 
