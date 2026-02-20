@@ -13,6 +13,7 @@ import { ModuleActiveGuard } from './guards/module-active.guard';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
 import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
 import { SmartChatWizardComponent } from './components/smart-chat-wizard/smart-chat-wizard.component';
+import { PreventionDemoComponent } from './components/prevention-demo/prevention-demo.component';
 import { MvpsHubComponent } from './mvps-hub/mvps-hub.component';
 
 const routes: Routes = [
@@ -76,6 +77,17 @@ const routes: Routes = [
       moduleKey: 'inbox-zero',
       title: 'Inbox Zero - Preview',
       description: 'Turn repetitive customer questions into zero-second responses'
+    }
+  },
+
+  // Inbox Zero - Landing Page de Validación (NUEVA)
+  // Ruta pública sin guards para distribución inmediata
+  {
+    path: 'inbox-zero',
+    component: PreventionDemoComponent,
+    data: { 
+      title: 'Inbox Zero - Ticket Prevention System',
+      description: 'Eliminate 60-80% of post-purchase support tickets before they exist'
     }
   },
 

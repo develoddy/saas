@@ -1,0 +1,313 @@
+<div class="prevention-demo">
+  
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          Stop answering "Where is my order?" 
+          <span class="highlight">100 times a month</span>
+        </h1>
+        <p class="hero-subtitle">
+          Inbox Zero eliminates 60-80% of post-purchase support tickets by sending 
+          proactive updates before customers have questions.
+        </p>
+        <div class="hero-badge">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Real metrics from production ecommerce store</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section: Sin vs Con -->
+  <section class="comparison-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>The Difference</h2>
+        <p>Traditional support tools react. Inbox Zero prevents.</p>
+      </div>
+
+      <div class="comparison-grid">
+        
+        <!-- Column 1: WITHOUT System -->
+        <div class="comparison-card without-system">
+          <div class="card-header">
+            <i class="bi bi-x-circle-fill"></i>
+            <h3>Without Inbox Zero</h3>
+          </div>
+
+          <div class="card-content">
+            <!-- Flooded inbox visual -->
+            <div class="inbox-visual">
+              <div class="inbox-header-bar">
+                <i class="bi bi-inbox-fill"></i>
+                <span>Support Inbox</span>
+              </div>
+              <div class="tickets-flood">
+                <div class="ticket-item" *ngFor="let ticket of eliminatedTickets.slice(0, 8)">
+                  <i class="bi bi-envelope-fill"></i>
+                  <span>{{ ticket }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Negative stats -->
+            <div class="stats-negative">
+              <div class="stat-item">
+                <div class="stat-value">40+</div>
+                <div class="stat-label">tickets/month</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">~3h</div>
+                <div class="stat-label">wasted/month</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">😟</div>
+                <div class="stat-label">anxious customers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: WITH System -->
+        <div class="comparison-card with-system">
+          <div class="card-header success">
+            <i class="bi bi-check-circle-fill"></i>
+            <h3>With Inbox Zero</h3>
+          </div>
+
+          <div class="card-content">
+            <!-- Prevention timeline -->
+            <div class="prevention-timeline">
+              <div class="timeline-item" *ngFor="let step of preventionFlow">
+                <div class="timeline-marker">
+                  <div class="timeline-dot" [style.background]="step.color">
+                    {{ step.icon }}
+                  </div>
+                  <div class="timeline-day">Day {{ step.day }}</div>
+                </div>
+                <div class="timeline-content">
+                  <h4>{{ step.title }}</h4>
+                  <p>{{ step.action }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Positive stats -->
+            <div class="stats-positive">
+              <div class="stat-item">
+                <div class="stat-value">8</div>
+                <div class="stat-label">tickets/month (-80%)</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">35m</div>
+                <div class="stat-label">handling time</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">😊</div>
+                <div class="stat-label">informed customers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real Metrics Section -->
+  <section class="metrics-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Real Metrics from Production</h2>
+        <p>100+ orders/month · Print-on-Demand ecommerce</p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card" 
+             *ngFor="let metric of realMetrics"
+             (click)="trackMetricClick(metric.label)">
+          <div class="metric-icon">
+            <i [class]="'bi ' + metric.icon"></i>
+          </div>
+          <div class="metric-label">{{ metric.label }}</div>
+          <div class="metric-comparison">
+            <div class="before">
+              <span class="value">{{ metric.before }}</span>
+              <span class="label">Before</span>
+            </div>
+            <div class="arrow">
+              <i class="bi bi-arrow-right"></i>
+            </div>
+            <div class="after">
+              <span class="value">{{ metric.after }}</span>
+              <span class="label">After</span>
+            </div>
+          </div>
+          <div class="metric-improvement">
+            {{ metric.improvement }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works (simplified) -->
+  <section class="how-it-works-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Event-driven communication that keeps customers informed</p>
+      </div>
+
+      <div class="workflow-visual">
+        <div class="workflow-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Customer purchases</h4>
+            <p>Automatic email with order confirmation + tracking link</p>
+          </div>
+        </div>
+
+        <div class="workflow-arrow">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div class="workflow-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Fulfillment events trigger</h4>
+            <p>Printing started, shipped, delivered, etc.</p>
+          </div>
+        </div>
+
+        <div class="workflow-arrow">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div class="workflow-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Automatic proactive emails</h4>
+            <p>Customer receives updates before they have questions</p>
+          </div>
+        </div>
+
+        <div class="workflow-arrow">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div class="workflow-step highlight">
+          <div class="step-number">✓</div>
+          <div class="step-content">
+            <h4>Zero support tickets</h4>
+            <p>Customer is informed · Never asks "where is my order?"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof / Testimonial Section -->
+  <section class="social-proof-section">
+    <div class="container">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">
+          <i class="bi bi-quote"></i>
+          <p>
+            "I built this system for my own ecommerce store. Went from 40+ 
+            monthly tickets about order status to 8. Customers 
+            receive automatic updates at every step and never have to ask."
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <div class="author-info">
+            <strong>Eddy Lujan</strong>
+            <span>Founder · Ecommerce owner using Printful</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Waitlist / CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content" *ngIf="!waitlistSubmitted">
+        <h2>Get Early Access</h2>
+        <p>
+          We're opening Inbox Zero to 30 ecommerce stores using Printful, 
+          Shopify, or similar fulfillment partners.
+        </p>
+        
+        <div class="waitlist-form">
+          <div class="form-group">
+            <input 
+              type="email" 
+              class="form-control" 
+              placeholder="your@email.com"
+              [(ngModel)]="waitlistEmail"
+              (keyup.enter)="submitWaitlist()"
+              [disabled]="isSubmitting">
+            <button 
+              class="btn btn-primary btn-large"
+              (click)="submitWaitlist()"
+              [disabled]="isSubmitting">
+              <span *ngIf="!isSubmitting">Join Waitlist</span>
+              <span *ngIf="isSubmitting">
+                <i class="bi bi-arrow-repeat spin"></i> Submitting...
+              </span>
+            </button>
+          </div>
+          <div class="error-message" *ngIf="errorMessage">
+            <i class="bi bi-exclamation-circle"></i>
+            {{ errorMessage }}
+          </div>
+        </div>
+
+        <div class="cta-benefits">
+          <div class="benefit">
+            <i class="bi bi-check2"></i>
+            <span>Early access pricing</span>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-check2"></i>
+            <span>Priority onboarding</span>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-check2"></i>
+            <span>Direct founder support</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Success State -->
+      <div class="cta-success" *ngIf="waitlistSubmitted">
+        <div class="success-icon">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h2>You're on the list! 🎉</h2>
+        <p>
+          We'll reach out within 48 hours to schedule a quick demo and 
+          discuss your specific use case.
+        </p>
+        <button class="btn btn-outline" (click)="goBackToHub()">
+          Back to MVP Hub
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Note -->
+  <section class="footer-note">
+    <div class="container">
+      <p>
+        <i class="bi bi-info-circle"></i>
+        <strong>For ecommerce founders:</strong> If you're using Printful, 
+        Shopify, WooCommerce, or similar platforms and receive 20+ monthly 
+        tickets about order status, this is for you.
+      </p>
+    </div>
+  </section>
+
+</div>
