@@ -5,13 +5,13 @@ import { TrackingService } from '../../services/tracking.service';
 /**
  * Prevention Demo Component
  * 
- * Landing page de validación para Inbox Zero
+ * Validation landing page for Inbox Zero
  * 
- * Objetivo: Validar mensaje de "prevención de tickets" antes de construir SaaS
+ * Objective: Validate "ticket prevention" message before building SaaS
  * 
- * Contenido:
- * - Comparación visual: Sin Inbox Zero vs Con Inbox Zero
- * - Métricas reales del sistema en producción
+ * Content:
+ * - Visual comparison: Without Inbox Zero vs With Inbox Zero
+ * - Real metrics from production system
  * - CTA: Join waitlist / Early access
  * 
  * @author LujanDev
@@ -33,92 +33,92 @@ interface RealMetric {
 })
 export class PreventionDemoComponent implements OnInit {
 
-  // Módulo identifier para tracking
+  // Module identifier for tracking
   readonly moduleKey = 'inbox-zero-prevention';
   readonly moduleName = 'Inbox Zero';
 
-  // 🎯 UTM Tracking para medir canales de distribución
+  // 🎯 UTM Tracking to measure distribution channels
   private utmSource: string = 'direct';
   private utmCampaign: string = '';
   private utmMedium: string = '';
 
-  // Estado del formulario
+  // Form state
   waitlistEmail = '';
   waitlistSubmitted = false;
   isSubmitting = false;
   errorMessage = '';
 
-  // Métricas reales del sistema en producción
+  // Real metrics from production system
   readonly realMetrics: RealMetric[] = [
     {
-      label: 'Tickets de soporte/mes',
+      label: 'Support tickets/month',
       before: 40,
       after: 8,
       improvement: '-80%',
       icon: 'bi-chat-dots-fill'
     },
     {
-      label: 'Tiempo respondiendo',
-      before: '~3 horas/mes',
-      after: '~35 min/mes',
+      label: 'Time handling tickets',
+      before: '~3 hours/month',
+      after: '~35 min/month',
       improvement: '-81%',
       icon: 'bi-clock-fill'
     },
     {
-      label: 'Preguntas "¿Dónde está mi pedido?"',
+      label: '"Where is my order?" questions',
       before: 32,
       after: 0,
       improvement: '-100%',
       icon: 'bi-envelope-fill'
     },
     {
-      label: 'Satisfacción del cliente',
-      before: 'Reactiva',
-      after: 'Proactiva',
+      label: 'Customer satisfaction',
+      before: 'Reactive',
+      after: 'Proactive',
       improvement: '+40%',
       icon: 'bi-emoji-smile-fill'
     }
   ];
 
-  // Casos de uso reales (preguntas que se eliminan)
+  // Real use cases (questions that are eliminated)
   readonly eliminatedTickets = [
-    '¿Dónde está mi pedido?',
-    '¿Ha sido enviado?',
-    '¿Cuándo llegará?',
-    '¿Cuál es el número de seguimiento?',
-    '¿Qué empresa lo envía?',
-    '¿Está siendo procesado?',
-    '¿Recibieron mi pago?',
-    '¿Ha llegado mi pedido?'
+    'Where is my order?',
+    'Has it been shipped?',
+    'When will it arrive?',
+    'What is the tracking number?',
+    'Which carrier is delivering it?',
+    'Is it being processed?',
+    'Did you receive my payment?',
+    'Has my order arrived?'
   ];
 
-  // Timeline de prevención (simplificado)
+  // Prevention timeline (simplified)
   readonly preventionFlow = [
     {
       day: 0,
-      title: 'Cliente compra',
-      action: 'Email automático: Confirmación + Link tracking',
+      title: 'Customer purchases',
+      action: 'Automatic email: Confirmation + Tracking link',
       icon: '🛒',
       color: '#3b82f6'
     },
     {
       day: 1,
-      title: 'Impresión iniciada',
-      action: 'Email automático: "Tu diseño está en impresión"',
+      title: 'Printing started',
+      action: 'Automatic email: "Your design is being printed"',
       icon: '🎨',
       color: '#8b5cf6'
     },
     {
       day: 3,
-      title: 'Paquete enviado',
-      action: 'Email automático: Tracking number + estimación',
+      title: 'Package shipped',
+      action: 'Automatic email: Tracking number + estimation',
       icon: '📦',
       color: '#10b981'
     },
     {
       day: 7,
-      title: 'Entregado',
-      action: 'Email automático: Confirmación + Request review',
+      title: 'Delivered',
+      action: 'Automatic email: Confirmation + Request review',
       icon: '✅',
       color: '#059669'
     }
@@ -131,14 +131,14 @@ export class PreventionDemoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 🎯 PASO 1: Capturar UTMs ANTES de trackear eventos
+    // 🎯 STEP 1: Capture UTMs BEFORE tracking events
     this.route.queryParams.subscribe(params => {
       if (params['utm_source']) {
         this.utmSource = params['utm_source'];
         this.utmCampaign = params['utm_campaign'] || '';
         this.utmMedium = params['utm_medium'] || '';
         
-        // Guardar en sessionStorage para persistencia (opcional)
+        // Save to sessionStorage for persistence (optional)
         sessionStorage.setItem('inbox_zero_prevention_utm_source', this.utmSource);
         if (this.utmCampaign) {
           sessionStorage.setItem('inbox_zero_prevention_utm_campaign', this.utmCampaign);
@@ -147,19 +147,19 @@ export class PreventionDemoComponent implements OnInit {
           sessionStorage.setItem('inbox_zero_prevention_utm_medium', this.utmMedium);
         }
       } else {
-        // No hay UTMs en URL, intentar recuperar de sessionStorage
+        // No UTMs in URL, try to recover from sessionStorage
         const savedSource = sessionStorage.getItem('inbox_zero_prevention_utm_source');
         if (savedSource) {
           this.utmSource = savedSource;
           this.utmCampaign = sessionStorage.getItem('inbox_zero_prevention_utm_campaign') || '';
           this.utmMedium = sessionStorage.getItem('inbox_zero_prevention_utm_medium') || '';
         } else {
-          // Sin UTMs, marcar como 'direct'
+          // No UTMs, mark as 'direct'
           this.utmSource = 'direct';
           this.utmCampaign = '';
           this.utmMedium = '';
           
-          // Limpiar sessionStorage
+          // Clear sessionStorage
           sessionStorage.removeItem('inbox_zero_prevention_utm_source');
           sessionStorage.removeItem('inbox_zero_prevention_utm_campaign');
           sessionStorage.removeItem('inbox_zero_prevention_utm_medium');
@@ -167,14 +167,14 @@ export class PreventionDemoComponent implements OnInit {
       }
     });
 
-    // 🎯 PASO 2: Track page view CON UTMs
+    // 🎯 STEP 2: Track page view WITH UTMs
     this.trackEvent('prevention_demo_viewed', {
       timestamp: Date.now()
     });
   }
 
   /**
-   * Enviar solicitud de early access
+   * Submit early access request
    */
   async submitWaitlist(): Promise<void> {
     if (!this.waitlistEmail || !this.isValidEmail(this.waitlistEmail)) {
@@ -186,19 +186,19 @@ export class PreventionDemoComponent implements OnInit {
     this.errorMessage = '';
 
     try {
-      // Track intención CON UTMs
+      // Track intention WITH UTMs
       this.trackEvent('waitlist_submitted', {
         email: this.waitlistEmail,
         timestamp: Date.now()
       });
 
-      // Simulación de envío (puedes conectar con backend real después)
+      // Simulate submission (you can connect with real backend later)
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Marcar como exitoso
+      // Mark as successful
       this.waitlistSubmitted = true;
 
-      // Track éxito CON UTMs
+      // Track success WITH UTMs
       this.trackEvent('waitlist_success', {
         timestamp: Date.now()
       });
@@ -207,7 +207,7 @@ export class PreventionDemoComponent implements OnInit {
       console.error('Error submitting waitlist:', error);
       this.errorMessage = 'Something went wrong. Please try again.';
       
-      // Track error CON UTMs
+      // Track error WITH UTMs
       this.trackEvent('waitlist_error', {
         error: error?.message || 'Unknown error',
         timestamp: Date.now()
@@ -218,7 +218,7 @@ export class PreventionDemoComponent implements OnInit {
   }
 
   /**
-   * Validar email
+   * Validate email
    */
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -226,14 +226,14 @@ export class PreventionDemoComponent implements OnInit {
   }
 
   /**
-   * Navegar a MVP Hub
+   * Navigate to MVP Hub
    */
   goBackToHub(): void {
     this.router.navigate(['/']);
   }
 
   /**
-   * Track click en métrica CON UTMs
+   * Track click on metric WITH UTMs
    */
   trackMetricClick(metric: string): void {
     this.trackEvent('metric_clicked', {
@@ -243,8 +243,8 @@ export class PreventionDemoComponent implements OnInit {
   }
 
   /**
-   * Track event helper - SIEMPRE envía UTMs con todos los eventos
-   * Replica lógica del wizard viejo para consistencia de datos
+   * Track event helper - ALWAYS sends UTMs with all events
+   * Replicates old wizard logic for data consistency
    */
   private trackEvent(eventName: string, data: any = {}): void {
     this.trackingService.track(eventName, {
