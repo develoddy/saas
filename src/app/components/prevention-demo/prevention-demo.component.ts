@@ -37,6 +37,11 @@ export class PreventionDemoComponent implements OnInit {
   readonly moduleKey = 'inbox-zero-prevention';
   readonly moduleName = 'Inbox Zero';
 
+  // 🎯 UTM Tracking para medir canales de distribución
+  private utmSource: string = 'direct';
+  private utmCampaign: string = '';
+  private utmMedium: string = '';
+
   // Estado del formulario
   waitlistEmail = '';
   waitlistSubmitted = false;
@@ -126,22 +131,45 @@ export class PreventionDemoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Track page view
-    this.trackingService.track('prevention_demo_viewed', {
-      module: this.moduleKey,
-      timestamp: Date.now()
-    });
-
-    // Capturar UTM params si existen
+    // 🎯 PASO 1: Capturar UTMs ANTES de trackear eventos
     this.route.queryParams.subscribe(params => {
       if (params['utm_source']) {
-        this.trackingService.track('prevention_demo_utm_tracked', {
-          module: this.moduleKey,
-          utm_source: params['utm_source'],
-          utm_campaign: params['utm_campaign'] || '',
-          utm_medium: params['utm_medium'] || ''
-        });
+        this.utmSource = params['utm_source'];
+        this.utmCampaign = params['utm_campaign'] || '';
+        this.utmMedium = params['utm_medium'] || '';
+        
+        // Guardar en sessionStorage para persistencia (opcional)
+        sessionStorage.setItem('inbox_zero_prevention_utm_source', this.utmSource);
+        if (this.utmCampaign) {
+          sessionStorage.setItem('inbox_zero_prevention_utm_campaign', this.utmCampaign);
+        }
+        if (this.utmMedium) {
+          sessionStorage.setItem('inbox_zero_prevention_utm_medium', this.utmMedium);
+        }
+      } else {
+        // No hay UTMs en URL, intentar recuperar de sessionStorage
+        const savedSource = sessionStorage.getItem('inbox_zero_prevention_utm_source');
+        if (savedSource) {
+          this.utmSource = savedSource;
+          this.utmCampaign = sessionStorage.getItem('inbox_zero_prevention_utm_campaign') || '';
+          this.utmMedium = sessionStorage.getItem('inbox_zero_prevention_utm_medium') || '';
+        } else {
+          // Sin UTMs, marcar como 'direct'
+          this.utmSource = 'direct';
+          this.utmCampaign = '';
+          this.utmMedium = '';
+          
+          // Limpiar sessionStorage
+          sessionStorage.removeItem('inbox_zero_prevention_utm_source');
+          sessionStorage.removeItem('inbox_zero_prevention_utm_campaign');
+          sessionStorage.removeItem('inbox_zero_prevention_utm_medium');
+        }
       }
+    });
+
+    // 🎯 PASO 2: Track page view CON UTMs
+    this.trackEvent('prevention_demo_viewed', {
+      timestamp: Date.now()
     });
   }
 
@@ -158,9 +186,8 @@ export class PreventionDemoComponent implements OnInit {
     this.errorMessage = '';
 
     try {
-      // Track intención
-      this.trackingService.track('waitlist_submitted', {
-        module: this.moduleKey,
+      // Track intención CON UTMs
+      this.trackEvent('waitlist_submitted', {
         email: this.waitlistEmail,
         timestamp: Date.now()
       });
@@ -171,9 +198,8 @@ export class PreventionDemoComponent implements OnInit {
       // Marcar como exitoso
       this.waitlistSubmitted = true;
 
-      // Track éxito
-      this.trackingService.track('waitlist_success', {
-        module: this.moduleKey,
+      // Track éxito CON UTMs
+      this.trackEvent('waitlist_success', {
         timestamp: Date.now()
       });
 
@@ -181,8 +207,8 @@ export class PreventionDemoComponent implements OnInit {
       console.error('Error submitting waitlist:', error);
       this.errorMessage = 'Something went wrong. Please try again.';
       
-      this.trackingService.track('waitlist_error', {
-        module: this.moduleKey,
+      // Track error CON UTMs
+      this.trackEvent('waitlist_error', {
         error: error?.message || 'Unknown error',
         timestamp: Date.now()
       });
@@ -207,12 +233,27 @@ export class PreventionDemoComponent implements OnInit {
   }
 
   /**
-   * Track click en métrica
+   * Track click en métrica CON UTMs
    */
   trackMetricClick(metric: string): void {
-    this.trackingService.track('metric_clicked', {
-      module: this.moduleKey,
+    this.trackEvent('metric_clicked', {
       metric: metric,
+      timestamp: Date.now()
+    });
+  }
+
+  /**
+   * Track event helper - SIEMPRE envía UTMs con todos los eventos
+   * Replica lógica del wizard viejo para consistencia de datos
+   */
+  private trackEvent(eventName: string, data: any = {}): void {
+    this.trackingService.track(eventName, {
+      ...data,
+      module: this.moduleKey,
+      moduleName: this.moduleName,
+      source: this.utmSource,      // 🎯 utm_source (reddit, linkedin, etc.)
+      campaign: this.utmCampaign,  // 🎯 utm_campaign (launch_feb2026, etc.)
+      medium: this.utmMedium,      // 🎯 utm_medium (social, forum, etc.)
       timestamp: Date.now()
     });
   }
