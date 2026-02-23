@@ -145,25 +145,26 @@
         <div class="metric-card" 
              *ngFor="let metric of realMetrics"
              (click)="trackMetricClick(metric.label)">
-          <div class="metric-icon">
-            <i [class]="'bi ' + metric.icon"></i>
+          <!-- Top row: icon + improvement badge -->
+          <div class="metric-top">
+            <div class="metric-icon">
+              <i [class]="'bi ' + metric.icon"></i>
+            </div>
+            <div class="metric-improvement-badge">{{ metric.improvement }}</div>
           </div>
+          <!-- Label -->
           <div class="metric-label">{{ metric.label }}</div>
+          <!-- Before vs After -->
           <div class="metric-comparison">
             <div class="before">
-              <span class="value">{{ metric.before }}</span>
-              <span class="label">Before</span>
+              <span class="comp-value">{{ metric.before }}</span>
+              <span class="comp-label">Before</span>
             </div>
-            <div class="arrow">
-              <i class="bi bi-arrow-right"></i>
-            </div>
+            <div class="metric-vs">VS</div>
             <div class="after">
-              <span class="value">{{ metric.after }}</span>
-              <span class="label">After</span>
+              <span class="comp-value">{{ metric.after }}</span>
+              <span class="comp-label">After</span>
             </div>
-          </div>
-          <div class="metric-improvement">
-            {{ metric.improvement }}
           </div>
         </div>
       </div>
