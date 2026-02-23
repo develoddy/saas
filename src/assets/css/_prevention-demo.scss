@@ -1267,8 +1267,11 @@
       font-weight: 700;
       font-size: clamp(0.875rem, 2vw, 1rem);
       margin-bottom: 2rem;
-      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
-      animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); // static — no animar
+      // Animación solo en opacity: 100% GPU-composited, sin repaint
+      animation: urgency-fade 2.4s ease-in-out infinite;
+      will-change: opacity;          // capa compositor dedicada
+      transform: translateZ(0);      // isolate stacking context
 
       i {
         font-size: 1.25rem;
@@ -1280,6 +1283,11 @@
         font-size: 0.875rem;
         padding: 0.625rem 1.25rem;
         gap: 0.5rem;
+      }
+
+      // Respeta la preferencia de movimiento reducido del usuario
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
       }
     }
 
@@ -1808,6 +1816,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes urgency-fade {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.72; }
 }
 
 @keyframes pulse {
