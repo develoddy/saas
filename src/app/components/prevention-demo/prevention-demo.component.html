@@ -4,17 +4,31 @@
   <section class="hero-section">
     <div class="container">
       <div class="hero-content">
+        <div class="hero-badge">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Validated with real ecommerce data</span>
+        </div>
         <h1 class="hero-title">
-          Stop answering "Where is my order?" 
-          <span class="highlight">100 times a month</span>
+          Stop Wasting 3+ Hours/Month Answering 
+          <span class="highlight">"Where Is My Order?"</span>
         </h1>
         <p class="hero-subtitle">
-          Inbox Zero eliminates 60-80% of post-purchase support tickets by sending 
-          proactive updates before customers have questions.
+          <strong>Inbox Zero Prevention System</strong> eliminates 60-80% of support tickets by sending 
+          proactive order updates <em>before</em> customers ask.
         </p>
-        <div class="hero-badge">
-          <i class="bi bi-check-circle-fill"></i>
-          <span>Real metrics from production ecommerce store</span>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">-80%</div>
+            <div class="hero-stat-label">Support Tickets</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">~3h</div>
+            <div class="hero-stat-label">Saved Monthly</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">$0</div>
+            <div class="hero-stat-label">Setup Cost</div>
+          </div>
         </div>
       </div>
     </div>
@@ -24,8 +38,8 @@
   <section class="comparison-section">
     <div class="container">
       <div class="section-header">
-        <h2>The Difference</h2>
-        <p>Traditional support tools react. Inbox Zero prevents.</p>
+        <h2>The Real Cost of Reactive Support</h2>
+        <p>Your time is too valuable to answer the same question 40 times/month</p>
       </div>
 
       <div class="comparison-grid">
@@ -241,39 +255,40 @@
         <!-- Urgency Badge -->
         <div class="urgency-badge">
           <i class="bi bi-lightning-charge-fill"></i>
-          <span>Limited Launch: Only 25 spots remaining</span>
+          <span>Early Access — Limited spots</span>
         </div>
         
-        <h2>Join the First 100 Ecommerce Stores</h2>
+        <h2>Get Early Access to Inbox Zero</h2>
         <p class="cta-subtitle">
-          Get Inbox Zero <strong>before public launch</strong> + lifetime 50% discount for early adopters.
+          We're opening Inbox Zero to ecommerce stores using Printful, Shopify, or similar fulfillment partners.
         </p>
         
         <div class="waitlist-form">
-          <div class="form-group">
-            <div class="input-wrapper">
-              <i class="bi bi-envelope-fill input-icon"></i>
-              <input 
-                type="email" 
-                class="form-control" 
-                placeholder="Enter your email address"
-                [(ngModel)]="waitlistEmail"
-                (keyup.enter)="submitWaitlist()"
-                [disabled]="isSubmitting">
-            </div>
-            <button 
-              class="btn btn-primary btn-large"
-              (click)="submitWaitlist()"
+          <div class="input-wrapper">
+            <i class="bi bi-envelope-fill"></i>
+            <input 
+              type="email" 
+              class="form-control form-control-large" 
+              placeholder="Enter your business email"
+              [(ngModel)]="waitlistEmail"
+              (keyup.enter)="submitWaitlist()"
               [disabled]="isSubmitting">
-              <span *ngIf="!isSubmitting">
-                <i class="bi bi-rocket-takeoff-fill"></i>
-                Get Early Access
-              </span>
-              <span *ngIf="isSubmitting">
-                <i class="bi bi-arrow-repeat spin"></i> Joining...
-              </span>
-            </button>
           </div>
+          
+          <button 
+            class="btn btn-primary btn-cta-large"
+            (click)="submitWaitlist()"
+            [disabled]="isSubmitting">
+            <span *ngIf="!isSubmitting">
+              <i class="bi bi-rocket-takeoff-fill"></i>
+              Join Waitlist
+            </span>
+            <span *ngIf="isSubmitting">
+              <i class="bi bi-arrow-repeat spin"></i>
+              Securing your spot...
+            </span>
+          </button>
+          
           <div class="error-message" *ngIf="errorMessage">
             <i class="bi bi-exclamation-triangle-fill"></i>
             {{ errorMessage }}
@@ -287,29 +302,38 @@
             <i class="bi bi-person-circle"></i>
             <i class="bi bi-person-circle"></i>
           </div>
-          <span><strong>15</strong> founders joined this week</span>
+          <span>Join early adopters validating Inbox Zero</span>
         </div>
 
         <div class="cta-benefits">
           <div class="benefit">
             <i class="bi bi-tag-fill"></i>
-            <span><strong>50% lifetime discount</strong> (worth $600/year)</span>
+            <div class="benefit-text">
+              <strong>Early access pricing</strong>
+              <span>Lock in special rates before public launch</span>
+            </div>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-calendar-check-fill"></i>
+            <div class="benefit-text">
+              <strong>Priority onboarding</strong>
+              <span>Get set up faster with dedicated support</span>
+            </div>
           </div>
           <div class="benefit">
             <i class="bi bi-headset"></i>
-            <span><strong>Priority support</strong> from the founder</span>
-          </div>
-          <div class="benefit">
-            <i class="bi bi-shield-fill-check"></i>
-            <span><strong>First 30 days free</strong> – cancel anytime</span>
+            <div class="benefit-text">
+              <strong>Direct founder support</strong>
+              <span>Work directly with the team building Inbox Zero</span>
+            </div>
           </div>
         </div>
 
         <!-- Risk Reversal -->
-        <p class="guarantee">
+        <div class="guarantee">
           <i class="bi bi-shield-fill-check"></i>
-          <span>No credit card required • Cancel anytime</span>
-        </p>
+          <span>No credit card • No commitment • Built by ecommerce founder who lived this pain</span>
+        </div>
       </div>
 
       <!-- Success State -->
@@ -319,8 +343,7 @@
         </div>
         <h2>Welcome to Inbox Zero Early Access!</h2>
         <p class="success-message">
-          <i class="bi bi-calendar-check-fill"></i>
-          <strong>Check your inbox</strong> – We'll send you access details + onboarding call invite within 24 hours.
+          You're on the list. We'll reach out within 24 hours with next steps.
         </p>
         
         <div class="next-steps">
@@ -328,7 +351,7 @@
           <ol>
             <li><strong>Check your email</strong> for confirmation</li>
             <li><strong>Join our Discord</strong> to chat with the team</li>
-            <li><strong>Get notified</strong> when we launch (March 15)</li>
+            <li><strong>Get notified</strong> when we launch</li>
           </ol>
         </div>
         
