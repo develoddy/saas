@@ -63,7 +63,9 @@
                 <div class="stat-label">wasted/month</div>
               </div>
               <div class="stat-item">
-                <div class="stat-value">😟</div>
+                <div class="stat-icon-negative">
+                  <i class="bi bi-emoji-frown-fill"></i>
+                </div>
                 <div class="stat-label">anxious customers</div>
               </div>
             </div>
@@ -83,7 +85,7 @@
               <div class="timeline-item" *ngFor="let step of preventionFlow">
                 <div class="timeline-marker">
                   <div class="timeline-dot" [style.background]="step.color">
-                    {{ step.icon }}
+                    <i [class]="step.icon"></i>
                   </div>
                   <div class="timeline-day">Day {{ step.day }}</div>
                 </div>
@@ -105,7 +107,9 @@
                 <div class="stat-label">handling time</div>
               </div>
               <div class="stat-item">
-                <div class="stat-value">😊</div>
+                <div class="stat-icon-positive">
+                  <i class="bi bi-emoji-smile-fill"></i>
+                </div>
                 <div class="stat-label">informed customers</div>
               </div>
             </div>
@@ -234,51 +238,78 @@
   <section class="cta-section">
     <div class="container">
       <div class="cta-content" *ngIf="!waitlistSubmitted">
-        <h2>Get Early Access</h2>
-        <p>
-          We're opening Inbox Zero to 30 ecommerce stores using Printful, 
-          Shopify, or similar fulfillment partners.
+        <!-- Urgency Badge -->
+        <div class="urgency-badge">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Limited Launch: Only 25 spots remaining</span>
+        </div>
+        
+        <h2>Join the First 100 Ecommerce Stores</h2>
+        <p class="cta-subtitle">
+          Get Inbox Zero <strong>before public launch</strong> + lifetime 50% discount for early adopters.
         </p>
         
         <div class="waitlist-form">
           <div class="form-group">
-            <input 
-              type="email" 
-              class="form-control" 
-              placeholder="your@email.com"
-              [(ngModel)]="waitlistEmail"
-              (keyup.enter)="submitWaitlist()"
-              [disabled]="isSubmitting">
+            <div class="input-wrapper">
+              <i class="bi bi-envelope-fill input-icon"></i>
+              <input 
+                type="email" 
+                class="form-control" 
+                placeholder="Enter your email address"
+                [(ngModel)]="waitlistEmail"
+                (keyup.enter)="submitWaitlist()"
+                [disabled]="isSubmitting">
+            </div>
             <button 
               class="btn btn-primary btn-large"
               (click)="submitWaitlist()"
               [disabled]="isSubmitting">
-              <span *ngIf="!isSubmitting">Join Waitlist</span>
+              <span *ngIf="!isSubmitting">
+                <i class="bi bi-rocket-takeoff-fill"></i>
+                Get Early Access
+              </span>
               <span *ngIf="isSubmitting">
-                <i class="bi bi-arrow-repeat spin"></i> Submitting...
+                <i class="bi bi-arrow-repeat spin"></i> Joining...
               </span>
             </button>
           </div>
           <div class="error-message" *ngIf="errorMessage">
-            <i class="bi bi-exclamation-circle"></i>
+            <i class="bi bi-exclamation-triangle-fill"></i>
             {{ errorMessage }}
           </div>
         </div>
 
+        <!-- Social Proof -->
+        <div class="social-proof-mini">
+          <div class="avatars">
+            <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <span><strong>15</strong> founders joined this week</span>
+        </div>
+
         <div class="cta-benefits">
           <div class="benefit">
-            <i class="bi bi-check2"></i>
-            <span>Early access pricing</span>
+            <i class="bi bi-tag-fill"></i>
+            <span><strong>50% lifetime discount</strong> (worth $600/year)</span>
           </div>
           <div class="benefit">
-            <i class="bi bi-check2"></i>
-            <span>Priority onboarding</span>
+            <i class="bi bi-headset"></i>
+            <span><strong>Priority support</strong> from the founder</span>
           </div>
           <div class="benefit">
-            <i class="bi bi-check2"></i>
-            <span>Direct founder support</span>
+            <i class="bi bi-shield-fill-check"></i>
+            <span><strong>First 30 days free</strong> – cancel anytime</span>
           </div>
         </div>
+
+        <!-- Risk Reversal -->
+        <p class="guarantee">
+          <i class="bi bi-shield-fill-check"></i>
+          <span>No credit card required • Cancel anytime</span>
+        </p>
       </div>
 
       <!-- Success State -->
@@ -286,13 +317,24 @@
         <div class="success-icon">
           <i class="bi bi-check-circle-fill"></i>
         </div>
-        <h2>You're on the list! 🎉</h2>
-        <p>
-          We'll reach out within 48 hours to schedule a quick demo and 
-          discuss your specific use case.
+        <h2>Welcome to Inbox Zero Early Access!</h2>
+        <p class="success-message">
+          <i class="bi bi-calendar-check-fill"></i>
+          <strong>Check your inbox</strong> – We'll send you access details + onboarding call invite within 24 hours.
         </p>
+        
+        <div class="next-steps">
+          <h3><i class="bi bi-calendar-check-fill"></i> What happens next?</h3>
+          <ol>
+            <li><strong>Check your email</strong> for confirmation</li>
+            <li><strong>Join our Discord</strong> to chat with the team</li>
+            <li><strong>Get notified</strong> when we launch (March 15)</li>
+          </ol>
+        </div>
+        
         <button class="btn btn-outline" (click)="goBackToHub()">
-          Back to MVP Hub
+          <i class="bi bi-arrow-left"></i>
+          Explore Other MVPs
         </button>
       </div>
     </div>

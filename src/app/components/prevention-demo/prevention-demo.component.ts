@@ -98,28 +98,28 @@ export class PreventionDemoComponent implements OnInit {
       day: 0,
       title: 'Customer purchases',
       action: 'Automatic email: Confirmation + Tracking link',
-      icon: '🛒',
+      icon: 'bi-cart-fill',
       color: '#3b82f6'
     },
     {
       day: 1,
       title: 'Printing started',
       action: 'Automatic email: "Your design is being printed"',
-      icon: '🎨',
+      icon: 'bi-printer-fill',
       color: '#8b5cf6'
     },
     {
       day: 3,
       title: 'Package shipped',
       action: 'Automatic email: Tracking number + estimation',
-      icon: '📦',
+      icon: 'bi-box-seam-fill',
       color: '#10b981'
     },
     {
       day: 7,
       title: 'Delivered',
       action: 'Automatic email: Confirmation + Request review',
-      icon: '✅',
+      icon: 'bi-check-circle-fill',
       color: '#059669'
     }
   ];
