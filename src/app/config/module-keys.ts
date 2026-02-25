@@ -19,9 +19,12 @@ export const MODULE_KEYS = {
   /**
    * Inbox Zero Prevention - Ticket prevention SaaS
    * Validate pain point → Validate solution → Live product
+   * 
+   * Note: LANDING and LIVE share the same key because they use the same URL.
+   * The difference is in module_type column in DB (landing → wizard → live).
    */
   INBOX_ZERO: {
-    LANDING: 'inbox-zero-prevention-landing',
+    LANDING: 'inbox-zero-prevention',  // Same as LIVE - differentiated by module_type in DB
     WIZARD: 'inbox-zero-prevention-wizard',
     LIVE: 'inbox-zero-prevention',
     CONCEPT: 'inbox-zero-prevention'  // Base concept name
