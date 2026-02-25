@@ -12,97 +12,118 @@ import { TenantAuthGuard } from './core/tenant-auth.guard';
 import { ModuleActiveGuard } from './guards/module-active.guard';
 import { ModulePreviewWizardComponent } from './components/module-preview-wizard/module-preview-wizard.component';
 import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
-import { SmartChatWizardComponent } from './components/smart-chat-wizard/smart-chat-wizard.component';
-import { PreventionDemoComponent } from './components/prevention-demo/prevention-demo.component';
 import { MvpsHubComponent } from './mvps-hub/mvps-hub.component';
 
+/**
+ * App Routing Module
+ * 
+ * Arquitectura de rutas con Double Lazy Loading:
+ * 
+ * NIVEL 1: Lazy loading del módulo principal MVP
+ *    - Ruta: /nombre-mvp
+ *    - Carga: InboxZeroPreventionModule, ProductClipModule, etc.
+ * 
+ * NIVEL 2: Lazy loading de fases dentro de cada MVP
+ *    - Landing (Fase 0): /nombre-mvp/landing
+ *    - Wizard (Fase 1): /nombre-mvp/wizard
+ *    - Live (Fase 2): /nombre-mvp (ruta por defecto)
+ * 
+ * BENEFICIOS:
+ *    - Carga bajo demanda (mejor performance)
+ *    - Aislamiento de código (MVPs independientes)
+ *    - Escalabilidad (agregar MVPs sin modificar app.module)
+ * 
+ * EJEMPLO: Inbox Zero Prevention
+ *    /inbox-zero-prevention → lazy loads InboxZeroPreventionModule
+ *    /inbox-zero-prevention/landing → lazy loads LandingModule
+ *    /inbox-zero-prevention/wizard → lazy loads WizardModule (gated con ModuleActiveGuard)
+ * 
+ * @date 2026-02-24
+ */
 const routes: Routes = [
-  // 🏠 Ruta raíz pública - Hub de MVPs
+  // ============================================
+  // 🏠 MVPs HUB (Entry Point)
+  // ============================================
   {
     path: '',
-    component: MvpsHubComponent
+    component: MvpsHubComponent,
+    data: { 
+      title: 'MVPs Hub - Micro SaaS Validation Platform'
+    }
   },
-  {
-    path: 'login',
-    component: LoginComponent
-  },
-  {
-    path: 'register',
-    component: RegisterComponent
-  },
-  {
-    path: 'select-app',
-    component: SelectAppComponent
-  },
-  {
-    path: 'upgrade',
-    component: UpgradeComponent
-  },
-  {
-    path: 'upgrade/success',
-    component: UpgradeSuccessComponent
-  },
-  // 🎯 Rutas públicas de Preview (SIN autenticación)
+
+  // ============================================
+  // 📦 MVP MODULES (Double Lazy Loading)
+  // Each MVP is lazy loaded, then phases are lazy loaded within MVP
+  // ============================================
   
-  // 🔄 REDIRECTS: URLs antiguas → URLs nuevas (DEBEN IR PRIMERO)
+  // Inbox Zero Prevention MVP
   {
-    path: 'preview/smart-chat',
-    redirectTo: 'preview/inbox-zero',
-    pathMatch: 'full'
+    path: 'inbox-zero-prevention',
+    loadChildren: () => import('./mvps/inbox-zero-prevention/inbox-zero-prevention.module')
+      .then(m => m.InboxZeroPreventionModule),
+    data: { 
+      title: 'Inbox Zero Prevention'
+    }
   },
-  {
-    path: 'preview/video-express',
-    redirectTo: 'preview/productclip',
-    pathMatch: 'full'
-  },
-  
-  // ProductClip - Wizard específico con upload y generación de video
-  // Usa arquitectura de módulos pero con UI personalizada
   {
     path: 'preview/productclip',
     component: VideoExpressWizardComponent,
-    canActivate: [ModuleActiveGuard], // ✅ Validar que esté activo en admin
+    canActivate: [ModuleActiveGuard],
     data: { 
       moduleKey: 'productclip',
       title: 'ProductClip - Preview',
       description: 'Transform product photos into scroll-stopping video clips'
     }
   },
-  // Inbox Zero - Wizard MVP de validación WOW + WTP
-  {
-    path: 'preview/inbox-zero',
-    component: SmartChatWizardComponent,
-    canActivate: [ModuleActiveGuard], // ✅ Validar que esté activo en admin
-    data: { 
-      moduleKey: 'inbox-zero',
-      title: 'Inbox Zero - Preview',
-      description: 'Turn repetitive customer questions into zero-second responses'
-    }
-  },
-
-  // Inbox Zero - Landing Page de Validación (NUEVA)
-  // Ruta pública sin guards para distribución inmediata
-  {
-    path: 'inbox-zero',
-    component: PreventionDemoComponent,
-    data: { 
-      title: 'Inbox Zero - Ticket Prevention System',
-      description: 'Eliminate 60-80% of post-purchase support tickets before they exist'
-    }
-  },
-
-  // Otros módulos - Wizard genérico basado en formularios
   {
     path: 'preview/:moduleKey',
     component: ModulePreviewWizardComponent,
-    canActivate: [ModuleActiveGuard] // ✅ Validar cualquier módulo dinámico
+    canActivate: [ModuleActiveGuard],
+    data: {
+      title: 'Module Preview'
+    }
   },
-  // 🔒 Rutas protegidas con autenticación
+
+  // ============================================
+  // 🔐 AUTENTICACIÓN
+  // ============================================
+  {
+    path: 'login',
+    component: LoginComponent,
+    data: { title: 'Login' }
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    data: { title: 'Register' }
+  },
+  {
+    path: 'select-app',
+    component: SelectAppComponent,
+    data: { title: 'Select App' }
+  },
+  {
+    path: 'upgrade',
+    component: UpgradeComponent,
+    data: { title: 'Upgrade Plan' }
+  },
+  {
+    path: 'upgrade/success',
+    component: UpgradeSuccessComponent,
+    data: { title: 'Upgrade Successful' }
+  },
+
+  // ============================================
+  // 🔒 LIVE PRODUCTS (Fase 2)
+  // Protegidas con TenantAuthGuard - Producto completo
+  // ============================================
   {
     path: 'app',
     component: LayoutComponent,
     canActivate: [TenantAuthGuard],
     children: [
+      // Legacy modules con lazy loading (migrar a sistema de módulos progresivamente)
       {
         path: 'mailflow',
         loadChildren: () => import('./modules/mailflow/mailflow.module')
@@ -113,6 +134,7 @@ const routes: Routes = [
         loadChildren: () => import('./modules/smart-chat/smart-chat.module')
           .then(m => m.SmartChatModule)
       },
+      // Dashboard genérico para módulos dinámicos (fase 2 - live)
       {
         path: ':moduleKey',
         children: [
@@ -126,13 +148,7 @@ const routes: Routes = [
           }
         ]
       }
-   ,
-  // 🔄 Redirect para compatibilidad con rutas antiguas
-  {
-    path: ':moduleKey',
-    redirectTo: 'app/:moduleKey',
-    pathMatch: 'full'
-  } ]
+    ]
   }
 ];
 

@@ -3,8 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { TrackingService } from '../../services/tracking.service';
-import { ModulePreviewService } from '../../services/module-preview.service';
+import { TrackingService } from '@shared/../services/tracking.service';
+import { ModulePreviewService } from '@shared/../services/module-preview.service';
+import { MODULE_KEYS } from '@config/module-keys';
 
 /**
  * Inbox Zero Wizard Component (formerly Smart Chat)
@@ -84,9 +85,9 @@ interface WizardState {
 }
 
 @Component({
-  selector: 'app-smart-chat-wizard',
-  templateUrl: './smart-chat-wizard.component.html',
-  styleUrls: ['./smart-chat-wizard.component.scss'],
+  selector: 'app-inbox-zero-wizard',
+  templateUrl: './inbox-zero-wizard.component.html',
+  styleUrls: ['./inbox-zero-wizard.component.scss'],
   animations: [
     trigger('fadeInUp', [
       transition(':enter', [
@@ -102,11 +103,11 @@ interface WizardState {
     ])
   ]
 })
-export class SmartChatWizardComponent implements OnInit, OnDestroy {
+export class InboxZeroWizardComponent implements OnInit, OnDestroy {
   
   // Integración con sistema de módulos (Wizard phase)
-  readonly moduleKey = 'inbox-zero-prevention-wizard'; // 🎯 Wizard phase identifier
-  readonly moduleName = 'Inbox Zero'; // 🎯 Nuevo nombre de producto
+  readonly moduleKey = MODULE_KEYS.INBOX_ZERO.WIZARD; // 🎯 Wizard phase identifier
+  readonly moduleName = 'Inbox Zero';
   readonly moduleTagline = 'Turn repetitive customer questions into zero-second responses';
   
   private destroy$ = new Subject<void>();

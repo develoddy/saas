@@ -1,0 +1,548 @@
+<div class="prevention-demo">
+  
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- Pain trigger -->
+        <div class="hero-pain-trigger">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span>Does this sound familiar?</span>
+        </div>
+
+        <h1 class="hero-title">
+          You open your inbox.<br>
+          <span class="highlight-pain">40 emails. Same question.</span><br>
+          <span class="highlight-solution">There's a fix.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          Every morning you copy-paste the same tracking link, answer
+          <strong>"where is my order?"</strong> — again and again.
+          Meanwhile your actual business is waiting.
+          <em>Inbox Zero Prevention sends the update before they even think to ask.</em>
+        </p>
+
+        <!-- Proof bar -->
+        <div class="hero-proof-bar">
+          <div class="proof-item">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Tested on <strong>100+ real orders/month</strong></span>
+          </div>
+          <div class="proof-divider"></div>
+          <div class="proof-item">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Built by an <strong>ecommerce founder</strong></span>
+          </div>
+          <div class="proof-divider"></div>
+          <div class="proof-item">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Works with <strong>Printful, Shopify &amp; more</strong></span>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">-80%</div>
+            <div class="hero-stat-label">Support Tickets</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">~3h</div>
+            <div class="hero-stat-label">Saved Every Month</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">$0</div>
+            <div class="hero-stat-label">Setup Cost</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom glow divider -->
+    <div class="hero-bottom-glow"></div>
+  </section>
+
+  <!-- Comparison Section: Sin vs Con -->
+  <section class="comparison-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>The Real Cost of Reactive Support</h2>
+        <p>Your time is too valuable to answer the same question 40 times/month</p>
+      </div>
+
+      <div class="comparison-grid">
+        
+        <!-- Column 1: WITHOUT System -->
+        <div class="comparison-card without-system">
+          <div class="card-header">
+            <i class="bi bi-x-circle-fill"></i>
+            <h3>Without Inbox Zero</h3>
+          </div>
+
+          <div class="card-content">
+            <!-- Flooded inbox visual -->
+            <div class="inbox-visual">
+              <div class="inbox-header-bar">
+                <i class="bi bi-inbox-fill"></i>
+                <span>Support Inbox</span>
+              </div>
+              <div class="tickets-flood">
+                <div class="ticket-item" *ngFor="let ticket of eliminatedTickets.slice(0, 8)">
+                  <i class="bi bi-envelope-fill"></i>
+                  <span>{{ ticket }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Negative stats -->
+            <div class="stats-negative">
+              <div class="stat-item">
+                <div class="stat-value">40+</div>
+                <div class="stat-label">tickets/month</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">~3h</div>
+                <div class="stat-label">wasted/month</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-icon-negative">
+                  <i class="bi bi-emoji-frown-fill"></i>
+                </div>
+                <div class="stat-label">anxious customers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: WITH System -->
+        <div class="comparison-card with-system">
+          <div class="card-header success">
+            <i class="bi bi-check-circle-fill"></i>
+            <h3>With Inbox Zero</h3>
+          </div>
+
+          <div class="card-content">
+            <!-- Prevention timeline -->
+            <div class="prevention-timeline">
+              <div class="timeline-item" *ngFor="let step of preventionFlow">
+                <div class="timeline-marker">
+                  <div class="timeline-dot" [style.background]="step.color">
+                    <i [class]="step.icon"></i>
+                  </div>
+                  <div class="timeline-day">Day {{ step.day }}</div>
+                </div>
+                <div class="timeline-content">
+                  <h4>{{ step.title }}</h4>
+                  <p>{{ step.action }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Positive stats -->
+            <div class="stats-positive">
+              <div class="stat-item">
+                <div class="stat-value">8</div>
+                <div class="stat-label">tickets/month (-80%)</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">35m</div>
+                <div class="stat-label">handling time</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-icon-positive">
+                  <i class="bi bi-emoji-smile-fill"></i>
+                </div>
+                <div class="stat-label">informed customers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real Metrics Section -->
+  <section class="metrics-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Real Metrics from Production</h2>
+        <p>100+ orders/month · Print-on-Demand ecommerce</p>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card" 
+             *ngFor="let metric of realMetrics"
+             (click)="trackMetricClick(metric.label)">
+          <!-- Top row: icon + improvement badge -->
+          <div class="metric-top">
+            <div class="metric-icon">
+              <i [class]="'bi ' + metric.icon"></i>
+            </div>
+            <div class="metric-improvement-badge">{{ metric.improvement }}</div>
+          </div>
+          <!-- Label -->
+          <div class="metric-label">{{ metric.label }}</div>
+          <!-- Before vs After -->
+          <div class="metric-comparison">
+            <div class="before">
+              <span class="comp-value">{{ metric.before }}</span>
+              <span class="comp-label">Before</span>
+            </div>
+            <div class="metric-vs">VS</div>
+            <div class="after">
+              <span class="comp-value">{{ metric.after }}</span>
+              <span class="comp-label">After</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it Works (simplified) -->
+  <section class="how-it-works-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Event-driven communication that keeps customers informed</p>
+      </div>
+
+      <div class="workflow-visual">
+        <div class="workflow-step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Customer purchases</h4>
+            <p>Automatic email with order confirmation + tracking link</p>
+          </div>
+        </div>
+
+        <div class="workflow-arrow">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div class="workflow-step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Fulfillment events trigger</h4>
+            <p>Printing started, shipped, delivered, etc.</p>
+          </div>
+        </div>
+
+        <div class="workflow-arrow">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div class="workflow-step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Automatic proactive emails</h4>
+            <p>Customer receives updates before they have questions</p>
+          </div>
+        </div>
+
+        <div class="workflow-arrow">
+          <i class="bi bi-arrow-down"></i>
+        </div>
+
+        <div class="workflow-step highlight">
+          <div class="step-number">✓</div>
+          <div class="step-content">
+            <h4>Zero support tickets</h4>
+            <p>Customer is informed · Never asks "where is my order?"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Experience Preview Section -->
+  <section class="tracking-preview-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>What your customer sees</h2>
+        <p>Instead of emailing you, they check this page — and already have their answer.</p>
+      </div>
+
+      <div class="tracking-mockup-wrapper">
+
+        <!-- Browser frame -->
+        <div class="browser-frame">
+          <!-- Chrome bar -->
+          <div class="browser-chrome">
+            <div class="browser-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="browser-url">
+              <i class="bi bi-lock-fill"></i>
+              <span>yourstore.com/tracking/IZ-2847</span>
+            </div>
+          </div>
+
+          <!-- Page content -->
+          <div class="browser-content">
+
+            <!-- Top bar -->
+            <div class="tp-topbar">
+              <span class="tp-store-name">YourStore</span>
+              <span class="tp-tag">Order Tracking</span>
+            </div>
+
+            <!-- Order header -->
+            <div class="tp-order-header">
+              <div class="tp-order-id">
+                <i class="bi bi-bag-check-fill"></i>
+                <div>
+                  <span class="tp-label">Order number</span>
+                  <strong>#IZ-2847</strong>
+                </div>
+              </div>
+              <div class="tp-status-badge">
+                <i class="bi bi-truck"></i>
+                In Transit
+              </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="tp-progress-section">
+              <div class="tp-progress-track">
+                <div class="tp-progress-fill" style="width: 75%"></div>
+              </div>
+              <div class="tp-steps">
+                <div class="tp-step completed">
+                  <div class="tp-step-dot">
+                    <i class="bi bi-check-lg"></i>
+                  </div>
+                  <span>Order placed</span>
+                </div>
+                <div class="tp-step completed">
+                  <div class="tp-step-dot">
+                    <i class="bi bi-check-lg"></i>
+                  </div>
+                  <span>Printing done</span>
+                </div>
+                <div class="tp-step active">
+                  <div class="tp-step-dot">
+                    <i class="bi bi-truck"></i>
+                  </div>
+                  <span>Shipped</span>
+                </div>
+                <div class="tp-step pending">
+                  <div class="tp-step-dot">
+                    <i class="bi bi-house-door"></i>
+                  </div>
+                  <span>Delivered</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Info cards -->
+            <div class="tp-info-cards">
+              <div class="tp-info-card">
+                <i class="bi bi-calendar-check"></i>
+                <div>
+                  <span class="tp-label">Estimated delivery</span>
+                  <strong>Mar 20 – Mar 24</strong>
+                </div>
+              </div>
+              <div class="tp-info-card">
+                <i class="bi bi-box-seam"></i>
+                <div>
+                  <span class="tp-label">Carrier</span>
+                  <strong>USPS · #9400111899223</strong>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /browser-content -->
+        </div><!-- /browser-frame -->
+
+        <!-- Side callout -->
+        <div class="tp-callout">
+          <div class="tp-callout-item">
+            <div class="tp-callout-icon">
+              <i class="bi bi-send-check-fill"></i>
+            </div>
+            <div class="tp-callout-text">
+              <strong>Email sent at every step</strong>
+              <span>Customer gets notified automatically — printed, shipped, and delivered.</span>
+            </div>
+          </div>
+          <div class="tp-callout-item">
+            <div class="tp-callout-icon">
+              <i class="bi bi-link-45deg"></i>
+            </div>
+            <div class="tp-callout-text">
+              <strong>Tracking link inside every email</strong>
+              <span>One click and they see this page. No support ticket needed.</span>
+            </div>
+          </div>
+          <div class="tp-callout-item">
+            <div class="tp-callout-icon">
+              <i class="bi bi-inbox"></i>
+            </div>
+            <div class="tp-callout-text">
+              <strong>Your inbox stays empty</strong>
+              <span>They already have the answer before they even think to ask.</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /tracking-mockup-wrapper -->
+    </div>
+  </section>
+
+  <!-- Social Proof / Testimonial Section -->
+  <section class="social-proof-section">
+    <div class="container">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">
+          <i class="bi bi-quote"></i>
+          <p>
+            "I built this system for my own ecommerce store. Went from 40+ 
+            monthly tickets about order status to 8. Customers 
+            receive automatic updates at every step and never have to ask."
+          </p>
+        </div>
+        <div class="testimonial-author">
+          <div class="author-info">
+            <strong>Eddy Lujan</strong>
+            <span>Founder · Ecommerce owner using Printful</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Waitlist / CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content" *ngIf="!waitlistSubmitted">
+        <!-- Urgency Badge -->
+        <div class="urgency-badge">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Early Access — Limited spots</span>
+        </div>
+        
+        <h2>Get Early Access to Inbox Zero</h2>
+        <p class="cta-subtitle">
+          We're opening Inbox Zero to ecommerce stores using Printful, Shopify, or similar fulfillment partners.
+        </p>
+        
+        <div class="waitlist-form">
+          <div class="input-wrapper">
+            <i class="bi bi-envelope-fill"></i>
+            <input 
+              type="email" 
+              class="form-control form-control-large" 
+              placeholder="Enter your business email"
+              [(ngModel)]="waitlistEmail"
+              (keyup.enter)="submitWaitlist()"
+              [disabled]="isSubmitting">
+          </div>
+          
+          <button 
+            class="btn btn-primary btn-cta-large"
+            (click)="submitWaitlist()"
+            [disabled]="isSubmitting">
+            <span *ngIf="!isSubmitting">
+              <i class="bi bi-rocket-takeoff-fill"></i>
+              Join Waitlist
+            </span>
+            <span *ngIf="isSubmitting">
+              <i class="bi bi-arrow-repeat spin"></i>
+              Securing your spot...
+            </span>
+          </button>
+          
+          <div class="error-message" *ngIf="errorMessage">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            {{ errorMessage }}
+          </div>
+        </div>
+
+        <!-- Social Proof -->
+        <div class="social-proof-mini">
+          <div class="avatars">
+            <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <span>Join early adopters validating Inbox Zero</span>
+        </div>
+
+        <div class="cta-benefits">
+          <div class="benefit">
+            <i class="bi bi-tag-fill"></i>
+            <div class="benefit-text">
+              <strong>Early access pricing</strong>
+              <span>Lock in special rates before public launch</span>
+            </div>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-calendar-check-fill"></i>
+            <div class="benefit-text">
+              <strong>Priority onboarding</strong>
+              <span>Get set up faster with dedicated support</span>
+            </div>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-headset"></i>
+            <div class="benefit-text">
+              <strong>Direct founder support</strong>
+              <span>Work directly with the team building Inbox Zero</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Reversal -->
+        <div class="guarantee">
+          <i class="bi bi-shield-fill-check"></i>
+          <span>No credit card • No commitment • Built by ecommerce founder who lived this pain</span>
+        </div>
+      </div>
+
+      <!-- Success State -->
+      <div class="cta-success" *ngIf="waitlistSubmitted">
+        <div class="success-icon">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h2>Welcome to Inbox Zero Early Access!</h2>
+        <p class="success-message">
+          You're on the list. We'll reach out within 24 hours with next steps.
+        </p>
+        
+        <div class="next-steps">
+          <h3><i class="bi bi-calendar-check-fill"></i> What happens next?</h3>
+          <ol>
+            <li><strong>Check your email</strong> for confirmation</li>
+            <li><strong>Join our Discord</strong> to chat with the team</li>
+            <li><strong>Get notified</strong> when we launch</li>
+          </ol>
+        </div>
+        
+        <button class="btn btn-outline" (click)="goBackToHub()">
+          <i class="bi bi-arrow-left"></i>
+          Explore Other MVPs
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Note -->
+  <section class="footer-note">
+    <div class="container">
+      <p>
+        <i class="bi bi-info-circle"></i>
+        <strong>For ecommerce founders:</strong> If you're using Printful, 
+        Shopify, WooCommerce, or similar platforms and receive 20+ monthly 
+        tickets about order status, this is for you.
+      </p>
+    </div>
+  </section>
+
+</div>

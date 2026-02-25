@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TrackingService } from '../../services/tracking.service';
+import { TrackingService } from '@shared/../services/tracking.service';
+import { MODULE_KEYS } from '@config/module-keys';
 
 /**
  * Prevention Demo Component
  * 
- * Validation landing page for Inbox Zero
+ * Validation landing page for Inbox Zero Prevention
+ * Phase 0: Landing - Validates demand and pain points
  * 
  * Objective: Validate "ticket prevention" message before building SaaS
  * 
@@ -15,7 +17,8 @@ import { TrackingService } from '../../services/tracking.service';
  * - CTA: Join waitlist / Early access
  * 
  * @author LujanDev
- * @module components/prevention-demo
+ * @module mvps/inbox-zero-prevention/landing
+ * @date 2026-02-24
  */
 
 interface RealMetric {
@@ -34,8 +37,7 @@ interface RealMetric {
 export class PreventionDemoComponent implements OnInit {
 
   // Module identifier for tracking (Landing phase)
-  // ⚠️ NO usar '-landing' suffix para mantener compatibilidad con datos existentes en producción
-  readonly moduleKey = 'inbox-zero-prevention';
+  readonly moduleKey = MODULE_KEYS.INBOX_ZERO.LANDING;
   readonly moduleName = 'Inbox Zero';
 
   // 🎯 UTM Tracking to measure distribution channels

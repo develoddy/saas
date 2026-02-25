@@ -22,6 +22,12 @@ import { ProModalComponent } from '../components/pro-modal/pro-modal.component';
     FormsModule
   ],
   exports: [
+    // Export Angular common modules for reuse in feature modules
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    FormsModule,
+    // Export shared components
     TrialBannerComponent,
     ModulePreviewComponent,
     ProUpgradeBlockComponent,
