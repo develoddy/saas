@@ -920,12 +920,12 @@
               placeholder="Your store URL (e.g., mystore.com)"
               [(ngModel)]="setupFormData.storeUrl"
               name="storeUrl"
-              [disabled]="isSubmittingSetup"
-              required>
+              [disabled]="isSubmittingSetup">
           </div>
+          <small class="form-text text-muted" style="display: block; margin-top: -12px; margin-bottom: 16px; margin-left: 4px; font-size: 0.875rem; color: #6c757d; font-style: italic;">Optional — you can share this later</small>
 
-          <!-- Printful API Key -->
-          <div class="input-wrapper">
+          <!-- Printful API Key - Campo comentado. Se solicita por email después del setup -->
+          <!-- <div class="input-wrapper">
             <i class="bi bi-key-fill"></i>
             <input 
               type="text" 
@@ -935,7 +935,7 @@
               name="printfulApiKey"
               [disabled]="isSubmittingSetup"
               required>
-          </div>
+          </div> -->
 
           <!-- Platform Dropdown -->
           <div class="input-wrapper">
@@ -944,8 +944,8 @@
               class="form-control form-control-large"
               [(ngModel)]="setupFormData.platform"
               name="platform"
-              [disabled]="isSubmittingSetup"
-              required>
+              [disabled]="isSubmittingSetup">
+              <option value="">Select platform (optional)</option>
               <option value="WooCommerce">WooCommerce</option>
               <option value="Shopify">Shopify</option>
               <option value="Other">Other</option>

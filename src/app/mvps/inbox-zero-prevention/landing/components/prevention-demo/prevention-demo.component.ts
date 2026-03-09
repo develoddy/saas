@@ -278,9 +278,9 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
    * 🆕 Submit setup request form
    */
   async submitSetupRequest(): Promise<void> {
-    // Validation
-    if (!this.setupFormData.email || !this.setupFormData.storeUrl || !this.setupFormData.printfulApiKey || !this.setupFormData.platform) {
-      this.setupErrorMessage = 'Please fill in all fields';
+    // Validation (only email is required)
+    if (!this.setupFormData.email) {
+      this.setupErrorMessage = 'Please enter your email';
       return;
     }
 
@@ -290,8 +290,8 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // Simple URL validation
-    if (!this.isValidUrl(this.setupFormData.storeUrl)) {
+    // Simple URL validation (only if provided and not empty)
+    if (this.setupFormData.storeUrl?.trim() && !this.isValidUrl(this.setupFormData.storeUrl.trim())) {
       this.setupErrorMessage = 'Please enter a valid store URL';
       return;
     }
@@ -310,7 +310,7 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
 
       // 🚪 Send request to backend
       const apiUrl = `${environment.API_URL}/public/inbox-zero/setup-request`;
-      const normalizedStoreUrl = this.normalizeUrl(this.setupFormData.storeUrl);
+      const normalizedStoreUrl = this.setupFormData.storeUrl?.trim() ? this.normalizeUrl(this.setupFormData.storeUrl.trim()) : null;
       
       const response: any = await this.http.post(apiUrl, {
         email: this.setupFormData.email,
