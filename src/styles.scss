@@ -3,6 +3,9 @@
 // Import design system
 @use 'assets/css/main';
 
+// Import chat widget styles (moved from component to avoid budget limit)
+@import 'assets/css/chat-widget';
+
 // Reset básico
 * {
   margin: 0;
