@@ -55,6 +55,7 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
 
   // 🆕 Setup form state
   showSetupForm = false;
+  showFormFields = false; // Controls visibility of form fields in CTA section
   setupFormData = {
     email: '',
     storeUrl: '',
@@ -244,16 +245,33 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
       timestamp: Date.now()
     });
     
-    // Show setup form
-    this.showSetupForm = true;
-    
-    // Smooth scroll to form
+    // Smooth scroll to CTA section
     setTimeout(() => {
-      const setupForm = document.getElementById('setup-form-section');
-      if (setupForm) {
-        setupForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const ctaSection = document.getElementById('cta-section-form');
+      if (ctaSection) {
+        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
+  }
+
+  /**
+   * 🆕 Show form fields in CTA section
+   */
+  onShowFormFields(): void {
+    this.showFormFields = true;
+    
+    // Track form reveal
+    this.trackEvent('setup_form_revealed', {
+      timestamp: Date.now()
+    });
+    
+    // Smooth scroll to ensure form is visible
+    setTimeout(() => {
+      const ctaSection = document.getElementById('cta-section-form');
+      if (ctaSection) {
+        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 200);
   }
 
   /**
@@ -292,9 +310,11 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
 
       // 🚪 Send request to backend
       const apiUrl = `${environment.API_URL}/public/inbox-zero/setup-request`;
+      const normalizedStoreUrl = this.normalizeUrl(this.setupFormData.storeUrl);
+      
       const response: any = await this.http.post(apiUrl, {
         email: this.setupFormData.email,
-        storeUrl: this.setupFormData.storeUrl,
+        storeUrl: normalizedStoreUrl,
         printfulApiKey: this.setupFormData.printfulApiKey,
         platform: this.setupFormData.platform
       }).toPromise();
@@ -331,12 +351,19 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * 🆕 Normalize URL - Add https:// if missing
+   */
+  private normalizeUrl(url: string): string {
+    // Add protocol if missing
+    return url.startsWith('http') ? url : `https://${url}`;
+  }
+
+  /**
    * 🆕 Validate URL
    */
   private isValidUrl(url: string): boolean {
     try {
-      // Add protocol if missing
-      const urlToTest = url.startsWith('http') ? url : `https://${url}`;
+      const urlToTest = this.normalizeUrl(url);
       new URL(urlToTest);
       return true;
     } catch {

@@ -615,7 +615,8 @@
     </div>
   </section>
 
-  <!-- 🆕 Setup Request Form Section -->
+  <!-- 🆕 Setup Request Form Section - COMMENTED OUT (merged into CTA section below) -->
+  <!--
   <section class="setup-form-section" id="setup-form-section" *ngIf="showSetupForm && !setupSubmitted">
     <div class="container">
       <div class="setup-form-card">
@@ -628,7 +629,6 @@
         </div>
 
         <form class="setup-form" (ngSubmit)="submitSetupRequest()">
-          <!-- Email -->
           <div class="form-group">
             <label for="email">
               <i class="bi bi-envelope-fill"></i>
@@ -646,7 +646,6 @@
             <span class="form-hint">We'll contact you here within 24 hours</span>
           </div>
 
-          <!-- Store URL -->
           <div class="form-group">
             <label for="storeUrl">
               <i class="bi bi-shop"></i>
@@ -664,7 +663,6 @@
             <span class="form-hint">Your online store domain</span>
           </div>
 
-          <!-- Printful API Key -->
           <div class="form-group">
             <label for="printfulApiKey">
               <i class="bi bi-key-fill"></i>
@@ -686,7 +684,6 @@
             </span>
           </div>
 
-          <!-- Platform -->
           <div class="form-group">
             <label for="platform">
               <i class="bi bi-laptop"></i>
@@ -706,13 +703,11 @@
             <span class="form-hint">Your ecommerce platform</span>
           </div>
 
-          <!-- Error Message -->
           <div class="error-message" *ngIf="setupErrorMessage">
             <i class="bi bi-exclamation-triangle-fill"></i>
             {{ setupErrorMessage }}
           </div>
 
-          <!-- Submit Button -->
           <button 
             type="submit"
             class="btn btn-setup-submit"
@@ -736,7 +731,6 @@
     </div>
   </section>
 
-  <!-- 🆕 Setup Success Message -->
   <section class="setup-success-section" *ngIf="setupSubmitted">
     <div class="container">
       <div class="setup-success-card">
@@ -764,12 +758,14 @@
       </div>
     </div>
   </section>
+  -->
 
-  <!-- Waitlist / CTA Section -->
-  <section class="cta-section">
+  <!-- Waitlist / CTA Section - NOW WITH SETUP FORM -->
+  <section class="cta-section" id="cta-section-form">
     <div class="container">
+      <!-- ORIGINAL WAITLIST CONTENT - COMMENTED OUT -->
+      <!--
       <div class="cta-content" *ngIf="!waitlistSubmitted">
-        <!-- Urgency Badge -->
         <div class="urgency-badge">
           <i class="bi bi-lightning-charge-fill"></i>
           <span>Early Access — Limited spots</span>
@@ -812,7 +808,6 @@
           </div>
         </div>
 
-        <!-- Social Proof -->
         <div class="social-proof-mini">
           <div class="avatars">
             <i class="bi bi-person-circle"></i>
@@ -846,14 +841,12 @@
           </div>
         </div>
 
-        <!-- Risk Reversal -->
         <div class="guarantee">
           <i class="bi bi-shield-fill-check"></i>
           <span>No credit card • No commitment • Built by ecommerce founder who lived this pain</span>
         </div>
       </div>
 
-      <!-- Success State -->
       <div class="cta-success" *ngIf="waitlistSubmitted">
         <div class="success-icon">
           <i class="bi bi-check-circle-fill"></i>
@@ -869,6 +862,176 @@
             <li><strong>Check your email</strong> for confirmation</li>
             <li><strong>Join our Discord</strong> to chat with the team</li>
             <li><strong>Get notified</strong> when we launch</li>
+          </ol>
+        </div>
+        
+        <button class="btn btn-outline" (click)="goBackToHub()">
+          <i class="bi bi-arrow-left"></i>
+          Explore Other MVPs
+        </button>
+      </div>
+      -->
+
+      <!-- NEW: SETUP FORM WITH WAITLIST DESIGN -->
+      <div class="cta-content" *ngIf="!setupSubmitted">
+        <!-- Urgency Badge -->
+        <div class="urgency-badge">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>Early Access — Limited spots</span>
+        </div>
+        
+        <h2>Get Early Access to Inbox Zero</h2>
+        <p class="cta-subtitle">
+          We're opening Inbox Zero to ecommerce stores using Printful, Shopify, or similar fulfillment partners.
+        </p>
+        
+        <!-- Initial CTA Button (before form is revealed) -->
+        <div class="waitlist-form" *ngIf="!showFormFields">
+          <button 
+            type="button"
+            class="btn btn-primary btn-cta-large"
+            (click)="onShowFormFields()">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+            Request Free Setup
+          </button>
+        </div>
+
+        <!-- Setup Form (revealed after button click) -->
+        <form class="waitlist-form" *ngIf="showFormFields" (ngSubmit)="submitSetupRequest()">
+          <!-- Email -->
+          <div class="input-wrapper">
+            <i class="bi bi-envelope-fill"></i>
+            <input 
+              type="email" 
+              class="form-control form-control-large" 
+              placeholder="Enter your business email"
+              [(ngModel)]="setupFormData.email"
+              name="email"
+              [disabled]="isSubmittingSetup"
+              required>
+          </div>
+          
+          <!-- Store URL -->
+          <div class="input-wrapper">
+            <i class="bi bi-shop"></i>
+            <input 
+              type="text" 
+              class="form-control form-control-large" 
+              placeholder="Your store URL (e.g., mystore.com)"
+              [(ngModel)]="setupFormData.storeUrl"
+              name="storeUrl"
+              [disabled]="isSubmittingSetup"
+              required>
+          </div>
+
+          <!-- Printful API Key -->
+          <div class="input-wrapper">
+            <i class="bi bi-key-fill"></i>
+            <input 
+              type="text" 
+              class="form-control form-control-large" 
+              placeholder="Printful API Key (pk_live_...)"
+              [(ngModel)]="setupFormData.printfulApiKey"
+              name="printfulApiKey"
+              [disabled]="isSubmittingSetup"
+              required>
+          </div>
+
+          <!-- Platform Dropdown -->
+          <div class="input-wrapper">
+            <i class="bi bi-laptop"></i>
+            <select 
+              class="form-control form-control-large"
+              [(ngModel)]="setupFormData.platform"
+              name="platform"
+              [disabled]="isSubmittingSetup"
+              required>
+              <option value="WooCommerce">WooCommerce</option>
+              <option value="Shopify">Shopify</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <!-- Submit Button -->
+          <button 
+            type="submit"
+            class="btn btn-primary btn-cta-large"
+            [disabled]="isSubmittingSetup">
+            <span *ngIf="!isSubmittingSetup">
+              <i class="bi bi-rocket-takeoff-fill"></i>
+              Request Free Setup
+            </span>
+            <span *ngIf="isSubmittingSetup">
+              <i class="bi bi-arrow-repeat spin"></i>
+              Submitting...
+            </span>
+          </button>
+          
+          <!-- Error Message -->
+          <div class="error-message" *ngIf="setupErrorMessage">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            {{ setupErrorMessage }}
+          </div>
+        </form>
+
+        <!-- Social Proof -->
+        <div class="social-proof-mini">
+          <div class="avatars">
+            <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <span>Join early adopters validating Inbox Zero</span>
+        </div>
+
+        <!-- Benefits -->
+        <div class="cta-benefits">
+          <div class="benefit">
+            <i class="bi bi-tag-fill"></i>
+            <div class="benefit-text">
+              <strong>Early access pricing</strong>
+              <span>Lock in special rates before public launch</span>
+            </div>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-calendar-check-fill"></i>
+            <div class="benefit-text">
+              <strong>Priority onboarding</strong>
+              <span>Get set up faster with dedicated support</span>
+            </div>
+          </div>
+          <div class="benefit">
+            <i class="bi bi-headset"></i>
+            <div class="benefit-text">
+              <strong>Direct founder support</strong>
+              <span>Work directly with the team building Inbox Zero</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Reversal -->
+        <div class="guarantee">
+          <i class="bi bi-shield-fill-check"></i>
+          <span>No credit card • No commitment • Built by ecommerce founder who lived this pain</span>
+        </div>
+      </div>
+
+      <!-- Success State (same design as before) -->
+      <div class="cta-success" *ngIf="setupSubmitted">
+        <div class="success-icon">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h2>Request received! 🎉</h2>
+        <p class="success-message">
+          We've received your setup request. We'll contact you via email within the next 24 hours to configure your account.
+        </p>
+        
+        <div class="next-steps">
+          <h3><i class="bi bi-calendar-check-fill"></i> What happens next?</h3>
+          <ol>
+            <li><strong>Check your email</strong> for next steps</li>
+            <li><strong>Complete setup</strong> in less than 24 hours</li>
+            <li><strong>Get direct support</strong> throughout the process</li>
           </ol>
         </div>
         
