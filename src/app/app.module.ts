@@ -19,6 +19,7 @@ import { ModulePreviewWizardComponent } from './components/module-preview-wizard
 import { VideoExpressWizardComponent } from './components/video-express-wizard/video-express-wizard.component';
 import { MvpsHubComponent } from './mvps-hub/mvps-hub.component';
 import { SharedModule } from './shared/shared.module';
+import { ChatModule } from './modules/chat/chat.module';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { SharedModule } from './shared/shared.module';
     ReactiveFormsModule,
     FormsModule,
     AppRoutingModule,
-    SharedModule
+    SharedModule,
+    ChatModule
   ],
   providers: [],
   bootstrap: [AppComponent]

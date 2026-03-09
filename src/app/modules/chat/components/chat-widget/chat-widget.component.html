@@ -1,0 +1,104 @@
+<div class="chat-widget-container" *ngIf="isChatEnabled">
+  <!-- Floating toggle button -->
+  <div class="chat-button" [class.has-unread]="unreadCount > 0" (click)="openChat()" *ngIf="!isChatOpen" role="button" aria-label="Lujandev Assistant">
+    <span class="chat-button__icon chat-icon" aria-hidden="true">
+       <svg width="50" height="50" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" data-spec="button-icon">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M4 9.78374C4 5.84433 4.81543 5 8.62 5H11.38C15.1846 5 16 5.84433 16 9.78374C16 13.7232 15.1846 14.9008 11.38 14.9008H10.8303C10.8025 14.9346 10.7703 14.9666 10.7336 14.9962L8.54286 16.86C8.12929 17.1935 7.5137 16.898 7.5137 16.3667V14.87C4.65254 14.6884 4 13.3078 4 9.78374ZM10 10.6667C10.3682 10.6667 10.6667 10.3682 10.6667 10C10.6667 9.63181 10.3682 9.33333 10 9.33333C9.63181 9.33333 9.33333 9.63181 9.33333 10C9.33333 10.3682 9.63181 10.6667 10 10.6667ZM13.3333 10C13.3333 10.3682 13.0349 10.6667 12.6667 10.6667C12.2985 10.6667 12 10.3682 12 10C12 9.63181 12.2985 9.33333 12.6667 9.33333C13.0349 9.33333 13.3333 9.63181 13.3333 10ZM7.33333 10.6667C7.70152 10.6667 8 10.3682 8 10C8 9.63181 7.70152 9.33333 7.33333 9.33333C6.96514 9.33333 6.66667 9.63181 6.66667 10C6.66667 10.3682 6.96514 10.6667 7.33333 10.6667Z" fill="white"></path>
+</svg>
+    </span>
+    <span class="unread-badge" *ngIf="unreadCount > 0" aria-live="polite">{{unreadCount}}</span>
+  </div>
+
+  <!-- Chat panel -->
+  <div class="chat-window" data-chat-widget [class.open]="isChatOpen" [attr.aria-hidden]="!isChatOpen">
+    <!-- Header -->
+    <header class="chat-header">
+      <h3 class="chat-header__title text-white text-uppercase">Lujandev Assistant</h3>
+      <div class="chat-actions">
+        <button class="minimize-btn" (click)="closeChat()" aria-label="Minimize chat">
+          <i class="icon anm anm-minus-l" aria-hidden="true"></i>
+        </button>
+        <button class="close-btn" (click)="showCloseConfirm = true" aria-label="Close chat">
+          <i class="icon anm anm-times-l" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main content: messages -->
+    <main class="chat-body" #messagesContainer role="region" aria-live="polite">
+      <!-- Welcome placeholder when empty -->
+      <div class="welcome-message" *ngIf="messages.length === 0">
+        <div class="welcome-content">
+          <i class="icon anm anm-comments-l mb-2" style="font-size: 2.5rem; color: #222;"></i>
+          <p class="mb-0" style="font-size: 0.95rem; color: #6c757d; line-height: 1.5;">Hi! How can we help you today?</p>
+        </div>
+      </div>
+
+      <!-- Messages list -->
+      <ul class="messages-list" data-chat-messages role="list">
+        <li class="message-item"
+            *ngFor="let message of messages"
+            [class.user-message]="isSentByMe(message)"
+            [class.agent-message]="!isSentByMe(message) && !isSystemMessage(message)"
+            [class.system-message]="isSystemMessage(message)"
+            role="listitem">
+          <div class="message-bubble">
+            <p class="message-text">{{message.message}}</p>
+            <span class="message-time" aria-hidden="true">{{message.timestamp}}</span>
+          </div>
+        </li>
+      </ul>
+
+      <!-- Typing indicator -->
+      <div class="typing-indicator" *ngIf="typingStatus.isTyping" role="status" aria-live="polite">
+        <div class="typing-bubble">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+        <p class="typing-text">{{typingStatus.name}} is typing...</p>
+      </div>
+    </main>
+
+    <!-- Footer / input -->
+    <footer class="chat-footer">
+      <form (ngSubmit)="sendMessage()">
+        <div class="message-input-container">
+          <div class="input-wrapper">
+            <textarea
+              [formControl]="messageControl"
+              placeholder="Type your message..."
+              (keydown)="handleEnter($event)"
+              aria-label="Type a message"
+              data-chat-input
+              rows="1"
+            ></textarea>
+
+            <button type="submit" class="send-btn" data-send-btn [disabled]="messageControl.invalid" aria-label="Send message">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style="fill: currentcolor;" aria-hidden="true"><path d="m5.4 10.1-.7-.7L12 2l7.4 7.4-.7.7L12.6 4v18h-1V3.9z"></path></svg>
+            </button>
+          </div>
+
+          <div class="privacy-notice">
+            <small class="text-muted">By continuing, you confirm that you have read the <a class="text-link" href="#" onclick="return false;">Privacy Policy</a></small>
+          </div>
+        </div>
+      </form>
+    </footer>
+
+    <!-- Close confirmation popup -->
+    <div class="close-confirm" *ngIf="showCloseConfirm" role="dialog" aria-modal="true" aria-label="Abandon confirmation">
+      <div class="close-confirm__content">
+        <h4 class="close-confirm__title">Do you want to leave the chat?</h4>
+        <p class="close-confirm__text">By leaving, you will lose the conversation and will have to start over.</p>
+        <div class="close-confirm__actions">
+          <button type="button" class="btn btn-abandon" (click)="confirmAbandon()">Leave</button>
+          <button type="button" class="btn btn-cancel" (click)="showCloseConfirm = false">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay for mobile -->
+  <div class="chat-overlay" aria-hidden="true"></div>
+</div>
