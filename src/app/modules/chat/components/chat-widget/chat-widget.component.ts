@@ -5,6 +5,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PrelaunchConfigService } from 'src/app/services/prelaunch-config.service';
+import { TrackingService } from 'src/app/services/tracking.service';
 
 @Component({
   selector: 'app-chat-widget',
@@ -30,7 +31,8 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     private chatService: ChatService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private prelaunchConfigService: PrelaunchConfigService
+    private prelaunchConfigService: PrelaunchConfigService,
+    private trackingService: TrackingService
   ) {}
 
   ngOnInit(): void {
@@ -112,10 +114,12 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   
   openChat(): void {
     this.chatService.openChat();
+    this.trackingService.track('chat_opened', { timestamp: Date.now() });
   }
   
   closeChat(): void {
     this.chatService.closeChat();
+    this.trackingService.track('chat_closed', { timestamp: Date.now() });
   }
 
   confirmAbandon(): void {
@@ -130,6 +134,8 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.messages = [];
     try { this.messageControl.reset(); } catch (e) {}
     try { this.cdr.detectChanges(); } catch (e) {}
+    
+    this.trackingService.track('chat_closed', { timestamp: Date.now() });
   }
   
   sendMessage(): void {
@@ -141,6 +147,8 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.chatService.sendMessage(message);
     
     this.messageControl.reset();
+    
+    this.trackingService.track('chat_message_sent', { timestamp: Date.now() });
   }
   
   private scrollToBottom(): void {
