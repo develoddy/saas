@@ -114,12 +114,12 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
   
   openChat(): void {
     this.chatService.openChat();
-    this.trackingService.track('chat_opened', { timestamp: Date.now() });
+    this.trackingService.track('chat_opened', this.getTrackingContext());
   }
   
   closeChat(): void {
     this.chatService.closeChat();
-    this.trackingService.track('chat_closed', { timestamp: Date.now() });
+    this.trackingService.track('chat_closed', this.getTrackingContext());
   }
 
   confirmAbandon(): void {
@@ -135,7 +135,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     try { this.messageControl.reset(); } catch (e) {}
     try { this.cdr.detectChanges(); } catch (e) {}
     
-    this.trackingService.track('chat_closed', { timestamp: Date.now() });
+    this.trackingService.track('chat_closed', this.getTrackingContext());
   }
   
   sendMessage(): void {
@@ -148,7 +148,7 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     
     this.messageControl.reset();
     
-    this.trackingService.track('chat_message_sent', { timestamp: Date.now() });
+    this.trackingService.track('chat_message_sent', this.getTrackingContext());
   }
   
   private scrollToBottom(): void {
@@ -186,5 +186,36 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
       event.preventDefault();
       this.sendMessage();
     }
+  }
+
+  /**
+   * Get tracking context from sessionStorage
+   * Includes module and UTM parameters saved by landing components
+   */
+  private getTrackingContext(): any {
+    // Detect current module from URL
+    const path = window.location.pathname;
+    let currentModule: string | undefined;
+    let currentModuleName: string | undefined;
+    
+    if (path.includes('/inbox-zero-prevention')) {
+      currentModule = 'inbox-zero-prevention';
+      currentModuleName = 'Inbox Zero';
+    }
+    // Add more modules as needed
+    
+    // Try to get UTMs from sessionStorage (saved by landing components)
+    const utmSource = sessionStorage.getItem('inbox_zero_prevention_utm_source');
+    const utmCampaign = sessionStorage.getItem('inbox_zero_prevention_utm_campaign');
+    const utmMedium = sessionStorage.getItem('inbox_zero_prevention_utm_medium');
+    
+    return {
+      timestamp: Date.now(),
+      module: currentModule,
+      moduleName: currentModuleName,
+      source: utmSource || 'direct',  // Default to 'direct' when no UTMs
+      campaign: utmCampaign || '',
+      medium: utmMedium || ''
+    };
   }
 }
