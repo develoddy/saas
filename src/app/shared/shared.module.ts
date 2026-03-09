@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { TrialBannerComponent } from './components/trial-banner/trial-banner.component';
 import { ModulePreviewComponent } from './module-preview/module-preview.component';
@@ -19,7 +20,8 @@ import { ProModalComponent } from '../components/pro-modal/pro-modal.component';
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   exports: [
     // Export Angular common modules for reuse in feature modules
@@ -27,6 +29,7 @@ import { ProModalComponent } from '../components/pro-modal/pro-modal.component';
     RouterModule,
     ReactiveFormsModule,
     FormsModule,
+    HttpClientModule,
     // Export shared components
     TrialBannerComponent,
     ModulePreviewComponent,

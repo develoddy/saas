@@ -1,7 +1,9 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { TrackingService } from '@shared/../services/tracking.service';
 import { MODULE_KEYS } from '@config/module-keys';
+import { environment } from 'src/environments/environment';
 
 /**
  * Prevention Demo Component
@@ -151,7 +153,8 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private trackingService: TrackingService
+    private trackingService: TrackingService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -287,25 +290,39 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
         timestamp: Date.now()
       });
 
-      // Simulate submission (connect with real backend later)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // 🚪 Send request to backend
+      const apiUrl = `${environment.API_URL}/public/inbox-zero/setup-request`;
+      const response: any = await this.http.post(apiUrl, {
+        email: this.setupFormData.email,
+        storeUrl: this.setupFormData.storeUrl,
+        printfulApiKey: this.setupFormData.printfulApiKey,
+        platform: this.setupFormData.platform
+      }).toPromise();
 
-      // Mark as successful
-      this.setupSubmitted = true;
+      if (response.success) {
+        // Mark as successful
+        this.setupSubmitted = true;
 
-      // Track success WITH UTMs
-      this.trackEvent('setup_request_success', {
-        platform: this.setupFormData.platform,
-        timestamp: Date.now()
-      });
+        // Track success WITH UTMs
+        this.trackEvent('setup_request_success', {
+          tenantId: response.tenantId,
+          platform: this.setupFormData.platform,
+          timestamp: Date.now()
+        });
+      } else {
+        throw new Error(response.error || 'Request failed');
+      }
 
     } catch (error: any) {
       console.error('Error submitting setup request:', error);
-      this.setupErrorMessage = 'Something went wrong. Please try again.';
+      
+      // Extract error message from HTTP error response
+      const errorMessage = error?.error?.error || error?.message || 'Something went wrong. Please try again.';
+      this.setupErrorMessage = errorMessage;
       
       // Track error WITH UTMs
       this.trackEvent('setup_request_error', {
-        error: error?.message || 'Unknown error',
+        error: errorMessage,
         timestamp: Date.now()
       });
     } finally {
