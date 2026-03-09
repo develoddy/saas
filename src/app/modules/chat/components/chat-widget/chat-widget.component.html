@@ -13,13 +13,27 @@
   <div class="chat-window" data-chat-widget [class.open]="isChatOpen" [attr.aria-hidden]="!isChatOpen">
     <!-- Header -->
     <header class="chat-header">
-      <h3 class="chat-header__title text-white text-uppercase">Lujandev Assistant</h3>
+      <div class="chat-header__content">
+        <div class="chat-header__avatar">
+          <span>E</span>
+          <span class="online-dot"></span>
+        </div>
+        <div class="chat-header__info">
+          <h3 class="chat-header__title">Eddy · Inbox Zero</h3>
+          <p class="chat-header__subtitle">Founder · Usually replies within a few hours</p>
+        </div>
+      </div>
       <div class="chat-actions">
         <button class="minimize-btn" (click)="closeChat()" aria-label="Minimize chat">
-          <i class="icon anm anm-minus-l" aria-hidden="true"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
         </button>
         <button class="close-btn" (click)="showCloseConfirm = true" aria-label="Close chat">
-          <i class="icon anm anm-times-l" aria-hidden="true"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
       </div>
     </header>
@@ -29,8 +43,12 @@
       <!-- Welcome placeholder when empty -->
       <div class="welcome-message" *ngIf="messages.length === 0">
         <div class="welcome-content">
-          <i class="icon anm anm-comments-l mb-2" style="font-size: 2.5rem; color: #222;"></i>
-          <p class="mb-0" style="font-size: 0.95rem; color: #6c757d; line-height: 1.5;">Hi! How can we help you today?</p>
+          <div class="founder-avatar">
+            <span>E</span>
+          </div>
+          <h4>Hey, I'm Eddy 👋</h4>
+          <p>I built Inbox Zero after drowning in "where is my order?" emails myself.</p>
+          <p>Ask me anything about your store, the setup, or whether this is right for you.</p>
         </div>
       </div>
 
@@ -67,7 +85,7 @@
           <div class="input-wrapper">
             <textarea
               [formControl]="messageControl"
-              placeholder="Type your message..."
+              placeholder="Ask about setup, pricing, or your store..."
               (keydown)="handleEnter($event)"
               aria-label="Type a message"
               data-chat-input
@@ -81,6 +99,10 @@
 
           <div class="privacy-notice">
             <small class="text-muted">By continuing, you confirm that you have read the <a class="text-link" href="#" onclick="return false;">Privacy Policy</a></small>
+          </div>
+
+          <div class="chat-branding">
+            <small>Built by <strong>Eddy Luján</strong> · <a href="https://lujandev.com" target="_blank">lujandev.com</a></small>
           </div>
         </div>
       </form>

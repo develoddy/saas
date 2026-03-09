@@ -119,7 +119,7 @@ html.chat-fullscreen-active, body.chat-fullscreen-active {
 
 // Cabecera del chat
 .chat-header {
-  background: $primary-color;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
   color: $secondary-color;
   padding: 18px 20px;
   display: flex;
@@ -127,6 +127,67 @@ html.chat-fullscreen-active, body.chat-fullscreen-active {
   align-items: center;
   gap: 8px;
   border-radius: 16px 16px 0 0;
+
+  &__content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__avatar {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    span:first-child {
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .online-dot {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #22c55e;
+      border: 2px solid $primary-color;
+    }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: $secondary-color !important;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 400;
+    color: $secondary-color !important;
+    opacity: 0.75;
+    line-height: 1.3;
+  }
 
   h3 {
     margin: 0;
@@ -140,21 +201,34 @@ html.chat-fullscreen-active, body.chat-fullscreen-active {
     gap: 4px;
 
     button {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.15);
       border: none;
-      color: $secondary-color;
+      color: $secondary-color !important;
       cursor: pointer;
       padding: 8px;
-      font-size: 16px;
+      font-size: 18px;
       border-radius: 8px;
       transition: background-color 0.2s ease, transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
 
-      &:hover { 
-        background: rgba(255,255,255,0.1);
-        transform: scale(1.05);
+      svg {
+        stroke: white;
+        display: block;
       }
 
-      &:active { transform: scale(0.95); }
+      &:hover { 
+        background: rgba(255,255,255,0.25);
+        transform: scale(1.08);
+      }
+
+      &:active { 
+        transform: scale(0.92);
+        background: rgba(255,255,255,0.3);
+      }
     }
   }
 }
@@ -183,6 +257,43 @@ html.chat-fullscreen-active, body.chat-fullscreen-active {
       align-items: center;
       gap: 8px;
       padding: 24px;
+
+      .founder-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: #3b82f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+
+        span {
+          color: white;
+          font-size: 20px;
+          font-weight: 700;
+          line-height: 1;
+        }
+      }
+
+      h4 {
+        margin: 0 0 8px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #222;
+      }
+
+      p {
+        margin: 0 0 8px 0;
+        font-size: 0.9rem;
+        color: #666;
+        line-height: 1.5;
+        max-width: 300px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 
@@ -416,6 +527,34 @@ html.chat-fullscreen-active, body.chat-fullscreen-active {
         transition: color 0.2s ease;
 
         &:hover { color: #666; }
+      }
+    }
+
+    .chat-branding {
+      text-align: center;
+      padding: 8px;
+      margin-top: 6px;
+      border-top: 1px solid #e8e8e8;
+
+      small {
+        font-size: 10px;
+        color: #aaa;
+        line-height: 1.3;
+
+        strong {
+          font-weight: 600;
+          color: #888;
+        }
+
+        a {
+          color: #aaa;
+          text-decoration: none;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: #666;
+          }
+        }
       }
     }
   }
