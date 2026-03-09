@@ -418,6 +418,353 @@
     </div>
   </section>
 
+  <!-- Pricing Section -->
+  <section class="pricing-section" #pricingSection>
+    <div class="container">
+      <div class="section-header">
+        <h2>Simple & Transparent Pricing</h2>
+        <p>Try it free for 14 days. No credit card. No tricks.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Trial Card -->
+        <div class="pricing-card trial">
+          <div class="pricing-badge">
+            <i class="bi bi-star-fill"></i>
+            <span>Perfect to try</span>
+          </div>
+          
+          <h3>Free Trial</h3>
+          
+          <div class="pricing-value">
+            <span class="price">$0</span>
+            <span class="period">for 14 days</span>
+          </div>
+          
+          <ul class="pricing-features">
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Full access to all features</span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span>No credit card required</span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Setup guided by the founder</span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Cancel anytime</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-pricing-cta-outline" (click)="onCtaClicked()">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+            Start Free Trial
+          </button>
+        </div>
+
+        <!-- Paid Plan Card -->
+        <div class="pricing-card paid">
+          <div class="pricing-badge highlight">
+            <i class="bi bi-lightning-charge-fill"></i>
+            <span>Recommended</span>
+          </div>
+          
+          <h3>Paid Plan</h3>
+          
+          <div class="pricing-value">
+            <span class="price">$29</span>
+            <span class="period">per month</span>
+          </div>
+          
+          <p class="pricing-subtitle">After trial · Cancel anytime</p>
+          
+          <ul class="pricing-features expanded">
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Printful webhooks integration</strong></span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Automatic proactive emails</strong> for order status</span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Token-based tracking page</strong> — no login required</span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Works with WooCommerce and Shopify</strong></span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Direct support from the founder</strong></span>
+            </li>
+            <li>
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Setup included</strong> — we configure everything</span>
+            </li>
+          </ul>
+
+          <button class="btn btn-pricing-cta" (click)="onCtaClicked()">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+            Start Free Trial
+          </button>
+
+          <div class="pricing-guarantee">
+            <i class="bi bi-shield-check-fill"></i>
+            <span>No commitment · Cancel anytime</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Common Questions</h2>
+        <p>Everything you need to know before starting</p>
+      </div>
+
+      <div class="faq-grid">
+        <!-- FAQ Item 1 -->
+        <div class="faq-item" 
+             [class.expanded]="isFaqExpanded(0)"
+             (click)="toggleFaq(0, 'Do I need a developer to set it up?')">
+          <div class="faq-question">
+            <i class="bi bi-question-circle-fill"></i>
+            <h3>Do I need a developer to set it up?</h3>
+            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+          </div>
+          <div class="faq-answer" *ngIf="isFaqExpanded(0)">
+            <p>No. We set it up for you. You just need access to your store and Printful. The full setup takes less than 30 minutes and we guide you through every step.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="faq-item" 
+             [class.expanded]="isFaqExpanded(1)"
+             (click)="toggleFaq(1, 'Does it work with Printful + Shopify or WooCommerce?')">
+          <div class="faq-question">
+            <i class="bi bi-question-circle-fill"></i>
+            <h3>Does it work with Printful + Shopify or WooCommerce?</h3>
+            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+          </div>
+          <div class="faq-answer" *ngIf="isFaqExpanded(1)">
+            <p>Yes, it works with both. Inbox Zero connects directly to Printful webhooks, so it doesn't matter which platform you use for your store.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="faq-item" 
+             [class.expanded]="isFaqExpanded(2)"
+             (click)="toggleFaq(2, 'What if the customer doesn\'t receive the email?')">
+          <div class="faq-question">
+            <i class="bi bi-question-circle-fill"></i>
+            <h3>What if the customer doesn't receive the email?</h3>
+            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+          </div>
+          <div class="faq-answer" *ngIf="isFaqExpanded(2)">
+            <p>Every email includes a tracking link that the customer can save and check whenever they want. Plus, we send multiple emails at each stage of the order to maximize delivery.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 4 -->
+        <div class="faq-item" 
+             [class.expanded]="isFaqExpanded(3)"
+             (click)="toggleFaq(3, 'Will my customers know the emails come from a third party?')">
+          <div class="faq-question">
+            <i class="bi bi-question-circle-fill"></i>
+            <h3>Will my customers know the emails come from a third party?</h3>
+            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+          </div>
+          <div class="faq-answer" *ngIf="isFaqExpanded(3)">
+            <p>No. Emails are sent with your brand. We include your logo, colors, and domain. To your customers, it looks like you're sending them directly.</p>
+          </div>
+        </div>
+
+        <!-- FAQ Item 5 -->
+        <div class="faq-item" 
+             [class.expanded]="isFaqExpanded(4)"
+             (click)="toggleFaq(4, 'How long does setup take?')">
+          <div class="faq-question">
+            <i class="bi bi-question-circle-fill"></i>
+            <h3>How long does setup take?</h3>
+            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+          </div>
+          <div class="faq-answer" *ngIf="isFaqExpanded(4)">
+            <p>Between 20 and 30 minutes. We schedule a call, connect your Printful, configure the emails with your brand, and do a test order. Ready for production the same day.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-footer">
+        <div class="faq-footer-content">
+          <i class="bi bi-chat-dots-fill"></i>
+          <div>
+            <strong>Have more questions?</strong>
+            <p>Write us directly. I personally answer every message.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🆕 Setup Request Form Section -->
+  <section class="setup-form-section" id="setup-form-section" *ngIf="showSetupForm && !setupSubmitted">
+    <div class="container">
+      <div class="setup-form-card">
+        <div class="setup-form-header">
+          <div class="setup-header-icon">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+          </div>
+          <h2>Let's set up your free trial</h2>
+          <p>Fill in these details and we'll configure everything in less than 24 hours</p>
+        </div>
+
+        <form class="setup-form" (ngSubmit)="submitSetupRequest()">
+          <!-- Email -->
+          <div class="form-group">
+            <label for="email">
+              <i class="bi bi-envelope-fill"></i>
+              Your email
+            </label>
+            <input 
+              type="email" 
+              id="email"
+              class="form-control"
+              placeholder="you@yourstore.com"
+              [(ngModel)]="setupFormData.email"
+              name="email"
+              [disabled]="isSubmittingSetup"
+              required>
+            <span class="form-hint">We'll contact you here within 24 hours</span>
+          </div>
+
+          <!-- Store URL -->
+          <div class="form-group">
+            <label for="storeUrl">
+              <i class="bi bi-shop"></i>
+              Store URL
+            </label>
+            <input 
+              type="text" 
+              id="storeUrl"
+              class="form-control"
+              placeholder="mystore.com"
+              [(ngModel)]="setupFormData.storeUrl"
+              name="storeUrl"
+              [disabled]="isSubmittingSetup"
+              required>
+            <span class="form-hint">Your online store domain</span>
+          </div>
+
+          <!-- Printful API Key -->
+          <div class="form-group">
+            <label for="printfulApiKey">
+              <i class="bi bi-key-fill"></i>
+              Printful API Key
+            </label>
+            <input 
+              type="text" 
+              id="printfulApiKey"
+              class="form-control"
+              placeholder="pk_live_..."
+              [(ngModel)]="setupFormData.printfulApiKey"
+              name="printfulApiKey"
+              [disabled]="isSubmittingSetup"
+              required>
+            <span class="form-hint">
+              <a href="https://www.printful.com/dashboard/api" target="_blank" rel="noopener">
+                Where do I find my API Key? <i class="bi bi-box-arrow-up-right"></i>
+              </a>
+            </span>
+          </div>
+
+          <!-- Platform -->
+          <div class="form-group">
+            <label for="platform">
+              <i class="bi bi-laptop"></i>
+              Platform
+            </label>
+            <select 
+              id="platform"
+              class="form-control"
+              [(ngModel)]="setupFormData.platform"
+              name="platform"
+              [disabled]="isSubmittingSetup"
+              required>
+              <option value="WooCommerce">WooCommerce</option>
+              <option value="Shopify">Shopify</option>
+              <option value="Other">Other</option>
+            </select>
+            <span class="form-hint">Your ecommerce platform</span>
+          </div>
+
+          <!-- Error Message -->
+          <div class="error-message" *ngIf="setupErrorMessage">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            {{ setupErrorMessage }}
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit"
+            class="btn btn-setup-submit"
+            [disabled]="isSubmittingSetup">
+            <span *ngIf="!isSubmittingSetup">
+              <i class="bi bi-check-circle-fill"></i>
+              Request Free Setup
+            </span>
+            <span *ngIf="isSubmittingSetup">
+              <i class="bi bi-arrow-repeat spin"></i>
+              Submitting...
+            </span>
+          </button>
+
+          <p class="setup-guarantee">
+            <i class="bi bi-shield-check-fill"></i>
+            We'll configure everything for you within 24 hours. No technical knowledge required.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🆕 Setup Success Message -->
+  <section class="setup-success-section" *ngIf="setupSubmitted">
+    <div class="container">
+      <div class="setup-success-card">
+        <div class="success-icon">
+          <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <h2>Request received! 🎉</h2>
+        <p class="success-message">
+          We've received your setup request. We'll contact you via email within the next 24 hours to configure your account.
+        </p>
+        <div class="success-details">
+          <div class="success-detail-item">
+            <i class="bi bi-envelope-check-fill"></i>
+            <span>Check your email for next steps</span>
+          </div>
+          <div class="success-detail-item">
+            <i class="bi bi-clock-fill"></i>
+            <span>Complete setup in less than 24 hours</span>
+          </div>
+          <div class="success-detail-item">
+            <i class="bi bi-headset"></i>
+            <span>Direct support throughout the process</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Waitlist / CTA Section -->
   <section class="cta-section">
     <div class="container">

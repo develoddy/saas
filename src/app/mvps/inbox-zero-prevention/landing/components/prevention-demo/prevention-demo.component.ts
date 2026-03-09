@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TrackingService } from '@shared/../services/tracking.service';
 import { MODULE_KEYS } from '@config/module-keys';
@@ -34,7 +34,7 @@ interface RealMetric {
   templateUrl: './prevention-demo.component.html',
   styleUrls: ['./prevention-demo.component.scss']
 })
-export class PreventionDemoComponent implements OnInit {
+export class PreventionDemoComponent implements OnInit, AfterViewInit {
 
   // Module identifier for tracking (Landing phase)
   readonly moduleKey = MODULE_KEYS.INBOX_ZERO.LANDING;
@@ -45,11 +45,32 @@ export class PreventionDemoComponent implements OnInit {
   private utmCampaign: string = '';
   private utmMedium: string = '';
 
-  // Form state
+  // Form state (waitlist)
   waitlistEmail = '';
   waitlistSubmitted = false;
   isSubmitting = false;
   errorMessage = '';
+
+  // 🆕 Setup form state
+  showSetupForm = false;
+  setupFormData = {
+    email: '',
+    storeUrl: '',
+    printfulApiKey: '',
+    platform: 'WooCommerce' // Default
+  };
+  isSubmittingSetup = false;
+  setupSubmitted = false;
+  setupErrorMessage = '';
+
+  // 🆕 FAQ accordion state
+  expandedFaqIndex: number | null = null;
+  
+  // 🆕 Tracking flags
+  private pricingViewed = false;
+
+  // 🆕 ViewChild for pricing section (IntersectionObserver)
+  @ViewChild('pricingSection', { read: ElementRef }) pricingSection?: ElementRef;
 
   // Real metrics from production system
   readonly realMetrics: RealMetric[] = [
@@ -174,6 +195,162 @@ export class PreventionDemoComponent implements OnInit {
     this.trackEvent('prevention_demo_viewed', {
       timestamp: Date.now()
     });
+  }
+
+  /**
+   * 🆕 After view init - Setup IntersectionObserver for pricing section
+   */
+  ngAfterViewInit(): void {
+    this.setupPricingObserver();
+  }
+
+  /**
+   * 🆕 Setup IntersectionObserver for pricing section tracking
+   */
+  private setupPricingObserver(): void {
+    if (!this.pricingSection) return;
+
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.3 // 30% of section visible
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.pricingViewed) {
+          this.pricingViewed = true;
+          this.trackEvent('pricing_viewed', {
+            timestamp: Date.now(),
+            scrollDepth: Math.round((window.scrollY / document.body.scrollHeight) * 100)
+          });
+          observer.disconnect(); // Only track once
+        }
+      });
+    }, options);
+
+    observer.observe(this.pricingSection.nativeElement);
+  }
+
+  /**
+   * 🆕 Handle CTA click from pricing section
+   */
+  onCtaClicked(): void {
+    this.trackEvent('cta_clicked', {
+      plan: 'free_trial',
+      timestamp: Date.now()
+    });
+    
+    // Show setup form
+    this.showSetupForm = true;
+    
+    // Smooth scroll to form
+    setTimeout(() => {
+      const setupForm = document.getElementById('setup-form-section');
+      if (setupForm) {
+        setupForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  }
+
+  /**
+   * 🆕 Submit setup request form
+   */
+  async submitSetupRequest(): Promise<void> {
+    // Validation
+    if (!this.setupFormData.email || !this.setupFormData.storeUrl || !this.setupFormData.printfulApiKey || !this.setupFormData.platform) {
+      this.setupErrorMessage = 'Please fill in all fields';
+      return;
+    }
+
+    // Email validation
+    if (!this.isValidEmail(this.setupFormData.email)) {
+      this.setupErrorMessage = 'Please enter a valid email address';
+      return;
+    }
+
+    // Simple URL validation
+    if (!this.isValidUrl(this.setupFormData.storeUrl)) {
+      this.setupErrorMessage = 'Please enter a valid store URL';
+      return;
+    }
+
+    this.isSubmittingSetup = true;
+    this.setupErrorMessage = '';
+
+    try {
+      // Track setup request WITH UTMs
+      this.trackEvent('setup_request_submitted', {
+        email: this.setupFormData.email,
+        storeUrl: this.setupFormData.storeUrl,
+        platform: this.setupFormData.platform,
+        timestamp: Date.now()
+      });
+
+      // Simulate submission (connect with real backend later)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Mark as successful
+      this.setupSubmitted = true;
+
+      // Track success WITH UTMs
+      this.trackEvent('setup_request_success', {
+        platform: this.setupFormData.platform,
+        timestamp: Date.now()
+      });
+
+    } catch (error: any) {
+      console.error('Error submitting setup request:', error);
+      this.setupErrorMessage = 'Something went wrong. Please try again.';
+      
+      // Track error WITH UTMs
+      this.trackEvent('setup_request_error', {
+        error: error?.message || 'Unknown error',
+        timestamp: Date.now()
+      });
+    } finally {
+      this.isSubmittingSetup = false;
+    }
+  }
+
+  /**
+   * 🆕 Validate URL
+   */
+  private isValidUrl(url: string): boolean {
+    try {
+      // Add protocol if missing
+      const urlToTest = url.startsWith('http') ? url : `https://${url}`;
+      new URL(urlToTest);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * 🆕 Toggle FAQ item and track expansion
+   */
+  toggleFaq(index: number, question: string): void {
+    const wasExpanded = this.expandedFaqIndex === index;
+    
+    // Toggle: if clicking same question, close it; otherwise open new one
+    this.expandedFaqIndex = wasExpanded ? null : index;
+
+    // Track only when expanding (not collapsing)
+    if (!wasExpanded) {
+      this.trackEvent('faq_expanded', {
+        question: question,
+        questionIndex: index,
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  /**
+   * 🆕 Check if FAQ is expanded
+   */
+  isFaqExpanded(index: number): boolean {
+    return this.expandedFaqIndex === index;
   }
 
   /**
