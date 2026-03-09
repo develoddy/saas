@@ -38,7 +38,7 @@ html.chat-fullscreen-active, body.chat-fullscreen-active {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: $primary-color; /* solid black */
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
   color: $secondary-color;
   display: inline-flex;
   justify-content: center;

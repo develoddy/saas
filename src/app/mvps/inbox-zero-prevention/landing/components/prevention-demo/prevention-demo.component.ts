@@ -239,9 +239,9 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   /**
    * 🆕 Handle CTA click from pricing section
    */
-  onCtaClicked(): void {
+  onCtaClicked(plan: string): void {
     this.trackEvent('cta_clicked', {
-      plan: 'free_trial',
+      plan: plan,
       timestamp: Date.now()
     });
     
