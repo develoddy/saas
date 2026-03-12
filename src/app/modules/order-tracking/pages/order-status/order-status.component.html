@@ -6,11 +6,11 @@
     <div class="d-flex justify-content-between align-items-center py-3">
       <div class="header-brand">
         <h5 class="mb-0 fw-bold">{{ storeName }}</h5>
-        <small class="text-muted" *ngIf="showTenantBranding">Orden Tracking</small>
+        <small class="text-muted" *ngIf="showTenantBranding">Order Tracking</small>
       </div>
       <button class="btn btn-sm btn-outline-primary" (click)="refreshTracking()" [disabled]="isLoading">
         <i class="bi bi-arrow-clockwise me-1"></i>
-        Actualizar
+        Refresh
       </button>
     </div>
   </div>
@@ -22,9 +22,9 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="container text-center py-5">
     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-      <span class="visually-hidden">Cargando...</span>
+      <span class="visually-hidden">Loading...</span>
     </div>
-    <p class="mt-3 text-muted">Consultando estado del pedido...</p>
+    <p class="mt-3 text-muted">Checking order status...</p>
   </div>
 
   <!-- Error State -->
@@ -33,13 +33,13 @@
       <div class="d-flex align-items-center">
         <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
         <div>
-          <h5 class="alert-heading mb-1">Error al cargar el tracking</h5>
+          <h5 class="alert-heading mb-1">Error loading tracking</h5>
           <p class="mb-0">{{ error }}</p>
         </div>
       </div>
       <hr>
       <button class="btn btn-danger" (click)="refreshTracking()">
-        <i class="bi bi-arrow-clockwise me-2"></i>Reintentar
+        <i class="bi bi-arrow-clockwise me-2"></i>Retry
       </button>
     </div>
   </div>
@@ -53,11 +53,11 @@
         <div class="col-md-8">
           <h2 class="mb-2">
             <i class="bi bi-box-seam me-2"></i>
-            Orden #{{ trackingData.orderId }}
+            Order #{{ trackingData.orderId }}
           </h2>
           <p class="text-muted mb-0">
             <i class="bi bi-calendar me-1"></i>
-            Creado: {{ formatDate(trackingData.dates.created) }}
+            Created: {{ formatDate(trackingData.dates.created) }}
           </p>
         </div>
         <div class="col-md-4 text-md-end mt-3 mt-md-0">
@@ -73,7 +73,7 @@
       <div class="card-body p-4">
         <h5 class="card-title mb-4">
           <i class="bi bi-truck me-2"></i>
-          Estado del Envío
+          Shipping Status
         </h5>
         
         <div class="order-progress-tracker">
@@ -124,23 +124,23 @@
           <div class="card-body">
             <h5 class="card-title mb-3">
               <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
-              Información de Envío
+              Shipping Information
             </h5>
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Número de Tracking</label>
+                <label class="text-muted small d-block mb-1">Tracking Number</label>
                 <p class="mb-0 fw-semibold fs-5">{{ trackingData.trackingNumber }}</p>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Transportista</label>
+                <label class="text-muted small d-block mb-1">Carrier</label>
                 <p class="mb-0 fw-semibold">{{ trackingData.carrier }}</p>
               </div>
               <div *ngIf="trackingData.dates.shipped" class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Fecha de Envío</label>
+                <label class="text-muted small d-block mb-1">Ship Date</label>
                 <p class="mb-0">{{ formatDateShort(trackingData.dates.shipped) }}</p>
               </div>
               <div *ngIf="trackingData.estimated.max" class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Entrega Estimada</label>
+                <label class="text-muted small d-block mb-1">Estimated Delivery</label>
                 <p class="mb-0">{{ formatDateShort(trackingData.estimated.max) }}</p>
               </div>
             </div>
@@ -149,7 +149,7 @@
               class="btn btn-primary w-100 mt-2"
               (click)="openTrackingUrl()">
               <i class="bi bi-box-arrow-up-right me-2"></i>
-              Rastrear en {{ trackingData.carrier }}
+              Track with {{ trackingData.carrier }}
             </button>
           </div>
         </div>
@@ -159,7 +159,7 @@
           <div class="card-body">
             <h5 class="card-title mb-3">
               <i class="bi bi-bag-check-fill me-2"></i>
-              Artículos del Pedido
+              Order Items
             </h5>
             
             <div *ngFor="let item of trackingData.items; let last = last" 
@@ -182,14 +182,14 @@
                   <i class="bi bi-upc me-1"></i>SKU: {{ item.sku }}
                 </p>
                 <p class="mb-0">
-                  <span class="text-muted small">Cantidad:</span> 
+                  <span class="text-muted small">Quantity:</span> 
                   <strong>{{ item.quantity }}</strong>
                 </p>
               </div>
               
               <div class="item-price text-end flex-shrink-0">
                 <p class="fw-bold mb-0 fs-5">€{{ item.retail_price }}</p>
-                <small class="text-muted">c/u</small>
+                <small class="text-muted">each</small>
               </div>
             </div>
           </div>
@@ -205,25 +205,25 @@
           <div class="card-body">
             <h6 class="card-title mb-3">
               <i class="bi bi-clipboard-check me-2"></i>
-              Resumen del Pedido
+              Order Summary
             </h6>
             <ul class="list-unstyled mb-0">
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                <span class="text-muted small">ID Orden:</span>
+                <span class="text-muted small">Order ID:</span>
                 <strong class="small">{{ trackingData.orderId }}</strong>
               </li>
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                <span class="text-muted small">Estado:</span>
+                <span class="text-muted small">Status:</span>
                 <span class="badge {{ getStatusBadgeClass() }} small">
                   {{ getStatusText() }}
                 </span>
               </li>
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                <span class="text-muted small">Artículos:</span>
+                <span class="text-muted small">Items:</span>
                 <strong class="small">{{ trackingData.items.length }}</strong>
               </li>
               <li *ngIf="trackingData.dates.updated" class="d-flex justify-content-between mb-0">
-                <span class="text-muted small">Última actualización:</span>
+                <span class="text-muted small">Last updated:</span>
                 <small>{{ formatDateShort(trackingData.dates.updated) }}</small>
               </li>
             </ul>
@@ -235,16 +235,16 @@
           <div class="card-body">
             <h6 class="card-title mb-3">
               <i class="bi bi-question-circle-fill me-2"></i>
-              ¿Necesitas ayuda?
+              Need Help?
             </h6>
             <p class="small text-muted mb-3">
-              Si tienes preguntas sobre tu pedido, no dudes en contactarnos.
+              If you have any questions about your order, feel free to contact us.
             </p>
             <div class="d-grid gap-2">
               <a href="mailto:support@{{ storeName.toLowerCase().replace(' ', '') }}.com" 
                  class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-envelope-fill me-2"></i>
-                Enviar Email
+                Send Email
               </a>
             </div>
           </div>

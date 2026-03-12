@@ -144,7 +144,7 @@ export class OrderTrackingService {
   }
 
   /**
-   * 📝 Obtener texto en español para estado
+   * 📝 Obtener texto en inglés para estado
    * 
    * @param status - Estado de Printful
    * @returns Texto traducido
@@ -153,15 +153,15 @@ export class OrderTrackingService {
     const statusLower = status?.toLowerCase();
     
     const translations: Record<string, string> = {
-      'draft': 'Borrador',
-      'pending': 'Pendiente',
-      'failed': 'Fallido',
-      'canceled': 'Cancelado',
-      'onhold': 'En Espera',
-      'inprocess': 'En Proceso',
-      'partial': 'Parcialmente Completado',
-      'fulfilled': 'Completado',
-      'archived': 'Archivado'
+      'draft': 'Draft',
+      'pending': 'Pending',
+      'failed': 'Failed',
+      'canceled': 'Canceled',
+      'onhold': 'On Hold',
+      'inprocess': 'In Process',
+      'partial': 'Partially Completed',
+      'fulfilled': 'Completed',
+      'archived': 'Archived'
     };
     
     return translations[statusLower] || status;

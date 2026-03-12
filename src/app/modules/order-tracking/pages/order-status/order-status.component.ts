@@ -63,7 +63,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
         if (this.orderId && this.token) {
           this.loadTrackingData();
         } else {
-          this.error = 'Número de orden o token faltante';
+          this.error = 'Order number or token missing';
         }
       });
   }
@@ -99,7 +99,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
           this.isLoading = false;
         },
         error: (error) => {
-          this.error = error.message || 'Error al cargar el estado del pedido';
+          this.error = error.message || 'Error loading order status';
           this.isLoading = false;
           console.error('❌ Error loading tracking:', error);
         }
@@ -121,44 +121,44 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
       {
         type: 'order_received',
         status: 'completed',
-        title: 'Pedido Recibido',
-        description: 'Tu pedido ha sido recibido y confirmado',
+        title: 'Order Received',
+        description: 'Your order has been received and confirmed',
         date: data.dates.created,
         completed: true
       },
       {
         type: 'processing',
         status: this.getEventStatus(data.status, 'processing'),
-        title: 'Procesando',
-        description: 'Validando pago y preparando orden',
+        title: 'Processing',
+        description: 'Validating payment and preparing order',
         date: data.dates.created,
         completed: ['inprocess', 'partial', 'fulfilled'].includes(data.status)
       },
       {
         type: 'manufacturing',
         status: this.getEventStatus(data.status, 'manufacturing'),
-        title: 'Fabricando',
-        description: 'Tu producto está siendo fabricado',
+        title: 'Manufacturing',
+        description: 'Your product is being manufactured',
         date: data.dates.updated,
         completed: ['partial', 'fulfilled'].includes(data.status)
       },
       {
         type: 'shipped',
         status: this.getEventStatus(data.status, 'shipped'),
-        title: 'Enviado',
+        title: 'Shipped',
         description: data.trackingNumber 
-          ? `En tránsito - ${data.carrier || 'Carrier'}: ${data.trackingNumber}`
-          : 'Tu pedido está en camino',
+          ? `In transit - ${data.carrier || 'Carrier'}: ${data.trackingNumber}`
+          : 'Your order is on its way',
         date: data.dates.shipped || '',
         completed: data.status === 'fulfilled' || !!data.trackingNumber
       },
       {
         type: 'delivered',
         status: this.getEventStatus(data.status, 'delivered'),
-        title: 'Entregado',
+        title: 'Delivered',
         description: data.dates.delivered 
-          ? 'Tu pedido ha sido entregado'
-          : 'Esperando entrega',
+          ? 'Your order has been delivered'
+          : 'Awaiting delivery',
         date: data.dates.delivered || data.estimated.max || '',
         completed: data.status === 'fulfilled' && !!data.dates.delivered
       }
@@ -277,7 +277,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
     
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', {
+      return date.toLocaleDateString('en-US', {
         weekday: 'long',
         day: 'numeric',
         month: 'long',
@@ -296,7 +296,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
     
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('es-ES', {
+      return date.toLocaleDateString('en-US', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
