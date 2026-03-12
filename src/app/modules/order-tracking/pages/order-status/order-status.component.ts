@@ -122,25 +122,9 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
         type: 'order_received',
         status: 'completed',
         title: 'Order Received',
-        description: 'Your order has been received and confirmed',
+        description: 'Your order has been received and is being processed',
         date: data.dates.created,
         completed: true
-      },
-      {
-        type: 'processing',
-        status: this.getEventStatus(data.status, 'processing'),
-        title: 'Processing',
-        description: 'Validating payment and preparing order',
-        date: data.dates.created,
-        completed: ['inprocess', 'partial', 'fulfilled'].includes(data.status)
-      },
-      {
-        type: 'manufacturing',
-        status: this.getEventStatus(data.status, 'manufacturing'),
-        title: 'Manufacturing',
-        description: 'Your product is being manufactured',
-        date: data.dates.updated,
-        completed: ['partial', 'fulfilled'].includes(data.status)
       },
       {
         type: 'shipped',
@@ -148,7 +132,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
         title: 'Shipped',
         description: data.trackingNumber 
           ? `In transit - ${data.carrier || 'Carrier'}: ${data.trackingNumber}`
-          : 'Your order is on its way',
+          : 'Your order is being prepared for shipment',
         date: data.dates.shipped || '',
         completed: data.status === 'fulfilled' || !!data.trackingNumber
       },
@@ -172,7 +156,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
    */
   private getEventStatus(orderStatus: string, eventType: string): 'completed' | 'processing' | 'pending' {
     const statusFlow = ['pending', 'onhold', 'inprocess', 'partial', 'fulfilled'];
-    const eventFlow = ['order_received', 'processing', 'manufacturing', 'shipped', 'delivered'];
+    const eventFlow = ['order_received', 'shipped', 'delivered'];
     
     const orderIndex = statusFlow.indexOf(orderStatus);
     const eventIndex = eventFlow.indexOf(eventType);
@@ -227,8 +211,6 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
     switch (stepType) {
       case 'ordered':
         return true; // Siempre completado si existe el pedido
-      case 'printing':
-        return ['inprocess', 'partial', 'fulfilled'].includes(status);
       case 'shipped':
         return status === 'fulfilled' || !!this.trackingData.trackingNumber;
       case 'delivered':
@@ -248,9 +230,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
     
     switch (stepType) {
       case 'ordered':
-        return status === 'pending' || status === 'onhold';
-      case 'printing':
-        return status === 'inprocess' && !this.trackingData.trackingNumber;
+        return status === 'pending' || status === 'onhold' || (status === 'inprocess' && !this.trackingData.trackingNumber);
       case 'shipped':
         return !!this.trackingData.trackingNumber && !this.trackingData.dates.delivered;
       case 'delivered':

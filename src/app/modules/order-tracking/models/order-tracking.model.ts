@@ -132,16 +132,16 @@ export interface OrderTrackingResponse {
 }
 
 /**
- * Mapeo de progreso para cada estado
+ * Mapeo de progreso para cada estado (3 pasos: Order Placed → Shipped → Delivered)
  */
 export const ORDER_TRACKING_PROGRESS_MAP: Record<string, number> = {
   'draft': 0,
-  'pending': 10,
+  'pending': 15,
   'failed': 0,
   'canceled': 0,
-  'onhold': 20,
-  'inprocess': 50,
-  'partial': 75,
-  'fulfilled': 100,
+  'onhold': 15,
+  'inprocess': 33,     // Processing/Manufacturing (antes de envío)
+  'partial': 66,       // Enviado parcialmente
+  'fulfilled': 100,    // Completado
   'archived': 100
 };

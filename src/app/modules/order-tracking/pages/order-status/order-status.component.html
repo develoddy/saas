@@ -88,13 +88,6 @@
               </div>
               <span class="step-label">Order Placed</span>
             </div>
-            <div class="step" [ngClass]="getStepClass('printing')">
-              <div class="step-circle">
-                <i class="bi bi-check-lg" *ngIf="isStepCompleted('printing')"></i>
-                <i class="bi bi-printer" *ngIf="!isStepCompleted('printing')"></i>
-              </div>
-              <span class="step-label">Printing Done</span>
-            </div>
             <div class="step" [ngClass]="getStepClass('shipped')">
               <div class="step-circle">
                 <i class="bi bi-truck" *ngIf="isStepActive('shipped')"></i>
