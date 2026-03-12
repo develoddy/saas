@@ -1,0 +1,274 @@
+<!-- 📦 ORDEN TRACKING - Standalone (sin header/footer del ecommerce) -->
+
+<!-- 🏢 HEADER MÍNIMO MULTI-TENANT -->
+<div class="tracking-minimal-header bg-light border-bottom">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center py-3">
+      <div class="header-brand">
+        <h5 class="mb-0 fw-bold">{{ storeName }}</h5>
+        <small class="text-muted" *ngIf="showTenantBranding">Orden Tracking</small>
+      </div>
+      <button class="btn btn-sm btn-outline-primary" (click)="refreshTracking()" [disabled]="isLoading">
+        <i class="bi bi-arrow-clockwise me-1"></i>
+        Actualizar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="tracking-status-container bg-white">
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="container text-center py-5">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3 text-muted">Consultando estado del pedido...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && error" class="container py-5">
+    <div class="alert alert-danger shadow-sm" role="alert">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+        <div>
+          <h5 class="alert-heading mb-1">Error al cargar el tracking</h5>
+          <p class="mb-0">{{ error }}</p>
+        </div>
+      </div>
+      <hr>
+      <button class="btn btn-danger" (click)="refreshTracking()">
+        <i class="bi bi-arrow-clockwise me-2"></i>Reintentar
+      </button>
+    </div>
+  </div>
+
+  <!-- Success State - Tracking Data -->
+  <div *ngIf="!isLoading && !error && trackingData" class="container py-4">
+    
+    <!-- Header de la orden -->
+    <div class="tracking-order-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h2 class="mb-2">
+            <i class="bi bi-box-seam me-2"></i>
+            Orden #{{ trackingData.orderId }}
+          </h2>
+          <p class="text-muted mb-0">
+            <i class="bi bi-calendar me-1"></i>
+            Creado: {{ formatDate(trackingData.dates.created) }}
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+          <span class="badge {{ getStatusBadgeClass() }} fs-6 px-4 py-2">
+            {{ getStatusText() }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bar (estilo Amazon) -->
+    <div class="progress-section card mb-4 shadow-sm">
+      <div class="card-body p-4">
+        <h5 class="card-title mb-4">
+          <i class="bi bi-truck me-2"></i>
+          Estado del Envío
+        </h5>
+        
+        <div class="progress-bar-container mb-4">
+          <div class="progress" style="height: 10px; border-radius: 10px;">
+            <div 
+              class="progress-bar bg-success" 
+              role="progressbar" 
+              [style.width.%]="getProgressPercentage()"
+              [attr.aria-valuenow]="getProgressPercentage()"
+              aria-valuemin="0" 
+              aria-valuemax="100">
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Steps -->
+        <div class="timeline-steps">
+          <div 
+            *ngFor="let event of timeline; let last = last" 
+            class="timeline-step"
+            [ngClass]="getTimelineStepClass(event)">
+            
+            <div class="step-marker">
+              <div class="step-icon">
+                <i class="bi" [ngClass]="{
+                  'bi-check-circle-fill text-success': event.completed,
+                  'bi-circle text-muted': !event.completed && event.status === 'pending',
+                  'bi-arrow-repeat text-primary': event.status === 'processing'
+                }"></i>
+              </div>
+              <div *ngIf="!last" class="step-line"></div>
+            </div>
+            
+            <div class="step-content">
+              <h6 class="step-title mb-1" [class.text-success]="event.completed">
+                {{ event.title }}
+              </h6>
+              <p class="step-description text-muted small mb-1">{{ event.description }}</p>
+              <small *ngIf="event.date" class="step-date text-muted">
+                <i class="bi bi-calendar-event me-1"></i>
+                {{ formatDateShort(event.date) }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Column: Items & Details -->
+      <div class="col-lg-8">
+        
+        <!-- Tracking Info Card (si existe tracking) -->
+        <div *ngIf="trackingData.trackingNumber" class="card mb-4 shadow-sm border-primary">
+          <div class="card-body">
+            <h5 class="card-title mb-3">
+              <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
+              Información de Envío
+            </h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="text-muted small d-block mb-1">Número de Tracking</label>
+                <p class="mb-0 fw-semibold fs-5">{{ trackingData.trackingNumber }}</p>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="text-muted small d-block mb-1">Transportista</label>
+                <p class="mb-0 fw-semibold">{{ trackingData.carrier }}</p>
+              </div>
+              <div *ngIf="trackingData.dates.shipped" class="col-md-6 mb-3">
+                <label class="text-muted small d-block mb-1">Fecha de Envío</label>
+                <p class="mb-0">{{ formatDateShort(trackingData.dates.shipped) }}</p>
+              </div>
+              <div *ngIf="trackingData.estimated.max" class="col-md-6 mb-3">
+                <label class="text-muted small d-block mb-1">Entrega Estimada</label>
+                <p class="mb-0">{{ formatDateShort(trackingData.estimated.max) }}</p>
+              </div>
+            </div>
+            <button 
+              *ngIf="trackingData.trackingUrl" 
+              class="btn btn-primary w-100 mt-2"
+              (click)="openTrackingUrl()">
+              <i class="bi bi-box-arrow-up-right me-2"></i>
+              Rastrear en {{ trackingData.carrier }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Items del Pedido -->
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title mb-3">
+              <i class="bi bi-bag-check-fill me-2"></i>
+              Artículos del Pedido
+            </h5>
+            
+            <div *ngFor="let item of trackingData.items; let last = last" 
+                 class="order-item d-flex gap-3 pb-3"
+                 [class.mb-3]="!last"
+                 [class.border-bottom]="!last">
+              
+              <div class="item-image flex-shrink-0">
+                <img 
+                  [src]="item.files && item.files[0] ? item.files[0].preview_url : getPlaceholderSvg()" 
+                  [alt]="item.name || item.code_discount"
+                  class="img-fluid rounded"
+                  style="width: 80px; height: 80px; object-fit: cover;"
+                >
+              </div>
+              
+              <div class="item-details flex-grow-1">
+                <h6 class="mb-1">{{ item.name || item.code_discount }}</h6>
+                <p class="text-muted small mb-1" *ngIf="item.sku">
+                  <i class="bi bi-upc me-1"></i>SKU: {{ item.sku }}
+                </p>
+                <p class="mb-0">
+                  <span class="text-muted small">Cantidad:</span> 
+                  <strong>{{ item.quantity }}</strong>
+                </p>
+              </div>
+              
+              <div class="item-price text-end flex-shrink-0">
+                <p class="fw-bold mb-0 fs-5">€{{ item.retail_price }}</p>
+                <small class="text-muted">c/u</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Summary & Help -->
+      <div class="col-lg-4">
+        
+        <!-- Order Summary -->
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title mb-3">
+              <i class="bi bi-clipboard-check me-2"></i>
+              Resumen del Pedido
+            </h6>
+            <ul class="list-unstyled mb-0">
+              <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                <span class="text-muted small">ID Orden:</span>
+                <strong class="small">{{ trackingData.orderId }}</strong>
+              </li>
+              <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Estado:</span>
+                <span class="badge {{ getStatusBadgeClass() }} small">
+                  {{ getStatusText() }}
+                </span>
+              </li>
+              <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
+                <span class="text-muted small">Artículos:</span>
+                <strong class="small">{{ trackingData.items.length }}</strong>
+              </li>
+              <li *ngIf="trackingData.dates.updated" class="d-flex justify-content-between mb-0">
+                <span class="text-muted small">Última actualización:</span>
+                <small>{{ formatDateShort(trackingData.dates.updated) }}</small>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Help Card -->
+        <div class="card bg-light shadow-sm">
+          <div class="card-body">
+            <h6 class="card-title mb-3">
+              <i class="bi bi-question-circle-fill me-2"></i>
+              ¿Necesitas ayuda?
+            </h6>
+            <p class="small text-muted mb-3">
+              Si tienes preguntas sobre tu pedido, no dudes en contactarnos.
+            </p>
+            <div class="d-grid gap-2">
+              <a href="mailto:support@{{ storeName.toLowerCase().replace(' ', '') }}.com" 
+                 class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-envelope-fill me-2"></i>
+                Enviar Email
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Footer Mínimo -->
+<footer class="tracking-footer bg-light border-top mt-5 py-4">
+  <div class="container text-center">
+    <p class="text-muted small mb-0">
+      © {{ 2026 }} {{ storeName }}. Powered by{{ showTenantBranding ? ' Printful' : ' LujanDev' }}.
+    </p>
+  </div>
+</footer>

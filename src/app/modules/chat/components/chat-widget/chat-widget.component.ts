@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Router, NavigationEnd } from '@angular/router';
 import { Subscription, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 import { ChatService } from '../../services/chat.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PrelaunchConfigService } from 'src/app/services/prelaunch-config.service';
@@ -32,10 +33,21 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
     private prelaunchConfigService: PrelaunchConfigService,
-    private trackingService: TrackingService
+    private trackingService: TrackingService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
+    // Hide chat widget on tracking pages
+    this.checkRouteAndHideChat();
+    this.subscriptions.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+          this.checkRouteAndHideChat();
+        })
+    );
+
     // Subscribe to chat messages
     this.subscriptions.add(
       this.chatService.messages$.subscribe(messages => {
@@ -110,6 +122,20 @@ export class ChatWidgetComponent implements OnInit, OnDestroy, AfterViewChecked 
         this.chatService.sendTypingStatus(isTyping);
       })
     );
+  }
+
+  private checkRouteAndHideChat(): void {
+    const currentUrl = this.router.url;
+    if (currentUrl.startsWith('/tracking')) {
+      this.isChatEnabled = false;
+      if (this.isChatOpen) {
+        this.closeChat();
+      }
+      this.cdr.detectChanges();
+    } else if (!this.prelaunchConfigService.isPrelaunchEnabled()) {
+      this.isChatEnabled = true;
+      this.cdr.detectChanges();
+    }
   }
   
   openChat(): void {

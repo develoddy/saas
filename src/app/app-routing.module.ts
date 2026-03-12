@@ -115,7 +115,20 @@ const routes: Routes = [
   },
 
   // ============================================
-  // 🔒 LIVE PRODUCTS (Fase 2)
+  // � PUBLIC ORDER TRACKING
+  // Public module - security via token in URL
+  // ============================================
+  {
+    path: 'tracking',
+    loadChildren: () => import('./modules/order-tracking/order-tracking.module')
+      .then(m => m.OrderTrackingModule),
+    data: { 
+      title: 'Track Your Order'
+    }
+  },
+
+  // ============================================
+  // �🔒 LIVE PRODUCTS (Fase 2)
   // Protegidas con TenantAuthGuard - Producto completo
   // ============================================
   {
