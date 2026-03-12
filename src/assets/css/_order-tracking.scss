@@ -198,7 +198,7 @@
     }
   }
   
-  // Progress Section - Inspirado en el mockup
+  // Progress Section - Tracker horizontal estilo Inbox Zero Prevention
   .progress-section {
     border: none;
     background: #ffffff;
@@ -215,52 +215,45 @@
         color: #3b82f6;
       }
     }
-    
-    .progress-bar-container {
-      width: 100%;
-    }
-    
-    .progress {
-      width: 100%;
-      height: 10px;
-      background-color: #e2e8f0;
-      border-radius: 9999px;
-      overflow: hidden;
-      position: relative;
-      
-      .progress-bar {
-        height: 100%;
-        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-        transition: width 0.6s ease;
-        border-radius: 9999px;
-        
-        // Sobrescribir bg-success para que sea azul en el contexto del progress
-        &.bg-success {
-          background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-        }
-      }
-    }
   }
   
-  // Timeline Steps - Estilo prevention-demo
-  .timeline-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    margin-top: 1.5rem;
+  // Progress Tracker Horizontal
+  .order-progress-tracker {
+    position: relative;
+    margin-top: 2rem;
     
-    .timeline-step {
-      display: flex;
-      gap: 1rem;
-      position: relative;
+    .progress-bar-line {
+      position: absolute;
+      top: 24px; // Centrado con los círculos (48px / 2)
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 9999px;
+      z-index: 0;
       
-      .step-marker {
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        border-radius: 9999px;
+        transition: width 0.6s ease;
+      }
+    }
+    
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+      
+      .step {
         display: flex;
         flex-direction: column;
         align-items: center;
-        flex-shrink: 0;
+        gap: 0.75rem;
+        flex: 1;
         
-        .step-icon {
+        .step-circle {
           width: 48px;
           height: 48px;
           display: flex;
@@ -268,56 +261,28 @@
           justify-content: center;
           border-radius: 50%;
           background: #ffffff;
-          border: 2px solid #e5e7eb;
-          z-index: 1;
+          border: 3px solid #e5e7eb;
           transition: all 0.3s ease;
+          position: relative;
           
           i {
-            font-size: 22px;
+            font-size: 20px;
             color: #94a3b8;
+            transition: all 0.3s ease;
           }
         }
         
-        .step-line {
-          width: 2px;
-          flex: 1;
-          background: #e5e7eb;
-          margin-top: 8px;
-          min-height: 36px;
-        }
-      }
-      
-      .step-content {
-        flex: 1;
-        padding-bottom: 0.5rem;
-        
-        .step-title {
-          font-weight: 600;
+        .step-label {
+          font-size: 0.9rem;
           color: #64748b;
-          margin-bottom: 0.375rem;
-          font-size: 1rem;
+          font-weight: 500;
+          text-align: center;
+          white-space: nowrap;
         }
         
-        .step-description {
-          color: #94a3b8;
-          margin-bottom: 0.375rem;
-          font-size: 0.9375rem;
-          line-height: 1.5;
-        }
-        
-        .step-date {
-          color: #cbd5e1;
-          font-size: 0.875rem;
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-        }
-      }
-      
-      // Estado completado
-      &.timeline-step-completed {
-        .step-marker {
-          .step-icon {
+        // Estado completado
+        &.completed {
+          .step-circle {
             background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
             border-color: #22c55e;
             box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
@@ -327,33 +292,18 @@
             }
           }
           
-          .step-line {
-            background: linear-gradient(180deg, #22c55e 0%, #e5e7eb 100%);
-          }
-        }
-        
-        .step-content {
-          .step-title {
+          .step-label {
             color: #16a34a;
             font-weight: 600;
           }
-          
-          .step-description {
-            color: #64748b;
-          }
-          
-          .step-date {
-            color: #94a3b8;
-          }
         }
-      }
-      
-      // Estado en proceso
-      &.timeline-step-processing {
-        .step-marker {
-          .step-icon {
+        
+        // Estado activo (en progreso)
+        &.active {
+          .step-circle {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             border-color: #3b82f6;
+            border-width: 3px;
             animation: pulse-blue 2s ease-in-out infinite;
             box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
             
@@ -361,24 +311,16 @@
               color: #ffffff;
             }
           }
-        }
-        
-        .step-content {
-          .step-title {
+          
+          .step-label {
             color: #2563eb;
             font-weight: 600;
           }
-          
-          .step-description {
-            color: #64748b;
-          }
         }
-      }
-      
-      // Estado pendiente
-      &.timeline-step-pending {
-        .step-marker {
-          .step-icon {
+        
+        // Estado pendiente
+        &.pending {
+          .step-circle {
             background: #f8fafc;
             border-color: #e5e7eb;
             
@@ -386,7 +328,39 @@
               color: #cbd5e1;
             }
           }
+          
+          .step-label {
+            color: #94a3b8;
+          }
         }
+      }
+    }
+    
+    // Responsive
+    @media (max-width: 768px) {
+      .progress-steps {
+        .step {
+          .step-circle {
+            width: 40px;
+            height: 40px;
+            border-width: 2px;
+            
+            i {
+              font-size: 16px;
+            }
+          }
+          
+          .step-label {
+            font-size: 0.75rem;
+            white-space: normal;
+            line-height: 1.2;
+            max-width: 60px;
+          }
+        }
+      }
+      
+      .progress-bar-line {
+        top: 20px; // Ajustar para círculos más pequeños
       }
     }
   }
@@ -481,19 +455,6 @@
     .tracking-order-header {
       h2 {
         font-size: 1.5rem;
-      }
-    }
-    
-    .timeline-steps {
-      .timeline-step {
-        .step-marker .step-icon {
-          width: 40px;
-          height: 40px;
-          
-          i {
-            font-size: 18px;
-          }
-        }
       }
     }
     

@@ -208,12 +208,56 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🎨 Obtener clase CSS para step del timeline
+   * 🎨 Obtener clase CSS para step del progress tracker horizontal
    */
-  getTimelineStepClass(event: OrderTrackingEvent): string {
-    if (event.completed) return 'timeline-step-completed';
-    if (event.status === 'processing') return 'timeline-step-processing';
-    return 'timeline-step-pending';
+  getStepClass(stepType: string): string {
+    if (this.isStepCompleted(stepType)) return 'completed';
+    if (this.isStepActive(stepType)) return 'active';
+    return 'pending';
+  }
+
+  /**
+   * ✅ Verificar si un paso está completado
+   */
+  isStepCompleted(stepType: string): boolean {
+    if (!this.trackingData) return false;
+    
+    const status = this.trackingData.status;
+    
+    switch (stepType) {
+      case 'ordered':
+        return true; // Siempre completado si existe el pedido
+      case 'printing':
+        return ['inprocess', 'partial', 'fulfilled'].includes(status);
+      case 'shipped':
+        return status === 'fulfilled' || !!this.trackingData.trackingNumber;
+      case 'delivered':
+        return status === 'fulfilled' && !!this.trackingData.dates.delivered;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * 🔵 Verificar si un paso está activo (en progreso)
+   */
+  isStepActive(stepType: string): boolean {
+    if (!this.trackingData) return false;
+    
+    const status = this.trackingData.status;
+    
+    switch (stepType) {
+      case 'ordered':
+        return status === 'pending' || status === 'onhold';
+      case 'printing':
+        return status === 'inprocess' && !this.trackingData.trackingNumber;
+      case 'shipped':
+        return !!this.trackingData.trackingNumber && !this.trackingData.dates.delivered;
+      case 'delivered':
+        return false; // Delivered no tiene estado activo, solo completado o pendiente
+      default:
+        return false;
+    }
   }
 
   /**

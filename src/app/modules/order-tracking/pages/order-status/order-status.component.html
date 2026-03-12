@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <!-- Progress Bar (estilo Amazon) -->
+    <!-- Progress Tracker Horizontal (estilo Inbox Zero Prevention) -->
     <div class="progress-section card mb-4 shadow-sm">
       <div class="card-body p-4">
         <h5 class="card-title mb-4">
@@ -76,46 +76,39 @@
           Estado del Envío
         </h5>
         
-        <div class="progress-bar-container mb-4">
-          <div class="progress" style="height: 10px; border-radius: 10px;">
-            <div 
-              class="progress-bar bg-success" 
-              role="progressbar" 
-              [style.width.%]="getProgressPercentage()"
-              [attr.aria-valuenow]="getProgressPercentage()"
-              aria-valuemin="0" 
-              aria-valuemax="100">
-            </div>
+        <div class="order-progress-tracker">
+          <div class="progress-bar-line">
+            <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
           </div>
-        </div>
-
-        <!-- Timeline Steps -->
-        <div class="timeline-steps">
-          <div 
-            *ngFor="let event of timeline; let last = last" 
-            class="timeline-step"
-            [ngClass]="getTimelineStepClass(event)">
-            
-            <div class="step-marker">
-              <div class="step-icon">
-                <i class="bi" [ngClass]="{
-                  'bi-check-circle-fill text-success': event.completed,
-                  'bi-circle text-muted': !event.completed && event.status === 'pending',
-                  'bi-arrow-repeat text-primary': event.status === 'processing'
-                }"></i>
+          <div class="progress-steps">
+            <div class="step" [ngClass]="getStepClass('ordered')">
+              <div class="step-circle">
+                <i class="bi bi-check-lg" *ngIf="isStepCompleted('ordered')"></i>
+                <i class="bi bi-bag" *ngIf="!isStepCompleted('ordered')"></i>
               </div>
-              <div *ngIf="!last" class="step-line"></div>
+              <span class="step-label">Order Placed</span>
             </div>
-            
-            <div class="step-content">
-              <h6 class="step-title mb-1" [class.text-success]="event.completed">
-                {{ event.title }}
-              </h6>
-              <p class="step-description text-muted small mb-1">{{ event.description }}</p>
-              <small *ngIf="event.date" class="step-date text-muted">
-                <i class="bi bi-calendar-event me-1"></i>
-                {{ formatDateShort(event.date) }}
-              </small>
+            <div class="step" [ngClass]="getStepClass('printing')">
+              <div class="step-circle">
+                <i class="bi bi-check-lg" *ngIf="isStepCompleted('printing')"></i>
+                <i class="bi bi-printer" *ngIf="!isStepCompleted('printing')"></i>
+              </div>
+              <span class="step-label">Printing Done</span>
+            </div>
+            <div class="step" [ngClass]="getStepClass('shipped')">
+              <div class="step-circle">
+                <i class="bi bi-truck" *ngIf="isStepActive('shipped')"></i>
+                <i class="bi bi-check-lg" *ngIf="isStepCompleted('shipped')"></i>
+                <i class="bi bi-truck" *ngIf="!isStepCompleted('shipped') && !isStepActive('shipped')"></i>
+              </div>
+              <span class="step-label">Shipped</span>
+            </div>
+            <div class="step" [ngClass]="getStepClass('delivered')">
+              <div class="step-circle">
+                <i class="bi bi-check-lg" *ngIf="isStepCompleted('delivered')"></i>
+                <i class="bi bi-house" *ngIf="!isStepCompleted('delivered')"></i>
+              </div>
+              <span class="step-label">Delivered</span>
             </div>
           </div>
         </div>
