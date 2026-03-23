@@ -16,7 +16,17 @@
   }
   
   &.border-primary {
-    border-color: #3b82f6;
+    border-color: #4169E1;
+    border-width: 2px;
+  }
+  
+  &.border-warning {
+    border-color: #FFA500;
+    border-width: 2px;
+  }
+  
+  &.border-success {
+    border-color: #32CD32;
     border-width: 2px;
   }
 }
@@ -43,18 +53,21 @@
   letter-spacing: 0.025em;
   
   &.bg-success {
-    background-color: #22c55e;
+    background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
     color: #ffffff;
+    box-shadow: 0 2px 8px rgba(50, 205, 50, 0.25);
   }
   
   &.bg-primary {
-    background-color: #3b82f6;
+    background: linear-gradient(135deg, #4169E1 0%, #0047AB 100%);
     color: #ffffff;
+    box-shadow: 0 2px 8px rgba(65, 105, 225, 0.25);
   }
   
   &.bg-warning {
-    background-color: #f59e0b;
+    background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
     color: #ffffff;
+    box-shadow: 0 2px 8px rgba(255, 165, 0, 0.25);
   }
   
   &.bg-secondary {
@@ -83,13 +96,14 @@
   }
   
   &.btn-primary {
-    background: #111111;
+    background: linear-gradient(135deg, #4169E1 0%, #0047AB 100%);
     color: #ffffff;
+    box-shadow: 0 4px 12px rgba(65, 105, 225, 0.3);
     
     &:hover:not(:disabled) {
-      background: #333333;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(17, 17, 17, 0.3);
+      background: linear-gradient(135deg, #0047AB 0%, #003380 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(65, 105, 225, 0.4);
     }
   }
   
@@ -131,7 +145,15 @@
   animation: spinner-rotate 0.75s linear infinite;
   
   &.text-primary {
-    color: #3b82f6;
+    color: #4169E1;
+  }
+  
+  &.text-warning {
+    color: #FFA500;
+  }
+  
+  &.text-success {
+    color: #32CD32;
   }
 }
 
@@ -198,7 +220,7 @@
       margin-bottom: 0.5rem;
       
       i {
-        color: #3b82f6;
+        color: #4169E1;
       }
     }
     
@@ -222,8 +244,8 @@
       font-weight: 600;
       
       i {
-        opacity: 0.8;
-        color: #3b82f6;
+        opacity: 0.9;
+        color: #4169E1;
       }
     }
   }
@@ -245,7 +267,7 @@
       
       .progress-fill {
         height: 100%;
-        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        background: linear-gradient(90deg, #FFA500 0%, #4169E1 50%, #32CD32 100%);
         border-radius: 9999px;
         transition: width 0.6s ease;
       }
@@ -294,9 +316,9 @@
         // Estado completado
         &.completed {
           .step-circle {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            border-color: #22c55e;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+            border-color: #32CD32;
+            box-shadow: 0 4px 12px rgba(50, 205, 50, 0.3);
             
             i {
               color: #ffffff;
@@ -304,19 +326,19 @@
           }
           
           .step-label {
-            color: #16a34a;
+            color: #228B22;
             font-weight: 600;
           }
         }
         
-        // Estado activo (en progreso)
+        // Estado activo (en progreso) - Naranja para "ordered"
         &.active {
           .step-circle {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            border-color: #3b82f6;
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            border-color: #FFA500;
             border-width: 3px;
-            animation: pulse-blue 2s ease-in-out infinite;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+            animation: pulse-orange 2s ease-in-out infinite;
+            box-shadow: 0 4px 16px rgba(255, 165, 0, 0.4);
             
             i {
               color: #ffffff;
@@ -324,8 +346,36 @@
           }
           
           .step-label {
-            color: #2563eb;
+            color: #FF8C00;
             font-weight: 600;
+          }
+          
+          // Azul específico para "shipped"
+          &.shipped-active {
+            .step-circle {
+              background: linear-gradient(135deg, #4169E1 0%, #0047AB 100%);
+              border-color: #4169E1;
+              animation: pulse-blue 2s ease-in-out infinite;
+              box-shadow: 0 4px 16px rgba(65, 105, 225, 0.4);
+            }
+            
+            .step-label {
+              color: #0047AB;
+            }
+          }
+          
+          // Verde específico para "delivered"
+          &.delivered-active {
+            .step-circle {
+              background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+              border-color: #32CD32;
+              animation: pulse-green 2s ease-in-out infinite;
+              box-shadow: 0 4px 16px rgba(50, 205, 50, 0.4);
+            }
+            
+            .step-label {
+              color: #228B22;
+            }
           }
         }
         
@@ -416,7 +466,7 @@
     }
     
     .item-price {
-      color: #3b82f6;
+      color: #4169E1;
       font-weight: 700;
       
       small {
@@ -451,10 +501,28 @@
 
 @keyframes pulse-blue {
   0%, 100% {
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 16px rgba(65, 105, 225, 0.4);
   }
   50% {
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.6);
+    box-shadow: 0 8px 24px rgba(65, 105, 225, 0.6);
+  }
+}
+
+@keyframes pulse-orange {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(255, 165, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(255, 165, 0, 0.6);
+  }
+}
+
+@keyframes pulse-green {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(50, 205, 50, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(50, 205, 50, 0.6);
   }
 }
 
@@ -559,8 +627,9 @@
 .flex-grow-1 { flex: 1 1 0% !important; }
 
 .text-muted { color: #64748b !important; }
-.text-primary { color: #3b82f6 !important; }
-.text-success { color: #22c55e !important; }
+.text-primary { color: #4169E1 !important; }
+.text-success { color: #32CD32 !important; }
+.text-warning { color: #FFA500 !important; }
 
 .bg-light { background-color: #f8fafc !important; }
 .bg-white { background-color: #ffffff !important; }
