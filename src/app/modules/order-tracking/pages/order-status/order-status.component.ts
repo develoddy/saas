@@ -184,6 +184,23 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * 🎨 Obtener icono Bootstrap para estado
+   */
+  getStatusIcon(): string {
+    if (!this.trackingData) return 'box-seam';
+    
+    const status = this.trackingData.status;
+    
+    if (status === 'fulfilled' && this.trackingData.dates.delivered) {
+      return 'check-circle-fill'; // Entregado
+    } else if (status === 'fulfilled' || this.trackingData.trackingNumber) {
+      return 'truck'; // Enviado
+    } else {
+      return 'clock-history'; // En producción
+    }
+  }
+
+  /**
    * 📊 Obtener porcentaje de progreso
    */
   getProgressPercentage(): number {

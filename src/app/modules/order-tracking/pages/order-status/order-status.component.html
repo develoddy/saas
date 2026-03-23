@@ -1,23 +1,32 @@
-<!-- 📦 ORDEN TRACKING - Standalone (sin header/footer del ecommerce) -->
+<!-- 📦 ORDEN TRACKING - Enterprise SaaS Design -->
 
-<!-- 🏢 HEADER MÍNIMO MULTI-TENANT -->
-<div class="tracking-minimal-header bg-light border-bottom">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center py-3">
+<!-- 🏢 HEADER PROFESIONAL MULTI-TENANT -->
+<div class="tracking-minimal-header">
+  <div class="container-fluid max-width-container">
+    <div class="d-flex justify-content-between align-items-center">
       <div class="header-brand">
-        <h5 class="mb-0 fw-bold">{{ storeName }}</h5>
-        <small class="text-muted" *ngIf="showTenantBranding">Order Tracking</small>
+        <div class="brand-logo">
+          <i class="bi bi-inbox-fill"></i>
+        </div>
+        <div class="brand-text">
+          <h4 class="mb-0 fw-bold">
+            <span class="inbox-zero-brand">Inbox Zero</span>
+            <span class="store-separator" *ngIf="storeName !== 'LujanDev'">for</span>
+            <span class="store-name" *ngIf="storeName !== 'LujanDev'">{{ storeName }}</span>
+          </h4>
+          <small class="text-muted">Order Tracking Portal</small>
+        </div>
       </div>
-      <button class="btn btn-sm btn-outline-primary" (click)="refreshTracking()" [disabled]="isLoading">
+      <button class="btn btn-sm btn-outline-primary btn-refresh" (click)="refreshTracking()" [disabled]="isLoading">
         <i class="bi bi-arrow-clockwise me-1"></i>
-        Refresh
+        <span class="btn-text">Refresh Status</span>
       </button>
     </div>
   </div>
 </div>
 
 <!-- CONTENIDO PRINCIPAL -->
-<div class="tracking-status-container bg-white">
+<div class="tracking-status-container">
   
   <!-- Loading State -->
   <div *ngIf="isLoading" class="container text-center py-5">
@@ -45,36 +54,41 @@
   </div>
 
   <!-- Success State - Tracking Data -->
-  <div *ngIf="!isLoading && !error && trackingData" class="container py-4">
+  <div *ngIf="!isLoading && !error && trackingData" class="container-fluid max-width-container">
     
-    <!-- Header de la orden -->
-    <div class="tracking-order-header mb-4">
-      <div class="row align-items-center">
-        <div class="col-md-8">
-          <h2 class="mb-2">
-            <i class="bi bi-box-seam me-2"></i>
-            Order #{{ trackingData.orderId }}
-          </h2>
-          <p class="text-muted mb-0">
-            <i class="bi bi-calendar me-1"></i>
-            Created: {{ formatDate(trackingData.dates.created) }}
-          </p>
+    <!-- Hero Header de la orden -->
+    <div class="tracking-hero-header">
+      <div class="hero-content">
+        <div class="order-meta">
+          <span class="order-label">Order Tracking</span>
+          <span class="order-separator">|</span>
+          <span class="order-date">
+            <i class="bi bi-calendar-event me-2"></i>
+            {{ formatDate(trackingData.dates.created) }}
+          </span>
         </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-          <span class="badge {{ getStatusBadgeClass() }} fs-6 px-4 py-2">
+        <h1 class="hero-title">
+          Order #{{ trackingData.orderId }}
+        </h1>
+        <div class="hero-status">
+          <span class="status-badge {{ getStatusBadgeClass() }}">
+            <i class="bi bi-{{ getStatusIcon() }} me-2"></i>
             {{ getStatusText() }}
           </span>
         </div>
       </div>
     </div>
 
-    <!-- Progress Tracker Horizontal (estilo Inbox Zero Prevention) -->
-    <div class="progress-section card mb-4 shadow-sm">
-      <div class="card-body p-4">
-        <h5 class="card-title mb-4">
+    <!-- Progress Tracker Horizontal (Enterprise Layout) -->
+    <div class="progress-section">
+      <div class="section-header">
+        <h3 class="section-title">
           <i class="bi bi-truck me-2"></i>
-          Shipping Status
-        </h5>
+          Shipping Progress
+        </h3>
+        <p class="section-subtitle">Track your order in real-time</p>
+      </div>
+      <div class="progress-card">
         
         <div class="order-progress-tracker">
           <div class="progress-bar-line">
@@ -108,17 +122,22 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="content-grid">
       <!-- Left Column: Items & Details -->
-      <div class="col-lg-8">
+      <div class="grid-main">
         
         <!-- Tracking Info Card (si existe tracking) -->
-        <div *ngIf="trackingData.trackingNumber" class="card mb-4 shadow-sm border-primary">
-          <div class="card-body">
-            <h5 class="card-title mb-3">
-              <i class="bi bi-geo-alt-fill me-2 text-primary"></i>
-              Shipping Information
-            </h5>
+        <div *ngIf="trackingData.trackingNumber" class="info-card tracking-info-card">
+          <div class="card-header-custom">
+            <div class="header-icon">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <div class="header-text">
+              <h4 class="header-title">Shipping Information</h4>
+              <p class="header-subtitle">Real-time tracking details</p>
+            </div>
+          </div>
+          <div class="card-content">
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label class="text-muted small d-block mb-1">Tracking Number</label>
@@ -148,12 +167,17 @@
         </div>
 
         <!-- Items del Pedido -->
-        <div class="card mb-4 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title mb-3">
-              <i class="bi bi-bag-check-fill me-2"></i>
-              Order Items
-            </h5>
+        <div class="info-card items-card">
+          <div class="card-header-custom">
+            <div class="header-icon">
+              <i class="bi bi-bag-check-fill"></i>
+            </div>
+            <div class="header-text">
+              <h4 class="header-title">Order Items</h4>
+              <p class="header-subtitle">{{ trackingData.items.length }} item(s) in your order</p>
+            </div>
+          </div>
+          <div class="card-content">
             
             <div *ngFor="let item of trackingData.items; let last = last" 
                  class="order-item d-flex gap-3 pb-3"
@@ -191,15 +215,19 @@
       </div>
 
       <!-- Right Column: Summary & Help -->
-      <div class="col-lg-4">
+      <div class="grid-sidebar">
         
         <!-- Order Summary -->
-        <div class="card mb-4 shadow-sm">
-          <div class="card-body">
-            <h6 class="card-title mb-3">
-              <i class="bi bi-clipboard-check me-2"></i>
-              Order Summary
-            </h6>
+        <div class="info-card summary-card">
+          <div class="card-header-custom">
+            <div class="header-icon small">
+              <i class="bi bi-clipboard-check"></i>
+            </div>
+            <div class="header-text">
+              <h5 class="header-title">Order Summary</h5>
+            </div>
+          </div>
+          <div class="card-content">
             <ul class="list-unstyled mb-0">
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
                 <span class="text-muted small">Order ID:</span>
@@ -224,12 +252,16 @@
         </div>
 
         <!-- Help Card -->
-        <div class="card bg-light shadow-sm">
-          <div class="card-body">
-            <h6 class="card-title mb-3">
-              <i class="bi bi-question-circle-fill me-2"></i>
-              Need Help?
-            </h6>
+        <div class="info-card help-card">
+          <div class="card-header-custom">
+            <div class="header-icon small">
+              <i class="bi bi-question-circle-fill"></i>
+            </div>
+            <div class="header-text">
+              <h5 class="header-title">Need Help?</h5>
+            </div>
+          </div>
+          <div class="card-content">
             <p class="small text-muted mb-3">
               If you have any questions about your order, feel free to contact us.
             </p>
@@ -250,11 +282,16 @@
 
 </div>
 
-<!-- Footer Mínimo -->
-<footer class="tracking-footer bg-light border-top mt-5 py-4">
-  <div class="container text-center">
-    <p class="text-muted small mb-0">
-      © {{ 2026 }} {{ storeName }}. Powered by{{ showTenantBranding ? ' Printful' : ' LujanDev' }}.
-    </p>
+<!-- Footer Enterprise -->
+<footer class="tracking-footer">
+  <div class="container-fluid max-width-container">
+    <div class="footer-content">
+      <p class="footer-text">
+        © {{ 2026 }} <span *ngIf="storeName !== 'LujanDev'">{{ storeName }} · </span>Order Tracking
+      </p>
+      <p class="footer-powered">
+        Powered by <strong>Inbox Zero</strong>{{ showTenantBranding ? ' & Printful' : '' }}
+      </p>
+    </div>
   </div>
 </footer>

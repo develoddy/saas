@@ -1,10 +1,52 @@
 /**
- * 📦 Estilos para Order Status Component
- * Diseño limpio y standalone para tracking de pedidos
- * Inspirado en: prevention-demo mockup de tracking page
+ * 📦 Order Tracking - Enterprise SaaS Design
+ * Diseño profesional con más espaciado y jerarquía visual
+ * Inspirado en: Stripe, Shopify, y otros SaaS enterprise
  */
 
-// ===== BOOTSTRAP-LIKE UTILITIES (no tenemos Bootstrap instalado) =====
+// ===== VARIABLES =====
+$primary-color: #4169E1;
+$primary-dark: #0047AB;
+$success-color: #32CD32;
+$success-dark: #228B22;
+$warning-color: #FFA500;
+$warning-dark: #FF8C00;
+$danger-color: #dc3545;
+
+$text-primary: #0f172a;
+$text-secondary: #475569;
+$text-muted: #64748b;
+$text-light: #94a3b8;
+
+$bg-primary: #ffffff;
+$bg-secondary: #f8fafc;
+$bg-tertiary: #f1f5f9;
+
+$border-color: #e2e8f0;
+$border-light: #f1f5f9;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+
+$spacing-unit: 1rem;
+
+// ===== GLOBAL UTILITIES =====
+.max-width-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+  }
+}
 .card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
@@ -187,65 +229,377 @@
 // ===== ORDER TRACKING SPECIFIC STYLES =====
 
 .tracking-minimal-header {
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
+  background: $bg-primary;
+  border-bottom: 2px solid $border-light;
+  padding: 1.25rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  
+  @media (max-width: 768px) {
+    padding: 1rem 0;
+  }
+  
+  .d-flex {
+    display: flex;
+    gap: 1rem;
+    
+    @media (max-width: 768px) {
+      gap: 0.75rem;
+    }
+  }
   
   .header-brand {
-    h5 {
-      color: #1e293b;
-      font-weight: 700;
-      font-size: 1.25rem;
-      margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    min-width: 0;
+    
+    @media (max-width: 768px) {
+      gap: 0.75rem;
     }
     
-    small {
-      color: #64748b;
-      font-size: 0.875rem;
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+      border-radius: $radius-md;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: $shadow-md;
+      flex-shrink: 0;
+      
+      @media (max-width: 768px) {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+        border-radius: 10px;
+      }
+    }
+    
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      
+      h4 {
+        color: $text-primary;
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin: 0;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        
+        @media (max-width: 768px) {
+          font-size: 1rem;
+          gap: 0.35rem;
+        }
+        
+        .inbox-zero-brand {
+          background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-weight: 800;
+          letter-spacing: -0.03em;
+        }
+        
+        .store-separator {
+          color: $text-muted;
+          font-weight: 400;
+          font-size: 0.9em;
+          
+          @media (max-width: 768px) {
+            display: none;
+          }
+        }
+        
+        .store-name {
+          color: $text-secondary;
+          font-weight: 600;
+          font-size: 0.95em;
+          
+          @media (max-width: 480px) {
+            display: none;
+          }
+        }
+      }
+      
+      small {
+        color: $text-muted;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: block;
+        margin-top: 0.125rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        @media (max-width: 768px) {
+          font-size: 0.75rem;
+        }
+        
+        @media (max-width: 480px) {
+          display: none;
+        }
+      }
+    }
+  }
+  
+  .btn-refresh {
+    font-weight: 600;
+    border-width: 2px;
+    height: 40px;
+    padding: 0 1rem;
+    flex-shrink: 0;
+    
+    @media (max-width: 768px) {
+      height: 38px;
+      padding: 0 0.75rem;
+    }
+    
+    @media (max-width: 480px) {
+      padding: 0 0.5rem;
+      min-width: 38px;
+      
+      .btn-text {
+        display: none;
+      }
+      
+      .me-1 {
+        margin-right: 0 !important;
+      }
+    }
+    
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: $shadow-sm;
     }
   }
 }
 
 .tracking-status-container {
   min-height: calc(100vh - 200px);
-  background: #f9fafb;
-  padding: 2rem 0;
+  background: $bg-secondary;
+  padding: 4rem 0;
   
-  .tracking-order-header {
-    margin-bottom: 2rem;
+  @media (max-width: 768px) {
+    padding: 2rem 0;
+  }
+  
+  // Hero Header Section
+  .tracking-hero-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: $radius-xl;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    box-shadow: $shadow-xl;
+    position: relative;
+    overflow: hidden;
     
-    h2 {
-      color: #1e293b;
-      font-weight: 700;
-      font-size: 1.875rem;
-      margin-bottom: 0.5rem;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(30%, -30%);
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .order-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      
+      .order-label,
+      .order-date {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        
+        @media (max-width: 480px) {
+          font-size: 0.75rem;
+        }
+      }
+      
+      .order-separator {
+        color: rgba(255, 255, 255, 0.5);
+        
+        @media (max-width: 480px) {
+          display: none;
+        }
+      }
       
       i {
-        color: #4169E1;
+        opacity: 0.9;
       }
     }
     
-    p {
-      color: #64748b;
-      font-size: 0.9375rem;
-      margin: 0;
+    .hero-title {
+      color: white;
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 0 0 1.5rem 0;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      word-break: break-word;
+      
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+      
+      @media (max-width: 480px) {
+        font-size: 1.75rem;
+        margin: 0 0 1rem 0;
+      }
+    }
+    
+    .hero-status {
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.75rem 1.5rem;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 9999px;
+        font-size: 1rem;
+        font-weight: 700;
+        box-shadow: $shadow-lg;
+        letter-spacing: 0.025em;
+        
+        @media (max-width: 480px) {
+          padding: 0.625rem 1.25rem;
+          font-size: 0.875rem;
+        }
+        
+        i {
+          font-size: 1.125rem;
+          
+          @media (max-width: 480px) {
+            font-size: 1rem;
+          }
+        }
+        
+        &.bg-success {
+          background: linear-gradient(135deg, $success-color 0%, $success-dark 100%);
+          color: white;
+        }
+        
+        &.bg-primary {
+          background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+          color: white;
+        }
+        
+        &.bg-warning {
+          background: linear-gradient(135deg, $warning-color 0%, $warning-dark 100%);
+          color: white;
+        }
+        
+        &.bg-secondary {
+          background: #64748b;
+          color: white;
+        }
+      }
+    }
+    
+    @media (max-width: 768px) {
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border-radius: $radius-lg;
     }
   }
   
   // Progress Section - Tracker horizontal estilo Inbox Zero Prevention
   .progress-section {
-    border: none;
-    background: #ffffff;
+    margin-bottom: 3rem;
     
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: #1e293b;
-      font-weight: 600;
+    @media (max-width: 768px) {
+      margin-bottom: 2rem;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
       
-      i {
-        opacity: 0.9;
-        color: #4169E1;
+      @media (max-width: 768px) {
+        margin-bottom: 2rem;
+      }
+      
+      .section-title {
+        color: $text-primary;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        
+        @media (max-width: 768px) {
+          font-size: 1.5rem;
+        }
+        
+        @media (max-width: 480px) {
+          font-size: 1.25rem;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+        
+        i {
+          color: $primary-color;
+        }
+      }
+      
+      .section-subtitle {
+        color: $text-muted;
+        font-size: 1rem;
+        margin: 0;
+        
+        @media (max-width: 768px) {
+          font-size: 0.9375rem;
+        }
+        
+        @media (max-width: 480px) {
+          font-size: 0.875rem;
+        }
+      }
+    }
+    
+    .progress-card {
+      background: $bg-primary;
+      border-radius: $radius-lg;
+      padding: 3rem 2.5rem;
+      box-shadow: $shadow-md;
+      border: 1px solid $border-light;
+      
+      @media (max-width: 768px) {
+        padding: 2rem 1.5rem;
+        border-radius: $radius-md;
+      }
+      
+      @media (max-width: 480px) {
+        padding: 1.5rem 1rem;
       }
     }
   }
@@ -253,23 +607,30 @@
   // Progress Tracker Horizontal
   .order-progress-tracker {
     position: relative;
-    margin-top: 2rem;
+    margin-top: 3rem;
+    padding: 0 2rem;
+    
+    @media (max-width: 768px) {
+      padding: 0 1rem;
+    }
     
     .progress-bar-line {
       position: absolute;
-      top: 24px; // Centrado con los círculos (48px / 2)
+      top: 32px; // Centrado con los círculos (64px / 2)
       left: 0;
       right: 0;
-      height: 4px;
-      background: #e2e8f0;
+      height: 6px;
+      background: linear-gradient(to right, #f1f5f9, #e2e8f0);
       border-radius: 9999px;
       z-index: 0;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
       
       .progress-fill {
         height: 100%;
         background: linear-gradient(90deg, #FFA500 0%, #4169E1 50%, #32CD32 100%);
         border-radius: 9999px;
-        transition: width 0.6s ease;
+        transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(65, 105, 225, 0.3);
       }
     }
     
@@ -283,34 +644,36 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.75rem;
+        gap: 1rem;
         flex: 1;
         
         .step-circle {
-          width: 48px;
-          height: 48px;
+          width: 64px;
+          height: 64px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 50%;
-          background: #ffffff;
-          border: 3px solid #e5e7eb;
-          transition: all 0.3s ease;
+          background: $bg-primary;
+          border: 4px solid $border-color;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
+          box-shadow: $shadow-md;
           
           i {
-            font-size: 20px;
-            color: #94a3b8;
+            font-size: 24px;
+            color: $text-light;
             transition: all 0.3s ease;
           }
         }
         
         .step-label {
-          font-size: 0.9rem;
-          color: #64748b;
-          font-weight: 500;
+          font-size: 1rem;
+          color: $text-muted;
+          font-weight: 600;
           text-align: center;
           white-space: nowrap;
+          letter-spacing: 0.01em;
         }
         
         // Estado completado
@@ -399,29 +762,61 @@
     
     // Responsive
     @media (max-width: 768px) {
+      margin-top: 2rem;
+      padding: 0;
+      
       .progress-steps {
         .step {
           .step-circle {
-            width: 40px;
-            height: 40px;
-            border-width: 2px;
+            width: 52px;
+            height: 52px;
+            border-width: 3px;
             
             i {
-              font-size: 16px;
+              font-size: 20px;
             }
           }
           
           .step-label {
-            font-size: 0.75rem;
+            font-size: 0.875rem;
             white-space: normal;
-            line-height: 1.2;
-            max-width: 60px;
+            line-height: 1.3;
+            max-width: 80px;
           }
         }
       }
       
       .progress-bar-line {
-        top: 20px; // Ajustar para círculos más pequeños
+        top: 26px; // Ajustar para círculos más pequeños (52px / 2)
+        height: 4px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .progress-steps {
+        .step {
+          gap: 0.75rem;
+          
+          .step-circle {
+            width: 46px;
+            height: 46px;
+            border-width: 3px;
+            
+            i {
+              font-size: 18px;
+            }
+          }
+          
+          .step-label {
+            font-size: 0.8125rem;
+            max-width: 70px;
+          }
+        }
+      }
+      
+      .progress-bar-line {
+        top: 23px; // Ajustar para círculos más pequeños (46px / 2)
+        height: 3px;
       }
     }
   }
@@ -475,16 +870,249 @@
       }
     }
   }
+  
+  // Content Grid Layout
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+    
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .grid-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .grid-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      
+      @media (max-width: 1024px) {
+        grid-row: 2;
+      }
+    }
+  }
+  
+  // Enterprise Info Cards
+  .info-card {
+    background: $bg-primary;
+    border-radius: $radius-lg;
+    border: 1px solid $border-light;
+    box-shadow: $shadow-sm;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    
+    @media (max-width: 768px) {
+      border-radius: $radius-md;
+    }
+    
+    &:hover {
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
+      
+      @media (max-width: 768px) {
+        transform: none;
+      }
+    }
+    
+    .card-header-custom {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.5rem 1.5rem 1rem 1.5rem;
+      border-bottom: 1px solid $border-light;
+      background: linear-gradient(to bottom, $bg-tertiary, $bg-primary);
+      
+      @media (max-width: 768px) {
+        padding: 1.25rem 1.25rem 1rem 1.25rem;
+        gap: 0.75rem;
+      }
+      
+      @media (max-width: 480px) {
+        padding: 1rem 1rem 0.875rem 1rem;
+      }
+      
+      .header-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+        border-radius: $radius-md;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        box-shadow: $shadow-sm;
+        
+        @media (max-width: 768px) {
+          width: 44px;
+          height: 44px;
+          font-size: 1.125rem;
+        }
+        
+        @media (max-width: 480px) {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+        }
+        
+        &.small {
+          width: 40px;
+          height: 40px;
+          font-size: 1rem;
+          
+          @media (max-width: 480px) {
+            width: 36px;
+            height: 36px;
+            font-size: 0.9375rem;
+          }
+        }
+      }
+      
+      .header-text {
+        flex: 1;
+        min-width: 0;
+        
+        .header-title {
+          color: $text-primary;
+          font-size: 1.125rem;
+          font-weight: 700;
+          margin: 0 0 0.25rem 0;
+          letter-spacing: -0.01em;
+          
+          @media (max-width: 768px) {
+            font-size: 1rem;
+          }
+          
+          @media (max-width: 480px) {
+            font-size: 0.9375rem;
+          }
+        }
+        
+        h5.header-title {
+          font-size: 1rem;
+          margin: 0;
+          
+          @media (max-width: 480px) {
+            font-size: 0.9375rem;
+          }
+        }
+        
+        .header-subtitle {
+          color: $text-muted;
+          font-size: 0.875rem;
+          margin: 0;
+          
+          @media (max-width: 768px) {
+            font-size: 0.8125rem;
+          }
+          
+          @media (max-width: 480px) {
+            display: none;
+          }
+        }
+      }
+    }
+    
+    .card-content {
+      padding: 1.5rem;
+      
+      @media (max-width: 768px) {
+        padding: 1.25rem;
+      }
+      
+      @media (max-width: 480px) {
+        padding: 1rem;
+      }
+    }
+    
+    // Card específicas
+    &.tracking-info-card {
+      border-left: 4px solid $primary-color;
+      
+      .header-icon {
+        background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+      }
+    }
+    
+    &.items-card {
+      .header-icon {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      }
+    }
+    
+    &.summary-card {
+      background: linear-gradient(to bottom, $bg-primary, $bg-tertiary);
+      
+      .header-icon {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+    }
+    
+    &.help-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border: 2px solid $border-light;
+      
+      .header-icon {
+        background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+      }
+    }
+  }
 }
 
 .tracking-footer {
-  margin-top: auto;
-  background: #ffffff;
-  border-top: 1px solid #e5e7eb;
-  padding: 1.5rem 0;
-  text-align: center;
-  color: #64748b;
-  font-size: 0.875rem;
+  margin-top: 4rem;
+  background: linear-gradient(to bottom, $bg-primary, $bg-tertiary);
+  border-top: 2px solid $border-light;
+  padding: 3rem 0;
+  
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+    padding: 2rem 0;
+  }
+  
+  @media (max-width: 480px) {
+    margin-top: 1.5rem;
+    padding: 1.5rem 0;
+  }
+  
+  .footer-content {
+    text-align: center;
+    padding: 0 1rem;
+    
+    .footer-text {
+      color: $text-secondary;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      
+      @media (max-width: 480px) {
+        font-size: 0.875rem;
+      }
+    }
+    
+    .footer-powered {
+      color: $text-muted;
+      font-size: 0.875rem;
+      margin: 0;
+      
+      @media (max-width: 480px) {
+        font-size: 0.8125rem;
+      }
+      
+      strong {
+        color: $primary-color;
+        font-weight: 700;
+      }
+    }
+  }
 }
 
 // Animations
