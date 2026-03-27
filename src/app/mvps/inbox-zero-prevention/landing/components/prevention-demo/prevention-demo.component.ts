@@ -75,6 +75,15 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   // 🆕 ViewChild for pricing section (IntersectionObserver)
   @ViewChild('pricingSection', { read: ElementRef }) pricingSection?: ElementRef;
 
+  // 🆕 ViewChild for video section (IntersectionObserver)
+  @ViewChild('videoSection', { read: ElementRef }) videoSection?: ElementRef;
+
+  // 🆕 ViewChild for video iframe (play detection)
+  @ViewChild('videoIframe', { read: ElementRef }) videoIframe?: ElementRef;
+
+  // 🆕 Tracking flags for video
+  private videoSectionViewed = false;
+
   // Real metrics from production system
   readonly realMetrics: RealMetric[] = [
     {
@@ -202,10 +211,12 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 🆕 After view init - Setup IntersectionObserver for pricing section
+   * 🆕 After view init - Setup IntersectionObserver for pricing and video sections
    */
   ngAfterViewInit(): void {
     this.setupPricingObserver();
+    this.setupVideoSectionObserver();
+    this.setupVideoPlayTracking();
   }
 
   /**
@@ -454,6 +465,105 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
    */
   goBackToHub(): void {
     this.router.navigate(['/']);
+  }
+
+  /**
+   * 🆕 Track navbar logo click
+   */
+  onNavbarLogoClick(): void {
+    this.trackEvent('navbar_logo_click', {
+      timestamp: Date.now()
+    });
+  }
+
+  /**
+   * 🆕 Track navbar CTA click
+   */
+  onNavbarCtaClick(event: Event): void {
+    this.trackEvent('navbar_cta_click', {
+      timestamp: Date.now()
+    });
+
+    // Smooth scroll to CTA section
+    setTimeout(() => {
+      const ctaSection = document.getElementById('cta-section-form');
+      if (ctaSection) {
+        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
+
+  /**
+   * 🆕 Track video CTA click
+   */
+  onVideoCtaClick(event: Event): void {
+    this.trackEvent('video_cta_click', {
+      timestamp: Date.now()
+    });
+
+    // Smooth scroll to CTA section
+    setTimeout(() => {
+      const ctaSection = document.getElementById('cta-section-form');
+      if (ctaSection) {
+        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
+
+  /**
+   * 🆕 Setup IntersectionObserver for video section tracking
+   */
+  private setupVideoSectionObserver(): void {
+    if (!this.videoSection) return;
+
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.4 // 40% of section visible
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.videoSectionViewed) {
+          this.videoSectionViewed = true;
+          this.trackEvent('video_section_view', {
+            timestamp: Date.now(),
+            scrollDepth: Math.round((window.scrollY / document.body.scrollHeight) * 100)
+          });
+          observer.disconnect(); // Only track once
+        }
+      });
+    }, options);
+
+    observer.observe(this.videoSection.nativeElement);
+  }
+
+  /**
+   * 🆕 Setup video play tracking (YouTube iframe API)
+   * This attempts to detect when the video starts playing
+   */
+  private setupVideoPlayTracking(): void {
+    if (!this.videoIframe) return;
+
+    // Listen for postMessage from YouTube iframe (requires enablejsapi=1)
+    window.addEventListener('message', (event) => {
+      // Check if message is from YouTube
+      if (event.origin !== 'https://www.youtube.com') return;
+
+      try {
+        const data = JSON.parse(event.data);
+        
+        // YouTube iframe API sends event: "onStateChange" with info.playerState
+        // playerState: 1 = playing
+        if (data.event === 'onStateChange' && data.info?.playerState === 1) {
+          this.trackEvent('video_play', {
+            timestamp: Date.now()
+          });
+        }
+      } catch (e) {
+        // Ignore parsing errors from other postMessage events
+      }
+    });
   }
 
   /**

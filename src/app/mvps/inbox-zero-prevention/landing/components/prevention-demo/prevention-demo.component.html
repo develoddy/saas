@@ -1,5 +1,16 @@
 <div class="prevention-demo">
   
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-container container">
+      <div class="logo" (click)="onNavbarLogoClick()">Inbox Zero</div>
+      <button class="btn-navbar-cta" (click)="onNavbarCtaClick($event)">
+        <i class="bi bi-rocket-takeoff-fill"></i>
+        <span>Get Early Access</span>
+      </button>
+    </div>
+  </nav>
+  
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="container">
@@ -59,6 +70,37 @@
 
     <!-- Bottom glow divider -->
     <div class="hero-bottom-glow"></div>
+  </section>
+
+  <!-- Video Demo Section -->
+  <section class="video-demo-section" #videoSection>
+    <div class="container">
+      <!-- Video storytelling header -->
+      <div class="video-header">
+        <h2 class="video-title">See how Inbox Zero removes 80% of support tickets</h2>
+        <p class="video-subtitle">This is exactly what happens after every order — automatically, without your team doing anything.</p>
+      </div>
+
+      <!-- Video container -->
+      <div class="video-container">
+        <iframe 
+          #videoIframe
+          src="https://www.youtube.com/embed/gZAtnhFLNfs?rel=0&modestbranding=1&enablejsapi=1" 
+          title="Inbox Zero Demo Video"
+          frameborder="0" 
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+      
+      <div class="video-cta">
+        <button class="btn-video-cta" (click)="onVideoCtaClick($event)">
+          <i class="bi bi-rocket-takeoff-fill"></i>
+          <span>Request Free Setup</span>
+        </button>
+        <p class="video-cta-hint">Free 14-day trial · No credit card required</p>
+      </div>
+    </div>
   </section>
 
   <!-- Comparison Section: Sin vs Con -->

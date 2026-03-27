@@ -7,6 +7,80 @@
   background: #f8fafc;
   overflow-x: hidden; // ✅ Prevent horizontal scroll
 
+  // ============================================================================
+  // NAVBAR - GLASSMORPHISM SAAS STYLE
+  // ============================================================================
+
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+
+    .navbar-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 20px;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: #3b82f6;
+      }
+    }
+
+    .btn-navbar-cta {
+      background: transparent;
+      color: #3b82f6;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid #3b82f6;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1;
+
+      i {
+        font-size: 16px;
+        transition: transform 0.25s ease;
+      }
+
+      &:hover {
+        background: #3b82f6;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+
+        i {
+          transform: translateX(2px);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+      }
+    }
+  }
+
   .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -46,6 +120,148 @@
       line-height: 1.6;
       max-width: 600px;
       margin: 0 auto;
+    }
+  }
+
+  // ============================================================================
+  // VIDEO DEMO SECTION - SAAS STORYTELLING
+  // ============================================================================
+
+  .video-demo-section {
+    padding: 100px 0;
+    background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+
+    .video-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 56px;
+
+      .video-title {
+        font-size: clamp(2rem, 4vw, 2.75rem);
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 20px;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+      }
+
+      .video-subtitle {
+        font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+        color: #475569;
+        line-height: 1.6;
+        font-weight: 400;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+    }
+
+    .video-container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      padding-bottom: 56.25%; // 16:9 aspect ratio
+      height: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 
+        0 20px 60px -10px rgba(0, 0, 0, 0.15),
+        0 10px 30px -5px rgba(0, 0, 0, 0.08);
+      background: #000;
+      border: 1px solid rgba(226, 232, 240, 0.5);
+
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+    }
+
+    .video-cta {
+      text-align: center;
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+
+      .btn-video-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: transparent;
+        color: #10b981;
+        padding: 16px 36px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 17px;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2.5px solid #10b981;
+        cursor: pointer;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        position: relative;
+        overflow: hidden;
+
+        i {
+          font-size: 18px;
+          transition: transform 0.3s ease;
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+        }
+
+        &:hover {
+          color: white;
+          transform: translateY(-3px);
+          box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+          border-color: transparent;
+
+          &::before {
+            opacity: 1;
+          }
+
+          i {
+            transform: translateX(3px) rotate(-10deg);
+          }
+        }
+
+        &:active {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+      }
+
+      .video-cta-hint {
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &::before {
+          content: '✓';
+          color: #10b981;
+          font-weight: 700;
+          font-size: 16px;
+        }
+      }
     }
   }
 
@@ -1250,7 +1466,7 @@
   // ============================================================================
   
   .cta-section {
-    padding: clamp(3.5rem, 10vw, 6rem) 0; // ✅ Fluid padding
+    padding: 100px 0;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: white;
     text-align: center;
@@ -1773,7 +1989,7 @@
   // ============================================================================
 
   .pricing-section {
-    padding: clamp(4rem, 10vw, 7rem) 0;
+    padding: 100px 0;
     background: #ffffff;
     position: relative;
 
