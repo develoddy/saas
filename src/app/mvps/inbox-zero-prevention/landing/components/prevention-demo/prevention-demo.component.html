@@ -3,7 +3,14 @@
   <!-- Navbar -->
   <nav class="navbar">
     <div class="navbar-container container">
-      <div class="logo" (click)="onNavbarLogoClick()">Inbox Zero</div>
+      <div class="logo" (click)="onNavbarLogoClick()">
+        <i class="bi bi-inbox-fill"></i>
+        <span class="logo-text">Inbox Zero</span>
+        <span class="live-badge">
+          <span class="live-dot"></span>
+          <span class="live-text">LIVE</span>
+        </span>
+      </div>
       <button class="btn-navbar-cta" (click)="onNavbarCtaClick($event)">
         <i class="bi bi-rocket-takeoff-fill"></i>
         <span>Get Early Access</span>
