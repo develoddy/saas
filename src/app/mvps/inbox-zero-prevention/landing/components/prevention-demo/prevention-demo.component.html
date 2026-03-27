@@ -38,7 +38,49 @@
           Your customers get notified at every step. Before they email you. Your store. Your brand. No dev team needed.
         </p>
 
-        <!-- Proof bar -->
+        <!-- Video Demo - Moved into Hero -->
+        <div class="hero-video" #videoSection>
+          <div class="video-container">
+            <iframe 
+              #videoIframe
+              src="https://www.youtube.com/embed/gZAtnhFLNfs?rel=0&modestbranding=1&enablejsapi=1" 
+              title="Inbox Zero Demo Video"
+              frameborder="0" 
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <!-- Enlarged Stats with Context -->
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">-80%</div>
+            <div class="hero-stat-context">fewer support emails</div>
+            <div class="hero-stat-label">Every month, automatically</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">~3h</div>
+            <div class="hero-stat-context">saved answering "where is my order?"</div>
+            <div class="hero-stat-label">Time back in your day</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value">$0</div>
+            <div class="hero-stat-context">no developer required</div>
+            <div class="hero-stat-label">Setup and go live today</div>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="hero-cta">
+          <button class="btn-hero-cta" (click)="onVideoCtaClick($event)">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+            <span>Start Free Trial</span>
+          </button>
+          <p class="hero-cta-hint">Free 14-day trial · No credit card required</p>
+        </div>
+
+        <!-- Proof bar moved to bottom -->
         <div class="hero-proof-bar">
           <div class="proof-item">
             <i class="bi bi-check-circle-fill"></i>
@@ -56,58 +98,11 @@
           </div>
         </div>
 
-        <!-- Stats -->
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-value">-80%</div>
-            <div class="hero-stat-label">Support Tickets</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value">~3h</div>
-            <div class="hero-stat-label">Saved Every Month</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value">$0</div>
-            <div class="hero-stat-label">Setup Cost</div>
-          </div>
-        </div>
-
       </div>
     </div>
 
     <!-- Bottom glow divider -->
     <div class="hero-bottom-glow"></div>
-  </section>
-
-  <!-- Video Demo Section -->
-  <section class="video-demo-section" #videoSection>
-    <div class="container">
-      <!-- Video storytelling header -->
-      <div class="video-header">
-        <h2 class="video-title">See how Inbox Zero removes 80% of support tickets</h2>
-        <p class="video-subtitle">This is exactly what happens after every order — automatically, without your team doing anything.</p>
-      </div>
-
-      <!-- Video container -->
-      <div class="video-container">
-        <iframe 
-          #videoIframe
-          src="https://www.youtube.com/embed/gZAtnhFLNfs?rel=0&modestbranding=1&enablejsapi=1" 
-          title="Inbox Zero Demo Video"
-          frameborder="0" 
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-      </div>
-      
-      <div class="video-cta">
-        <button class="btn-video-cta" (click)="onVideoCtaClick($event)">
-          <i class="bi bi-rocket-takeoff-fill"></i>
-          <span>Request Free Setup</span>
-        </button>
-        <p class="video-cta-hint">Free 14-day trial · No credit card required</p>
-      </div>
-    </div>
   </section>
 
   <!-- Comparison Section: Sin vs Con -->
@@ -247,20 +242,20 @@
     </div>
   </section>
 
-  <!-- How it Works (simplified) -->
+  <!-- How it Works (simplified to 3 steps) -->
   <section class="how-it-works-section">
     <div class="container">
       <div class="section-header">
         <h2>How It Works</h2>
-        <p>Event-driven communication that keeps customers informed</p>
+        <p>Three steps. Zero complexity.</p>
       </div>
 
       <div class="workflow-visual">
         <div class="workflow-step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h4>Customer purchases</h4>
-            <p>Automatic email with order confirmation + tracking link</p>
+            <h4><i class="bi bi-cart-check-fill"></i> Order placed</h4>
+            <p>Customer receives instant confirmation with tracking link</p>
           </div>
         </div>
 
@@ -271,20 +266,8 @@
         <div class="workflow-step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h4>Fulfillment events trigger</h4>
-            <p>Printing started, shipped, delivered, etc.</p>
-          </div>
-        </div>
-
-        <div class="workflow-arrow">
-          <i class="bi bi-arrow-down"></i>
-        </div>
-
-        <div class="workflow-step">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <h4>Automatic proactive emails</h4>
-            <p>Customer receives updates before they have questions</p>
+            <h4><i class="bi bi-send-fill"></i> Auto-notifications sent</h4>
+            <p>Every fulfillment event triggers a proactive email update</p>
           </div>
         </div>
 
@@ -295,8 +278,8 @@
         <div class="workflow-step highlight">
           <div class="step-number">✓</div>
           <div class="step-content">
-            <h4>Zero support tickets</h4>
-            <p>Customer is informed · Never asks "where is my order?"</p>
+            <h4><i class="bi bi-shield-check-fill"></i> Zero support needed</h4>
+            <p>Customer never asks "where is my order?"</p>
           </div>
         </div>
       </div>
