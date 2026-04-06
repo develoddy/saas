@@ -5,6 +5,9 @@ import { TrackingService } from '@shared/../services/tracking.service';
 import { MODULE_KEYS } from '@config/module-keys';
 import { environment } from 'src/environments/environment';
 
+// Declarar YouTube API para TypeScript
+declare var YT: any;
+
 /**
  * Prevention Demo Component
  * 
@@ -208,7 +211,11 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit(): void {
     this.setupPricingObserver();
-    this.setupVideoPlayTracking();
+    
+    // Delay video tracking setup to ensure iframe is fully loaded
+    setTimeout(() => {
+      this.setupVideoPlayTracking();
+    }, 2000);
   }
 
   /**
@@ -522,30 +529,46 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
 
   /**
    * 🆕 Setup video play tracking (YouTube iframe API)
-   * This attempts to detect when the video starts playing
+   * Uses YouTube IFrame Player API for reliable event detection
    */
   private setupVideoPlayTracking(): void {
     if (!this.videoIframe) return;
 
-    // Listen for postMessage from YouTube iframe (requires enablejsapi=1)
-    window.addEventListener('message', (event) => {
-      // Check if message is from YouTube
-      if (event.origin !== 'https://www.youtube.com') return;
+    // Guardar referencia local para evitar undefined en closure
+    const iframeElement = this.videoIframe.nativeElement;
+
+    // Flag to track video play only once per session
+    let videoPlayed = false;
+
+    // Esperar a que la API de YouTube esté lista
+    const initYouTubePlayer = () => {
+      if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+        setTimeout(initYouTubePlayer, 500);
+        return;
+      }
 
       try {
-        const data = JSON.parse(event.data);
-        
-        // YouTube iframe API sends event: "onStateChange" with info.playerState
-        // playerState: 1 = playing
-        if (data.event === 'onStateChange' && data.info?.playerState === 1) {
-          this.trackEvent('video_play', {
-            timestamp: Date.now()
-          });
-        }
-      } catch (e) {
-        // Ignore parsing errors from other postMessage events
+        // Crear player de YouTube
+        const player = new YT.Player(iframeElement, {
+          events: {
+            'onStateChange': (event: any) => {
+              // YT.PlayerState.PLAYING === 1
+              if (event.data === 1 && !videoPlayed) {
+                videoPlayed = true;
+                this.trackEvent('video_play', {
+                  timestamp: Date.now()
+                });
+              }
+            }
+          }
+        });
+      } catch (error) {
+        console.error('Error initializing YouTube player:', error);
       }
-    });
+    };
+
+    // Iniciar
+    initYouTubePlayer();
   }
 
   /**
