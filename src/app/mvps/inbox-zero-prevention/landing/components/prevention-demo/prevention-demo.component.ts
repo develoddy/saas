@@ -54,8 +54,7 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   errorMessage = '';
 
   // 🆕 Setup form state
-  showSetupForm = false;
-  showFormFields = false; // Controls visibility of form fields in CTA section
+  showSetupFormSection = false; // Controls visibility of entire setup form section
   setupFormData = {
     email: '',
     storeUrl: '',
@@ -266,26 +265,6 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 🆕 Show form fields in CTA section
-   */
-  onShowFormFields(): void {
-    this.showFormFields = true;
-    
-    // Track form reveal
-    this.trackEvent('setup_form_revealed', {
-      timestamp: Date.now()
-    });
-    
-    // Smooth scroll to ensure form is visible
-    setTimeout(() => {
-      const ctaSection = document.getElementById('cta-section-form');
-      if (ctaSection) {
-        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 200);
-  }
-
-  /**
    * 🆕 Submit setup request form
    */
   async submitSetupRequest(): Promise<void> {
@@ -477,6 +456,41 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   }
 
   /**
+   * 🆕 Scroll to video section smoothly
+   */
+  scrollToVideo(): void {
+    this.trackEvent('scroll_to_video_click', {
+      timestamp: Date.now()
+    });
+
+    if (this.videoSection) {
+      this.videoSection.nativeElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  }
+
+  /**
+   * 🆕 Show setup form section (triggered after video CTA)
+   */
+  showSetupForm(): void {
+    this.showSetupFormSection = true;
+    
+    this.trackEvent('setup_form_cta_click', {
+      timestamp: Date.now()
+    });
+
+    // Smooth scroll to setup form section
+    setTimeout(() => {
+      const ctaSection = document.getElementById('cta-section-form');
+      if (ctaSection) {
+        ctaSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  }
+
+  /**
    * 🆕 Track navbar CTA click
    */
   onNavbarCtaClick(event: Event): void {
@@ -574,6 +588,19 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
       metric: metric,
       timestamp: Date.now()
     });
+  }
+
+  /**
+   * Get concrete data context for metrics
+   */
+  getMetricContext(label: string): string | null {
+    const contexts: { [key: string]: string } = {
+      'Support tickets/month': '(from 43 to 8 in my own store)',
+      'Time handling tickets': '(from 3h to 35min/month)',
+      '"Where is my order?" questions': '(from 32 to 0)',
+      'Customer satisfaction': '(measurably higher response rates)'
+    };
+    return contexts[label] || null;
   }
 
   /**

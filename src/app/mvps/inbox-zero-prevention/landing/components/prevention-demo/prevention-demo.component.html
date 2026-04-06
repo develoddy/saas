@@ -11,9 +11,9 @@
           <span class="live-text">LIVE</span>
         </span>
       </div>
-      <button class="btn-navbar-cta" (click)="onNavbarCtaClick($event)">
-        <i class="bi bi-rocket-takeoff-fill"></i>
-        <span>Get Early Access</span>
+      <button class="btn-navbar-cta" (click)="scrollToVideo()">
+        <i class="bi bi-play-circle-fill"></i>
+        <span>See it in action</span>
       </button>
     </div>
   </nav>
@@ -71,13 +71,13 @@
           </div>
         </div>
 
-        <!-- CTA Button -->
+        <!-- CTA below video - Show setup form -->
         <div class="hero-cta">
-          <button class="btn-hero-cta" (click)="onVideoCtaClick($event)">
-            <i class="bi bi-rocket-takeoff-fill"></i>
-            <span>Start Free Trial</span>
+          <button class="btn-hero-cta" (click)="showSetupForm()">
+            <i class="bi bi-tools"></i>
+            <span>Set this up for my store</span>
           </button>
-          <p class="hero-cta-hint">Free 14-day trial · No credit card required</p>
+          <p class="hero-cta-hint">Free setup · We'll configure everything for you</p>
         </div>
 
         <!-- Proof bar moved to bottom -->
@@ -225,6 +225,10 @@
           </div>
           <!-- Label -->
           <div class="metric-label">{{ metric.label }}</div>
+          <!-- Concrete data context -->
+          <div class="metric-context" *ngIf="getMetricContext(metric.label)" style="font-size: 0.8rem; color: #6c757d; margin: 4px 0 12px 0; font-style: italic;">
+            {{ getMetricContext(metric.label) }}
+          </div>
           <!-- Before vs After -->
           <div class="metric-comparison">
             <div class="before">
@@ -451,7 +455,7 @@
     <div class="container">
       <div class="section-header">
         <h2>Simple & Transparent Pricing</h2>
-        <p>Try it free for 14 days. No credit card. No tricks.</p>
+        <p>One plan. No hidden fees. Cancel anytime.</p>
       </div>
 
       <div class="pricing-grid">
@@ -488,9 +492,9 @@
             </li>
           </ul>
 
-          <button class="btn btn-pricing-cta-outline" (click)="onCtaClicked('free_trial')">
-            <i class="bi bi-rocket-takeoff-fill"></i>
-            Start Free Trial
+          <button class="btn btn-pricing-cta-outline" (click)="showSetupForm()">
+            <i class="bi bi-tools"></i>
+            Set this up for my store
           </button>
         </div>
 
@@ -537,9 +541,9 @@
             </li>
           </ul>
 
-          <button class="btn btn-pricing-cta" (click)="onCtaClicked('paid_plan')">
-            <i class="bi bi-rocket-takeoff-fill"></i>
-            Start Free Trial
+          <button class="btn btn-pricing-cta" (click)="showSetupForm()">
+            <i class="bi bi-tools"></i>
+            Set this up for my store
           </button>
 
           <div class="pricing-guarantee">
@@ -788,8 +792,8 @@
   </section>
   -->
 
-  <!-- Waitlist / CTA Section - NOW WITH SETUP FORM -->
-  <section class="cta-section" id="cta-section-form">
+  <!-- Setup Form Section - Hidden by default, shown after video CTA -->
+  <section class="cta-section" id="cta-section-form" *ngIf="showSetupFormSection">
     <div class="container">
       <!-- ORIGINAL WAITLIST CONTENT - COMMENTED OUT -->
       <!--
@@ -902,30 +906,19 @@
 
       <!-- NEW: SETUP FORM WITH WAITLIST DESIGN -->
       <div class="cta-content" *ngIf="!setupSubmitted">
-        <!-- Urgency Badge -->
+        <!-- Setup Badge -->
         <div class="urgency-badge">
-          <i class="bi bi-lightning-charge-fill"></i>
-          <span>Early Access — Limited spots</span>
+          <i class="bi bi-tools"></i>
+          <span>Free Setup Assistance</span>
         </div>
         
-        <h2>Get Early Access to Inbox Zero</h2>
+        <h2>Let's set this up for your store</h2>
         <p class="cta-subtitle">
-          We're opening Inbox Zero to ecommerce stores using Printful, Shopify, or similar fulfillment partners.
+          Share a few details and we'll configure everything for you. Works with Printful, Shopify, WooCommerce, and similar platforms.
         </p>
         
-        <!-- Initial CTA Button (before form is revealed) -->
-        <div class="waitlist-form" *ngIf="!showFormFields">
-          <button 
-            type="button"
-            class="btn btn-primary btn-cta-large"
-            (click)="onShowFormFields()">
-            <i class="bi bi-rocket-takeoff-fill"></i>
-            Request Free Setup
-          </button>
-        </div>
-
-        <!-- Setup Form (revealed after button click) -->
-        <form class="waitlist-form" *ngIf="showFormFields" (ngSubmit)="submitSetupRequest()">
+        <!-- Setup Form (shown directly) -->
+        <form class="waitlist-form" (ngSubmit)="submitSetupRequest()">
           <!-- Email -->
           <div class="input-wrapper">
             <i class="bi bi-envelope-fill"></i>
@@ -986,8 +979,8 @@
             class="btn btn-primary btn-cta-large"
             [disabled]="isSubmittingSetup">
             <span *ngIf="!isSubmittingSetup">
-              <i class="bi bi-rocket-takeoff-fill"></i>
-              Request Free Setup
+              <i class="bi bi-tools"></i>
+              Start my setup
             </span>
             <span *ngIf="isSubmittingSetup">
               <i class="bi bi-arrow-repeat spin"></i>
@@ -1009,7 +1002,7 @@
             <i class="bi bi-person-circle"></i>
             <i class="bi bi-person-circle"></i>
           </div>
-          <span>Join early adopters validating Inbox Zero</span>
+          <span>Join ecommerce founders using Inbox Zero</span>
         </div>
 
         <!-- Benefits -->
@@ -1017,15 +1010,15 @@
           <div class="benefit">
             <i class="bi bi-tag-fill"></i>
             <div class="benefit-text">
-              <strong>Early access pricing</strong>
-              <span>Lock in special rates before public launch</span>
+              <strong>Simple pricing</strong>
+              <span>One transparent plan, no hidden fees</span>
             </div>
           </div>
           <div class="benefit">
             <i class="bi bi-calendar-check-fill"></i>
             <div class="benefit-text">
-              <strong>Priority onboarding</strong>
-              <span>Get set up faster with dedicated support</span>
+              <strong>Quick setup</strong>
+              <span>We configure everything for you</span>
             </div>
           </div>
           <div class="benefit">
