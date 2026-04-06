@@ -74,14 +74,8 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   // 🆕 ViewChild for pricing section (IntersectionObserver)
   @ViewChild('pricingSection', { read: ElementRef }) pricingSection?: ElementRef;
 
-  // 🆕 ViewChild for video section (IntersectionObserver)
-  @ViewChild('videoSection', { read: ElementRef }) videoSection?: ElementRef;
-
   // 🆕 ViewChild for video iframe (play detection)
   @ViewChild('videoIframe', { read: ElementRef }) videoIframe?: ElementRef;
-
-  // 🆕 Tracking flags for video
-  private videoSectionViewed = false;
 
   // Real metrics from production system
   readonly realMetrics: RealMetric[] = [
@@ -210,11 +204,10 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * 🆕 After view init - Setup IntersectionObserver for pricing and video sections
+   * 🆕 After view init - Setup IntersectionObserver for pricing section and video play tracking
    */
   ngAfterViewInit(): void {
     this.setupPricingObserver();
-    this.setupVideoSectionObserver();
     this.setupVideoPlayTracking();
   }
 
@@ -463,8 +456,9 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
       timestamp: Date.now()
     });
 
-    if (this.videoSection) {
-      this.videoSection.nativeElement.scrollIntoView({ 
+    const videoSection = document.getElementById('hero-video-section');
+    if (videoSection) {
+      videoSection.scrollIntoView({ 
         behavior: 'smooth', 
         block: 'center' 
       });
@@ -524,33 +518,7 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
     }, 100);
   }
 
-  /**
-   * 🆕 Setup IntersectionObserver for video section tracking
-   */
-  private setupVideoSectionObserver(): void {
-    if (!this.videoSection) return;
 
-    const options = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.4 // 40% of section visible
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !this.videoSectionViewed) {
-          this.videoSectionViewed = true;
-          this.trackEvent('video_section_view', {
-            timestamp: Date.now(),
-            scrollDepth: Math.round((window.scrollY / document.body.scrollHeight) * 100)
-          });
-          observer.disconnect(); // Only track once
-        }
-      });
-    }, options);
-
-    observer.observe(this.videoSection.nativeElement);
-  }
 
   /**
    * 🆕 Setup video play tracking (YouTube iframe API)
