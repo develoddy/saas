@@ -8,12 +8,12 @@
         <span class="logo-text">Inbox Zero</span>
         <span class="live-badge">
           <span class="live-dot"></span>
-          <span class="live-text">LIVE</span>
+          <span class="live-text">BETA</span>
         </span>
       </div>
       <button class="btn-navbar-cta" (click)="scrollToVideo()">
         <i class="bi bi-play-circle-fill"></i>
-        <span>See it in action</span>
+        <span>Ver cómo funciona</span>
       </button>
     </div>
   </nav>
@@ -26,16 +26,16 @@
         <!-- Pain trigger -->
         <div class="hero-pain-trigger">
           <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>Does this sound familiar?</span>
+          <span>¿Te suena familiar esto?</span>
         </div>
 
         <h1 class="hero-title">
-          Sell on Etsy? Using Printful?<br>
-          <span class="highlight-solution">Stop answering "where is my order" 40 times/month.</span>
+          ¿Tienes tienda con Printful?<br>
+          <span class="highlight-solution">Automatiza los emails de estado y deja de responder "¿dónde está mi pedido?"</span>
         </h1>
 
         <p class="hero-subtitle">
-          Your buyers get automatic updates at every step — printed, shipped, delivered. They check the tracking page instead of messaging you. Setup in 30 minutes.
+          Tus clientes reciben actualizaciones automáticas en cada paso: impreso, enviado, entregado. Consultan la página de seguimiento en vez de escribirte. Lo configuro contigo en 30 minutos.
         </p>
 
         <!-- Video Demo - Moved into Hero -->
@@ -55,19 +55,19 @@
         <!-- Enlarged Stats with Context -->
         <div class="hero-stats">
           <div class="hero-stat">
-            <div class="hero-stat-value">-80%</div>
-            <div class="hero-stat-context">fewer support emails</div>
-            <div class="hero-stat-label">Every month, automatically</div>
+            <div class="hero-stat-value">Menos emails</div>
+            <div class="hero-stat-context">de soporte cada mes</div>
+            <div class="hero-stat-label">Automáticamente</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-value">~3h</div>
-            <div class="hero-stat-context">saved answering "where is my order?"</div>
-            <div class="hero-stat-label">Time back in your day</div>
+            <div class="hero-stat-value">Más tiempo</div>
+            <div class="hero-stat-context">para hacer crecer tu tienda</div>
+            <div class="hero-stat-label">Recupera tus horas</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-value">$0</div>
-            <div class="hero-stat-context">no developer required</div>
-            <div class="hero-stat-label">Setup and go live today</div>
+            <div class="hero-stat-value">Sin código</div>
+            <div class="hero-stat-context">yo lo configuro contigo</div>
+            <div class="hero-stat-label">Sin conocimientos técnicos</div>
           </div>
         </div>
 
@@ -75,26 +75,26 @@
         <div class="hero-cta">
           <button class="btn-hero-cta" (click)="showSetupForm()">
             <i class="bi bi-tools"></i>
-            <span>Set this up for my Etsy shop</span>
+            <span>Quiero probarlo gratis en mi tienda</span>
           </button>
-          <p class="hero-cta-hint">Free setup — we handle everything, you just approve</p>
+          <p class="hero-cta-hint">Lo configuro yo contigo — tú solo apruebas</p>
         </div>
 
         <!-- Proof bar moved to bottom -->
         <div class="hero-proof-bar">
           <div class="proof-item">
             <i class="bi bi-check-circle-fill"></i>
-            <span>Live with <strong>real Etsy + Printful sellers</strong></span>
+            <span>En pruebas con <strong>tiendas reales usando Printful</strong></span>
           </div>
           <div class="proof-divider"></div>
           <div class="proof-item">
             <i class="bi bi-check-circle-fill"></i>
-            <span>Built by a <strong>founder tired of WISMO tickets</strong></span>
+            <span>Creado por un <strong>fundador cansado de esos tickets</strong></span>
           </div>
           <div class="proof-divider"></div>
           <div class="proof-item">
             <i class="bi bi-check-circle-fill"></i>
-            <span>Works with <strong>your existing setup — zero code</strong></span>
+            <span>Funciona con <strong>tu setup actual — sin código</strong></span>
           </div>
         </div>
 
@@ -109,8 +109,8 @@
   <section class="comparison-section">
     <div class="container">
       <div class="section-header">
-        <h2>The Real Cost of Reactive Support</h2>
-        <p>Your time is too valuable to answer the same question 40 times/month</p>
+        <h2>El verdadero costo del soporte reactivo</h2>
+        <p>Tu tiempo vale demasiado como para responder lo mismo decenas de veces al mes</p>
       </div>
 
       <div class="comparison-grid">
@@ -119,7 +119,7 @@
         <div class="comparison-card without-system">
           <div class="card-header">
             <i class="bi bi-x-circle-fill"></i>
-            <h3>Without Inbox Zero</h3>
+            <h3>Sin Inbox Zero</h3>
           </div>
 
           <div class="card-content">
@@ -127,7 +127,7 @@
             <div class="inbox-visual">
               <div class="inbox-header-bar">
                 <i class="bi bi-inbox-fill"></i>
-                <span>Support Inbox</span>
+                <span>Bandeja de soporte</span>
               </div>
               <div class="tickets-flood">
                 <div class="ticket-item" *ngFor="let ticket of eliminatedTickets.slice(0, 8)">
@@ -140,18 +140,18 @@
             <!-- Negative stats -->
             <div class="stats-negative">
               <div class="stat-item">
-                <div class="stat-value">40+</div>
-                <div class="stat-label">tickets/month</div>
+                <div class="stat-value">Muchos</div>
+                <div class="stat-label">tickets/mes</div>
               </div>
               <div class="stat-item">
-                <div class="stat-value">~3h</div>
-                <div class="stat-label">wasted/month</div>
+                <div class="stat-value">Horas</div>
+                <div class="stat-label">perdidas/mes</div>
               </div>
               <div class="stat-item">
                 <div class="stat-icon-negative">
                   <i class="bi bi-emoji-frown-fill"></i>
                 </div>
-                <div class="stat-label">anxious customers</div>
+                <div class="stat-label">clientes ansiosos</div>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@
         <div class="comparison-card with-system">
           <div class="card-header success">
             <i class="bi bi-check-circle-fill"></i>
-            <h3>With Inbox Zero</h3>
+            <h3>Con Inbox Zero</h3>
           </div>
 
           <div class="card-content">
@@ -184,18 +184,18 @@
             <!-- Positive stats -->
             <div class="stats-positive">
               <div class="stat-item">
-                <div class="stat-value">8</div>
-                <div class="stat-label">tickets/month (-80%)</div>
+                <div class="stat-value">Pocos</div>
+                <div class="stat-label">tickets/mes</div>
               </div>
               <div class="stat-item">
-                <div class="stat-value">35m</div>
-                <div class="stat-label">handling time</div>
+                <div class="stat-value">Minutos</div>
+                <div class="stat-label">de gestión</div>
               </div>
               <div class="stat-item">
                 <div class="stat-icon-positive">
                   <i class="bi bi-emoji-smile-fill"></i>
                 </div>
-                <div class="stat-label">informed customers</div>
+                <div class="stat-label">clientes informados</div>
               </div>
             </div>
           </div>
@@ -208,8 +208,8 @@
   <section class="metrics-section">
     <div class="container">
       <div class="section-header">
-        <h2>Real Metrics from Production</h2>
-        <p>100+ orders/month · Print-on-Demand ecommerce</p>
+        <h2>Por qué funciona esto</h2>
+        <p>La idea simple detrás de Inbox Zero</p>
       </div>
 
       <div class="metrics-grid">
@@ -250,16 +250,16 @@
   <section class="how-it-works-section">
     <div class="container">
       <div class="section-header">
-        <h2>How It Works</h2>
-        <p>Three steps. Zero complexity.</p>
+        <h2>Cómo funciona</h2>
+        <p>Tres pasos. Sin complicaciones.</p>
       </div>
 
       <div class="workflow-visual">
         <div class="workflow-step">
           <div class="step-number">1</div>
           <div class="step-content">
-            <h4><i class="bi bi-cart-check-fill"></i> Order placed</h4>
-            <p>Customer receives instant confirmation with tracking link</p>
+            <h4><i class="bi bi-cart-check-fill"></i> Se hace el pedido</h4>
+            <p>El cliente recibe confirmación instantánea con enlace de seguimiento</p>
           </div>
         </div>
 
@@ -270,8 +270,8 @@
         <div class="workflow-step">
           <div class="step-number">2</div>
           <div class="step-content">
-            <h4><i class="bi bi-send-fill"></i> Auto-notifications sent</h4>
-            <p>Every fulfillment event triggers a proactive email update</p>
+            <h4><i class="bi bi-send-fill"></i> Notificaciones automáticas</h4>
+            <p>Cada evento de Printful dispara un email proactivo</p>
           </div>
         </div>
 
@@ -282,8 +282,8 @@
         <div class="workflow-step highlight">
           <div class="step-number">✓</div>
           <div class="step-content">
-            <h4><i class="bi bi-shield-check-fill"></i> Zero support needed</h4>
-            <p>Customer never asks "where is my order?"</p>
+            <h4><i class="bi bi-shield-check-fill"></i> Cero soporte necesario</h4>
+            <p>El cliente nunca te pregunta "¿dónde está mi pedido?"</p>
           </div>
         </div>
       </div>
@@ -294,8 +294,8 @@
   <section class="tracking-preview-section">
     <div class="container">
       <div class="section-header">
-        <h2>What your customer sees</h2>
-        <p>Instead of emailing you, they check this page — and already have their answer.</p>
+        <h2>Lo que ve tu cliente</h2>
+        <p>En vez de escribirte, consultan esta página y ya tienen su respuesta.</p>
       </div>
 
       <div class="tracking-mockup-wrapper">
@@ -320,8 +320,8 @@
 
             <!-- Top bar -->
             <div class="tp-topbar">
-              <span class="tp-store-name">YourStore</span>
-              <span class="tp-tag">Order Tracking</span>
+              <span class="tp-store-name">TuTienda</span>
+              <span class="tp-tag">Seguimiento de pedido</span>
             </div>
 
             <!-- Order header -->
@@ -329,13 +329,13 @@
               <div class="tp-order-id">
                 <i class="bi bi-bag-check-fill"></i>
                 <div>
-                  <span class="tp-label">Order number</span>
+                  <span class="tp-label">Número de pedido</span>
                   <strong>#IZ-2847</strong>
                 </div>
               </div>
               <div class="tp-status-badge">
                 <i class="bi bi-truck"></i>
-                In Transit
+                En tránsito
               </div>
             </div>
 
@@ -349,25 +349,25 @@
                   <div class="tp-step-dot">
                     <i class="bi bi-check-lg"></i>
                   </div>
-                  <span>Order placed</span>
+                  <span>Pedido creado</span>
                 </div>
                 <div class="tp-step completed">
                   <div class="tp-step-dot">
                     <i class="bi bi-check-lg"></i>
                   </div>
-                  <span>Printing done</span>
+                  <span>Impreso</span>
                 </div>
                 <div class="tp-step active">
                   <div class="tp-step-dot">
                     <i class="bi bi-truck"></i>
                   </div>
-                  <span>Shipped</span>
+                  <span>Enviado</span>
                 </div>
                 <div class="tp-step pending">
                   <div class="tp-step-dot">
                     <i class="bi bi-house-door"></i>
                   </div>
-                  <span>Delivered</span>
+                  <span>Entregado</span>
                 </div>
               </div>
             </div>
@@ -377,14 +377,14 @@
               <div class="tp-info-card">
                 <i class="bi bi-calendar-check"></i>
                 <div>
-                  <span class="tp-label">Estimated delivery</span>
-                  <strong>Mar 20 – Mar 24</strong>
+                  <span class="tp-label">Entrega estimada</span>
+                  <strong>20 Mar – 24 Mar</strong>
                 </div>
               </div>
               <div class="tp-info-card">
                 <i class="bi bi-box-seam"></i>
                 <div>
-                  <span class="tp-label">Carrier</span>
+                  <span class="tp-label">Transportista</span>
                   <strong>USPS · #9400111899223</strong>
                 </div>
               </div>
@@ -400,8 +400,8 @@
               <i class="bi bi-send-check-fill"></i>
             </div>
             <div class="tp-callout-text">
-              <strong>Email sent at every step</strong>
-              <span>Customer gets notified automatically — printed, shipped, and delivered.</span>
+              <strong>Email en cada paso</strong>
+              <span>El cliente recibe notificación automática: impreso, enviado, entregado.</span>
             </div>
           </div>
           <div class="tp-callout-item">
@@ -409,8 +409,8 @@
               <i class="bi bi-link-45deg"></i>
             </div>
             <div class="tp-callout-text">
-              <strong>Tracking link inside every email</strong>
-              <span>One click and they see this page. No support ticket needed.</span>
+              <strong>Enlace de seguimiento en cada email</strong>
+              <span>Un clic y ven esta página. No hace falta ticket de soporte.</span>
             </div>
           </div>
           <div class="tp-callout-item">
@@ -418,8 +418,8 @@
               <i class="bi bi-inbox"></i>
             </div>
             <div class="tp-callout-text">
-              <strong>Your inbox stays empty</strong>
-              <span>They already have the answer before they even think to ask.</span>
+              <strong>Tu bandeja permanece vacía</strong>
+              <span>Ya tienen la respuesta antes de pensar en preguntar.</span>
             </div>
           </div>
         </div>
@@ -435,15 +435,15 @@
         <div class="testimonial-quote">
           <i class="bi bi-quote"></i>
           <p>
-            "I built this system for my own ecommerce store. Went from 40+ 
-            monthly tickets about order status to 8. Customers 
-            receive automatic updates at every step and never have to ask."
+            "Construí esto para mi propia tienda de ecommerce. 
+            Me cansé de responder decenas de veces al mes "¿dónde está mi pedido?". 
+            Ahora los clientes reciben actualizaciones automáticas en cada paso y nunca tienen que preguntar."
           </p>
         </div>
         <div class="testimonial-author">
           <div class="author-info">
             <strong>Eddy Lujan</strong>
-            <span>Founder · Ecommerce owner using Printful</span>
+            <span>Fundador · Dueño de tienda usando Printful</span>
           </div>
         </div>
       </div>
@@ -454,8 +454,8 @@
   <section class="pricing-section" #pricingSection>
     <div class="container">
       <div class="section-header">
-        <h2>Simple & Transparent Pricing</h2>
-        <p>One plan. No hidden fees. Cancel anytime.</p>
+        <h2>Busco 3 tiendas para probarlo gratis</h2>
+        <p>Sin costo durante 30 días a cambio de feedback</p>
       </div>
 
       <div class="pricing-grid">
@@ -463,38 +463,38 @@
         <div class="pricing-card trial">
           <div class="pricing-badge">
             <i class="bi bi-star-fill"></i>
-            <span>Perfect to try</span>
+            <span>Prueba beta</span>
           </div>
           
-          <h3>Free Trial</h3>
+          <h3>Prueba Gratis</h3>
           
           <div class="pricing-value">
             <span class="price">$0</span>
-            <span class="period">for 14 days</span>
+            <span class="period">durante 30 días</span>
           </div>
           
           <ul class="pricing-features">
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span>Full access to all features</span>
+              <span>Acceso completo a todas las funciones</span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span>No credit card required</span>
+              <span>Sin tarjeta de crédito</span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span>Setup guided by the founder</span>
+              <span>Lo configuro yo contigo personalmente</span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span>Cancel anytime</span>
+              <span>Solo pido feedback honesto</span>
             </li>
           </ul>
 
           <button class="btn btn-pricing-cta-outline" (click)="showSetupForm()">
             <i class="bi bi-tools"></i>
-            Set this up for my store
+            Quiero probarlo gratis
           </button>
         </div>
 
@@ -502,53 +502,53 @@
         <div class="pricing-card paid">
           <div class="pricing-badge highlight">
             <i class="bi bi-lightning-charge-fill"></i>
-            <span>Recommended</span>
+            <span>Después de la prueba</span>
           </div>
           
-          <h3>Paid Plan</h3>
+          <h3>Plan Futuro</h3>
           
           <div class="pricing-value">
             <span class="price">$29</span>
-            <span class="period">per month</span>
+            <span class="period">al mes</span>
           </div>
           
-          <p class="pricing-subtitle">After trial · Cancel anytime</p>
+          <p class="pricing-subtitle">Después de la prueba · Sin permanencia</p>
           
           <ul class="pricing-features expanded">
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Printful webhooks integration</strong></span>
+              <span><strong>Integración con webhooks de Printful</strong></span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Automatic proactive emails</strong> for order status</span>
+              <span><strong>Emails automáticos proactivos</strong> de estado de pedido</span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Token-based tracking page</strong> — no login required</span>
+              <span><strong>Página de seguimiento con token</strong> — sin login</span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Works with WooCommerce and Shopify</strong></span>
+              <span><strong>Funciona con WooCommerce y Shopify</strong></span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Direct support from the founder</strong></span>
+              <span><strong>Soporte directo del fundador</strong></span>
             </li>
             <li>
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Setup included</strong> — we configure everything</span>
+              <span><strong>Configuración incluida</strong> — lo hacemos todo nosotros</span>
             </li>
           </ul>
 
           <button class="btn btn-pricing-cta" (click)="showSetupForm()">
             <i class="bi bi-tools"></i>
-            Set this up for my store
+            Quiero probarlo gratis
           </button>
 
           <div class="pricing-guarantee">
             <i class="bi bi-shield-check-fill"></i>
-            <span>No commitment · Cancel anytime</span>
+            <span>Sin permanencia · Cancela cuando quieras</span>
           </div>
         </div>
       </div>
@@ -559,78 +559,78 @@
   <section class="faq-section">
     <div class="container">
       <div class="section-header">
-        <h2>Common Questions</h2>
-        <p>Everything you need to know before starting</p>
+        <h2>Preguntas frecuentes</h2>
+        <p>Todo lo que necesitas saber antes de empezar</p>
       </div>
 
       <div class="faq-grid">
         <!-- FAQ Item 1 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(0)"
-             (click)="toggleFaq(0, 'Do I need a developer to set it up?')">
+             (click)="toggleFaq(0, '¿Necesito un desarrollador para configurarlo?')">
           <div class="faq-question">
             <i class="bi bi-question-circle-fill"></i>
-            <h3>Do I need a developer to set it up?</h3>
+            <h3>¿Necesito un desarrollador para configurarlo?</h3>
             <i class="bi bi-chevron-down faq-toggle-icon"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(0)">
-            <p>No. We set it up for you. You just need access to your store and Printful. The full setup takes less than 30 minutes and we guide you through every step.</p>
+            <p>No. Lo configuro yo contigo. Solo necesitas acceso a tu tienda y Printful. La configuración completa toma menos de 30 minutos y te guío en cada paso.</p>
           </div>
         </div>
 
         <!-- FAQ Item 2 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(1)"
-             (click)="toggleFaq(1, 'Does it work with Printful + Shopify or WooCommerce?')">
+             (click)="toggleFaq(1, '¿Funciona con Printful + Shopify o WooCommerce?')">
           <div class="faq-question">
             <i class="bi bi-question-circle-fill"></i>
-            <h3>Does it work with Printful + Shopify or WooCommerce?</h3>
+            <h3>¿Funciona con Printful + Shopify o WooCommerce?</h3>
             <i class="bi bi-chevron-down faq-toggle-icon"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(1)">
-            <p>Yes, it works with both. Inbox Zero connects directly to Printful webhooks, so it doesn't matter which platform you use for your store.</p>
+            <p>Sí, funciona con ambas. Inbox Zero se conecta directamente a los webhooks de Printful, así que no importa qué plataforma uses para tu tienda.</p>
           </div>
         </div>
 
         <!-- FAQ Item 3 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(2)"
-             (click)="toggleFaq(2, 'What if the customer doesn\'t receive the email?')">
+             (click)="toggleFaq(2, '¿Qué pasa si el cliente no recibe el email?')">
           <div class="faq-question">
             <i class="bi bi-question-circle-fill"></i>
-            <h3>What if the customer doesn't receive the email?</h3>
+            <h3>¿Qué pasa si el cliente no recibe el email?</h3>
             <i class="bi bi-chevron-down faq-toggle-icon"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(2)">
-            <p>Every email includes a tracking link that the customer can save and check whenever they want. Plus, we send multiple emails at each stage of the order to maximize delivery.</p>
+            <p>Cada email incluye un enlace de seguimiento que el cliente puede guardar y consultar cuando quiera. Además, enviamos múltiples emails en cada etapa del pedido para maximizar la entrega.</p>
           </div>
         </div>
 
         <!-- FAQ Item 4 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(3)"
-             (click)="toggleFaq(3, 'Will my customers know the emails come from a third party?')">
+             (click)="toggleFaq(3, '¿Mis clientes sabrán que los emails vienen de un tercero?')">
           <div class="faq-question">
             <i class="bi bi-question-circle-fill"></i>
-            <h3>Will my customers know the emails come from a third party?</h3>
+            <h3>¿Mis clientes sabrán que los emails vienen de un tercero?</h3>
             <i class="bi bi-chevron-down faq-toggle-icon"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(3)">
-            <p>No. Emails are sent with your brand. We include your logo, colors, and domain. To your customers, it looks like you're sending them directly.</p>
+            <p>No. Los emails se envían con tu marca. Incluimos tu logo, colores y dominio. Para tus clientes, parece que los envías tú directamente.</p>
           </div>
         </div>
 
         <!-- FAQ Item 5 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(4)"
-             (click)="toggleFaq(4, 'How long does setup take?')">
+             (click)="toggleFaq(4, '¿Cuánto tarda la configuración?')">
           <div class="faq-question">
             <i class="bi bi-question-circle-fill"></i>
-            <h3>How long does setup take?</h3>
+            <h3>¿Cuánto tarda la configuración?</h3>
             <i class="bi bi-chevron-down faq-toggle-icon"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(4)">
-            <p>Between 20 and 30 minutes. We schedule a call, connect your Printful, configure the emails with your brand, and do a test order. Ready for production the same day.</p>
+            <p>Entre 20 y 30 minutos. Agendamos una llamada, conectamos tu Printful, configuramos los emails con tu marca y hacemos un pedido de prueba. Listo para usar el mismo día.</p>
           </div>
         </div>
       </div>
@@ -639,8 +639,8 @@
         <div class="faq-footer-content">
           <i class="bi bi-chat-dots-fill"></i>
           <div>
-            <strong>Have more questions?</strong>
-            <p>Write us directly. I personally answer every message.</p>
+            <strong>¿Tienes más preguntas?</strong>
+            <p>Escríbeme directamente. Yo personalmente respondo cada mensaje.</p>
           </div>
         </div>
       </div>
@@ -909,12 +909,12 @@
         <!-- Setup Badge -->
         <div class="urgency-badge">
           <i class="bi bi-tools"></i>
-          <span>Free Setup Assistance</span>
+          <span>Configuración gratis</span>
         </div>
         
-        <h2>Let's set this up for your store</h2>
+        <h2>Déjame configurarlo en tu tienda</h2>
         <p class="cta-subtitle">
-          Share a few details and we'll configure everything for you. Works with Printful, Shopify, WooCommerce, and similar platforms.
+          Comparte algunos datos y lo configuro todo por ti. Funciona con Printful, Shopify, WooCommerce y plataformas similares.
         </p>
         
         <!-- Setup Form (shown directly) -->
@@ -925,7 +925,7 @@
             <input 
               type="email" 
               class="form-control form-control-large" 
-              placeholder="Enter your business email"
+              placeholder="Tu email de contacto"
               [(ngModel)]="setupFormData.email"
               name="email"
               [disabled]="isSubmittingSetup"
@@ -938,12 +938,12 @@
             <input 
               type="text" 
               class="form-control form-control-large" 
-              placeholder="Your store URL (e.g., mystore.com)"
+              placeholder="URL de tu tienda (ej. mitienda.com)"
               [(ngModel)]="setupFormData.storeUrl"
               name="storeUrl"
               [disabled]="isSubmittingSetup">
           </div>
-          <small class="form-text text-muted" style="display: block; margin-top: -12px; margin-bottom: 16px; margin-left: 4px; font-size: 0.875rem; color: #6c757d; font-style: italic;">Optional — you can share this later</small>
+          <small class="form-text text-muted" style="display: block; margin-top: -12px; margin-bottom: 16px; margin-left: 4px; font-size: 0.875rem; color: #6c757d; font-style: italic;">Opcional — puedes compartirlo después</small>
 
           <!-- Printful API Key - Campo comentado. Se solicita por email después del setup -->
           <!-- <div class="input-wrapper">
@@ -966,10 +966,10 @@
               [(ngModel)]="setupFormData.platform"
               name="platform"
               [disabled]="isSubmittingSetup">
-              <option value="">Select platform (optional)</option>
+              <option value="">Selecciona plataforma (opcional)</option>
               <option value="WooCommerce">WooCommerce</option>
               <option value="Shopify">Shopify</option>
-              <option value="Other">Other</option>
+              <option value="Other">Otra</option>
             </select>
           </div>
           
@@ -980,11 +980,11 @@
             [disabled]="isSubmittingSetup">
             <span *ngIf="!isSubmittingSetup">
               <i class="bi bi-tools"></i>
-              Start my setup
+              Quiero probarlo gratis
             </span>
             <span *ngIf="isSubmittingSetup">
               <i class="bi bi-arrow-repeat spin"></i>
-              Submitting...
+              Enviando...
             </span>
           </button>
           
@@ -1002,7 +1002,7 @@
             <i class="bi bi-person-circle"></i>
             <i class="bi bi-person-circle"></i>
           </div>
-          <span>Join ecommerce founders using Inbox Zero</span>
+          <span>Únete a fundadores probando Inbox Zero</span>
         </div>
 
         <!-- Benefits -->
@@ -1010,22 +1010,22 @@
           <div class="benefit">
             <i class="bi bi-tag-fill"></i>
             <div class="benefit-text">
-              <strong>Simple pricing</strong>
-              <span>One transparent plan, no hidden fees</span>
+              <strong>Gratis durante 30 días</strong>
+              <span>Solo pido feedback honesto</span>
             </div>
           </div>
           <div class="benefit">
             <i class="bi bi-calendar-check-fill"></i>
             <div class="benefit-text">
-              <strong>Quick setup</strong>
-              <span>We configure everything for you</span>
+              <strong>Configuración rápida</strong>
+              <span>Lo configuro yo contigo</span>
             </div>
           </div>
           <div class="benefit">
             <i class="bi bi-headset"></i>
             <div class="benefit-text">
-              <strong>Direct founder support</strong>
-              <span>Work directly with the team building Inbox Zero</span>
+              <strong>Soporte directo del fundador</strong>
+              <span>Trabajas directamente conmigo</span>
             </div>
           </div>
         </div>
@@ -1033,7 +1033,7 @@
         <!-- Risk Reversal -->
         <div class="guarantee">
           <i class="bi bi-shield-fill-check"></i>
-          <span>No credit card • No commitment • Built by ecommerce founder who lived this pain</span>
+          <span>Sin tarjeta • Sin compromiso • Creado por un fundador que vivió este problema</span>
         </div>
       </div>
 
@@ -1042,23 +1042,23 @@
         <div class="success-icon">
           <i class="bi bi-check-circle-fill"></i>
         </div>
-        <h2>Request received! 🎉</h2>
+        <h2>¡Solicitud recibida! 🎉</h2>
         <p class="success-message">
-          We've received your setup request. We'll contact you via email within the next 24 hours to configure your account.
+          He recibido tu solicitud. Te contactaré por email en las próximas 24 horas para configurar tu cuenta.
         </p>
         
         <div class="next-steps">
-          <h3><i class="bi bi-calendar-check-fill"></i> What happens next?</h3>
+          <h3><i class="bi bi-calendar-check-fill"></i> ¿Qué sigue ahora?</h3>
           <ol>
-            <li><strong>Check your email</strong> for next steps</li>
-            <li><strong>Complete setup</strong> in less than 24 hours</li>
-            <li><strong>Get direct support</strong> throughout the process</li>
+            <li><strong>Revisa tu email</strong> para los próximos pasos</li>
+            <li><strong>Configuración completa</strong> en menos de 24 horas</li>
+            <li><strong>Soporte directo</strong> durante todo el proceso</li>
           </ol>
         </div>
         
         <button class="btn btn-outline" (click)="goBackToHub()">
           <i class="bi bi-arrow-left"></i>
-          Explore Other MVPs
+          Explorar otros MVPs
         </button>
       </div>
     </div>
@@ -1069,8 +1069,8 @@
     <div class="container">
       <p>
         <i class="bi bi-info-circle"></i>
-        <strong>For Etsy sellers:</strong> If you use Printful and spend hours 
-        every week answering "where is my order?", this was built for you.
+        <strong>Para tiendas con Printful:</strong> Si pasas horas cada semana 
+        respondiendo "¿dónde está mi pedido?", esto lo construí para ti.
       </p>
     </div>
   </section>
