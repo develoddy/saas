@@ -1,295 +1,300 @@
-<div class="mvps-hub labs-mode">
-    <!-- Header Profesional -->
-    <header class="hub-header-enhanced">
-        <div class="header-backdrop"></div>
+<div class="mvps-hub">
+    
+    <!-- Navbar Moderna: Clean, Sticky, Minimal -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- Mobile Hamburger -->
+            <button class="btn-hamburger" (click)="toggleMobileMenu()" aria-label="Abrir menú">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <!-- Logo -->
+            <div class="logo">
+                <i class="bi bi-gear-fill"></i>
+                <span class="logo-text">LujanDev <span class="logo-secondary">Labs</span></span>
+            </div>
+
+            <!-- Status (Desktop) -->
+            <div class="navbar-status" *ngIf="!isLoading">
+                <span class="status-dot"></span>
+                <span class="status-text">Sistema activo</span>
+            </div>
+
+            <!-- Dashboard Button (Desktop) -->
+            <button class="btn-navbar-dashboard btn-desktop" 
+                    *ngIf="isAuthenticated && currentTenant" 
+                    (click)="goToDashboard()">
+                <i class="bi bi-speedometer2"></i>
+                <span>Mi Dashboard</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar Menu -->
+    <div class="mobile-sidebar" [class.open]="isMobileMenuOpen">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="bi bi-gear-fill"></i>
+                <span class="logo-text">LujanDev Labs</span>
+            </div>
+            <button class="btn-close" (click)="closeMobileMenu()" aria-label="Cerrar menú">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a class="nav-link" (click)="scrollToSection('experiments'); closeMobileMenu()">
+                <i class="bi bi-flask"></i>
+                <span>Experimentos</span>
+            </a>
+            <a class="nav-link" (click)="scrollToSection('how-it-works'); closeMobileMenu()">
+                <i class="bi bi-info-circle"></i>
+                <span>Cómo funciona</span>
+            </a>
+            <a class="nav-link" *ngIf="isAuthenticated && currentTenant" (click)="goToDashboard(); closeMobileMenu()">
+                <i class="bi bi-speedometer2"></i>
+                <span>Mi Dashboard</span>
+            </a>
+            <div class="nav-divider"></div>
+            <a class="nav-link" href="https://lujandev.com" target="_blank">
+                <i class="bi bi-box-arrow-up-right"></i>
+                <span>Soporte</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-status" *ngIf="!isLoading">
+                <span class="status-dot"></span>
+                <span>Sistema activo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" [class.open]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
+
+    <!-- Hero Section: Clean y centrado -->
+    <section class="hero-section">
         <div class="container">
-            <div class="header-content-enhanced">
-
-                <!-- Labs Mode Branding -->
-                <div class="branding-enhanced">
-                    <div class="brand-icon-enhanced">
-                        <i class="bi bi-gear-fill"></i>
-                        <span class="icon-pulse"></span>
-                    </div>
-                    <div class="brand-text-enhanced">
-                        <h1 class="brand-title-enhanced">
-                            <span class="title-primary">LujanDev</span>
-                            <span class="title-secondary">Labs</span>
-                        </h1>
-                        <p class="brand-tagline-enhanced">
-                        Building micro-SaaS based on <strong>real usage</strong>, not ideas
-
-                        <!-- Sistema Activo Badge -->
-                        <div class="system-status-enhanced" *ngIf="!isLoading">
-                            <div class="status-badge-live">
-                                <span class="status-dot"></span>
-                                <span class="status-text">System active</span>
-                            </div>
-                            <div class="status-detail-enhanced">
-                                <i class="bi bi-clock-history"></i>
-                                <span>{{ getTimeSinceLastActivity() }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="user-actions-enhanced" *ngIf="isAuthenticated && currentTenant">
-                    <div class="user-info-enhanced">
-                        <div class="user-avatar">
-                            <i class="bi bi-person-circle"></i>
-                        </div>
-                        <div class="user-details">
-                            <span class="user-name">{{ currentTenant.name }}</span>
-                            <span class="user-role">Active tenant</span>
-                        </div>
-                    </div>
-                    <button class="btn-dashboard-enhanced" (click)="goToDashboard()">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>My Dashboard</span>
-                    </button>
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Construyendo micro-SaaS<br>
+                    basados en <span class="highlight">uso real</span>, no ideas
+                </h1>
+                <p class="hero-subtitle">
+                    Las herramientas aparecen aquí solo cuando muestran señales reales de uso y retención.<br>
+                    No publicamos demos. Solo lo que funciona.
+                </p>
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span>Modo validación activo</span>
                 </div>
             </div>
         </div>
-    </header>
+    </section>
 
     <!-- Main Content -->
     <main class="hub-main">
         <div class="container">
-            <!-- Loading State (Mejorado) -->
-            <div *ngIf="isLoading" class="loading-state-enhanced">
-                <div class="loading-backdrop"></div>
-                <div class="loading-icon-container">
-                    <i class="bi bi-gear-fill loading-icon"></i>
-                    <span class="loading-ring"></span>
-                    <span class="loading-ring-2"></span>
+            
+            <!-- Loading State -->
+            <div *ngIf="isLoading" class="loading-state">
+                <div class="loading-spinner">
+                    <i class="bi bi-arrow-repeat"></i>
                 </div>
-                <h3 class="loading-title">Loading experiments</h3>
-                <p class="loading-description">Connecting to the lab...</p>
-                <div class="loading-dots">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                </div>
+                <h3>Cargando experimentos</h3>
+                <p>Conectando al laboratorio...</p>
             </div>
 
-            <!-- Error State (Mejorado) -->
-            <div *ngIf="!isLoading && error" class="error-state-enhanced">
-                <div class="error-backdrop"></div>
-                <div class="error-icon-container">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span class="error-pulse"></span>
+            <!-- Error State -->
+            <div *ngIf="!isLoading && error" class="error-state">
+                <div class="error-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
-                <h3 class="error-title">Something went wrong</h3>
+                <h3>Algo salió mal</h3>
                 <p class="error-message">{{ error }}</p>
-                <button class="btn-retry-enhanced" (click)="retryLoad()">
+                <button class="btn-retry" (click)="retryLoad()">
                     <i class="bi bi-arrow-clockwise"></i>
-                    <span>Retry</span>
+                    <span>Reintentar</span>
                 </button>
-                <p class="error-help">If the problem persists, <a href="#" class="error-link">contact support</a></p>
+                <p class="error-help">Si el problema persiste, <a href="#" class="error-link">contacta soporte</a></p>
             </div>
 
-            <!-- ============================================ -->
-            <!-- VALIDATION LAB: Analytics Dashboard         -->
-            <!-- ============================================ -->
-            <section *ngIf="!isLoading && !error" class="labs-landing">
+            <!-- Content Section -->
+            <section *ngIf="!isLoading && !error" class="content-section">
 
-                <!-- Estado del laboratorio (Mejorado) -->
-                <div class="labs-status-enhanced">
-                    <div class="status-backdrop"></div>
-                    <div class="status-icon-enhanced">
-                        <i class="bi bi-bar-chart"></i>
-                        <span class="icon-glow"></span>
+                <!-- Cómo funciona -->
+                <div class="how-it-works-section" id="how-it-works">
+                    <div class="section-header">
+                        <h2>Cómo funciona</h2>
+                        <p>Nuestro proceso de validación basado en datos</p>
                     </div>
-                    <h2 class="status-title-enhanced">We're validating experiments</h2>
-                    <p class="status-description-enhanced">
-                        Tools appear here only when they show <strong>real usage and retention signals</strong>.<br>
-                        We don't publish demos. Only what works.
-                    </p>
-                    <div class="status-badge-enhanced">
-                        <span class="badge-dot"></span>
-                        <span>Validation mode active</span>
-                    </div>
-                </div>
 
-                <!-- Cómo funciona (Mejorado) -->
-                <div class="labs-process-enhanced">
-                    <div class="process-header-enhanced">
-                        <h3>How it works</h3>
-                        <p class="process-subtitle">Our data-driven validation process</p>
-                    </div>
-                    <div class="process-steps-enhanced">
-                        <div class="step-card-enhanced">
+                    <div class="steps-grid">
+                        <div class="step-card">
                             <div class="step-number">01</div>
-                            <div class="step-icon-enhanced">
+                            <div class="step-icon">
                                 <i class="bi bi-code-slash"></i>
                             </div>
-                            <h4 class="step-title">We experiment</h4>
-                            <p class="step-description">We test ideas with real users</p>
-                            <div class="step-bar"></div>
+                            <h3>Experimentamos</h3>
+                            <p>Probamos ideas con usuarios reales</p>
                         </div>
-                        <div class="step-card-enhanced">
+
+                        <div class="step-card">
                             <div class="step-number">02</div>
-                            <div class="step-icon-enhanced">
+                            <div class="step-icon">
                                 <i class="bi bi-graph-up"></i>
                             </div>
-                            <h4 class="step-title">We measure</h4>
-                            <p class="step-description">Real usage, retention and market signals before creating tenants</p>
-                            <div class="step-bar"></div>
+                            <h3>Medimos</h3>
+                            <p>Uso real, retención y señales de mercado antes de crear tenants</p>
                         </div>
-                        <div class="step-card-enhanced">
+
+                        <div class="step-card">
                             <div class="step-number">03</div>
-                            <div class="step-icon-enhanced">
+                            <div class="step-icon">
                                 <i class="bi bi-rocket-takeoff"></i>
                             </div>
-                            <h4 class="step-title">We publish</h4>
-                            <p class="step-description">Only what shows traction</p>
-                            <div class="step-bar"></div>
+                            <h3>Publicamos</h3>
+                            <p>Solo lo que muestra tracción</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- ============================================ -->
-                <!-- MVP ANALYTICS DASHBOARD                      -->
-                <!-- ============================================ -->
-                <section class="mvp-analytics-dashboard" *ngIf="hasMvpData">
-                    <div class="dashboard-header">
-                        <h3>Experiments in Validation</h3>
-                        <p class="dashboard-subtitle">We're testing these ideas with real users</p>
+                <!-- Experimentos en Validación -->
+                <section class="experiments-section" id="experiments" *ngIf="hasMvpData">
+                    <div class="section-header">
+                        <h2>Experimentos en validación</h2>
+                        <p>Estamos probando estas ideas con usuarios reales</p>
 
                         <!-- Period Selector -->
                         <div class="period-selector">
                             <button [class.active]="selectedPeriod === '7d'" (click)="changePeriod('7d')">
-                                7 days
+                                7 días
                             </button>
                             <button [class.active]="selectedPeriod === '30d'" (click)="changePeriod('30d')">
-                                30 days
+                                30 días
                             </button>
                             <button [class.active]="selectedPeriod === '90d'" (click)="changePeriod('90d')">
-                                90 days
+                                90 días
                             </button>
                             <button [class.active]="selectedPeriod === 'all'" (click)="changePeriod('all')">
-                                All
+                                Todo
                             </button>
                         </div>
                     </div>
 
-                    <!-- MVP Cards Grid (Versión Pública Inteligente) -->
-                    <div class="mvp-analytics-grid">
-                        <div class="mvp-analytics-card" 
+                    <!-- MVP Cards Grid -->
+                    <div class="mvp-cards-grid">
+                        <div class="mvp-card" 
                              *ngFor="let mvp of mvpAnalytics" 
                              [class.insufficient-data]="mvp.insufficient_data"
-                             [class.ready-to-try]="isReadyToTry(mvp)">
+                             [class.ready]="isReadyToTry(mvp)">
 
-                            <!-- Header -->
+                            <!-- Card Header -->
                             <div class="card-header">
                                 <div class="mvp-info">
-                                    <h4 class="mvp-name">{{ mvp.module_name }}</h4>
-                                    <span class="mvp-slug">Experiment in validation</span>
+                                    <h3>{{ mvp.module_name }}</h3>
+                                    <span class="mvp-type">Experimento en validación</span>
                                 </div>
-                                <div class="health-score" [class]="'badge-' + getPublicHealthLevel(mvp.health_score)">
+                                <div class="health-badge" [class]="'health-' + getPublicHealthLevel(mvp.health_score)">
                                     {{ getPublicHealthLabel(mvp.health_score) }}
                                 </div>
                             </div>
                             
-                            <!-- Badge Especial (Popular, Alta demanda, Listo) -->
-                            <div class="special-badge-section" *ngIf="getSpecialBadge(mvp)">
-                                <span class="special-badge" [class]="getSpecialBadge(mvp)!.class">
+                            <!-- Special Badge -->
+                            <div class="special-badge" *ngIf="getSpecialBadge(mvp)">
+                                <span [class]="getSpecialBadge(mvp)!.class">
                                     {{ getSpecialBadge(mvp)!.label }}
                                 </span>
                             </div>
 
-                            <!-- Status Badge Público -->
-                            <div class="status-section">
-                                <span class="status-badge" [class]="getPublicStatusClass(mvp)">
-                                    <i class="bi bi-circle-fill"></i> {{ getPublicStatus(mvp) }}
-                                </span>
+                            <!-- Status -->
+                            <div class="status-badge" [class]="getPublicStatusClass(mvp)">
+                                <span class="status-dot"></span>
+                                <span>{{ getPublicStatus(mvp) }}</span>
                             </div>
 
-                            <!-- Mensaje amigable -->
-                            <div class="public-message">
+                            <!-- Message -->
+                            <div class="mvp-message">
                                 <i class="bi bi-info-circle"></i>
                                 <p>{{ getPublicMessage(mvp) }}</p>
                             </div>
 
-                            <!-- Indicador visual genérico (sin números exactos) -->
-                            <div class="validation-indicators">
-                                <div class="indicator-item" [class.active]="mvp.total_sessions > 0">
+                            <!-- Indicators -->
+                            <div class="indicators">
+                                <div class="indicator" [class.active]="mvp.total_sessions > 0">
                                     <i class="bi bi-eye"></i>
-                                    <span>Real usage</span>
+                                    <span>Uso real</span>
                                 </div>
-                                <div class="indicator-item" [class.active]="mvp.wizard_completions > 0">
+                                <div class="indicator" [class.active]="mvp.wizard_completions > 0">
                                     <i class="bi bi-check-circle"></i>
-                                    <span>Completed</span>
+                                    <span>Completados</span>
                                 </div>
-                                <div class="indicator-item" [class.active]="mvp.total_feedback > 0">
+                                <div class="indicator" [class.active]="mvp.total_feedback > 0">
                                     <i class="bi bi-chat-left-heart"></i>
                                     <span>Feedback</span>
                                 </div>
                             </div>
 
-                            <!-- CTA Dinámico Inteligente -->
-                            <div class="card-footer">
-                                <button class="btn-mvp-cta" 
-                                        [class.btn-ready]="isReadyToTry(mvp)"
-                                        [class.btn-notify]="!isReadyToTry(mvp)"
-                                        [disabled]="mvp.insufficient_data"
-                                        (click)="handleMvpCta(mvp)">
-                                    <i [class]="getCtaIcon(mvp)"></i>
-                                    {{ getCtaText(mvp) }}
-                                </button>
-                            </div>
+                            <!-- CTA -->
+                            <button class="btn-mvp-cta" 
+                                    [class.ready]="isReadyToTry(mvp)"
+                                    [disabled]="mvp.insufficient_data"
+                                    (click)="handleMvpCta(mvp)">
+                                <i [class]="getCtaIcon(mvp)"></i>
+                                <span>{{ getCtaText(mvp) }}</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Empty State dentro de section si mvpAnalytics está vacío -->
-                    <div class="empty-analytics" *ngIf="mvpAnalytics.length === 0">
+                    <!-- Empty State -->
+                    <div class="empty-state" *ngIf="mvpAnalytics.length === 0">
                         <i class="bi bi-inbox"></i>
-                        <p>We're preparing new experiments</p>
-                        <small>Come back soon to see what we're validating</small>
+                        <p>Estamos preparando nuevos experimentos</p>
+                        <small>Vuelve pronto para ver qué estamos validando</small>
                     </div>
                 </section>
 
-                <!-- CTA Único (Mejorado) -->
-                <div class="labs-cta-enhanced">
-                    <div class="cta-backdrop"></div>
-                    <div class="cta-icon-enhanced">
-                        <i class="bi bi-bell-fill"></i>
-                        <span class="icon-ring"></span>
-                        <span class="icon-ring-2"></span>
-                    </div>
-                    <h3 class="cta-title-enhanced">Want access when an experiment is ready?</h3>
-                    <p class="cta-description-enhanced">
-                        We'll let you know when we have something with real usage signals ready to try
-                    </p>
-                    <button class="btn-notify-enhanced" (click)="requestEarlyAccess()">
-                        <i class="bi bi-envelope-heart"></i>
-                        <span>Notify me when something is ready</span>
-                    </button>
-                    <div class="cta-note-enhanced">
-                        <i class="bi bi-info-circle"></i>
-                        <span>Not a public beta, just early validation signal</span>
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <div class="cta-content">
+                        <div class="cta-icon">
+                            <i class="bi bi-bell"></i>
+                        </div>
+                        <h2>¿Quieres acceso cuando un experimento esté listo?</h2>
+                        <p>
+                            Te avisaremos cuando tengamos algo con señales reales de uso listo para probar
+                        </p>
+                        <button class="btn-cta-primary" (click)="requestEarlyAccess()">
+                            <i class="bi bi-envelope-heart"></i>
+                            <span>Avísame cuando esté listo</span>
+                        </button>
+                        <p class="cta-note">
+                            <i class="bi bi-info-circle"></i>
+                            No es una beta pública, solo señal de validación temprana
+                        </p>
                     </div>
                 </div>
                 
             </section>
 
-
-
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="hub-footer">
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <p class="footer-text">
-                    MVP Hub · Validation phase ·
+                <p class="footer-brand">
+                    MVP Hub · Fase de validación ·
                     <a href="https://lujandev.com" target="_blank">lujandev.com</a>
                 </p>
                 <div class="footer-links">
-                    <a href="#" class="footer-link">Documentation</a>
-                    <a href="#" class="footer-link">Support</a>
-                    <a href="#" class="footer-link">Service status</a>
+                    <a href="#" class="footer-link">Documentación</a>
+                    <a href="#" class="footer-link">Soporte</a>
+                    <a href="#" class="footer-link">Estado del servicio</a>
                 </div>
             </div>
         </div>
@@ -298,34 +303,34 @@
     <!-- Modal de Acceso Anticipado -->
     <div class="modal-overlay" *ngIf="showEarlyAccessModal" (click)="closeEarlyAccessModal()">
         <div class="modal-container" (click)="$event.stopPropagation()">
-            <!-- Header -->
+            
             <div class="modal-header">
                 <div class="modal-icon">
                     <i class="bi bi-check-circle"></i>
                 </div>
-                <button class="modal-close" (click)="closeEarlyAccessModal()" aria-label="Close">
+                <button class="modal-close" (click)="closeEarlyAccessModal()" aria-label="Cerrar">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
 
-            <!-- Content -->
             <div class="modal-body">
-                <h3 class="modal-title">Thanks for your interest!</h3>
-                <p class="modal-message">
-                    We'll let you know when we have an experiment ready to try.
+                <h3>¡Gracias por tu interés!</h3>
+                <p>
+                    Te avisaremos cuando tengamos un experimento listo para probar.
                 </p>
                 <p class="modal-note">
-                    For now we're 100% focused on validation with real users.
-                    We only publish what shows traction.
+                    Por ahora estamos 100% enfocados en validación con usuarios reales.
+                    Solo publicamos lo que muestra tracción.
                 </p>
             </div>
 
-            <!-- Footer -->
             <div class="modal-footer">
                 <button class="btn-modal-primary" (click)="closeEarlyAccessModal()">
-                    Got it
+                    Entendido
                 </button>
             </div>
+            
         </div>
     </div>
+
 </div>

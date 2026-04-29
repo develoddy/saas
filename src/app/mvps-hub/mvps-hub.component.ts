@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SaasService } from '../core/saas.service';
 import { MvpHubService, MvpFeature } from '../services/mvp-hub.service';
@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   templateUrl: './mvps-hub.component.html',
   styleUrls: ['./mvps-hub.component.scss']
 })
-export class MvpsHubComponent implements OnInit {
+export class MvpsHubComponent implements OnInit, OnDestroy {
   
   isAuthenticated = false;
   currentTenant: any = null;
@@ -29,6 +29,9 @@ export class MvpsHubComponent implements OnInit {
   mvpAnalytics: MvpSummary[] = [];
   selectedPeriod: '7d' | '30d' | '90d' | 'all' = '30d';
   hasMvpData = false;
+
+  // Mobile menu state
+  isMobileMenuOpen = false;
 
   constructor(
     private router: Router,
@@ -402,5 +405,54 @@ export class MvpsHubComponent implements OnInit {
       // Solicitar notificación
       this.requestEarlyAccess();
     }
+  }
+
+  /**
+   * Mobile Menu - Toggle open/close
+   */
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    
+    // Lock/unlock body scroll
+    if (this.isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }
+
+  /**
+   * Mobile Menu - Close menu
+   */
+  closeMobileMenu(): void {
+    if (this.isMobileMenuOpen) {
+      this.isMobileMenuOpen = false;
+      document.body.style.overflow = '';
+    }
+  }
+
+  /**
+   * Mobile Menu - Scroll to section by ID
+   */
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 80; // Navbar height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  /**
+   * Cleanup on component destroy
+   */
+  ngOnDestroy(): void {
+    // Always restore body scroll when component is destroyed
+    document.body.style.overflow = '';
   }
 }

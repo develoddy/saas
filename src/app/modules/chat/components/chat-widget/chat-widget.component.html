@@ -1,6 +1,6 @@
 <div class="chat-widget-container" *ngIf="isChatEnabled">
   <!-- Floating toggle button -->
-  <div class="chat-button" [class.has-unread]="unreadCount > 0" (click)="openChat()" *ngIf="!isChatOpen" role="button" aria-label="Lujandev Assistant">
+  <div class="chat-button" [class.has-unread]="unreadCount > 0" (click)="openChat()" *ngIf="!isChatOpen" role="button" aria-label="Asistente de LujanDev">
     <span class="chat-button__icon chat-icon" aria-hidden="true">
        <svg width="50" height="50" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" data-spec="button-icon">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M4 9.78374C4 5.84433 4.81543 5 8.62 5H11.38C15.1846 5 16 5.84433 16 9.78374C16 13.7232 15.1846 14.9008 11.38 14.9008H10.8303C10.8025 14.9346 10.7703 14.9666 10.7336 14.9962L8.54286 16.86C8.12929 17.1935 7.5137 16.898 7.5137 16.3667V14.87C4.65254 14.6884 4 13.3078 4 9.78374ZM10 10.6667C10.3682 10.6667 10.6667 10.3682 10.6667 10C10.6667 9.63181 10.3682 9.33333 10 9.33333C9.63181 9.33333 9.33333 9.63181 9.33333 10C9.33333 10.3682 9.63181 10.6667 10 10.6667ZM13.3333 10C13.3333 10.3682 13.0349 10.6667 12.6667 10.6667C12.2985 10.6667 12 10.3682 12 10C12 9.63181 12.2985 9.33333 12.6667 9.33333C13.0349 9.33333 13.3333 9.63181 13.3333 10ZM7.33333 10.6667C7.70152 10.6667 8 10.3682 8 10C8 9.63181 7.70152 9.33333 7.33333 9.33333C6.96514 9.33333 6.66667 9.63181 6.66667 10C6.66667 10.3682 6.96514 10.6667 7.33333 10.6667Z" fill="white"></path>
@@ -20,16 +20,16 @@
         </div>
         <div class="chat-header__info">
           <h3 class="chat-header__title">LujanDev · Inbox Zero</h3>
-          <p class="chat-header__subtitle">Founder · Usually replies within a few hours</p>
+          <p class="chat-header__subtitle">Fundador · Responde normalmente en unas horas</p>
         </div>
       </div>
       <div class="chat-actions">
-        <button class="minimize-btn" (click)="closeChat()" aria-label="Minimize chat">
+        <button class="minimize-btn" (click)="closeChat()" aria-label="Minimizar chat">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
         </button>
-        <button class="close-btn" (click)="showCloseConfirm = true" aria-label="Close chat">
+        <button class="close-btn" (click)="showCloseConfirm = true" aria-label="Cerrar chat">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -46,9 +46,9 @@
           <div class="founder-avatar">
             <span>LD</span>
           </div>
-          <h4>Hey, I'm LujanDev 👋</h4>
-          <p>I built Inbox Zero after drowning in "where is my order?" emails myself.</p>
-          <p>Ask me anything about your store, the setup, or whether this is right for you.</p>
+          <h4>Hola, soy LujanDev 👋</h4>
+          <p>Creé Inbox Zero después de ahogarme yo mismo en emails de "¿dónde está mi pedido?".</p>
+          <p>Pregúntame lo que quieras sobre tu tienda, la configuración o si esto es para ti.</p>
         </div>
       </div>
 
@@ -74,7 +74,7 @@
           <span class="typing-dot"></span>
           <span class="typing-dot"></span>
         </div>
-        <p class="typing-text">{{typingStatus.name}} is typing...</p>
+        <p class="typing-text">{{typingStatus.name}} está escribiendo...</p>
       </div>
     </main>
 
@@ -85,37 +85,37 @@
           <div class="input-wrapper">
             <textarea
               [formControl]="messageControl"
-              placeholder="Ask about setup, pricing, or your store..."
+              placeholder="Pregunta sobre configuración, precios o tu tienda..."
               (keydown)="handleEnter($event)"
-              aria-label="Type a message"
+              aria-label="Escribe un mensaje"
               data-chat-input
               rows="1"
             ></textarea>
 
-            <button type="submit" class="send-btn" data-send-btn [disabled]="messageControl.invalid" aria-label="Send message">
+            <button type="submit" class="send-btn" data-send-btn [disabled]="messageControl.invalid" aria-label="Enviar mensaje">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style="fill: currentcolor;" aria-hidden="true"><path d="m5.4 10.1-.7-.7L12 2l7.4 7.4-.7.7L12.6 4v18h-1V3.9z"></path></svg>
             </button>
           </div>
 
           <div class="privacy-notice">
-            <small class="text-muted">By continuing, you confirm that you have read the <a class="text-link" href="#" onclick="return false;">Privacy Policy</a></small>
+            <small class="text-muted">Al continuar, confirmas que has leído la <a class="text-link" href="#" onclick="return false;">Política de Privacidad</a></small>
           </div>
 
           <div class="chat-branding">
-            <small>Built by <strong>LujanDev</strong> · <a href="https://lujandev.com" target="_blank">lujandev.com</a></small>
+            <small>Desarrollado por <strong>LujanDev</strong> · <a href="https://lujandev.com" target="_blank">lujandev.com</a></small>
           </div>
         </div>
       </form>
     </footer>
 
     <!-- Close confirmation popup -->
-    <div class="close-confirm" *ngIf="showCloseConfirm" role="dialog" aria-modal="true" aria-label="Abandon confirmation">
+    <div class="close-confirm" *ngIf="showCloseConfirm" role="dialog" aria-modal="true" aria-label="Confirmación de salida">
       <div class="close-confirm__content">
-        <h4 class="close-confirm__title">Do you want to leave the chat?</h4>
-        <p class="close-confirm__text">By leaving, you will lose the conversation and will have to start over.</p>
+        <h4 class="close-confirm__title">¿Quieres salir del chat?</h4>
+        <p class="close-confirm__text">Al salir, perderás la conversación y tendrás que empezar de nuevo.</p>
         <div class="close-confirm__actions">
-          <button type="button" class="btn btn-abandon" (click)="confirmAbandon()">Leave</button>
-          <button type="button" class="btn btn-cancel" (click)="showCloseConfirm = false">Cancel</button>
+          <button type="button" class="btn btn-abandon" (click)="confirmAbandon()">Salir</button>
+          <button type="button" class="btn btn-cancel" (click)="showCloseConfirm = false">Cancelar</button>
         </div>
       </div>
     </div>
