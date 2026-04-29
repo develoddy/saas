@@ -1,46 +1,97 @@
 <div class="prevention-demo">
   
-  <!-- Navbar -->
+  <!-- Navbar: Clean, sticky, minimal -->
   <nav class="navbar">
-    <div class="navbar-container container">
+    <div class="navbar-container">
       <div class="logo" (click)="onNavbarLogoClick()">
         <i class="bi bi-inbox-fill"></i>
         <span class="logo-text">Inbox Zero</span>
-        <span class="live-badge">
-          <span class="live-dot"></span>
-          <span class="live-text">BETA</span>
-        </span>
+        <span class="beta-badge">BETA</span>
       </div>
-      <button class="btn-navbar-cta" (click)="scrollToVideo()">
-        <i class="bi bi-play-circle-fill"></i>
-        <span>Ver cómo funciona</span>
+      
+      <!-- Desktop CTA -->
+      <button class="btn-navbar-cta btn-desktop" (click)="scrollToVideo()">
+        Ver cómo funciona
+      </button>
+
+      <!-- Mobile Hamburger -->
+      <button class="btn-hamburger" (click)="toggleMobileMenu()" aria-label="Abrir menú">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
       </button>
     </div>
   </nav>
+
+  <!-- Mobile Sidebar Menu -->
+  <div class="mobile-sidebar" [class.open]="isMobileMenuOpen">
+    
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="logo" (click)="onNavbarLogoClick(); closeMobileMenu()">
+        <i class="bi bi-inbox-fill"></i>
+        <span class="logo-text">Inbox Zero</span>
+      </div>
+      <button class="btn-close" (click)="closeMobileMenu()" aria-label="Cerrar menú">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav">
+      <a class="nav-link" (click)="scrollToVideo(); closeMobileMenu()">
+        Ver cómo funciona
+      </a>
+      <a class="nav-link" (click)="scrollToSection('how-it-works'); closeMobileMenu()">
+        Cómo funciona
+      </a>
+      <a class="nav-link" (click)="scrollToSection('customer-preview'); closeMobileMenu()">
+        Beneficios
+      </a>
+      <a class="nav-link" (click)="scrollToSection('pricing'); closeMobileMenu()">
+        Precios
+      </a>
+      <a class="nav-link" (click)="scrollToSection('faq'); closeMobileMenu()">
+        FAQ
+      </a>
+    </nav>
+
+    <!-- Sidebar CTA -->
+    <div class="sidebar-cta">
+      <button class="btn-mobile-cta" (click)="showSetupForm(); closeMobileMenu()">
+        Probar gratis
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" [class.open]="isMobileMenuOpen" (click)="closeMobileMenu()"></div>
   
-  <!-- Hero Section -->
+  <!-- Hero Section: Focused, clean, centered -->
   <section class="hero-section">
     <div class="container">
       <div class="hero-content">
-
-        <!-- Pain trigger -->
-        <div class="hero-pain-trigger">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <span>¿Te suena familiar esto?</span>
-        </div>
-
+        
         <h1 class="hero-title">
           ¿Tienes tienda con Printful?<br>
-          <span class="highlight-solution">Automatiza los emails de estado y deja de responder "¿dónde está mi pedido?"</span>
+          Automatiza los emails de estado y deja de responder "¿dónde está mi pedido?"
         </h1>
 
         <p class="hero-subtitle">
-          Tus clientes reciben actualizaciones automáticas en cada paso: impreso, enviado, entregado. Consultan la página de seguimiento en vez de escribirte. Lo configuro contigo en 30 minutos.
+          Tus clientes reciben actualizaciones automáticas en cada paso: impreso, enviado, entregado. Consultan la página de seguimiento en vez de escribirte.
         </p>
 
-        <!-- Video Demo - Moved into Hero -->
+        <div class="hero-cta">
+          <button class="btn-hero-cta" (click)="showSetupForm()">
+            Quiero probarlo gratis
+          </button>
+          <p class="hero-cta-note">Configuración en 30 minutos • Sin tarjeta</p>
+        </div>
+
+        <!-- Video Demo -->
         <div class="hero-video" id="hero-video-section" #videoSection>
-          <div class="video-container">
+          <div class="video-wrapper">
             <iframe 
               #videoIframe
               src="https://www.youtube.com/embed/gZAtnhFLNfs?rel=0&modestbranding=1&enablejsapi=1" 
@@ -52,879 +103,314 @@
           </div>
         </div>
 
-        <!-- Enlarged Stats with Context -->
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-value">Menos emails</div>
-            <div class="hero-stat-context">de soporte cada mes</div>
-            <div class="hero-stat-label">Automáticamente</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value">Más tiempo</div>
-            <div class="hero-stat-context">para hacer crecer tu tienda</div>
-            <div class="hero-stat-label">Recupera tus horas</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value">Sin código</div>
-            <div class="hero-stat-context">yo lo configuro contigo</div>
-            <div class="hero-stat-label">Sin conocimientos técnicos</div>
-          </div>
-        </div>
-
-        <!-- CTA below video - Show setup form -->
-        <div class="hero-cta">
-          <button class="btn-hero-cta" (click)="showSetupForm()">
-            <i class="bi bi-tools"></i>
-            <span>Quiero probarlo gratis en mi tienda</span>
-          </button>
-          <p class="hero-cta-hint">Lo configuro yo contigo — tú solo apruebas</p>
-        </div>
-
-        <!-- Proof bar moved to bottom -->
-        <div class="hero-proof-bar">
-          <div class="proof-item">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>En pruebas con <strong>tiendas reales usando Printful</strong></span>
-          </div>
-          <div class="proof-divider"></div>
-          <div class="proof-item">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>Creado por un <strong>fundador cansado de esos tickets</strong></span>
-          </div>
-          <div class="proof-divider"></div>
-          <div class="proof-item">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>Funciona con <strong>tu setup actual — sin código</strong></span>
-          </div>
-        </div>
-
       </div>
     </div>
-
-    <!-- Bottom glow divider -->
-    <div class="hero-bottom-glow"></div>
   </section>
 
-  <!-- Comparison Section: Sin vs Con -->
+  <!-- Problem vs Solution: Clean 2-column comparison -->
   <section class="comparison-section">
     <div class="container">
       <div class="section-header">
         <h2>El verdadero costo del soporte reactivo</h2>
-        <p>Tu tiempo vale demasiado como para responder lo mismo decenas de veces al mes</p>
+        <p>Tu tiempo vale demasiado como para responder lo mismo decenas de veces</p>
       </div>
 
       <div class="comparison-grid">
         
-        <!-- Column 1: WITHOUT System -->
-        <div class="comparison-card without-system">
-          <div class="card-header">
-            <i class="bi bi-x-circle-fill"></i>
+        <!-- Sin Inbox Zero -->
+        <div class="comparison-column problem">
+          <div class="column-header">
+            <i class="bi bi-x-circle"></i>
             <h3>Sin Inbox Zero</h3>
           </div>
-
-          <div class="card-content">
-            <!-- Flooded inbox visual -->
-            <div class="inbox-visual">
-              <div class="inbox-header-bar">
-                <i class="bi bi-inbox-fill"></i>
-                <span>Bandeja de soporte</span>
-              </div>
-              <div class="tickets-flood">
-                <div class="ticket-item" *ngFor="let ticket of eliminatedTickets.slice(0, 8)">
-                  <i class="bi bi-envelope-fill"></i>
-                  <span>{{ ticket }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Negative stats -->
-            <div class="stats-negative">
-              <div class="stat-item">
-                <div class="stat-value">Muchos</div>
-                <div class="stat-label">tickets/mes</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">Horas</div>
-                <div class="stat-label">perdidas/mes</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-icon-negative">
-                  <i class="bi bi-emoji-frown-fill"></i>
-                </div>
-                <div class="stat-label">clientes ansiosos</div>
-              </div>
-            </div>
-          </div>
+          <ul class="comparison-list">
+            <li *ngFor="let ticket of eliminatedTickets.slice(0, 6)">
+              <i class="bi bi-envelope-fill"></i>
+              <span>{{ ticket }}</span>
+            </li>
+          </ul>
         </div>
 
-        <!-- Column 2: WITH System -->
-        <div class="comparison-card with-system">
-          <div class="card-header success">
-            <i class="bi bi-check-circle-fill"></i>
+        <!-- Con Inbox Zero -->
+        <div class="comparison-column solution">
+          <div class="column-header">
+            <i class="bi bi-check-circle"></i>
             <h3>Con Inbox Zero</h3>
           </div>
-
-          <div class="card-content">
-            <!-- Prevention timeline -->
-            <div class="prevention-timeline">
-              <div class="timeline-item" *ngFor="let step of preventionFlow">
-                <div class="timeline-marker">
-                  <div class="timeline-dot" [style.background]="step.color">
-                    <i [class]="step.icon"></i>
-                  </div>
-                  <div class="timeline-day">Day {{ step.day }}</div>
-                </div>
-                <div class="timeline-content">
-                  <h4>{{ step.title }}</h4>
-                  <p>{{ step.action }}</p>
-                </div>
+          <ul class="comparison-list">
+            <li *ngFor="let step of preventionFlow">
+              <i [class]="step.icon"></i>
+              <div>
+                <strong>{{ step.title }}</strong>
+                <p>{{ step.action }}</p>
               </div>
-            </div>
-
-            <!-- Positive stats -->
-            <div class="stats-positive">
-              <div class="stat-item">
-                <div class="stat-value">Pocos</div>
-                <div class="stat-label">tickets/mes</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">Minutos</div>
-                <div class="stat-label">de gestión</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-icon-positive">
-                  <i class="bi bi-emoji-smile-fill"></i>
-                </div>
-                <div class="stat-label">clientes informados</div>
-              </div>
-            </div>
-          </div>
+            </li>
+          </ul>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- Real Metrics Section -->
-  <section class="metrics-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Por qué funciona esto</h2>
-        <p>La idea simple detrás de Inbox Zero</p>
-      </div>
-
-      <div class="metrics-grid">
-        <div class="metric-card" 
-             *ngFor="let metric of realMetrics"
-             (click)="trackMetricClick(metric.label)">
-          <!-- Top row: icon + improvement badge -->
-          <div class="metric-top">
-            <div class="metric-icon">
-              <i [class]="'bi ' + metric.icon"></i>
-            </div>
-            <div class="metric-improvement-badge">{{ metric.improvement }}</div>
-          </div>
-          <!-- Label -->
-          <div class="metric-label">{{ metric.label }}</div>
-          <!-- Concrete data context -->
-          <div class="metric-context" *ngIf="getMetricContext(metric.label)" style="font-size: 0.8rem; color: #6c757d; margin: 4px 0 12px 0; font-style: italic;">
-            {{ getMetricContext(metric.label) }}
-          </div>
-          <!-- Before vs After -->
-          <div class="metric-comparison">
-            <div class="before">
-              <span class="comp-value">{{ metric.before }}</span>
-              <span class="comp-label">Before</span>
-            </div>
-            <div class="metric-vs">VS</div>
-            <div class="after">
-              <span class="comp-value">{{ metric.after }}</span>
-              <span class="comp-label">After</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How it Works (simplified to 3 steps) -->
-  <section class="how-it-works-section">
+  <!-- How it Works: Clean 3-step process -->
+  <section class="how-it-works-section" id="how-it-works">
     <div class="container">
       <div class="section-header">
         <h2>Cómo funciona</h2>
         <p>Tres pasos. Sin complicaciones.</p>
       </div>
 
-      <div class="workflow-visual">
-        <div class="workflow-step">
+      <div class="steps-grid">
+        
+        <div class="step-card">
           <div class="step-number">1</div>
-          <div class="step-content">
-            <h4><i class="bi bi-cart-check-fill"></i> Se hace el pedido</h4>
-            <p>El cliente recibe confirmación instantánea con enlace de seguimiento</p>
+          <div class="step-icon">
+            <i class="bi bi-cart-check-fill"></i>
           </div>
+          <h3>Se hace el pedido</h3>
+          <p>El cliente recibe confirmación instantánea con enlace de seguimiento</p>
         </div>
 
-        <div class="workflow-arrow">
-          <i class="bi bi-arrow-down"></i>
-        </div>
-
-        <div class="workflow-step">
+        <div class="step-card">
           <div class="step-number">2</div>
-          <div class="step-content">
-            <h4><i class="bi bi-send-fill"></i> Notificaciones automáticas</h4>
-            <p>Cada evento de Printful dispara un email proactivo</p>
+          <div class="step-icon">
+            <i class="bi bi-send-fill"></i>
           </div>
+          <h3>Notificaciones automáticas</h3>
+          <p>Cada evento de Printful dispara un email proactivo</p>
         </div>
 
-        <div class="workflow-arrow">
-          <i class="bi bi-arrow-down"></i>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <i class="bi bi-shield-check-fill"></i>
+          </div>
+          <h3>Cero soporte necesario</h3>
+          <p>El cliente nunca te pregunta "¿dónde está mi pedido?"</p>
         </div>
 
-        <div class="workflow-step highlight">
-          <div class="step-number">✓</div>
-          <div class="step-content">
-            <h4><i class="bi bi-shield-check-fill"></i> Cero soporte necesario</h4>
-            <p>El cliente nunca te pregunta "¿dónde está mi pedido?"</p>
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- Customer Experience Preview Section -->
-  <section class="tracking-preview-section">
+  <!-- Customer Experience: Clean minimal preview -->
+  <section class="customer-preview-section" id="customer-preview">
     <div class="container">
       <div class="section-header">
         <h2>Lo que ve tu cliente</h2>
-        <p>En vez de escribirte, consultan esta página y ya tienen su respuesta.</p>
+        <p>En vez de escribirte, consultan esta página</p>
       </div>
 
-      <div class="tracking-mockup-wrapper">
+      <!-- Tracking Card (Clean UI) -->
+      <div class="tracking-card">
+        
+        <!-- Header -->
+        <div class="tracking-header">
+          <span class="order-number">Pedido #IZ-2847</span>
+          <span class="status-badge">En tránsito</span>
+        </div>
 
-        <!-- Browser frame -->
-        <div class="browser-frame">
-          <!-- Chrome bar -->
-          <div class="browser-chrome">
-            <div class="browser-dots">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
+        <!-- Progress Bar -->
+        <div class="tracking-progress">
+          <div class="progress-step completed">
+            <div class="step-dot">
+              <i class="bi bi-check"></i>
             </div>
-            <div class="browser-url">
-              <i class="bi bi-lock-fill"></i>
-              <span>yourstore.com/tracking/IZ-2847</span>
-            </div>
+            <span class="step-label">Pedido creado</span>
           </div>
-
-          <!-- Page content -->
-          <div class="browser-content">
-
-            <!-- Top bar -->
-            <div class="tp-topbar">
-              <span class="tp-store-name">TuTienda</span>
-              <span class="tp-tag">Seguimiento de pedido</span>
+          
+          <div class="progress-line completed"></div>
+          
+          <div class="progress-step completed">
+            <div class="step-dot">
+              <i class="bi bi-check"></i>
             </div>
-
-            <!-- Order header -->
-            <div class="tp-order-header">
-              <div class="tp-order-id">
-                <i class="bi bi-bag-check-fill"></i>
-                <div>
-                  <span class="tp-label">Número de pedido</span>
-                  <strong>#IZ-2847</strong>
-                </div>
-              </div>
-              <div class="tp-status-badge">
-                <i class="bi bi-truck"></i>
-                En tránsito
-              </div>
-            </div>
-
-            <!-- Progress bar -->
-            <div class="tp-progress-section">
-              <div class="tp-progress-track">
-                <div class="tp-progress-fill" style="width: 75%"></div>
-              </div>
-              <div class="tp-steps">
-                <div class="tp-step completed">
-                  <div class="tp-step-dot">
-                    <i class="bi bi-check-lg"></i>
-                  </div>
-                  <span>Pedido creado</span>
-                </div>
-                <div class="tp-step completed">
-                  <div class="tp-step-dot">
-                    <i class="bi bi-check-lg"></i>
-                  </div>
-                  <span>Impreso</span>
-                </div>
-                <div class="tp-step active">
-                  <div class="tp-step-dot">
-                    <i class="bi bi-truck"></i>
-                  </div>
-                  <span>Enviado</span>
-                </div>
-                <div class="tp-step pending">
-                  <div class="tp-step-dot">
-                    <i class="bi bi-house-door"></i>
-                  </div>
-                  <span>Entregado</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Info cards -->
-            <div class="tp-info-cards">
-              <div class="tp-info-card">
-                <i class="bi bi-calendar-check"></i>
-                <div>
-                  <span class="tp-label">Entrega estimada</span>
-                  <strong>20 Mar – 24 Mar</strong>
-                </div>
-              </div>
-              <div class="tp-info-card">
-                <i class="bi bi-box-seam"></i>
-                <div>
-                  <span class="tp-label">Transportista</span>
-                  <strong>USPS · #9400111899223</strong>
-                </div>
-              </div>
-            </div>
-
-          </div><!-- /browser-content -->
-        </div><!-- /browser-frame -->
-
-        <!-- Side callout -->
-        <div class="tp-callout">
-          <div class="tp-callout-item">
-            <div class="tp-callout-icon">
-              <i class="bi bi-send-check-fill"></i>
-            </div>
-            <div class="tp-callout-text">
-              <strong>Email en cada paso</strong>
-              <span>El cliente recibe notificación automática: impreso, enviado, entregado.</span>
-            </div>
+            <span class="step-label">Impreso</span>
           </div>
-          <div class="tp-callout-item">
-            <div class="tp-callout-icon">
-              <i class="bi bi-link-45deg"></i>
+          
+          <div class="progress-line active"></div>
+          
+          <div class="progress-step active">
+            <div class="step-dot">
+              <i class="bi bi-truck"></i>
             </div>
-            <div class="tp-callout-text">
-              <strong>Enlace de seguimiento en cada email</strong>
-              <span>Un clic y ven esta página. No hace falta ticket de soporte.</span>
-            </div>
+            <span class="step-label">Enviado</span>
           </div>
-          <div class="tp-callout-item">
-            <div class="tp-callout-icon">
-              <i class="bi bi-inbox"></i>
-            </div>
-            <div class="tp-callout-text">
-              <strong>Tu bandeja permanece vacía</strong>
-              <span>Ya tienen la respuesta antes de pensar en preguntar.</span>
-            </div>
+          
+          <div class="progress-line"></div>
+          
+          <div class="progress-step">
+            <div class="step-dot"></div>
+            <span class="step-label">Entregado</span>
           </div>
         </div>
 
-      </div><!-- /tracking-mockup-wrapper -->
+        <!-- Info Blocks -->
+        <div class="tracking-info">
+          <div class="info-block">
+            <span class="info-label">Entrega estimada</span>
+            <strong class="info-value">20 Mar – 24 Mar</strong>
+          </div>
+          <div class="info-block">
+            <span class="info-label">Transportista</span>
+            <strong class="info-value">USPS · #9400111899223</strong>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Benefits List -->
+      <div class="preview-benefits">
+        <div class="benefit-item">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Email automático en cada paso</span>
+        </div>
+        <div class="benefit-item">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>Enlace de seguimiento en cada email</span>
+        </div>
+        <div class="benefit-item">
+          <i class="bi bi-check-circle-fill"></i>
+          <span>El cliente no necesita escribir soporte</span>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- Social Proof / Testimonial Section -->
-  <section class="social-proof-section">
+  <!-- Social Proof: Simple testimonial -->
+  <section class="testimonial-section">
     <div class="container">
       <div class="testimonial-card">
-        <div class="testimonial-quote">
-          <i class="bi bi-quote"></i>
-          <p>
-            "Construí esto para mi propia tienda de ecommerce. 
-            Me cansé de responder decenas de veces al mes "¿dónde está mi pedido?". 
-            Ahora los clientes reciben actualizaciones automáticas en cada paso y nunca tienen que preguntar."
-          </p>
-        </div>
+        <p class="testimonial-quote">
+          "Construí esto para mi propia tienda de ecommerce. Me cansé de responder decenas de veces al mes "¿dónde está mi pedido?". Ahora los clientes reciben actualizaciones automáticas en cada paso."
+        </p>
         <div class="testimonial-author">
-          <div class="author-info">
-            <strong>Eddy Lujan</strong>
-            <span>Fundador · Dueño de tienda usando Printful</span>
-          </div>
+          <strong>Eddy Lujan</strong>
+          <span>Fundador · Dueño de tienda usando Printful</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Pricing Section -->
-  <section class="pricing-section" #pricingSection>
+  <!-- Pricing: Clean and simple -->
+  <section class="pricing-section" id="pricing" #pricingSection>
     <div class="container">
       <div class="section-header">
         <h2>Busco 3 tiendas para probarlo gratis</h2>
         <p>Sin costo durante 30 días a cambio de feedback</p>
       </div>
 
-      <div class="pricing-grid">
-        <!-- Trial Card -->
-        <div class="pricing-card trial">
-          <div class="pricing-badge">
-            <i class="bi bi-star-fill"></i>
-            <span>Prueba beta</span>
-          </div>
-          
-          <h3>Prueba Gratis</h3>
-          
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <span class="pricing-badge">Prueba beta</span>
           <div class="pricing-value">
             <span class="price">$0</span>
             <span class="period">durante 30 días</span>
           </div>
-          
-          <ul class="pricing-features">
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Acceso completo a todas las funciones</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Sin tarjeta de crédito</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Lo configuro yo contigo personalmente</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span>Solo pido feedback honesto</span>
-            </li>
-          </ul>
-
-          <button class="btn btn-pricing-cta-outline" (click)="showSetupForm()">
-            <i class="bi bi-tools"></i>
-            Quiero probarlo gratis
-          </button>
+          <p class="pricing-note">Luego $29/mes · Sin permanencia</p>
         </div>
+        
+        <ul class="pricing-features">
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Acceso completo a todas las funciones</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Sin tarjeta de crédito</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Lo configuro yo contigo personalmente</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Solo pido feedback honesto</span>
+          </li>
+        </ul>
 
-        <!-- Paid Plan Card -->
-        <div class="pricing-card paid">
-          <div class="pricing-badge highlight">
-            <i class="bi bi-lightning-charge-fill"></i>
-            <span>Después de la prueba</span>
-          </div>
-          
-          <h3>Plan Futuro</h3>
-          
-          <div class="pricing-value">
-            <span class="price">$29</span>
-            <span class="period">al mes</span>
-          </div>
-          
-          <p class="pricing-subtitle">Después de la prueba · Sin permanencia</p>
-          
-          <ul class="pricing-features expanded">
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Integración con webhooks de Printful</strong></span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Emails automáticos proactivos</strong> de estado de pedido</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Página de seguimiento con token</strong> — sin login</span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Funciona con WooCommerce y Shopify</strong></span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Soporte directo del fundador</strong></span>
-            </li>
-            <li>
-              <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Configuración incluida</strong> — lo hacemos todo nosotros</span>
-            </li>
-          </ul>
-
-          <button class="btn btn-pricing-cta" (click)="showSetupForm()">
-            <i class="bi bi-tools"></i>
-            Quiero probarlo gratis
-          </button>
-
-          <div class="pricing-guarantee">
-            <i class="bi bi-shield-check-fill"></i>
-            <span>Sin permanencia · Cancela cuando quieras</span>
-          </div>
-        </div>
+        <button class="btn-pricing-cta" (click)="showSetupForm()">
+          Quiero probarlo gratis
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- FAQ Section -->
-  <section class="faq-section">
+  <!-- FAQ: Simplified -->
+  <section class="faq-section" id="faq">
     <div class="container">
       <div class="section-header">
         <h2>Preguntas frecuentes</h2>
-        <p>Todo lo que necesitas saber antes de empezar</p>
       </div>
 
-      <div class="faq-grid">
-        <!-- FAQ Item 1 -->
+      <div class="faq-list">
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(0)"
              (click)="toggleFaq(0, '¿Necesito un desarrollador para configurarlo?')">
           <div class="faq-question">
-            <i class="bi bi-question-circle-fill"></i>
             <h3>¿Necesito un desarrollador para configurarlo?</h3>
-            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+            <i class="bi bi-chevron-down"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(0)">
-            <p>No. Lo configuro yo contigo. Solo necesitas acceso a tu tienda y Printful. La configuración completa toma menos de 30 minutos y te guío en cada paso.</p>
+            <p>No. Lo configuro yo contigo. Solo necesitas acceso a tu tienda y Printful. La configuración completa toma menos de 30 minutos.</p>
           </div>
         </div>
 
-        <!-- FAQ Item 2 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(1)"
              (click)="toggleFaq(1, '¿Funciona con Printful + Shopify o WooCommerce?')">
           <div class="faq-question">
-            <i class="bi bi-question-circle-fill"></i>
             <h3>¿Funciona con Printful + Shopify o WooCommerce?</h3>
-            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+            <i class="bi bi-chevron-down"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(1)">
-            <p>Sí, funciona con ambas. Inbox Zero se conecta directamente a los webhooks de Printful, así que no importa qué plataforma uses para tu tienda.</p>
+            <p>Sí, funciona con ambas. Inbox Zero se conecta directamente a los webhooks de Printful.</p>
           </div>
         </div>
 
-        <!-- FAQ Item 3 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(2)"
-             (click)="toggleFaq(2, '¿Qué pasa si el cliente no recibe el email?')">
+             (click)="toggleFaq(2, '¿Mis clientes sabrán que los emails vienen de un tercero?')">
           <div class="faq-question">
-            <i class="bi bi-question-circle-fill"></i>
-            <h3>¿Qué pasa si el cliente no recibe el email?</h3>
-            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+            <h3>¿Mis clientes sabrán que los emails vienen de un tercero?</h3>
+            <i class="bi bi-chevron-down"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(2)">
-            <p>Cada email incluye un enlace de seguimiento que el cliente puede guardar y consultar cuando quiera. Además, enviamos múltiples emails en cada etapa del pedido para maximizar la entrega.</p>
+            <p>No. Los emails se envían con tu marca. Incluimos tu logo y colores. Para tus clientes, parece que los envías tú directamente.</p>
           </div>
         </div>
 
-        <!-- FAQ Item 4 -->
         <div class="faq-item" 
              [class.expanded]="isFaqExpanded(3)"
-             (click)="toggleFaq(3, '¿Mis clientes sabrán que los emails vienen de un tercero?')">
+             (click)="toggleFaq(3, '¿Cuánto tarda la configuración?')">
           <div class="faq-question">
-            <i class="bi bi-question-circle-fill"></i>
-            <h3>¿Mis clientes sabrán que los emails vienen de un tercero?</h3>
-            <i class="bi bi-chevron-down faq-toggle-icon"></i>
+            <h3>¿Cuánto tarda la configuración?</h3>
+            <i class="bi bi-chevron-down"></i>
           </div>
           <div class="faq-answer" *ngIf="isFaqExpanded(3)">
-            <p>No. Los emails se envían con tu marca. Incluimos tu logo, colores y dominio. Para tus clientes, parece que los envías tú directamente.</p>
-          </div>
-        </div>
-
-        <!-- FAQ Item 5 -->
-        <div class="faq-item" 
-             [class.expanded]="isFaqExpanded(4)"
-             (click)="toggleFaq(4, '¿Cuánto tarda la configuración?')">
-          <div class="faq-question">
-            <i class="bi bi-question-circle-fill"></i>
-            <h3>¿Cuánto tarda la configuración?</h3>
-            <i class="bi bi-chevron-down faq-toggle-icon"></i>
-          </div>
-          <div class="faq-answer" *ngIf="isFaqExpanded(4)">
-            <p>Entre 20 y 30 minutos. Agendamos una llamada, conectamos tu Printful, configuramos los emails con tu marca y hacemos un pedido de prueba. Listo para usar el mismo día.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="faq-footer">
-        <div class="faq-footer-content">
-          <i class="bi bi-chat-dots-fill"></i>
-          <div>
-            <strong>¿Tienes más preguntas?</strong>
-            <p>Escríbeme directamente. Yo personalmente respondo cada mensaje.</p>
+            <p>Entre 20 y 30 minutos. Agendamos una llamada, conectamos tu Printful, configuramos los emails con tu marca y hacemos un pedido de prueba.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 🆕 Setup Request Form Section - COMMENTED OUT (merged into CTA section below) -->
-  <!--
-  <section class="setup-form-section" id="setup-form-section" *ngIf="showSetupForm && !setupSubmitted">
-    <div class="container">
-      <div class="setup-form-card">
-        <div class="setup-form-header">
-          <div class="setup-header-icon">
-            <i class="bi bi-rocket-takeoff-fill"></i>
-          </div>
-          <h2>Let's set up your free trial</h2>
-          <p>Fill in these details and we'll configure everything in less than 24 hours</p>
-        </div>
-
-        <form class="setup-form" (ngSubmit)="submitSetupRequest()">
-          <div class="form-group">
-            <label for="email">
-              <i class="bi bi-envelope-fill"></i>
-              Your email
-            </label>
-            <input 
-              type="email" 
-              id="email"
-              class="form-control"
-              placeholder="you@yourstore.com"
-              [(ngModel)]="setupFormData.email"
-              name="email"
-              [disabled]="isSubmittingSetup"
-              required>
-            <span class="form-hint">We'll contact you here within 24 hours</span>
-          </div>
-
-          <div class="form-group">
-            <label for="storeUrl">
-              <i class="bi bi-shop"></i>
-              Store URL
-            </label>
-            <input 
-              type="text" 
-              id="storeUrl"
-              class="form-control"
-              placeholder="mystore.com"
-              [(ngModel)]="setupFormData.storeUrl"
-              name="storeUrl"
-              [disabled]="isSubmittingSetup"
-              required>
-            <span class="form-hint">Your online store domain</span>
-          </div>
-
-          <div class="form-group">
-            <label for="printfulApiKey">
-              <i class="bi bi-key-fill"></i>
-              Printful API Key
-            </label>
-            <input 
-              type="text" 
-              id="printfulApiKey"
-              class="form-control"
-              placeholder="pk_live_..."
-              [(ngModel)]="setupFormData.printfulApiKey"
-              name="printfulApiKey"
-              [disabled]="isSubmittingSetup"
-              required>
-            <span class="form-hint">
-              <a href="https://www.printful.com/dashboard/api" target="_blank" rel="noopener">
-                Where do I find my API Key? <i class="bi bi-box-arrow-up-right"></i>
-              </a>
-            </span>
-          </div>
-
-          <div class="form-group">
-            <label for="platform">
-              <i class="bi bi-laptop"></i>
-              Platform
-            </label>
-            <select 
-              id="platform"
-              class="form-control"
-              [(ngModel)]="setupFormData.platform"
-              name="platform"
-              [disabled]="isSubmittingSetup"
-              required>
-              <option value="WooCommerce">WooCommerce</option>
-              <option value="Shopify">Shopify</option>
-              <option value="Other">Other</option>
-            </select>
-            <span class="form-hint">Your ecommerce platform</span>
-          </div>
-
-          <div class="error-message" *ngIf="setupErrorMessage">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            {{ setupErrorMessage }}
-          </div>
-
-          <button 
-            type="submit"
-            class="btn btn-setup-submit"
-            [disabled]="isSubmittingSetup">
-            <span *ngIf="!isSubmittingSetup">
-              <i class="bi bi-check-circle-fill"></i>
-              Request Free Setup
-            </span>
-            <span *ngIf="isSubmittingSetup">
-              <i class="bi bi-arrow-repeat spin"></i>
-              Submitting...
-            </span>
-          </button>
-
-          <p class="setup-guarantee">
-            <i class="bi bi-shield-check-fill"></i>
-            We'll configure everything for you within 24 hours. No technical knowledge required.
-          </p>
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <section class="setup-success-section" *ngIf="setupSubmitted">
-    <div class="container">
-      <div class="setup-success-card">
-        <div class="success-icon">
-          <i class="bi bi-check-circle-fill"></i>
-        </div>
-        <h2>Request received! 🎉</h2>
-        <p class="success-message">
-          We've received your setup request. We'll contact you via email within the next 24 hours to configure your account.
-        </p>
-        <div class="success-details">
-          <div class="success-detail-item">
-            <i class="bi bi-envelope-check-fill"></i>
-            <span>Check your email for next steps</span>
-          </div>
-          <div class="success-detail-item">
-            <i class="bi bi-clock-fill"></i>
-            <span>Complete setup in less than 24 hours</span>
-          </div>
-          <div class="success-detail-item">
-            <i class="bi bi-headset"></i>
-            <span>Direct support throughout the process</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  -->
-
-  <!-- Setup Form Section - Hidden by default, shown after video CTA -->
+  <!-- Final CTA: Clean centered form -->
   <section class="cta-section" id="cta-section-form" *ngIf="showSetupFormSection">
     <div class="container">
-      <!-- ORIGINAL WAITLIST CONTENT - COMMENTED OUT -->
-      <!--
-      <div class="cta-content" *ngIf="!waitlistSubmitted">
-        <div class="urgency-badge">
-          <i class="bi bi-lightning-charge-fill"></i>
-          <span>Early Access — Limited spots</span>
-        </div>
-        
-        <h2>Get Early Access to Inbox Zero</h2>
-        <p class="cta-subtitle">
-          We're opening Inbox Zero to ecommerce stores using Printful, Shopify, or similar fulfillment partners.
-        </p>
-        
-        <div class="waitlist-form">
-          <div class="input-wrapper">
-            <i class="bi bi-envelope-fill"></i>
-            <input 
-              type="email" 
-              class="form-control form-control-large" 
-              placeholder="Enter your business email"
-              [(ngModel)]="waitlistEmail"
-              (keyup.enter)="submitWaitlist()"
-              [disabled]="isSubmitting">
-          </div>
-          
-          <button 
-            class="btn btn-primary btn-cta-large"
-            (click)="submitWaitlist()"
-            [disabled]="isSubmitting">
-            <span *ngIf="!isSubmitting">
-              <i class="bi bi-rocket-takeoff-fill"></i>
-              Join Waitlist
-            </span>
-            <span *ngIf="isSubmitting">
-              <i class="bi bi-arrow-repeat spin"></i>
-              Securing your spot...
-            </span>
-          </button>
-          
-          <div class="error-message" *ngIf="errorMessage">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            {{ errorMessage }}
-          </div>
-        </div>
-
-        <div class="social-proof-mini">
-          <div class="avatars">
-            <i class="bi bi-person-circle"></i>
-            <i class="bi bi-person-circle"></i>
-            <i class="bi bi-person-circle"></i>
-          </div>
-          <span>Join early adopters validating Inbox Zero</span>
-        </div>
-
-        <div class="cta-benefits">
-          <div class="benefit">
-            <i class="bi bi-tag-fill"></i>
-            <div class="benefit-text">
-              <strong>Early access pricing</strong>
-              <span>Lock in special rates before public launch</span>
-            </div>
-          </div>
-          <div class="benefit">
-            <i class="bi bi-calendar-check-fill"></i>
-            <div class="benefit-text">
-              <strong>Priority onboarding</strong>
-              <span>Get set up faster with dedicated support</span>
-            </div>
-          </div>
-          <div class="benefit">
-            <i class="bi bi-headset"></i>
-            <div class="benefit-text">
-              <strong>Direct founder support</strong>
-              <span>Work directly with the team building Inbox Zero</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="guarantee">
-          <i class="bi bi-shield-fill-check"></i>
-          <span>No credit card • No commitment • Built by ecommerce founder who lived this pain</span>
-        </div>
-      </div>
-
-      <div class="cta-success" *ngIf="waitlistSubmitted">
-        <div class="success-icon">
-          <i class="bi bi-check-circle-fill"></i>
-        </div>
-        <h2>Welcome to Inbox Zero Early Access!</h2>
-        <p class="success-message">
-          You're on the list. We'll reach out within 24 hours with next steps.
-        </p>
-        
-        <div class="next-steps">
-          <h3><i class="bi bi-calendar-check-fill"></i> What happens next?</h3>
-          <ol>
-            <li><strong>Check your email</strong> for confirmation</li>
-            <li><strong>Join our Discord</strong> to chat with the team</li>
-            <li><strong>Get notified</strong> when we launch</li>
-          </ol>
-        </div>
-        
-        <button class="btn btn-outline" (click)="goBackToHub()">
-          <i class="bi bi-arrow-left"></i>
-          Explore Other MVPs
-        </button>
-      </div>
-      -->
-
-      <!-- NEW: SETUP FORM WITH WAITLIST DESIGN -->
-      <div class="cta-content" *ngIf="!setupSubmitted">
-        <!-- Setup Badge -->
-        <div class="urgency-badge">
-          <i class="bi bi-tools"></i>
-          <span>Configuración gratis</span>
-        </div>
-        
+      
+      <!-- Form State -->
+      <div class="cta-form-wrapper" *ngIf="!setupSubmitted">
         <h2>Déjame configurarlo en tu tienda</h2>
-        <p class="cta-subtitle">
-          Comparte algunos datos y lo configuro todo por ti. Funciona con Printful, Shopify, WooCommerce y plataformas similares.
-        </p>
+        <p class="cta-subtitle">Comparte tus datos y lo configuro todo por ti</p>
         
-        <!-- Setup Form (shown directly) -->
-        <form class="waitlist-form" (ngSubmit)="submitSetupRequest()">
-          <!-- Email -->
-          <div class="input-wrapper">
-            <i class="bi bi-envelope-fill"></i>
+        <form class="setup-form" (ngSubmit)="submitSetupRequest()">
+          
+          <div class="form-field">
             <input 
               type="email" 
-              class="form-control form-control-large" 
+              class="form-input" 
               placeholder="Tu email de contacto"
               [(ngModel)]="setupFormData.email"
               name="email"
@@ -932,37 +418,19 @@
               required>
           </div>
           
-          <!-- Store URL -->
-          <div class="input-wrapper">
-            <i class="bi bi-shop"></i>
+          <div class="form-field">
             <input 
               type="text" 
-              class="form-control form-control-large" 
-              placeholder="URL de tu tienda (ej. mitienda.com)"
+              class="form-input" 
+              placeholder="URL de tu tienda (opcional)"
               [(ngModel)]="setupFormData.storeUrl"
               name="storeUrl"
               [disabled]="isSubmittingSetup">
           </div>
-          <small class="form-text text-muted" style="display: block; margin-top: -12px; margin-bottom: 16px; margin-left: 4px; font-size: 0.875rem; color: #6c757d; font-style: italic;">Opcional — puedes compartirlo después</small>
 
-          <!-- Printful API Key - Campo comentado. Se solicita por email después del setup -->
-          <!-- <div class="input-wrapper">
-            <i class="bi bi-key-fill"></i>
-            <input 
-              type="text" 
-              class="form-control form-control-large" 
-              placeholder="Printful API Key (pk_live_...)"
-              [(ngModel)]="setupFormData.printfulApiKey"
-              name="printfulApiKey"
-              [disabled]="isSubmittingSetup"
-              required>
-          </div> -->
-
-          <!-- Platform Dropdown -->
-          <div class="input-wrapper">
-            <i class="bi bi-laptop"></i>
+          <div class="form-field">
             <select 
-              class="form-control form-control-large"
+              class="form-input"
               [(ngModel)]="setupFormData.platform"
               name="platform"
               [disabled]="isSubmittingSetup">
@@ -973,106 +441,47 @@
             </select>
           </div>
           
-          <!-- Submit Button -->
-          <button 
-            type="submit"
-            class="btn btn-primary btn-cta-large"
-            [disabled]="isSubmittingSetup">
-            <span *ngIf="!isSubmittingSetup">
-              <i class="bi bi-tools"></i>
-              Quiero probarlo gratis
-            </span>
-            <span *ngIf="isSubmittingSetup">
-              <i class="bi bi-arrow-repeat spin"></i>
-              Enviando...
-            </span>
-          </button>
-          
-          <!-- Error Message -->
           <div class="error-message" *ngIf="setupErrorMessage">
             <i class="bi bi-exclamation-triangle-fill"></i>
             {{ setupErrorMessage }}
           </div>
+
+          <button 
+            type="submit"
+            class="btn-form-submit"
+            [disabled]="isSubmittingSetup">
+            <span *ngIf="!isSubmittingSetup">Quiero probarlo gratis</span>
+            <span *ngIf="isSubmittingSetup">Enviando...</span>
+          </button>
+
+          <p class="form-note">Sin tarjeta • Sin compromiso • Configuración en 30 minutos</p>
         </form>
-
-        <!-- Social Proof -->
-        <div class="social-proof-mini">
-          <div class="avatars">
-            <i class="bi bi-person-circle"></i>
-            <i class="bi bi-person-circle"></i>
-            <i class="bi bi-person-circle"></i>
-          </div>
-          <span>Únete a fundadores probando Inbox Zero</span>
-        </div>
-
-        <!-- Benefits -->
-        <div class="cta-benefits">
-          <div class="benefit">
-            <i class="bi bi-tag-fill"></i>
-            <div class="benefit-text">
-              <strong>Gratis durante 30 días</strong>
-              <span>Solo pido feedback honesto</span>
-            </div>
-          </div>
-          <div class="benefit">
-            <i class="bi bi-calendar-check-fill"></i>
-            <div class="benefit-text">
-              <strong>Configuración rápida</strong>
-              <span>Lo configuro yo contigo</span>
-            </div>
-          </div>
-          <div class="benefit">
-            <i class="bi bi-headset"></i>
-            <div class="benefit-text">
-              <strong>Soporte directo del fundador</strong>
-              <span>Trabajas directamente conmigo</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Risk Reversal -->
-        <div class="guarantee">
-          <i class="bi bi-shield-fill-check"></i>
-          <span>Sin tarjeta • Sin compromiso • Creado por un fundador que vivió este problema</span>
-        </div>
       </div>
 
-      <!-- Success State (same design as before) -->
-      <div class="cta-success" *ngIf="setupSubmitted">
+      <!-- Success State -->
+      <div class="cta-success-wrapper" *ngIf="setupSubmitted">
         <div class="success-icon">
           <i class="bi bi-check-circle-fill"></i>
         </div>
-        <h2>¡Solicitud recibida! 🎉</h2>
-        <p class="success-message">
-          He recibido tu solicitud. Te contactaré por email en las próximas 24 horas para configurar tu cuenta.
-        </p>
-        
-        <div class="next-steps">
-          <h3><i class="bi bi-calendar-check-fill"></i> ¿Qué sigue ahora?</h3>
-          <ol>
-            <li><strong>Revisa tu email</strong> para los próximos pasos</li>
-            <li><strong>Configuración completa</strong> en menos de 24 horas</li>
-            <li><strong>Soporte directo</strong> durante todo el proceso</li>
-          </ol>
-        </div>
-        
-        <button class="btn btn-outline" (click)="goBackToHub()">
+        <h2>¡Solicitud recibida!</h2>
+        <p>Te contactaré por email en las próximas 24 horas para configurar tu cuenta.</p>
+        <button class="btn-back" (click)="goBackToHub()">
           <i class="bi bi-arrow-left"></i>
           Explorar otros MVPs
         </button>
       </div>
+
     </div>
   </section>
 
-  <!-- Footer Note -->
-  <section class="footer-note">
+  <!-- Footer -->
+  <footer class="footer">
     <div class="container">
       <p>
-        <i class="bi bi-info-circle"></i>
         <strong>Para tiendas con Printful:</strong> Si pasas horas cada semana 
         respondiendo "¿dónde está mi pedido?", esto lo construí para ti.
       </p>
     </div>
-  </section>
+  </footer>
 
 </div>

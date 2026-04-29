@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TrackingService } from '@shared/../services/tracking.service';
@@ -39,7 +39,7 @@ interface RealMetric {
   templateUrl: './prevention-demo.component.html',
   styleUrls: ['./prevention-demo.component.scss']
 })
-export class PreventionDemoComponent implements OnInit, AfterViewInit {
+export class PreventionDemoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Module identifier for tracking (Landing phase)
   readonly moduleKey = MODULE_KEYS.INBOX_ZERO.LANDING;
@@ -73,6 +73,9 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
   
   // 🆕 Tracking flags
   private pricingViewed = false;
+
+  // 🆕 Mobile menu state
+  isMobileMenuOpen = false;
 
   // 🆕 ViewChild for pricing section (IntersectionObserver)
   @ViewChild('pricingSection', { read: ElementRef }) pricingSection?: ElementRef;
@@ -216,6 +219,14 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.setupVideoPlayTracking();
     }, 2000);
+  }
+
+  /**
+   * 🆕 On destroy - Clean up body scroll lock
+   */
+  ngOnDestroy(): void {
+    // Always restore body scroll when component is destroyed
+    document.body.style.overflow = '';
   }
 
   /**
@@ -592,6 +603,62 @@ export class PreventionDemoComponent implements OnInit, AfterViewInit {
       'Customer satisfaction': '(measurably higher response rates)'
     };
     return contexts[label] || null;
+  }
+
+  /**
+   * 🆕 Mobile Menu - Toggle open/close
+   */
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+    
+    // Lock/unlock body scroll
+    if (this.isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Track menu state
+    this.trackEvent(this.isMobileMenuOpen ? 'mobile_menu_opened' : 'mobile_menu_closed', {
+      timestamp: Date.now()
+    });
+  }
+
+  /**
+   * 🆕 Mobile Menu - Close menu
+   */
+  closeMobileMenu(): void {
+    if (this.isMobileMenuOpen) {
+      this.isMobileMenuOpen = false;
+      document.body.style.overflow = '';
+      
+      this.trackEvent('mobile_menu_closed', {
+        timestamp: Date.now()
+      });
+    }
+  }
+
+  /**
+   * 🆕 Mobile Menu - Scroll to section by ID
+   */
+  scrollToSection(sectionId: string): void {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 80; // Navbar height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+
+      // Track navigation
+      this.trackEvent('mobile_menu_navigation', {
+        section: sectionId,
+        timestamp: Date.now()
+      });
+    }
   }
 
   /**
