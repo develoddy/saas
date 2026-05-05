@@ -38,6 +38,16 @@ export const MODULE_KEYS = {
     WIZARD: 'productclip',
     LIVE: 'productclip',
     CONCEPT: 'productclip'
+  },
+
+  /**
+   * MailFlow - Email sequence automation
+   * Simple sequences without MailChimp complexity
+   */
+  MAILFLOW: {
+    WIZARD: 'mailflow',
+    LIVE: 'mailflow',
+    CONCEPT: 'mailflow'
   }
 } as const;
 

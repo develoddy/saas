@@ -12,6 +12,47 @@ import {
   SequenceEmail
 } from './models/onboarding-wizard.models';
 
+/**
+ * ============================================================================
+ * MAILFLOW ONBOARDING WIZARD - MVP MODE (PUBLIC VALIDATION)
+ * ============================================================================
+ * 
+ * ⚠️ DO NOT REVERT YET - VALIDATION PHASE ACTIVE
+ * 
+ * CURRENT STATE:
+ * - No authentication required (intentional for MVP)
+ * - localStorage-based persistence (see saveSequenceIdToLocalStorage)
+ * - Single-user session model
+ * - Public wizard accessible at /mailflow/onboarding
+ * 
+ * WHY:
+ * - Zero friction onboarding for early adopters
+ * - Real conversion measurement without login wall
+ * - Pricing validation ($19/mo question after activation)
+ * - Quick market validation
+ * 
+ * FLOW:
+ * 1. User completes wizard (no login required)
+ * 2. Sequence generated → sequenceId saved to localStorage
+ * 3. User activates sequence → validation modal appears
+ * 4. User answers pricing question → tracked to DB
+ * 5. User redirected to dashboard → shows their sequences
+ * 
+ * FUTURE (AFTER VALIDATION):
+ * - Require authentication before wizard
+ * - Remove localStorage persistence
+ * - Use real user/tenant context
+ * - Workspace-based isolation
+ * - Proper session management
+ * 
+ * VALIDATION GOALS:
+ * - 10-50 real users creating sequences
+ * - Conversion metrics (landing → wizard → activation)
+ * - Payment intent signals (validation_response tracking)
+ * 
+ * @date 2026-05-05
+ * ============================================================================
+ */
 @Component({
   selector: 'app-onboarding-wizard',
   templateUrl: './onboarding-wizard.component.html',
@@ -32,6 +73,11 @@ export class OnboardingWizardComponent implements OnInit {
   isGenerating = false;
   generationError: string | null = null;
   sequenceActivated = false; // Estado de activación de la secuencia
+
+  // Validation modal
+  showValidationModal = false;
+  validationResponse: 'yes' | 'maybe' | 'no' | null = null;
+  validationComment = '';
 
   // Estado del wizard
   steps: WizardStep[] = [
@@ -316,6 +362,11 @@ export class OnboardingWizardComponent implements OnInit {
         contacts: this.previewContacts.length
       });
 
+      // 💾 Guardar sequenceId en localStorage para MVP público
+      if (this.generatedSequence?.sequenceId) {
+        this.saveSequenceIdToLocalStorage(this.generatedSequence.sequenceId);
+      }
+
       this.currentStep = 4;
       this.updateStepsValidity();
     } catch (error: any) {
@@ -359,10 +410,63 @@ export class OnboardingWizardComponent implements OnInit {
 
       // Cambiar estado a activado (mostrar UI de éxito)
       this.sequenceActivated = true;
+
+      // Mostrar modal de validación después de 1 segundo
+      setTimeout(() => {
+        this.showValidationModal = true;
+      }, 1000);
+
     } catch (error: any) {
       console.error('Error activating sequence:', error);
       this.generationError = 'Failed to activate sequence. Please try again.';
     }
+  }
+
+  // Cerrar modal de validación
+  closeValidationModal(): void {
+    this.showValidationModal = false;
+    // Redirigir al dashboard después de cerrar
+    setTimeout(() => {
+      this.router.navigate(['/mailflow/dashboard']);
+    }, 500);
+  }
+
+  // Submitear respuesta de validación
+  submitValidation(response: 'yes' | 'maybe' | 'no', comment: string | null): void {
+    this.validationResponse = response;
+    
+    // Track validation response
+    this.tracking.track('validation_response', {
+      module: 'mailflow',
+      response: response,
+      sequence_id: this.generatedSequence?.sequenceId,
+      price_asked: 19
+    });
+
+    // Si hay comentario inmediato, enviarlo
+    if (comment) {
+      this.validationComment = comment;
+      this.submitFeedback();
+    }
+  }
+
+  // Submitear feedback adicional
+  submitFeedback(): void {
+    if (!this.validationComment.trim()) {
+      this.closeValidationModal();
+      return;
+    }
+
+    // Track validation feedback
+    this.tracking.track('validation_feedback', {
+      module: 'mailflow',
+      response: this.validationResponse,
+      feedback: this.validationComment,
+      sequence_id: this.generatedSequence?.sequenceId
+    });
+
+    // Cerrar modal y redirigir
+    this.closeValidationModal();
   }
 
   // Calcular duración total de la secuencia en días
@@ -399,6 +503,27 @@ export class OnboardingWizardComponent implements OnInit {
         };
       default:
         return {};
+    }
+  }
+
+  /**
+   * 💾 Guardar sequenceId en localStorage para MVP público
+   * Permite al usuario ver sus sequences sin autenticación
+   */
+  private saveSequenceIdToLocalStorage(sequenceId: string): void {
+    const STORAGE_KEY = 'mailflow_sequences';
+    try {
+      const existingIds = localStorage.getItem(STORAGE_KEY);
+      const idsArray = existingIds ? JSON.parse(existingIds) : [];
+      
+      // Agregar nuevo ID si no existe
+      if (!idsArray.includes(sequenceId)) {
+        idsArray.push(sequenceId);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(idsArray));
+        console.log('💾 Sequence ID saved to localStorage:', sequenceId);
+      }
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
     }
   }
 }

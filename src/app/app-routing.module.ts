@@ -66,6 +66,17 @@ const routes: Routes = [
       title: 'Inbox Zero Prevention'
     }
   },
+
+  // MailFlow MVP - Email Automation
+  {
+    path: 'mailflow',
+    loadChildren: () => import('./modules/mailflow/mailflow.module')
+      .then(m => m.MailflowModule),
+    data: { 
+      title: 'MailFlow - Email Automation'
+    }
+  },
+
   {
     path: 'preview/productclip',
     component: VideoExpressWizardComponent,
@@ -137,11 +148,6 @@ const routes: Routes = [
     canActivate: [TenantAuthGuard],
     children: [
       // Legacy modules con lazy loading (migrar a sistema de módulos progresivamente)
-      {
-        path: 'mailflow',
-        loadChildren: () => import('./modules/mailflow/mailflow.module')
-          .then(m => m.MailflowModule)
-      },
       {
         path: 'smart-chat',
         loadChildren: () => import('./modules/smart-chat/smart-chat.module')

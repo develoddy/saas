@@ -8,6 +8,38 @@ import {
   SequenceStatus
 } from '../onboarding/models/onboarding-wizard.models';
 
+/**
+ * ============================================================================
+ * MAILFLOW SERVICE - MVP MODE (PUBLIC VALIDATION)
+ * ============================================================================
+ * 
+ * ⚠️ DO NOT REVERT YET - VALIDATION PHASE ACTIVE
+ * 
+ * CURRENT STATE:
+ * - No auth headers sent (intentional for MVP)
+ * - localStorage used for sequence identification (see listSequences)
+ * - Single-user session model
+ * 
+ * WHY:
+ * - Public API calls without authentication
+ * - localStorage as temporary user identity
+ * - Quick market validation without login friction
+ * 
+ * LOCALSTORAGE USAGE:
+ * - Key: 'mailflow_sequences'
+ * - Value: Array of sequenceIds ["seq_abc123", "seq_xyz456", ...]
+ * - Created by: onboarding-wizard.component.ts (saveSequenceIdToLocalStorage)
+ * - Used by: listSequences() to fetch user's sequences
+ * 
+ * FUTURE (PRODUCTION):
+ * - Add auth headers (JWT / Bearer token)
+ * - Remove localStorage dependency
+ * - Use real user/tenant context from auth service
+ * - Workspace-based API calls
+ * 
+ * @date 2026-05-05
+ * ============================================================================
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -59,5 +91,29 @@ export class MailflowService {
    */
   getSequence(sequenceId: string): Observable<GeneratedSequence> {
     return this.http.get<GeneratedSequence>(`${this.apiUrl}/sequences/${sequenceId}`);
+  }
+
+  /**
+   * Lista todas las secuencias del tenant
+   */
+  listSequences(): Observable<any> {
+    // MVP público: leer sequenceIds desde localStorage
+    const STORAGE_KEY = 'mailflow_sequences';
+    let params = {};
+    
+    try {
+      const storedIds = localStorage.getItem(STORAGE_KEY);
+      if (storedIds) {
+        const idsArray = JSON.parse(storedIds);
+        if (idsArray.length > 0) {
+          // Enviar como query param: ?sequenceIds=seq1,seq2,seq3
+          params = { sequenceIds: idsArray.join(',') };
+        }
+      }
+    } catch (error) {
+      console.error('Error reading from localStorage:', error);
+    }
+    
+    return this.http.get<any>(`${this.apiUrl}/sequences`, { params });
   }
 }

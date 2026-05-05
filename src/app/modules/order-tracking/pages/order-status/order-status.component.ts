@@ -121,28 +121,28 @@ export class OrderStatusComponent implements OnInit, OnDestroy {
       {
         type: 'order_received',
         status: 'completed',
-        title: 'Order Received',
-        description: 'Your order has been received and is being processed',
+        title: 'Pedido Recibido',
+        description: 'Tu pedido ha sido recibido y está siendo procesado',
         date: data.dates.created,
         completed: true
       },
       {
         type: 'shipped',
         status: this.getEventStatus(data.status, 'shipped'),
-        title: 'Shipped',
+        title: 'Enviado',
         description: data.trackingNumber 
-          ? `In transit - ${data.carrier || 'Carrier'}: ${data.trackingNumber}`
-          : 'Your order is being prepared for shipment',
+          ? `En tránsito - ${data.carrier || 'Transportista'}: ${data.trackingNumber}`
+          : 'Tu pedido está siendo preparado para el envío',
         date: data.dates.shipped || '',
         completed: data.status === 'fulfilled' || !!data.trackingNumber
       },
       {
         type: 'delivered',
         status: this.getEventStatus(data.status, 'delivered'),
-        title: 'Delivered',
+        title: 'Entregado',
         description: data.dates.delivered 
-          ? 'Your order has been delivered'
-          : 'Awaiting delivery',
+          ? 'Tu pedido ha sido entregado'
+          : 'Esperando entrega',
         date: data.dates.delivered || data.estimated.max || '',
         completed: data.status === 'fulfilled' && !!data.dates.delivered
       }

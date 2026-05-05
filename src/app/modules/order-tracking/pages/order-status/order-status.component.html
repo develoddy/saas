@@ -11,15 +11,15 @@
         <div class="brand-text">
           <h4 class="mb-0 fw-bold">
             <span class="inbox-zero-brand">Inbox Zero</span>
-            <span class="store-separator" *ngIf="storeName !== 'LujanDev'">for</span>
+            <span class="store-separator" *ngIf="storeName !== 'LujanDev'">para</span>
             <span class="store-name" *ngIf="storeName !== 'LujanDev'">{{ storeName }}</span>
           </h4>
-          <small class="text-muted">Order Tracking Portal</small>
+          <small class="text-muted">Portal de Seguimiento de Pedido</small>
         </div>
       </div>
       <button class="btn btn-sm btn-outline-primary btn-refresh" (click)="refreshTracking()" [disabled]="isLoading">
         <i class="bi bi-arrow-clockwise me-1"></i>
-        <span class="btn-text">Refresh Status</span>
+        <span class="btn-text">Actualizar Estado</span>
       </button>
     </div>
   </div>
@@ -31,9 +31,9 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="container text-center py-5">
     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-      <span class="visually-hidden">Loading...</span>
+      <span class="visually-hidden">Cargando...</span>
     </div>
-    <p class="mt-3 text-muted">Checking order status...</p>
+    <p class="mt-3 text-muted">Verificando estado del pedido...</p>
   </div>
 
   <!-- Error State -->
@@ -42,13 +42,13 @@
       <div class="d-flex align-items-center">
         <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
         <div>
-          <h5 class="alert-heading mb-1">Error loading tracking</h5>
+          <h5 class="alert-heading mb-1">Error al cargar seguimiento</h5>
           <p class="mb-0">{{ error }}</p>
         </div>
       </div>
       <hr>
       <button class="btn btn-danger" (click)="refreshTracking()">
-        <i class="bi bi-arrow-clockwise me-2"></i>Retry
+        <i class="bi bi-arrow-clockwise me-2"></i>Reintentar
       </button>
     </div>
   </div>
@@ -60,7 +60,7 @@
     <div class="tracking-hero-header">
       <div class="hero-content">
         <div class="order-meta">
-          <span class="order-label">Order Tracking</span>
+          <span class="order-label">Seguimiento de Pedido</span>
           <span class="order-separator">|</span>
           <span class="order-date">
             <i class="bi bi-calendar-event me-2"></i>
@@ -68,7 +68,7 @@
           </span>
         </div>
         <h1 class="hero-title">
-          Order #{{ trackingData.orderId }}
+          Pedido #{{ trackingData.orderId }}
         </h1>
         <div class="hero-status">
           <span class="status-badge {{ getStatusBadgeClass() }}">
@@ -84,9 +84,9 @@
       <div class="section-header">
         <h3 class="section-title">
           <i class="bi bi-truck me-2"></i>
-          Shipping Progress
+          Progreso del Envío
         </h3>
-        <p class="section-subtitle">Track your order in real-time</p>
+        <p class="section-subtitle">Rastrea tu pedido en tiempo real</p>
       </div>
       <div class="progress-card">
         
@@ -100,7 +100,7 @@
                 <i class="bi bi-check-lg" *ngIf="isStepCompleted('ordered')"></i>
                 <i class="bi bi-bag" *ngIf="!isStepCompleted('ordered')"></i>
               </div>
-              <span class="step-label">Order Placed</span>
+              <span class="step-label">Pedido Realizado</span>
             </div>
             <div class="step" [ngClass]="getStepClass('shipped')">
               <div class="step-circle">
@@ -108,14 +108,14 @@
                 <i class="bi bi-check-lg" *ngIf="isStepCompleted('shipped')"></i>
                 <i class="bi bi-truck" *ngIf="!isStepCompleted('shipped') && !isStepActive('shipped')"></i>
               </div>
-              <span class="step-label">Shipped</span>
+              <span class="step-label">Enviado</span>
             </div>
             <div class="step" [ngClass]="getStepClass('delivered')">
               <div class="step-circle">
                 <i class="bi bi-check-lg" *ngIf="isStepCompleted('delivered')"></i>
                 <i class="bi bi-house" *ngIf="!isStepCompleted('delivered')"></i>
               </div>
-              <span class="step-label">Delivered</span>
+              <span class="step-label">Entregado</span>
             </div>
           </div>
         </div>
@@ -133,26 +133,26 @@
               <i class="bi bi-geo-alt-fill"></i>
             </div>
             <div class="header-text">
-              <h4 class="header-title">Shipping Information</h4>
-              <p class="header-subtitle">Real-time tracking details</p>
+              <h4 class="header-title">Información de Envío</h4>
+              <p class="header-subtitle">Detalles de seguimiento en tiempo real</p>
             </div>
           </div>
           <div class="card-content">
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Tracking Number</label>
+                <label class="text-muted small d-block mb-1">Número de Seguimiento</label>
                 <p class="mb-0 fw-semibold fs-5">{{ trackingData.trackingNumber }}</p>
               </div>
               <div class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Carrier</label>
+                <label class="text-muted small d-block mb-1">Transportista</label>
                 <p class="mb-0 fw-semibold">{{ trackingData.carrier }}</p>
               </div>
               <div *ngIf="trackingData.dates.shipped" class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Ship Date</label>
+                <label class="text-muted small d-block mb-1">Fecha de Envío</label>
                 <p class="mb-0">{{ formatDateShort(trackingData.dates.shipped) }}</p>
               </div>
               <div *ngIf="trackingData.estimated.max" class="col-md-6 mb-3">
-                <label class="text-muted small d-block mb-1">Estimated Delivery</label>
+                <label class="text-muted small d-block mb-1">Entrega Estimada</label>
                 <p class="mb-0">{{ formatDateShort(trackingData.estimated.max) }}</p>
               </div>
             </div>
@@ -161,7 +161,7 @@
               class="btn btn-primary w-100 mt-2"
               (click)="openTrackingUrl()">
               <i class="bi bi-box-arrow-up-right me-2"></i>
-              Track with {{ trackingData.carrier }}
+              Rastrear con {{ trackingData.carrier }}
             </button>
           </div>
         </div>
@@ -173,8 +173,8 @@
               <i class="bi bi-bag-check-fill"></i>
             </div>
             <div class="header-text">
-              <h4 class="header-title">Order Items</h4>
-              <p class="header-subtitle">{{ trackingData.items.length }} item(s) in your order</p>
+              <h4 class="header-title">Artículos del Pedido</h4>
+              <p class="header-subtitle">{{ trackingData.items.length }} artículo(s) en tu pedido</p>
             </div>
           </div>
           <div class="card-content">
@@ -199,14 +199,14 @@
                   <i class="bi bi-upc me-1"></i>SKU: {{ item.sku }}
                 </p>
                 <p class="mb-0">
-                  <span class="text-muted small">Quantity:</span> 
+                  <span class="text-muted small">Cantidad:</span> 
                   <strong>{{ item.quantity }}</strong>
                 </p>
               </div>
               
               <div class="item-price text-end flex-shrink-0">
                 <p class="fw-bold mb-0 fs-5">€{{ item.retail_price }}</p>
-                <small class="text-muted">each</small>
+                <small class="text-muted">c/u</small>
               </div>
             </div>
           </div>
@@ -224,27 +224,27 @@
               <i class="bi bi-clipboard-check"></i>
             </div>
             <div class="header-text">
-              <h5 class="header-title">Order Summary</h5>
+              <h5 class="header-title">Resumen del Pedido</h5>
             </div>
           </div>
           <div class="card-content">
             <ul class="list-unstyled mb-0">
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                <span class="text-muted small">Order ID:</span>
+                <span class="text-muted small">ID del Pedido:</span>
                 <strong class="small">{{ trackingData.orderId }}</strong>
               </li>
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                <span class="text-muted small">Status:</span>
+                <span class="text-muted small">Estado:</span>
                 <span class="badge {{ getStatusBadgeClass() }} small">
                   {{ getStatusText() }}
                 </span>
               </li>
               <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                <span class="text-muted small">Items:</span>
+                <span class="text-muted small">Artículos:</span>
                 <strong class="small">{{ trackingData.items.length }}</strong>
               </li>
               <li *ngIf="trackingData.dates.updated" class="d-flex justify-content-between mb-0">
-                <span class="text-muted small">Last updated:</span>
+                <span class="text-muted small">Última actualización:</span>
                 <small>{{ formatDateShort(trackingData.dates.updated) }}</small>
               </li>
             </ul>
@@ -258,18 +258,18 @@
               <i class="bi bi-question-circle-fill"></i>
             </div>
             <div class="header-text">
-              <h5 class="header-title">Need Help?</h5>
+              <h5 class="header-title">¿Necesitas Ayuda?</h5>
             </div>
           </div>
           <div class="card-content">
             <p class="small text-muted mb-3">
-              If you have any questions about your order, feel free to contact us.
+              Si tienes alguna pregunta sobre tu pedido, no dudes en contactarnos.
             </p>
             <div class="d-grid gap-2">
               <a href="mailto:support@{{ storeName.toLowerCase().replace(' ', '') }}.com" 
                  class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-envelope-fill me-2"></i>
-                Send Email
+                Enviar Email
               </a>
             </div>
           </div>
@@ -287,10 +287,10 @@
   <div class="container-fluid max-width-container">
     <div class="footer-content">
       <p class="footer-text">
-        © {{ 2026 }} <span *ngIf="storeName !== 'LujanDev'">{{ storeName }} · </span>Order Tracking
+        © {{ 2026 }} <span *ngIf="storeName !== 'LujanDev'">{{ storeName }} · </span>Seguimiento de Pedido
       </p>
       <p class="footer-powered">
-        Powered by <strong>Inbox Zero</strong>{{ showTenantBranding ? ' & Printful' : '' }}
+        Desarrollado por <strong>Inbox Zero</strong>{{ showTenantBranding ? ' & Printful' : '' }}
       </p>
     </div>
   </div>

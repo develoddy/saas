@@ -153,15 +153,15 @@ export class OrderTrackingService {
     const statusLower = status?.toLowerCase();
     
     const translations: Record<string, string> = {
-      'draft': 'Draft',
-      'pending': 'Pending',
-      'failed': 'Failed',
-      'canceled': 'Canceled',
-      'onhold': 'On Hold',
-      'inprocess': 'In Process',
-      'partial': 'Partially Completed',
-      'fulfilled': 'Completed',
-      'archived': 'Archived'
+      'draft': 'Borrador',
+      'pending': 'Pendiente',
+      'failed': 'Fallido',
+      'canceled': 'Cancelado',
+      'onhold': 'En Espera',
+      'inprocess': 'En Proceso',
+      'partial': 'Parcialmente Completado',
+      'fulfilled': 'Completado',
+      'archived': 'Archivado'
     };
     
     return translations[statusLower] || status;

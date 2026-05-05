@@ -309,6 +309,60 @@
     </div>
   </div>
 
+  <!-- Validation Modal -->
+  <div *ngIf="showValidationModal" class="validation-modal-overlay" (click)="closeValidationModal()">
+    <div class="validation-modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeValidationModal()">×</button>
+      
+      <div class="modal-header">
+        <h3>💡 Quick Question</h3>
+        <p>Help us understand what matters to you</p>
+      </div>
+
+      <div class="modal-body">
+        <div class="question">
+          <strong>Would you pay $19/month for MailFlow?</strong>
+          <p class="question-subtitle">
+            Unlimited sequences, unlimited contacts, advanced analytics, and priority support
+          </p>
+        </div>
+
+        <div class="response-buttons">
+          <button class="response-btn yes" (click)="submitValidation('yes', null)">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Yes, I'd pay</span>
+          </button>
+          
+          <button class="response-btn maybe" (click)="submitValidation('maybe', null)">
+            <i class="bi bi-question-circle-fill"></i>
+            <span>Maybe, depends on features</span>
+          </button>
+          
+          <button class="response-btn no" (click)="submitValidation('no', null)">
+            <i class="bi bi-x-circle-fill"></i>
+            <span>No, I'd use free alternatives</span>
+          </button>
+        </div>
+
+        <div class="feedback-section" *ngIf="validationResponse">
+          <label for="validationComment">
+            Want to tell us more? (optional)
+          </label>
+          <textarea 
+            id="validationComment"
+            [(ngModel)]="validationComment"
+            placeholder="What would make you more likely to pay? What features are missing?"
+            rows="3"
+            class="feedback-textarea"></textarea>
+          
+          <button class="btn btn-primary btn-sm" (click)="submitFeedback()">
+            Submit Feedback
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Navigation buttons -->
   <div class="wizard-navigation">
     <button *ngIf="currentStep > 1 && currentStep < 4" 

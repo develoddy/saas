@@ -5,12 +5,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MailflowRoutingModule } from './mailflow-routing.module';
 import { OnboardingWizardComponent } from './onboarding/onboarding-wizard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { MailflowLandingComponent } from './landing/mailflow-landing.component';
 import { SequenceEmailCardComponent } from './shared/sequence-email-card.component';
 import { MailflowService } from './services/mailflow.service';
 
 @NgModule({
   declarations: [
     OnboardingWizardComponent,
+    DashboardComponent,
+    MailflowLandingComponent,
     SequenceEmailCardComponent
   ],
   imports: [
