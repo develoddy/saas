@@ -573,7 +573,109 @@
         margin-bottom: 2rem;
       }
       
+      // ===== JERARQUÍA VISUAL: EMAIL ACTIVO = FOCO PRINCIPAL =====
+      &.status-active {
+        transform: scale(1.05);
+        z-index: 10;
+        
+        .timeline-email-content {
+          background: linear-gradient(135deg, rgba(236, 253, 245, 0.6) 0%, rgba(209, 250, 229, 0.4) 100%);
+          padding: 1.5rem;
+          border-radius: 12px;
+          border: 2px solid #10b981;
+          box-shadow: 
+            0 4px 12px rgba(16, 185, 129, 0.15),
+            0 8px 24px rgba(16, 185, 129, 0.1),
+            0 0 0 4px rgba(16, 185, 129, 0.08);
+          margin: -1rem 0 0 -0.5rem;
+        }
+        
+        .timeline-connector {
+          .timeline-dot {
+            width: 24px;
+            height: 24px;
+            box-shadow: 
+              0 0 0 4px #d1fae5,
+              0 0 0 8px rgba(16, 185, 129, 0.15),
+              0 4px 12px rgba(16, 185, 129, 0.3);
+          }
+        }
+        
+        .email-subject {
+          color: #065f46;
+          font-size: 1.25rem;
+          font-weight: 700;
+        }
+        
+        .email-preview-text {
+          color: #059669;
+        }
+        
+        .btn-view-email {
+          border-color: #10b981;
+          color: #059669;
+          background: rgba(236, 253, 245, 0.5);
+          
+          &:hover {
+            background: #ecfdf5;
+            border-color: #059669;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+          }
+        }
+      }
+      
+      // ===== JERARQUÍA VISUAL: EMAILS FUTUROS = CONTEXTO SECUNDARIO =====
+      &.status-scheduled {
+        opacity: 0.55;
+        transform: scale(0.98);
+        
+        .timeline-email-content {
+          padding-bottom: 1rem;
+        }
+        
+        .timeline-connector {
+          opacity: 0.6;
+          
+          .timeline-dot {
+            box-shadow: 0 0 0 3px rgba(254, 243, 199, 0.5);
+          }
+        }
+        
+        .email-subject {
+          color: #6b7280;
+          font-weight: 500;
+        }
+        
+        .email-preview-text {
+          color: #9ca3af;
+        }
+        
+        .btn-view-email {
+          opacity: 0.7;
+          
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+      
       &:hover {
+        &.status-active {
+          transform: scale(1.06);
+          
+          .timeline-email-content {
+            box-shadow: 
+              0 6px 16px rgba(16, 185, 129, 0.2),
+              0 10px 32px rgba(16, 185, 129, 0.15),
+              0 0 0 4px rgba(16, 185, 129, 0.12);
+          }
+        }
+        
+        &.status-scheduled {
+          opacity: 0.75;
+          transform: scale(0.99);
+        }
+        
         .timeline-email-content {
           transform: translateX(4px);
         }
@@ -716,14 +818,6 @@
           border-radius: 12px;
           border: 1px solid #e5e7eb;
           animation: slideDown 0.3s ease;
-        }
-      }
-      
-      // Enhanced hover state for timeline dot
-      &:hover {
-        .timeline-connector .timeline-dot {
-          transform: scale(1.15);
-          box-shadow: 0 0 0 5px #dbeafe;
         }
       }
     }
@@ -1096,6 +1190,32 @@
     
     .timeline-email-item {
       gap: 1rem;
+      
+      // Mantener jerarquía visual en mobile
+      &.status-active {
+        transform: scale(1.03);
+        
+        .timeline-email-content {
+          padding: 1.25rem;
+          margin: -0.75rem 0 0 -0.25rem;
+          
+          .email-subject {
+            font-size: 1.125rem;
+          }
+        }
+        
+        .timeline-connector {
+          .timeline-dot {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+      
+      &.status-scheduled {
+        opacity: 0.6;
+        transform: scale(0.97);
+      }
       
       .timeline-connector {
         .timeline-dot {
