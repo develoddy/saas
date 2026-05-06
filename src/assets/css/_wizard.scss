@@ -481,7 +481,7 @@
 }
 
 .sequence-preview {
-  // AUTOMATION SYSTEM INDICATOR
+  // LIVE SYSTEM INDICATOR
   .automation-indicator {
     display: flex;
     align-items: center;
@@ -491,6 +491,45 @@
     border: 2px solid #3b82f6;
     border-radius: 12px;
     margin-bottom: 2rem;
+    position: relative;
+    
+    &.live {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border-color: #10b981;
+      
+      .automation-text {
+        strong {
+          color: #065f46;
+        }
+        
+        small {
+          color: #059669;
+        }
+      }
+    }
+    
+    .live-status-dot {
+      width: 12px;
+      height: 12px;
+      background: #10b981;
+      border-radius: 50%;
+      flex-shrink: 0;
+      position: relative;
+      animation: statusPulse 2s ease-in-out infinite;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #10b981;
+        border-radius: 50%;
+        opacity: 0;
+        animation: statusRipple 2s ease-in-out infinite;
+      }
+    }
     
     .automation-icon {
       font-size: 2rem;
@@ -557,6 +596,19 @@
           position: relative;
           z-index: 2;
           transition: all 0.3s ease;
+          
+          // Estado: Email activo (enviándose ahora)
+          &.dot-active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 0 0 3px #d1fae5;
+            animation: dotPulseActive 2s ease-in-out infinite;
+          }
+          
+          // Estado: Email programado (futuro)
+          &.dot-scheduled {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 0 0 3px #fef3c7;
+          }
         }
         
         .timeline-line {
@@ -590,13 +642,26 @@
             border: 1px solid #e5e7eb;
             transition: all 0.2s ease;
             
-            &.immediate {
+            // Estado: Email activo ahora
+            &.badge-active {
               background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
               color: #065f46;
               border-color: #a7f3d0;
               
               span {
                 color: #10b981;
+                font-weight: 700;
+              }
+            }
+            
+            // Estado: Email programado
+            &.badge-scheduled {
+              background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+              color: #92400e;
+              border-color: #fde68a;
+              
+              span {
+                color: #d97706;
               }
             }
           }
@@ -1000,11 +1065,20 @@
     gap: 0.75rem;
   }
 
-  // Responsive styles for new timeline visual
+  // Responsive styles for live system indicator
   .automation-indicator {
     flex-direction: column;
     text-align: center;
     padding: 1.25rem;
+    gap: 0.75rem;
+    
+    .live-status-dot {
+      align-self: center;
+    }
+    
+    .automation-icon {
+      font-size: 1.75rem;
+    }
     
     .automation-text {
       strong {
@@ -1027,6 +1101,10 @@
         .timeline-dot {
           width: 16px;
           height: 16px;
+          
+          &.dot-active {
+            animation: dotPulseActive 2s ease-in-out infinite;
+          }
         }
         
         .timeline-line {
@@ -1741,6 +1819,42 @@
     opacity: 1;
     transform: translateY(0);
     max-height: 1000px;
+  }
+}
+
+// Animation for live status indicator dot
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.3);
+  }
+}
+
+// Animation for live status ripple effect
+@keyframes statusRipple {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+// Animation for active email dot pulse
+@keyframes dotPulseActive {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 3px #d1fae5;
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px #d1fae5, 0 0 0 8px rgba(209, 250, 229, 0.4);
   }
 }
 

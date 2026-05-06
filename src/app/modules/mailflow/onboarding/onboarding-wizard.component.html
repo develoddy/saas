@@ -183,12 +183,13 @@
 
       <div *ngIf="generatedSequence && !isGenerating && !sequenceActivated" class="sequence-preview">
         
-        <!-- AUTOMATION SYSTEM INDICATOR -->
-        <div class="automation-indicator">
+        <!-- LIVE SYSTEM INDICATOR -->
+        <div class="automation-indicator live">
+          <span class="live-status-dot"></span>
           <span class="automation-icon">⚡</span>
           <div class="automation-text">
-            <strong>Automation sequence ready</strong>
-            <small>{{ generatedSequence.emails?.length || 0 }} emails will send automatically to {{ previewContacts.length || 0 }} contacts</small>
+            <strong>Live automation system</strong>
+            <small>{{ generatedSequence.emails?.length || 0 }} emails executing automatically for {{ previewContacts.length || 0 }} contacts</small>
           </div>
         </div>
 
@@ -196,23 +197,29 @@
         <div class="emails-timeline-visual">
           <div *ngFor="let email of generatedSequence?.emails || []; let i = index; let last = last" 
                class="timeline-email-item"
-               [class.last]="last">
+               [class.last]="last"
+               [class.status-active]="email.delayHours === 0"
+               [class.status-scheduled]="email.delayHours > 0">
             
             <!-- Timeline connector -->
             <div class="timeline-connector">
-              <div class="timeline-dot"></div>
+              <div class="timeline-dot" 
+                   [class.dot-active]="email.delayHours === 0"
+                   [class.dot-scheduled]="email.delayHours > 0"></div>
               <div class="timeline-line" *ngIf="!last"></div>
             </div>
             
             <!-- Email content -->
             <div class="timeline-email-content">
               <div class="email-timing">
-                <span class="timing-badge" [class.immediate]="email.delayHours === 0">
-                  <span *ngIf="email.delayHours === 0">● Immediate</span>
-                  <span *ngIf="email.delayHours === 24">Day 1</span>
-                  <span *ngIf="email.delayHours === 48">Day 2</span>
-                  <span *ngIf="email.delayHours === 72">Day 3</span>
-                  <span *ngIf="email.delayHours > 72">Day {{ email.delayHours / 24 }}</span>
+                <span class="timing-badge" 
+                      [class.badge-active]="email.delayHours === 0"
+                      [class.badge-scheduled]="email.delayHours > 0">
+                  <span *ngIf="email.delayHours === 0">🟢 Active now</span>
+                  <span *ngIf="email.delayHours === 24">⏳ Scheduled — Day 1</span>
+                  <span *ngIf="email.delayHours === 48">⏳ Scheduled — Day 2</span>
+                  <span *ngIf="email.delayHours === 72">⏳ Scheduled — Day 3</span>
+                  <span *ngIf="email.delayHours > 72">⏳ Scheduled — Day {{ email.delayHours / 24 }}</span>
                 </span>
               </div>
               
