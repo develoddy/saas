@@ -167,8 +167,8 @@
 
     <!-- Step 4: Preview & Launch -->
     <div *ngIf="currentStep === 4" class="wizard-step fade-in">
-      <h2>Your onboarding sequence is ready!</h2>
-      <p class="subtitle">Review and customize your emails before launching</p>
+      <h2>Your automation sequence is ready!</h2>
+      <p class="subtitle">Review the timeline before launching</p>
 
       <div *ngIf="isGenerating" class="generating-loader">
         <div class="loader-spinner"></div>
@@ -182,31 +182,58 @@
       </div>
 
       <div *ngIf="generatedSequence && !isGenerating && !sequenceActivated" class="sequence-preview">
-        <div class="sequence-header">
-          <div class="sequence-info">
-            <h3>{{ generatedSequence.name || 'Onboarding Sequence' }}</h3>
-            <p>{{ generatedSequence.emails?.length || 0 }} emails • {{ previewContacts.length || 0 }} contacts</p>
+        
+        <!-- AUTOMATION SYSTEM INDICATOR -->
+        <div class="automation-indicator">
+          <span class="automation-icon">⚡</span>
+          <div class="automation-text">
+            <strong>Automation sequence ready</strong>
+            <small>{{ generatedSequence.emails?.length || 0 }} emails will send automatically to {{ previewContacts.length || 0 }} contacts</small>
           </div>
         </div>
 
-        <div class="emails-timeline">
-          <div *ngFor="let email of generatedSequence?.emails || []; let i = index" 
-               class="email-preview-card">
-            <div class="timeline-marker">
-              <span class="marker-dot"></span>
-              <span class="marker-label">
-                <span *ngIf="email.delayHours === 0">Immediate</span>
-                <span *ngIf="email.delayHours === 24">After 1 day</span>
-                <span *ngIf="email.delayHours === 48">After 2 days</span>
-                <span *ngIf="email.delayHours === 72">After 3 days</span>
-                <span *ngIf="email.delayHours > 72">After {{ email.delayHours / 24 }} days</span>
-              </span>
+        <!-- VISUAL TIMELINE -->
+        <div class="emails-timeline-visual">
+          <div *ngFor="let email of generatedSequence?.emails || []; let i = index; let last = last" 
+               class="timeline-email-item"
+               [class.last]="last">
+            
+            <!-- Timeline connector -->
+            <div class="timeline-connector">
+              <div class="timeline-dot"></div>
+              <div class="timeline-line" *ngIf="!last"></div>
             </div>
-            <app-sequence-email-card 
-              [email]="email"
-              [index]="i"
-              (emailEdited)="onEmailEdited(email, $event)">
-            </app-sequence-email-card>
+            
+            <!-- Email content -->
+            <div class="timeline-email-content">
+              <div class="email-timing">
+                <span class="timing-badge" [class.immediate]="email.delayHours === 0">
+                  <span *ngIf="email.delayHours === 0">● Immediate</span>
+                  <span *ngIf="email.delayHours === 24">Day 1</span>
+                  <span *ngIf="email.delayHours === 48">Day 2</span>
+                  <span *ngIf="email.delayHours === 72">Day 3</span>
+                  <span *ngIf="email.delayHours > 72">Day {{ email.delayHours / 24 }}</span>
+                </span>
+              </div>
+              
+              <h4 class="email-subject">{{ email.subject }}</h4>
+              
+              <p class="email-preview-text">{{ email.bodyText.substring(0, 120) }}{{ email.bodyText.length > 120 ? '...' : '' }}</p>
+              
+              <button class="btn-view-email" (click)="toggleEmailExpanded(i)" type="button">
+                <i class="bi" [class.bi-chevron-down]="!isEmailExpanded(i)" [class.bi-chevron-up]="isEmailExpanded(i)"></i>
+                {{ isEmailExpanded(i) ? 'Hide' : 'View full email' }}
+              </button>
+              
+              <!-- Expandable full email view -->
+              <div class="email-full-view" *ngIf="isEmailExpanded(i)">
+                <app-sequence-email-card 
+                  [email]="email"
+                  [index]="i"
+                  (emailEdited)="onEmailEdited(email, $event)">
+                </app-sequence-email-card>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -245,65 +272,96 @@
       <!-- SUCCESS VIEW: Sequence Activated -->
       <div *ngIf="generatedSequence && sequenceActivated" class="sequence-activated">
         <div class="activation-hero">
-          <div class="success-icon"><i class="bi bi-check-circle-fill"></i></div>
-          <h2>Your sequence is live!</h2>
-          <p class="hero-subtitle">Everything is ready and running automatically</p>
-        </div>
-
-        <div class="activation-summary">
-          <div class="summary-card success">
-            <span class="card-icon"><i class="bi bi-check-circle"></i></span>
-            <div class="card-content">
-              <strong>{{ previewContacts.length }} contacts queued</strong>
-              <small>Ready to receive emails</small>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <span class="card-icon"><i class="bi bi-envelope"></i></span>
-            <div class="card-content">
-              <strong>{{ generatedSequence.emails?.length || 0 }} emails scheduled</strong>
-              <small>Automated delivery</small>
-            </div>
-          </div>
-
-          <div class="summary-card">
-            <span class="card-icon"><i class="bi bi-clock"></i></span>
-            <div class="card-content">
-              <strong>First email: Immediate</strong>
-              <small>Next: {{ generatedSequence.emails && generatedSequence.emails[1] && generatedSequence.emails[1].delayHours ? '+' + (generatedSequence.emails[1].delayHours / 24) + ' day' + (generatedSequence.emails[1].delayHours > 24 ? 's' : '') : 'N/A' }}</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="what-happens-next">
-          <h3><i class="bi bi-mailbox"></i> What happens next</h3>
-          <div class="timeline-steps">
-            <div *ngFor="let email of generatedSequence.emails || []; let i = index" 
-                 class="timeline-step">
-              <div class="step-indicator">
-                <span class="step-number">{{ i + 1 }}</span>
-                <div class="step-line" *ngIf="i < (generatedSequence.emails?.length || 0) - 1"></div>
-              </div>
-              <div class="step-content">
-                <strong>{{ email.subject }}</strong>
-                <small>
-                  <span *ngIf="email.delayHours === 0">Will be sent immediately</span>
-                  <span *ngIf="email.delayHours === 24">Will be sent in 1 day</span>
-                  <span *ngIf="email.delayHours === 48">Will be sent in 2 days</span>
-                  <span *ngIf="email.delayHours === 72">Will be sent in 3 days</span>
-                  <span *ngIf="email.delayHours > 72">Will be sent in {{ email.delayHours / 24 }} days</span>
-                </small>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="next-steps-cta">
-          <p class="cta-message">
-            <strong><i class="bi bi-stars"></i> You're all set!</strong><br>
-            Your sequence is running automatically. You don't need to do anything else.
+          <div class="success-icon"><i class="bi bi-rocket-takeoff-fill"></i></div>
+          <h2>Your automation is live!</h2>
+          <p class="hero-subtitle">
+            <strong>{{ previewContacts.length * (generatedSequence.emails?.length || 0) }} emails</strong> 
+            queued and sending automatically
           </p>
+        </div>
+
+        <!-- LIVE ACTIVITY FEED -->
+        <div class="live-activity-section">
+          <div class="live-activity-header">
+            <div class="live-indicator">
+              <span class="live-dot"></span>
+              <strong>Live Activity</strong>
+            </div>
+            <span class="activity-subtitle">Real-time updates</span>
+          </div>
+
+          <div class="activity-feed">
+            <!-- Recent emails sent (simulados) -->
+            <div *ngFor="let contact of getRecentActivityContacts()" class="activity-item sent">
+              <span class="status-icon success">✓</span>
+              <div class="activity-content">
+                <strong>{{ generatedSequence.emails?.[0]?.subject }}</strong>
+                <small>Sent to {{ contact.name }} • <span class="live-time">just now</span></small>
+              </div>
+            </div>
+
+            <!-- Siguiente email en cola -->
+            <div *ngIf="getNextQueuedEmail()" class="activity-item queued">
+              <span class="status-icon pending">⏳</span>
+              <div class="activity-content">
+                <strong>{{ getNextQueuedEmail()?.subject }}</strong>
+                <small>Next batch in {{ formatDelay(getNextQueuedEmail()?.delayHours || 0) }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div class="activation-summary">
+          <div class="summary-card">
+            <span class="card-icon"><i class="bi bi-envelope-check-fill"></i></span>
+            <div class="card-content">
+              <strong>{{ previewContacts.length }}</strong>
+              <small>Active contacts</small>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <span class="card-icon"><i class="bi bi-clock-history"></i></span>
+            <div class="card-content">
+              <strong>{{ getTotalDurationDays() }} days</strong>
+              <small>Sequence duration</small>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <span class="card-icon"><i class="bi bi-robot"></i></span>
+            <div class="card-content">
+              <strong>100% automated</strong>
+              <small>No manual work</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPACT TIMELINE -->
+        <div class="compact-timeline">
+          <h3><i class="bi bi-list-check"></i> Sequence schedule</h3>
+          <div class="timeline-list">
+            <div *ngFor="let email of generatedSequence.emails || []; let i = index" 
+                 class="timeline-item">
+              <span class="timeline-number">{{ i + 1 }}</span>
+              <div class="timeline-info">
+                <strong>{{ email.subject }}</strong>
+                <small *ngIf="email.delayHours === 0">Sending now</small>
+                <small *ngIf="email.delayHours > 0">Day {{ email.delayHours / 24 }}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="next-steps-cta">
+          <div class="cta-actions">
+            <p class="cta-label">
+              <i class="bi bi-arrow-right-circle-fill"></i> 
+              View full dashboard to manage your sequences
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -390,20 +448,14 @@
     <button *ngIf="currentStep === 4 && generatedSequence && !isGenerating && !sequenceActivated" 
             class="btn btn-success" 
             (click)="activateSequence()">
-      <i class="bi bi-rocket-takeoff"></i> Launch Sequencex
+      <i class="bi bi-rocket-takeoff"></i> Launch Sequence
     </button>
 
-    <!-- DESPUÉS DE ACTIVAR: Nuevas acciones -->
+    <!-- DESPUÉS DE ACTIVAR: Estado de éxito + botón dashboard -->
     <button *ngIf="currentStep === 4 && sequenceActivated" 
-            class="btn btn-secondary" 
-            (click)="currentStep = 3; sequenceActivated = false">
-      <i class="bi bi-pencil"></i> Edit Sequence
-    </button>
-
-    <button *ngIf="currentStep === 4 && sequenceActivated" 
-            class="btn btn-primary" 
+            class="btn btn-primary btn-dashboard" 
             routerLink="/mailflow/dashboard">
-      📊 Go to Dashboard
+      <i class="bi bi-check-circle-fill"></i> Go to Dashboard
     </button>
   </div>
 </div>

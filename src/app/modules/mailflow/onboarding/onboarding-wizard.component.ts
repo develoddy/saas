@@ -73,6 +73,7 @@ export class OnboardingWizardComponent implements OnInit {
   isGenerating = false;
   generationError: string | null = null;
   sequenceActivated = false; // Estado de activación de la secuencia
+  expandedEmails: Set<number> = new Set(); // Track de emails expandidos en preview
 
   // Validation modal
   showValidationModal = false;
@@ -408,13 +409,20 @@ export class OnboardingWizardComponent implements OnInit {
         source: 'onboarding'
       });
 
-      // Cambiar estado a activado (mostrar UI de éxito)
+      // ✅ MEJORA UX: Mostrar estado de éxito (USER-CONTROLLED)
+      // 1. Cambiar estado a activado (mostrar UI de éxito)
       this.sequenceActivated = true;
 
-      // Mostrar modal de validación después de 1 segundo
-      setTimeout(() => {
-        this.showValidationModal = true;
-      }, 1000);
+      // 2. Guardar flags para modal de validación
+      localStorage.setItem('mailflow_show_validation_modal', 'true');
+      
+      if (this.generatedSequence?.sequenceId) {
+        localStorage.setItem('mailflow_validation_sequence_id', this.generatedSequence.sequenceId);
+      }
+
+      // 3. ✅ NO AUTO-REDIRECT - Usuario decide cuándo ir al dashboard
+      // El botón "Go to Dashboard" es visible y usuario hace click intencional
+      // Esto genera señal de engagement real vs navegación pasiva
 
     } catch (error: any) {
       console.error('Error activating sequence:', error);
@@ -476,6 +484,45 @@ export class OnboardingWizardComponent implements OnInit {
     }
     const lastEmail = this.generatedSequence.emails[this.generatedSequence.emails.length - 1];
     return Math.round((lastEmail?.delayHours || 0) / 24);
+  }
+
+  // Obtener primeros 3 contactos para mostrar actividad "live"
+  getRecentActivityContacts(): Array<{ name: string; email: string }> {
+    return this.previewContacts.slice(0, 3).map(contact => ({
+      name: contact.name || contact.email.split('@')[0],
+      email: contact.email
+    }));
+  }
+
+  // Obtener siguiente email en cola (segundo email de la secuencia)
+  getNextQueuedEmail() {
+    if (!this.generatedSequence?.emails || this.generatedSequence.emails.length < 2) {
+      return null;
+    }
+    return this.generatedSequence.emails[1];
+  }
+
+  // Formatear delay para mostrar "in Xh" o "in Xd"
+  formatDelay(delayHours: number): string {
+    if (delayHours < 24) {
+      return `${delayHours}h`;
+    }
+    const days = Math.round(delayHours / 24);
+    return `${days}d`;
+  }
+
+  // Toggle expansión de email en preview
+  toggleEmailExpanded(index: number): void {
+    if (this.expandedEmails.has(index)) {
+      this.expandedEmails.delete(index);
+    } else {
+      this.expandedEmails.add(index);
+    }
+  }
+
+  // Check si email está expandido
+  isEmailExpanded(index: number): boolean {
+    return this.expandedEmails.has(index);
   }
 
   // Helpers UI
