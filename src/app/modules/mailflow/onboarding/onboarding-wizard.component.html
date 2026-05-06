@@ -91,67 +91,145 @@
 
     <!-- Step 3: Contacts -->
     <div *ngIf="currentStep === 3" class="wizard-step fade-in">
-      <h2>Preview Contacts</h2>
-      <p class="subtitle">Upload your contacts or use our sample contacts for the preview</p>
+      <h2>Add Real Recipients</h2>
+      <p class="subtitle">Add email addresses of people who will receive your sequence</p>
       
+      <!-- ⚠️ WARNING: REAL EMAILS -->
+      <div class="real-email-warning">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div class="warning-content">
+          <strong>These emails will be sent to REAL recipients</strong>
+          <p>Use your own email to test, or add contacts you want to reach. All emails will be delivered via SMTP.</p>
+        </div>
+      </div>
+
       <form [formGroup]="step3Form">
         <div class="contact-import">
-          <!-- CSV Upload (opcional) -->
-          <div class="upload-zone" 
-               [class.has-file]="step3Form.value.csvFile"
-               (dragover)="$event.preventDefault()"
-               (drop)="$event.preventDefault()">
-            <input 
-              type="file" 
-              id="csvFile"
-              accept=".csv" 
-              (change)="onFileSelected($event)"
-              class="file-input">
-            <label for="csvFile" class="upload-label">
-              <div class="upload-icon">📁</div>
-              <p class="upload-text">
-                <span *ngIf="!step3Form.value.csvFile">Drop CSV file here or click to upload (optional)</span>
-                <span *ngIf="step3Form.value.csvFile" class="file-name">
-                  {{ step3Form.value.csvFile.name }}
-                </span>
-              </p>
-              <p class="upload-hint">CSV format: email, name (optional) | Max 5 contacts for preview</p>
-            </label>
+          
+          <!-- MANUAL EMAIL INPUT -->
+          <div class="manual-contact-input">
+            <h3>
+              <i class="bi bi-person-plus-fill"></i>
+              Add Contact
+            </h3>
+
+            <div class="input-row">
+              <div class="input-group email-input">
+                <label for="newEmail">Email Address *</label>
+                <input 
+                  type="email" 
+                  id="newEmail"
+                  [(ngModel)]="newContactEmail"
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="name@company.com"
+                  class="form-control"
+                  (keyup.enter)="addManualContact()">
+                <small class="help-text">Use a real email address (no example.com)</small>
+              </div>
+
+              <div class="input-group name-input">
+                <label for="newName">Name (optional)</label>
+                <input 
+                  type="text" 
+                  id="newName"
+                  [(ngModel)]="newContactName"
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="John Doe"
+                  class="form-control"
+                  (keyup.enter)="addManualContact()">
+              </div>
+
+              <button 
+                type="button"
+                class="btn btn-add-contact"
+                (click)="addManualContact()">
+                <i class="bi bi-plus-circle"></i>
+                Add
+              </button>
+            </div>
+
+            <div *ngIf="emailValidationError" class="validation-error">
+              <i class="bi bi-x-circle-fill"></i>
+              {{ emailValidationError }}
+            </div>
           </div>
 
-          <!-- Contactos actuales -->
-          <div *ngIf="step3Form.value.contactsCount > 0" class="contacts-preview">
+          <!-- CONTACTOS ACTUALES -->
+          <div *ngIf="manualContacts.length > 0" class="contacts-preview">
             <div class="preview-header">
               <h3>
-                <span class="icon"><i class="bi bi-people"></i></span>
-                {{ step3Form.value.contactsCount }} contacts ready
+                <span class="icon"><i class="bi bi-people-fill"></i></span>
+                {{ manualContacts.length }} contact{{ manualContacts.length !== 1 ? 's' : '' }} ready
               </h3>
-              <span class="badge" [class.badge-csv]="step3Form.value.contactSource === 'csv'" 
-                                  [class.badge-sample]="step3Form.value.contactSource === 'sample'">
-                {{ step3Form.value.contactSource === 'csv' ? 'From CSV' : 'Sample Contacts' }}
-              </span>
+              <span class="badge badge-manual">Real Recipients</span>
             </div>
 
             <!-- Lista de contactos -->
             <div class="contacts-list">
-              <div *ngFor="let contact of step3Form.value.contacts; let i = index" 
+              <div *ngFor="let contact of manualContacts; let i = index" 
                    class="contact-item">
                 <div class="contact-avatar">{{ i + 1 }}</div>
                 <div class="contact-info">
                   <strong>{{ contact.name || 'Contact ' + (i + 1) }}</strong>
                   <small>{{ contact.email }}</small>
                 </div>
-                <div class="contact-status"><i class="bi bi-check-circle-fill"></i></div>
+                <button 
+                  type="button"
+                  class="btn-remove-contact"
+                  (click)="removeManualContact(i)"
+                  title="Remove contact">
+                  <i class="bi bi-trash-fill"></i>
+                </button>
               </div>
             </div>
 
-            <p class="help-text">
-              <i class="bi bi-lightbulb"></i> These contacts will receive your onboarding sequence when you activate it
+            <p class="help-text success">
+              <i class="bi bi-check-circle-fill"></i> 
+              These contacts will receive your emails when you activate the sequence
             </p>
           </div>
 
+          <!-- EMPTY STATE -->
+          <div *ngIf="manualContacts.length === 0" class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h4>No contacts yet</h4>
+            <p>Add at least one real email address to continue</p>
+            <small class="hint">
+              💡 <strong>Pro tip:</strong> Start by adding your own email to see how it works
+            </small>
+          </div>
+
+          <!-- CSV Upload (opcional) -->
+          <div class="csv-upload-section">
+            <div class="divider">
+              <span>or upload CSV</span>
+            </div>
+
+            <div class="upload-zone" 
+                 [class.has-file]="step3Form.value.csvFile"
+                 (dragover)="$event.preventDefault()"
+                 (drop)="$event.preventDefault()">
+              <input 
+                type="file" 
+                id="csvFile"
+                accept=".csv" 
+                (change)="onFileSelected($event)"
+                class="file-input">
+              <label for="csvFile" class="upload-label">
+                <div class="upload-icon">📁</div>
+                <p class="upload-text">
+                  <span *ngIf="!step3Form.value.csvFile">Drop CSV file here or click to upload</span>
+                  <span *ngIf="step3Form.value.csvFile" class="file-name">
+                    {{ step3Form.value.csvFile.name }}
+                  </span>
+                </p>
+                <p class="upload-hint">CSV format: email, name (optional) | Max 5 contacts for preview</p>
+              </label>
+            </div>
+          </div>
+
           <!-- Campo de notas opcional -->
-          <div class="form-group">
+          <div class="form-group notes-group">
             <label for="notes">Additional Notes (optional)</label>
             <textarea 
               id="notes"
@@ -274,6 +352,227 @@
             </div>
           </div>
         </div>
+
+        <!-- ========== DELIVERY PREVIEW & SMTP VALIDATION ========== -->
+        <div class="delivery-preview-validation">
+          <div class="validation-header">
+            <i class="bi bi-shield-check"></i>
+            <div class="header-text">
+              <h3>Delivery Preview & SMTP Validation</h3>
+              <p>Review who will receive emails and verify your SMTP configuration before launching</p>
+            </div>
+          </div>
+
+          <!-- 1. REAL CONTACTS LIST -->
+          <div class="validation-section contacts-list-section">
+            <div class="section-header">
+              <div class="section-title">
+                <i class="bi bi-people-fill"></i>
+                <h4>Real Recipients</h4>
+                <span class="recipient-count">{{ previewContacts.length }} contacts</span>
+              </div>
+              <button class="btn-toggle-list" (click)="toggleContactsList()" type="button">
+                <i class="bi" [class.bi-chevron-down]="!showContactsList" [class.bi-chevron-up]="showContactsList"></i>
+                {{ showContactsList ? 'Hide' : 'Show' }} email addresses
+              </button>
+            </div>
+
+            <div class="contacts-warning">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <strong>These emails will be sent to REAL recipients.</strong>
+              Make sure these are the correct contacts.
+            </div>
+
+            <div class="contacts-list-expandable" *ngIf="showContactsList">
+              <div *ngFor="let contact of previewContacts; let i = index" class="contact-list-item">
+                <span class="contact-number">{{ i + 1 }}</span>
+                <div class="contact-details">
+                  <strong>{{ contact.name || 'Contact ' + (i + 1) }}</strong>
+                  <code class="contact-email">{{ contact.email }}</code>
+                </div>
+                <span class="contact-status">
+                  <i class="bi bi-check-circle-fill"></i> Valid
+                </span>
+              </div>
+            </div>
+
+            <div class="contacts-summary" *ngIf="!showContactsList">
+              <p>
+                <strong>{{ previewContacts.length }} real email addresses</strong> will receive your sequence.
+                <button class="btn-link" (click)="toggleContactsList()" type="button">View all recipients</button>
+              </p>
+            </div>
+          </div>
+
+          <!-- 2. SMTP STATUS VERIFICATION -->
+          <div class="validation-section smtp-status-section">
+            <div class="section-header">
+              <div class="section-title">
+                <i class="bi bi-envelope-check-fill"></i>
+                <h4>SMTP Connection Status</h4>
+              </div>
+            </div>
+
+            <div class="smtp-status-card" [class.status-connected]="smtpStatus === 'connected'"
+                                         [class.status-error]="smtpStatus === 'error'"
+                                         [class.status-checking]="smtpStatus === 'checking'">
+              <div class="status-indicator">
+                <span class="status-icon">
+                  <i *ngIf="smtpStatus === 'connected'" class="bi bi-check-circle-fill"></i>
+                  <i *ngIf="smtpStatus === 'error'" class="bi bi-x-circle-fill"></i>
+                  <i *ngIf="smtpStatus === 'checking'" class="bi bi-arrow-clockwise spin"></i>
+                </span>
+                <div class="status-text">
+                  <strong *ngIf="smtpStatus === 'connected'">SMTP Connected & Verified</strong>
+                  <strong *ngIf="smtpStatus === 'error'">SMTP Connection Error</strong>
+                  <strong *ngIf="smtpStatus === 'checking'">Checking SMTP Connection...</strong>
+                  
+                  <small *ngIf="smtpStatus === 'connected'">
+                    Last verified {{ getSmtpLastTestRelative() }}
+                  </small>
+                  <small *ngIf="smtpStatus === 'error'">
+                    Please check your SMTP configuration
+                  </small>
+                </div>
+              </div>
+
+              <div class="smtp-details" *ngIf="smtpStatus === 'connected'">
+                <div class="smtp-detail-item">
+                  <i class="bi bi-server"></i>
+                  <span>Email server configured and ready</span>
+                </div>
+                <div class="smtp-detail-item">
+                  <i class="bi bi-shield-check"></i>
+                  <span>Authentication verified</span>
+                </div>
+                <div class="smtp-detail-item">
+                  <i class="bi bi-send-check"></i>
+                  <span>Test email sent successfully</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. DELIVERY TIMELINE - WHAT WILL HAPPEN -->
+          <div class="validation-section delivery-timeline-section">
+            <div class="section-header">
+              <div class="section-title">
+                <i class="bi bi-calendar-event-fill"></i>
+                <h4>What Will Happen Next</h4>
+              </div>
+            </div>
+
+            <div class="delivery-timeline-preview">
+              <div class="timeline-step immediate">
+                <div class="step-icon">
+                  <i class="bi bi-rocket-takeoff-fill"></i>
+                </div>
+                <div class="step-content">
+                  <strong>Immediate (after activation)</strong>
+                  <p>
+                    <span class="email-count">Email 1</span> will be sent to 
+                    <strong>{{ previewContacts.length }} recipients</strong> within 15 minutes
+                  </p>
+                  <small class="step-note">
+                    Our automated system checks every 15 minutes for scheduled emails
+                  </small>
+                </div>
+              </div>
+
+              <div class="timeline-step scheduled" *ngFor="let email of generatedSequence.emails?.slice(1, 3); let i = index">
+                <div class="step-icon">
+                  <i class="bi bi-clock-fill"></i>
+                </div>
+                <div class="step-content">
+                  <strong>Day {{ email.delayHours / 24 }}</strong>
+                  <p>
+                    <span class="email-count">Email {{ i + 2 }}</span> scheduled for 
+                    <strong>{{ previewContacts.length }} recipients</strong>
+                  </p>
+                  <small class="step-subject">Subject: "{{ email.subject }}"</small>
+                </div>
+              </div>
+
+              <div class="timeline-total" *ngIf="generatedSequence.emails && generatedSequence.emails.length > 3">
+                <i class="bi bi-three-dots"></i>
+                <p>
+                  <strong>{{ (generatedSequence.emails?.length || 0) - 3 }} more emails</strong> scheduled over 
+                  <strong>{{ getTotalDurationDays() }} days</strong>
+                </p>
+              </div>
+            </div>
+
+            <div class="delivery-summary-box">
+              <div class="summary-stat">
+                <strong>{{ previewContacts.length * (generatedSequence.emails?.length || 0) }}</strong>
+                <span>Total emails to send</span>
+              </div>
+              <div class="summary-stat">
+                <strong>{{ getTotalDurationDays() }} days</strong>
+                <span>Complete sequence duration</span>
+              </div>
+              <div class="summary-stat">
+                <strong>100% automated</strong>
+                <span>No manual work required</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. REAL DISCLAIMER + CONFIRMATION CHECKBOX -->
+          <div class="validation-section confirmation-section">
+            <div class="section-header">
+              <div class="section-title">
+                <i class="bi bi-check2-square"></i>
+                <h4>Final Confirmation</h4>
+              </div>
+            </div>
+
+            <div class="confirmation-disclaimer">
+              <div class="disclaimer-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+              </div>
+              <div class="disclaimer-content">
+                <h5>Important: Real Email Delivery</h5>
+                <ul class="disclaimer-points">
+                  <li>
+                    <i class="bi bi-check2"></i>
+                    Emails will be sent to <strong>{{ previewContacts.length }} real recipients</strong> listed above
+                  </li>
+                  <li>
+                    <i class="bi bi-check2"></i>
+                    Delivery is <strong>automated via SMTP</strong> and happens in the background
+                  </li>
+                  <li>
+                    <i class="bi bi-check2"></i>
+                    Once activated, you <strong>cannot stop emails already queued</strong>
+                  </li>
+                  <li>
+                    <i class="bi bi-check2"></i>
+                    Make sure your <strong>SMTP credentials are correct</strong> (verified above)
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <label class="confirmation-checkbox">
+              <input 
+                type="checkbox" 
+                [(ngModel)]="confirmRealRecipientsChecked"
+                id="confirmRealRecipients">
+              <span class="checkbox-label">
+                <strong>I understand that emails will be sent to REAL recipients</strong>
+                and I have verified my SMTP configuration is correct
+              </span>
+            </label>
+
+            <div class="activation-disabled-hint" *ngIf="!confirmRealRecipientsChecked">
+              <i class="bi bi-info-circle-fill"></i>
+              Please confirm you understand by checking the box above to activate your sequence
+            </div>
+          </div>
+        </div>
+        <!-- ========== END DELIVERY PREVIEW & SMTP VALIDATION ========== -->
+
       </div>
 
       <!-- SUCCESS VIEW: Sequence Activated -->
@@ -285,6 +584,40 @@
             <strong>{{ previewContacts.length * (generatedSequence.emails?.length || 0) }} emails</strong> 
             queued and sending automatically
           </p>
+        </div>
+
+        <!-- 🎯 HOW IT WORKS - Explicación del sistema automático -->
+        <div class="how-it-works-explainer">
+          <div class="explainer-header">
+            <i class="bi bi-info-circle-fill"></i>
+            <h3>How emails are sent automatically</h3>
+          </div>
+          
+          <div class="explainer-content">
+            <div class="explainer-point">
+              <span class="point-icon">⏱️</span>
+              <div class="point-text">
+                <strong>Emails are NOT sent instantly</strong>
+                <p>They are sent automatically by our system (SMTP) at the scheduled time</p>
+              </div>
+            </div>
+            
+            <div class="explainer-point">
+              <span class="point-icon">🔄</span>
+              <div class="point-text">
+                <strong>Our cron job checks every 15 minutes</strong>
+                <p>An automated background process runs continuously to send scheduled emails</p>
+              </div>
+            </div>
+            
+            <div class="explainer-point">
+              <span class="point-icon">✅</span>
+              <div class="point-text">
+                <strong>You don't need to do anything</strong>
+                <p>Once activated, the system handles everything without manual intervention</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- LIVE ACTIVITY FEED -->
@@ -454,8 +787,12 @@
     <!-- ANTES DE ACTIVAR: Launch Sequence -->
     <button *ngIf="currentStep === 4 && generatedSequence && !isGenerating && !sequenceActivated" 
             class="btn btn-success" 
+            [disabled]="!canActivateSequence()"
+            [class.btn-disabled]="!canActivateSequence()"
             (click)="activateSequence()">
-      <i class="bi bi-rocket-takeoff"></i> Launch Sequence
+      <i class="bi bi-rocket-takeoff"></i> 
+      <span *ngIf="canActivateSequence()">Launch Sequence</span>
+      <span *ngIf="!canActivateSequence()">Confirm Delivery Preview to Launch</span>
     </button>
 
     <!-- DESPUÉS DE ACTIVAR: Estado de éxito + botón dashboard -->

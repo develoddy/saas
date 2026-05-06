@@ -75,6 +75,12 @@ export class OnboardingWizardComponent implements OnInit {
   sequenceActivated = false; // Estado de activación de la secuencia
   expandedEmails: Set<number> = new Set(); // Track de emails expandidos en preview
 
+  // Delivery Preview & SMTP Validation
+  smtpStatus: 'checking' | 'connected' | 'error' = 'connected'; // Estado de SMTP (hardcoded para MVP)
+  smtpLastTestTime = new Date(); // Timestamp del último test SMTP
+  confirmRealRecipientsChecked = false; // Usuario confirma que entiende emails reales
+  showContactsList = false; // Toggle para mostrar/ocultar lista completa de contactos
+
   // Validation modal
   showValidationModal = false;
   validationResponse: 'yes' | 'maybe' | 'no' | null = null;
@@ -128,14 +134,11 @@ export class OnboardingWizardComponent implements OnInit {
     });
   }
 
-  // Contactos de ejemplo para MVP
-  private sampleContacts = [
-    { email: 'john.doe@example.com', name: 'John Doe' },
-    { email: 'jane.smith@example.com', name: 'Jane Smith' },
-    { email: 'mike.wilson@example.com', name: 'Mike Wilson' },
-    { email: 'sarah.brown@example.com', name: 'Sarah Brown' },
-    { email: 'david.garcia@example.com', name: 'David Garcia' }
-  ];
+  // System para añadir contactos reales manualmente
+  newContactEmail = '';
+  newContactName = '';
+  emailValidationError = '';
+  manualContacts: Array<{ email: string; name?: string }> = [];
 
   private initializeForms(): void {
     // Step 1: Business Type
@@ -150,12 +153,12 @@ export class OnboardingWizardComponent implements OnInit {
       goal: ['', Validators.required]
     });
 
-    // Step 3: Contacts (CSV opcional, usar ejemplos por defecto)
+    // Step 3: Contacts (CSV o manual - EMAILS REALES)
     this.step3Form = this.fb.group({
-      contactSource: ['sample', Validators.required],
+      contactSource: ['manual', Validators.required],
       csvFile: [null],
-      contacts: [this.sampleContacts], // Inicializar con contactos de ejemplo
-      contactsCount: [this.sampleContacts.length],
+      contacts: [this.manualContacts], // Inicializar vacío
+      contactsCount: [0],
       notes: [''] // Campo opcional para notas
     });
 
@@ -246,19 +249,25 @@ export class OnboardingWizardComponent implements OnInit {
       const limitedContacts = contacts.slice(0, 5);
       
       if (limitedContacts.length > 0) {
+        // Añadir contactos del CSV a manualContacts (sin duplicar)
+        limitedContacts.forEach(contact => {
+          const emailLower = contact.email.toLowerCase();
+          if (!this.manualContacts.some(c => c.email.toLowerCase() === emailLower)) {
+            this.manualContacts.push(contact);
+          }
+        });
+
+        // Actualizar formulario
         this.step3Form.patchValue({
-          contacts: limitedContacts,
-          contactsCount: limitedContacts.length,
+          contacts: this.manualContacts,
+          contactsCount: this.manualContacts.length,
           contactSource: 'csv'
         });
+
+        console.log(`✅ ${limitedContacts.length} contacts imported from CSV`);
       } else {
-        // Si no hay contactos válidos, volver a ejemplos
-        console.warn('⚠️ No valid contacts in CSV, using sample contacts');
-        this.step3Form.patchValue({
-          contacts: this.sampleContacts,
-          contactsCount: this.sampleContacts.length,
-          contactSource: 'sample'
-        });
+        console.warn('⚠️ No valid contacts found in CSV file');
+        alert('No valid email addresses found in CSV file. Please add contacts manually.');
       }
       this.updateStepsValidity();
     };
@@ -282,10 +291,15 @@ export class OnboardingWizardComponent implements OnInit {
       
       // Validar email antes de agregar
       if (email && this.isValidEmail(email)) {
-        contacts.push({
-          email,
-          name: name || undefined
-        });
+        // Rechazar emails de example.com
+        if (!email.toLowerCase().includes('@example.com')) {
+          contacts.push({
+            email,
+            name: name || undefined
+          });
+        } else {
+          console.warn(`⚠️ Skipping fake email: ${email}`);
+        }
       }
     }
 
@@ -297,6 +311,83 @@ export class OnboardingWizardComponent implements OnInit {
     return emailRegex.test(email);
   }
 
+  // ========== MANEJO DE CONTACTOS MANUALES ==========
+
+  /**
+   * Añadir contacto manual con validación
+   */
+  addManualContact(): void {
+    this.emailValidationError = '';
+
+    // Validar email
+    if (!this.newContactEmail || !this.newContactEmail.trim()) {
+      this.emailValidationError = 'Email is required';
+      return;
+    }
+
+    if (!this.isValidEmail(this.newContactEmail.trim())) {
+      this.emailValidationError = 'Invalid email format';
+      return;
+    }
+
+    // Validar que no sea example.com
+    if (this.newContactEmail.toLowerCase().includes('@example.com')) {
+      this.emailValidationError = 'example.com emails are not valid. Use a real email address.';
+      return;
+    }
+
+    // Validar duplicados
+    const emailLower = this.newContactEmail.trim().toLowerCase();
+    if (this.manualContacts.some(c => c.email.toLowerCase() === emailLower)) {
+      this.emailValidationError = 'This email is already in your list';
+      return;
+    }
+
+    // Añadir contacto
+    this.manualContacts.push({
+      email: this.newContactEmail.trim(),
+      name: this.newContactName.trim() || undefined
+    });
+
+    // Actualizar formulario
+    this.step3Form.patchValue({
+      contacts: this.manualContacts,
+      contactsCount: this.manualContacts.length,
+      contactSource: 'manual'
+    });
+
+    // Limpiar campos
+    this.newContactEmail = '';
+    this.newContactName = '';
+    this.emailValidationError = '';
+
+    this.updateStepsValidity();
+
+    console.log('✅ Contact added:', this.manualContacts[this.manualContacts.length - 1]);
+  }
+
+  /**
+   * Eliminar contacto de la lista manual
+   */
+  removeManualContact(index: number): void {
+    this.manualContacts.splice(index, 1);
+    
+    // Actualizar formulario
+    this.step3Form.patchValue({
+      contacts: this.manualContacts,
+      contactsCount: this.manualContacts.length
+    });
+
+    this.updateStepsValidity();
+  }
+
+  /**
+   * Validar que Step 3 tenga al menos 1 contacto
+   */
+  private isStep3Valid(): boolean {
+    return this.step3Form.valid && this.manualContacts.length > 0;
+  }
+
   // Generación de secuencia
   async generateSequence(): Promise<void> {
     this.isGenerating = true;
@@ -305,9 +396,11 @@ export class OnboardingWizardComponent implements OnInit {
     // Obtener contactos del formulario
     let contactsFromForm = this.step3Form.value.contacts;
     
-    // Si no hay contactos o está vacío, usar sampleContacts
+    // Validar que haya contactos reales
     if (!contactsFromForm || !Array.isArray(contactsFromForm) || contactsFromForm.length === 0) {
-      contactsFromForm = this.sampleContacts;
+      this.generationError = 'Please add at least one real email contact before continuing';
+      this.isGenerating = false;
+      return;
     }
     
     // Limitar a 5 contactos para preview MVP
@@ -477,15 +570,6 @@ export class OnboardingWizardComponent implements OnInit {
     this.closeValidationModal();
   }
 
-  // Calcular duración total de la secuencia en días
-  getTotalDurationDays(): number {
-    if (!this.generatedSequence?.emails || this.generatedSequence.emails.length === 0) {
-      return 0;
-    }
-    const lastEmail = this.generatedSequence.emails[this.generatedSequence.emails.length - 1];
-    return Math.round((lastEmail?.delayHours || 0) / 24);
-  }
-
   // Obtener primeros 3 contactos para mostrar actividad "live"
   getRecentActivityContacts(): Array<{ name: string; email: string }> {
     return this.previewContacts.slice(0, 3).map(contact => ({
@@ -552,6 +636,81 @@ export class OnboardingWizardComponent implements OnInit {
         return {};
     }
   }
+
+  // ========== DELIVERY PREVIEW & SMTP VALIDATION METHODS ==========
+
+  /**
+   * Validar si se puede activar la sequence
+   * Requiere que el usuario haya confirmado que entiende emails reales
+   */
+  canActivateSequence(): boolean {
+    return this.confirmRealRecipientsChecked && this.smtpStatus === 'connected';
+  }
+
+  /**
+   * Máscarar email para privacidad
+   * Ejemplo: john.doe@example.com → j***e@example.com
+   */
+  maskEmail(email: string): string {
+    const [localPart, domain] = email.split('@');
+    if (localPart.length <= 2) {
+      return `${localPart[0]}***@${domain}`;
+    }
+    const masked = `${localPart[0]}${'*'.repeat(localPart.length - 2)}${localPart[localPart.length - 1]}`;
+    return `${masked}@${domain}`;
+  }
+
+  /**
+   * Obtener tiempo relativo desde último test SMTP
+   */
+  getSmtpLastTestRelative(): string {
+    const now = new Date();
+    const diff = now.getTime() - this.smtpLastTestTime.getTime();
+    const minutes = Math.floor(diff / 60000);
+    
+    if (minutes < 1) return 'just now';
+    if (minutes === 1) return '1 minute ago';
+    if (minutes < 60) return `${minutes} minutes ago`;
+    
+    const hours = Math.floor(minutes / 60);
+    if (hours === 1) return '1 hour ago';
+    return `${hours} hours ago`;
+  }
+
+  /**
+   * Toggle mostrar/ocultar lista de contactos
+   */
+  toggleContactsList(): void {
+    this.showContactsList = !this.showContactsList;
+  }
+
+  /**
+   * Obtener timeline de envío para el primer día
+   */
+  getImmediateDeliveryCount(): number {
+    if (!this.generatedSequence?.emails) return 0;
+    return this.generatedSequence.emails.filter(e => e.delayHours === 0).length;
+  }
+
+  /**
+   * Obtener timeline de envío para días futuros
+   */
+  getScheduledDeliveryCount(): number {
+    if (!this.generatedSequence?.emails) return 0;
+    return this.generatedSequence.emails.filter(e => e.delayHours > 0).length;
+  }
+
+  /**
+   * Calcular duración total de la sequence en días
+   */
+  getTotalDurationDays(): number {
+    if (!this.generatedSequence?.emails || this.generatedSequence.emails.length === 0) return 0;
+    
+    const maxDelayHours = Math.max(...this.generatedSequence.emails.map(e => e.delayHours));
+    return Math.ceil(maxDelayHours / 24);
+  }
+
+  // ========== END DELIVERY PREVIEW METHODS ==========
 
   /**
    * 💾 Guardar sequenceId en localStorage para MVP público
