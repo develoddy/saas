@@ -1,14 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 
 /**
  * 📧 MailFlow Landing Page
  * 
- * Landing pública estilo marketing directo para MailFlow
- * Objetivo: Captar early adopters y validación de mercado
+ * Premium SaaS landing page with modern design
+ * Inspired by Stripe, Linear, Resend, Vercel
  * 
  * @module modules/mailflow/landing
- * @inspiration inbox-zero / inbox-prevention landings
  */
 @Component({
   selector: 'app-mailflow-landing',
@@ -17,19 +16,36 @@ import { Router } from '@angular/router';
 })
 export class MailflowLandingComponent {
   
+  isScrolled = false;
+
   constructor(
     private router: Router
   ) {}
 
   /**
-   * CTA: Join early access → Redirect al wizard
+   * Detect scroll for navbar styling
+   */
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.pageYOffset > 50;
+  }
+
+  /**
+   * CTA: Join early access → Redirect to wizard
    */
   joinEarlyAccess(): void {
     this.router.navigate(['/mailflow/onboarding']);
   }
 
   /**
-   * Scroll suave a sección específica
+   * Scroll to top
+   */
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * Scroll to section
    */
   scrollToSection(sectionId: string): void {
     const element = document.getElementById(sectionId);

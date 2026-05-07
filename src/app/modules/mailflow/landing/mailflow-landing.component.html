@@ -1,131 +1,250 @@
 <div class="mailflow-landing">
   
-  <!-- Navbar: Minimal & Clean -->
-  <nav class="navbar">
+  <!-- Premium Navbar -->
+  <nav class="navbar" [class.scrolled]="isScrolled">
     <div class="navbar-container">
-      <div class="logo">
-        <i class="bi bi-envelope-heart"></i>
+      <div class="logo" (click)="scrollToTop()">
+        <i class="bi bi-envelope-heart-fill"></i>
         <span class="logo-text">MailFlow</span>
         <span class="beta-badge">BETA</span>
       </div>
       
-      <button class="btn-navbar-cta" (click)="joinEarlyAccess()">
-        Join early access
-      </button>
+      <div class="nav-actions">
+        <button class="btn-navbar-cta" (click)="joinEarlyAccess()">
+          Get started
+          <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero Section: Direct & Focused -->
+  <!-- Premium Hero Section -->
   <section class="hero-section">
     <div class="container">
       <div class="hero-content">
         
+        <!-- Hero Badge -->
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span class="badge-text">Live in beta • Join early adopters</span>
+        </div>
+
+        <!-- Premium Headline -->
         <h1 class="hero-title">
-          MailFlow
+          Automate your emails<br>
+          <span class="gradient-text">without the complexity</span>
         </h1>
 
-        <h2 class="hero-tagline">
-          Email automation for indie hackers & small stores
-        </h2>
+        <p class="hero-subtitle">
+          Create email sequences once. MailFlow sends them automatically.<br>
+          No marketing tools. No templates. No headaches.
+        </p>
 
-        <div class="hero-benefits">
-          <div class="benefit-item">
-            <i class="bi bi-lightning-charge"></i>
-            <span>Create email sequences in 2 minutes</span>
-          </div>
-          <div class="benefit-item">
-            <i class="bi bi-x-circle"></i>
-            <span>No Mailchimp complexity</span>
-          </div>
-          <div class="benefit-item">
-            <i class="bi bi-gear"></i>
-            <span>Built for simple automation</span>
-          </div>
-        </div>
-
-        <div class="hero-cta">
-          <button class="btn-hero-cta" (click)="joinEarlyAccess()">
-            Join early access
+        <!-- Hero CTA -->
+        <div class="hero-cta-group">
+          <button class="btn-primary-large" (click)="joinEarlyAccess()">
+            Get started for free
+            <i class="bi bi-arrow-right"></i>
           </button>
-          <p class="hero-cta-note">Free during beta • No credit card required</p>
+          <p class="cta-disclaimer">Free during beta • No credit card required</p>
         </div>
 
+        <!-- Trust Indicators -->
+        <div class="trust-indicators">
+          <div class="trust-item">
+            <i class="bi bi-lightning-charge-fill"></i>
+            <span>Setup in 2 minutes</span>
+          </div>
+          <div class="trust-item">
+            <i class="bi bi-shield-check"></i>
+            <span>SMTP delivery</span>
+          </div>
+          <div class="trust-item">
+            <i class="bi bi-clock-fill"></i>
+            <span>Runs 24/7</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Visual Preview (optional mockup) -->
+      <div class="hero-visual">
+        <div class="dashboard-mockup">
+          <div class="mockup-header">
+            <div class="mockup-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-stat">
+              <div class="stat-label">Emails sent today</div>
+              <div class="stat-value">156</div>
+            </div>
+            <div class="mockup-stat">
+              <div class="stat-label">Active sequences</div>
+              <div class="stat-value">3</div>
+            </div>
+            <div class="mockup-timeline">
+              <div class="timeline-item active">
+                <span class="timeline-dot"></span>
+                <span class="timeline-text">Welcome email sent</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-dot"></span>
+                <span class="timeline-text">Follow-up in 2 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- How it Works: Simple 3-step -->
+  <!-- How it Works: Premium Timeline -->
   <section class="how-it-works" id="how-it-works">
     <div class="container">
-      <h2 class="section-title">How it works</h2>
+      <div class="section-header">
+        <h2 class="section-title">How it works</h2>
+        <p class="section-subtitle">Get up and running in minutes, not days</p>
+      </div>
       
-      <div class="steps">
+      <div class="steps-timeline">
         <div class="step">
-          <div class="step-number">1</div>
-          <h3>Answer 3 questions</h3>
-          <p>Tell us your business type and email goal</p>
+          <div class="step-icon">
+            <i class="bi bi-chat-dots-fill"></i>
+          </div>
+          <div class="step-content">
+            <h3>Answer 3 questions</h3>
+            <p>Tell us your business type and what emails you need to automate</p>
+          </div>
+          <div class="step-number">01</div>
         </div>
         
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Get your sequence</h3>
-          <p>We generate a personalized email flow</p>
-        </div>
+        <div class="step-connector"></div>
         
         <div class="step">
-          <div class="step-number">3</div>
-          <h3>Activate & automate</h3>
-          <p>Emails send automatically based on your schedule</p>
+          <div class="step-icon">
+            <i class="bi bi-magic"></i>
+          </div>
+          <div class="step-content">
+            <h3>Get your sequence</h3>
+            <p>We generate a complete email flow tailored to your business</p>
+          </div>
+          <div class="step-number">02</div>
+        </div>
+        
+        <div class="step-connector"></div>
+        
+        <div class="step">
+          <div class="step-icon">
+            <i class="bi bi-send-check-fill"></i>
+          </div>
+          <div class="step-content">
+            <h3>Activate & relax</h3>
+            <p>Emails send automatically on schedule. You focus on your business</p>
+          </div>
+          <div class="step-number">03</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Use Cases: Quick examples -->
+  <!-- Use Cases: Premium Cards -->
   <section class="use-cases" id="use-cases">
     <div class="container">
-      <h2 class="section-title">Perfect for</h2>
+      <div class="section-header">
+        <h2 class="section-title">Built for modern businesses</h2>
+        <p class="section-subtitle">Whether you're selling products, services, or ideas</p>
+      </div>
       
       <div class="use-case-grid">
         <div class="use-case-card">
-          <i class="bi bi-shop"></i>
+          <div class="card-icon">
+            <i class="bi bi-shop"></i>
+          </div>
           <h3>E-commerce stores</h3>
-          <p>Welcome sequences, abandoned carts, post-purchase</p>
+          <p>Welcome sequences, abandoned cart recovery, post-purchase follow-ups</p>
+          <div class="card-footer">
+            <span class="feature-tag">Order confirmations</span>
+            <span class="feature-tag">Shipping updates</span>
+          </div>
         </div>
         
-        <div class="use-case-card">
-          <i class="bi bi-rocket"></i>
+        <div class="use-case-card featured">
+          <div class="featured-badge">Most popular</div>
+          <div class="card-icon">
+            <i class="bi bi-rocket-takeoff"></i>
+          </div>
           <h3>SaaS products</h3>
-          <p>Onboarding flows, feature announcements, retention</p>
+          <p>User onboarding flows, feature announcements, engagement campaigns</p>
+          <div class="card-footer">
+            <span class="feature-tag">Trial reminders</span>
+            <span class="feature-tag">Feature launches</span>
+          </div>
         </div>
         
         <div class="use-case-card">
-          <i class="bi bi-people"></i>
+          <div class="card-icon">
+            <i class="bi bi-megaphone"></i>
+          </div>
           <h3>Creators & coaches</h3>
-          <p>Lead nurturing, course launches, community engagement</p>
+          <p>Lead nurturing, course launches, community engagement sequences</p>
+          <div class="card-footer">
+            <span class="feature-tag">Course drips</span>
+            <span class="feature-tag">Newsletter</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section: Final push -->
+  <!-- Premium Dark CTA Section -->
   <section class="cta-section">
     <div class="container">
-      <h2 class="cta-title">Ready to automate your emails?</h2>
-      <p class="cta-subtitle">Join early access and help shape the product</p>
-      
-      <button class="btn-cta-final" (click)="joinEarlyAccess()">
-        Get started for free
-      </button>
-      
-      <p class="cta-footer">Used by indie hackers building real businesses</p>
+      <div class="cta-content">
+        <h2 class="cta-title">Stop managing emails.<br>Start automating them.</h2>
+        <p class="cta-subtitle">Join indie hackers and small businesses who've already automated their emails</p>
+        
+        <button class="btn-cta-glow" (click)="joinEarlyAccess()">
+          Get started for free
+          <i class="bi bi-arrow-right"></i>
+        </button>
+        
+        <div class="cta-trust">
+          <div class="trust-stat">
+            <div class="stat-value">2min</div>
+            <div class="stat-label">to setup</div>
+          </div>
+          <div class="trust-stat">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">automated</div>
+          </div>
+          <div class="trust-stat">
+            <div class="stat-value">Free</div>
+            <div class="stat-label">during beta</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Footer: Minimal -->
+  <!-- Premium Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2026 MailFlow • Built for simplicity</p>
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <i class="bi bi-envelope-heart-fill"></i>
+            <span class="logo-text">MailFlow</span>
+          </div>
+          <p class="footer-tagline">Email automation without complexity</p>
+        </div>
+        <div class="footer-legal">
+          <p>&copy; 2026 MailFlow. Built with focus.</p>
+        </div>
+      </div>
     </div>
   </footer>
 

@@ -496,7 +496,7 @@
               <div class="timeline-total" *ngIf="generatedSequence.emails && generatedSequence.emails.length > 3">
                 <i class="bi bi-three-dots"></i>
                 <p>
-                  <strong>{{ (generatedSequence.emails?.length || 0) - 3 }} more emails</strong> scheduled over 
+                  <strong>{{ (generatedSequence.emails.length || 0) - 3 }} more emails</strong> scheduled over 
                   <strong>{{ getTotalDurationDays() }} days</strong>
                 </p>
               </div>
