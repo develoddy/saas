@@ -918,6 +918,29 @@
   background: white;
 }
 
+.card-empty-draft {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.card-empty-draft .card-header h4::after {
+  content: ' — incomplete';
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.draft-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid #f3f4f6;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -1343,5 +1366,115 @@
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard-container {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .live-system-overview {
+    padding: 20px 16px;
+  }
+
+  .system-status-header h2 {
+    font-size: 20px;
+  }
+
+  .system-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px 12px;
+    gap: 10px;
+  }
+
+  .stat-icon {
+    font-size: 22px;
+  }
+
+  .stat-content strong {
+    font-size: 18px;
+  }
+
+  .delivery-status-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .delivery-status-header h3 {
+    font-size: 15px;
+  }
+
+  .delivery-timeline {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .automation-explainer {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  .live-activity-feed {
+    padding: 16px 14px;
+  }
+
+  .system-health-status {
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .btn-create {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sequences-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sequences-section {
+    padding: 16px 14px;
+  }
+
+  .stats-row {
+    gap: 12px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+
+  .card-actions button {
+    width: 100%;
+  }
+
+  .banner-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .banner-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-banner-action,
+  .btn-banner-secondary {
+    width: 100%;
+    justify-content: center;
   }
 }

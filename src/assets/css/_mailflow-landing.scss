@@ -969,6 +969,47 @@ $transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   // ANIMATIONS
   // ============================================================================
 
+  // ============================================================================
+  // MOBILE OPTIMIZATION - USE CASES & LANDING ELEMENTS
+  // ============================================================================
+  
+  @media (max-width: 640px) {
+    .use-case-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 0 4px;
+    }
+
+    .use-case-card {
+      padding: 20px;
+    }
+
+    .use-case-card .card-footer {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .feature-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+
+    .hero-section .container {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .hero-visual {
+      width: 100%;
+    }
+
+    .trust-indicators {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+  }
+
   @keyframes pulse {
     0%, 100% {
       opacity: 1;

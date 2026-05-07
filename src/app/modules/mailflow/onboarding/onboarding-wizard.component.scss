@@ -1238,3 +1238,836 @@
     transform: rotate(360deg);
   }
 }
+
+// ============================================================================
+// PREMIUM MOBILE-FIRST RESPONSIVE DESIGN
+// Optimized for iPhone SE (375px) to iPhone 14 Pro Max (430px)
+// Design goal: Linear/Stripe/Notion quality onboarding experience
+// ============================================================================
+
+@media (max-width: 640px) {
+  
+  // ========== 1. WIZARD STEPS HEADER - CLEANER & FOCUSED ==========
+  .wizard-container {
+    padding: 16px 14px;
+    max-width: 100%;
+  }
+
+  .steps-indicator {
+    gap: 6px;
+    padding: 0 4px;
+  }
+
+  .step-circle {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+
+    // Hide verbose step info on mobile - show only when active
+    .step-info {
+      display: none;
+    }
+
+    &.active .step-info {
+      display: flex;
+      
+      .step-title {
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      
+      .step-description {
+        display: none; // Too verbose for mobile
+      }
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+
+  // ========== 2. WIZARD CONTENT - BETTER SPACING ==========
+  .wizard-content {
+    padding: 20px 14px;
+    min-height: auto;
+  }
+
+  .wizard-step {
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+      color: #6b7280;
+    }
+  }
+
+  // ========== 3. BUSINESS TYPE & GOAL CARDS - OPTIMIZED GRID ==========
+  .business-type-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    .business-type-card {
+      padding: 16px 12px;
+      border-radius: 10px;
+
+      .card-content {
+        gap: 8px;
+
+        .icon {
+          font-size: 32px;
+        }
+
+        .label {
+          font-size: 13px;
+          font-weight: 600;
+        }
+      }
+
+      &:hover,
+      &.selected {
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  .goal-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    .goal-card {
+      padding: 16px;
+      border-radius: 10px;
+
+      .card-content {
+        gap: 10px;
+
+        h4 {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        p {
+          font-size: 13px;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+
+  // ========== 4. FORM CONTROLS - BETTER TOUCH TARGETS ==========
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .form-control,
+    input,
+    select,
+    textarea {
+      padding: 14px 16px;
+      font-size: 16px; // Prevents iOS zoom
+      border-radius: 10px;
+      min-height: 48px; // Better touch target
+    }
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .btn-add-contact {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 48px;
+  }
+
+  // ========== 5. EMAIL TIMELINE - COMPACT & ALIGNED ==========
+  .emails-timeline-visual {
+    padding: 16px 12px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+
+    .timeline-email-item {
+      gap: 12px;
+      margin-bottom: 16px !important;
+
+      // Active email - less dramatic scale on mobile
+      &.status-active {
+        transform: scale(1.02);
+        
+        .timeline-email-content {
+          padding: 14px;
+          margin: -8px 0 0 -4px;
+          border-radius: 10px;
+          box-shadow: 
+            0 2px 8px rgba(16, 185, 129, 0.12),
+            0 4px 16px rgba(16, 185, 129, 0.08),
+            0 0 0 3px rgba(16, 185, 129, 0.06);
+        }
+
+        .email-subject {
+          font-size: 16px !important;
+          font-weight: 600;
+          line-height: 1.4;
+        }
+      }
+
+      // Scheduled emails - subtle presence
+      &.status-scheduled {
+        opacity: 0.55;
+        transform: scale(0.98);
+
+        .email-subject {
+          font-size: 14px;
+        }
+
+        .email-preview-text {
+          font-size: 12px;
+          line-height: 1.5;
+        }
+      }
+
+      // Timeline connector - smaller on mobile
+      .timeline-connector {
+        .timeline-dot {
+          width: 16px;
+          height: 16px;
+          border: 2px solid #ffffff;
+          box-shadow: 0 0 0 2px #e0e7ff;
+
+          &.dot-active {
+            width: 18px;
+            height: 18px;
+          }
+        }
+
+        .timeline-line {
+          width: 2px;
+          min-height: 40px;
+        }
+      }
+
+      // Email content - compact
+      .timeline-email-content {
+        padding-bottom: 0;
+
+        .email-timing {
+          margin-bottom: 10px;
+
+          .timing-badge {
+            padding: 6px 12px;
+            font-size: 11px;
+            border-radius: 6px;
+            font-weight: 600;
+          }
+        }
+
+        .email-subject {
+          font-size: 15px;
+          font-weight: 600;
+          margin-bottom: 6px;
+          line-height: 1.4;
+        }
+
+        .email-preview-text {
+          font-size: 13px;
+          line-height: 1.5;
+          margin-bottom: 12px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2; // Limit to 2 lines
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .btn-view-email {
+          padding: 10px 16px;
+          font-size: 13px;
+          font-weight: 600;
+          min-height: 40px;
+          border-radius: 8px;
+        }
+      }
+    }
+  }
+
+  // ========== 6. LIVE AUTOMATION CARD - COMPACT & PREMIUM ==========
+  .automation-indicator {
+    padding: 16px;
+    border-radius: 12px;
+    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .live-status-dot {
+      width: 10px;
+      height: 10px;
+    }
+
+    .automation-icon {
+      font-size: 28px;
+    }
+
+    .automation-text {
+      flex: 1;
+
+      strong {
+        font-size: 15px;
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      small {
+        font-size: 12px;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  // ========== 7. STATS CARDS - CONSISTENT & PREMIUM ==========
+  .sequence-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+
+    .stat-card {
+      padding: 16px 14px;
+      border-radius: 10px;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      transition: all 0.2s ease;
+
+      &:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .stat-icon {
+        font-size: 24px;
+      }
+
+      .stat-info {
+        gap: 4px;
+
+        strong {
+          font-size: 22px;
+          font-weight: 700;
+        }
+
+        small {
+          font-size: 12px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  // ========== 8. CONTACTS PREVIEW - CLEANER LIST ==========
+  .contacts-preview-summary {
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 20px;
+
+    h4 {
+      font-size: 15px;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+
+    .contacts-mini-list {
+      grid-template-columns: 1fr;
+      gap: 10px;
+
+      .mini-contact-item {
+        padding: 12px;
+        border-radius: 8px;
+        gap: 12px;
+
+        .mini-avatar {
+          width: 32px;
+          height: 32px;
+          font-size: 13px;
+        }
+
+        .mini-contact-info {
+          strong {
+            font-size: 14px;
+          }
+
+          small {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  // ========== 9. DELIVERY PREVIEW - BETTER BREATHING ROOM ==========
+  .delivery-preview-clean {
+    padding: 18px 14px;
+    border-radius: 12px;
+    margin-top: 24px;
+  }
+
+  .delivery-preview-validation {
+    padding: 18px 14px;
+    border-radius: 12px;
+    margin-top: 24px;
+
+    .validation-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+
+      i {
+        font-size: 28px;
+      }
+
+      .header-text {
+        h3 {
+          font-size: 18px;
+          margin-bottom: 6px;
+        }
+
+        p {
+          font-size: 13px;
+          line-height: 1.5;
+        }
+      }
+    }
+
+    .validation-section {
+      padding: 14px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+
+        .section-title {
+          gap: 10px;
+          flex-wrap: wrap;
+
+          i {
+            font-size: 20px;
+          }
+
+          h4 {
+            font-size: 16px;
+          }
+
+          .recipient-count {
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+          }
+        }
+
+        .btn-toggle-list {
+          width: 100%;
+          justify-content: center;
+          padding: 10px;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  // Contacts list in delivery preview
+  .contacts-list-section {
+    .contacts-warning {
+      padding: 12px;
+      gap: 10px;
+      flex-direction: column;
+      align-items: flex-start;
+      border-radius: 8px;
+
+      i {
+        font-size: 20px;
+      }
+
+      span {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+    }
+
+    .contacts-list-expandable {
+      max-height: 300px;
+      border-radius: 10px;
+
+      .contact-list-item {
+        padding: 12px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .contact-number {
+          width: 28px;
+          height: 28px;
+          font-size: 12px;
+        }
+
+        .contact-details {
+          width: 100%;
+
+          strong {
+            font-size: 14px;
+          }
+
+          .contact-email {
+            font-size: 11px;
+            padding: 4px 8px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .contact-status {
+          font-size: 11px;
+
+          i {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  // ========== 10. DELIVERY TIMELINE - COMPACT STEPS ==========
+  .delivery-timeline-section {
+    .delivery-timeline-preview {
+      gap: 12px;
+      margin-bottom: 16px;
+
+      .timeline-step {
+        padding: 12px;
+        gap: 12px;
+        border-radius: 8px;
+
+        .step-time {
+          min-width: auto;
+          width: 100%;
+          margin-bottom: 8px;
+
+          strong {
+            font-size: 13px;
+          }
+
+          small {
+            font-size: 11px;
+          }
+        }
+
+        .step-content {
+          padding-left: 0;
+          border-left: none;
+
+          strong {
+            font-size: 14px;
+            margin-bottom: 4px;
+          }
+
+          p {
+            font-size: 12px;
+            line-height: 1.5;
+          }
+
+          .email-subject {
+            font-size: 13px;
+            padding: 6px 10px;
+          }
+        }
+      }
+    }
+  }
+
+  // ========== 11. LAUNCH CONFIRMATION - STRONGER CTA ==========
+  .launch-confirmation {
+    padding: 16px;
+    border-radius: 10px;
+    margin-top: 20px;
+
+    .confirmation-checkbox {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .checkbox-label {
+        font-size: 14px;
+        line-height: 1.5;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .contacts-notice {
+    padding: 12px;
+    gap: 10px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+
+    i {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  }
+
+  // ========== 12. WIZARD NAVIGATION - MOBILE-OPTIMIZED ==========
+  .wizard-navigation {
+    flex-direction: column-reverse;
+    gap: 12px;
+    padding: 16px 14px;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 24px;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+    border-radius: 16px 16px 0 0;
+
+    .nav-spacer {
+      display: none;
+    }
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      min-height: 52px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+
+      &.btn-primary,
+      &.btn-success {
+        font-size: 17px;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+        }
+      }
+
+      &.btn-secondary {
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        
+        &:hover:not(:disabled) {
+          background: #e5e7eb;
+        }
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  // ========== 13. VALIDATION MODAL - MOBILE OPTIMIZED ==========
+  .validation-modal {
+    padding: 24px 18px;
+    width: 94%;
+    max-width: 420px;
+    border-radius: 16px;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      font-size: 28px;
+      top: 12px;
+      right: 12px;
+    }
+
+    .modal-header {
+      margin-bottom: 20px;
+
+      h3 {
+        font-size: 20px;
+        margin-bottom: 8px;
+      }
+
+      p {
+        font-size: 13px;
+        line-height: 1.5;
+      }
+    }
+
+    .modal-body {
+      .question {
+        margin-bottom: 20px;
+
+        strong {
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+
+        .question-subtitle {
+          font-size: 13px;
+          line-height: 1.5;
+        }
+      }
+
+      .response-buttons {
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .response-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+        border-radius: 10px;
+        gap: 10px;
+        min-height: 52px;
+
+        i {
+          font-size: 22px;
+        }
+
+        span {
+          font-weight: 600;
+        }
+      }
+
+      .feedback-section {
+        margin-bottom: 20px;
+
+        label {
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+
+        textarea {
+          font-size: 15px;
+          padding: 14px;
+          border-radius: 10px;
+          min-height: 100px;
+        }
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: 600;
+        min-height: 52px;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  // ========== DELIVERY PREVIEW SIMPLIFICATION - MOBILE ==========
+  
+  // Hide verbose delivery timeline section on mobile
+  .delivery-preview-clean .validation-section.delivery-timeline-section {
+    display: none;
+  }
+
+  // Compact delivery summary stats
+  .delivery-summary-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .delivery-summary-box .summary-stat strong {
+    font-size: 16px;
+    display: block;
+  }
+
+  // Hide verbose header description
+  .delivery-preview-clean .validation-header p {
+    display: none;
+  }
+
+  // Compact header title
+  .delivery-preview-clean .validation-header h3 {
+    font-size: 16px;
+  }
+
+  // ========== 14. PREMIUM TOUCHES - ANIMATIONS & MICRO-INTERACTIONS ==========
+  
+  // Smooth card interactions
+  .business-type-card,
+  .goal-card,
+  .stat-card,
+  .timeline-email-item {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  // Better focus states for accessibility
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  // Loading states
+  .btn:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  // Reduce motion for accessibility
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
