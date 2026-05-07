@@ -94,13 +94,10 @@
       <h2>Add Real Recipients</h2>
       <p class="subtitle">Add email addresses of people who will receive your sequence</p>
       
-      <!-- ⚠️ WARNING: REAL EMAILS -->
-      <div class="real-email-warning">
-        <i class="bi bi-exclamation-triangle-fill"></i>
-        <div class="warning-content">
-          <strong>These emails will be sent to REAL recipients</strong>
-          <p>Use your own email to test, or add contacts you want to reach. All emails will be delivered via SMTP.</p>
-        </div>
+      <!-- 💡 FRIENDLY NOTICE -->
+      <div class="real-email-notice">
+        <i class="bi bi-info-circle"></i>
+        <span>💡 <strong>Start by adding your own email</strong> to see how it works before adding real contacts.</span>
       </div>
 
       <form [formGroup]="step3Form">
@@ -354,7 +351,7 @@
         </div>
 
         <!-- ========== DELIVERY PREVIEW & SMTP VALIDATION ========== -->
-        <div class="delivery-preview-validation">
+        <div class="delivery-preview-clean">
           <div class="validation-header">
             <i class="bi bi-shield-check"></i>
             <div class="header-text">
@@ -377,10 +374,9 @@
               </button>
             </div>
 
-            <div class="contacts-warning">
-              <i class="bi bi-exclamation-triangle-fill"></i>
-              <strong>These emails will be sent to REAL recipients.</strong>
-              Make sure these are the correct contacts.
+            <div class="contacts-notice">
+              <i class="bi bi-people-fill"></i>
+              <span>These {{ previewContacts.length }} contacts will receive your sequence.</span>
             </div>
 
             <div class="contacts-list-expandable" *ngIf="showContactsList">
@@ -404,56 +400,7 @@
             </div>
           </div>
 
-          <!-- 2. SMTP STATUS VERIFICATION -->
-          <div class="validation-section smtp-status-section">
-            <div class="section-header">
-              <div class="section-title">
-                <i class="bi bi-envelope-check-fill"></i>
-                <h4>SMTP Connection Status</h4>
-              </div>
-            </div>
-
-            <div class="smtp-status-card" [class.status-connected]="smtpStatus === 'connected'"
-                                         [class.status-error]="smtpStatus === 'error'"
-                                         [class.status-checking]="smtpStatus === 'checking'">
-              <div class="status-indicator">
-                <span class="status-icon">
-                  <i *ngIf="smtpStatus === 'connected'" class="bi bi-check-circle-fill"></i>
-                  <i *ngIf="smtpStatus === 'error'" class="bi bi-x-circle-fill"></i>
-                  <i *ngIf="smtpStatus === 'checking'" class="bi bi-arrow-clockwise spin"></i>
-                </span>
-                <div class="status-text">
-                  <strong *ngIf="smtpStatus === 'connected'">SMTP Connected & Verified</strong>
-                  <strong *ngIf="smtpStatus === 'error'">SMTP Connection Error</strong>
-                  <strong *ngIf="smtpStatus === 'checking'">Checking SMTP Connection...</strong>
-                  
-                  <small *ngIf="smtpStatus === 'connected'">
-                    Last verified {{ getSmtpLastTestRelative() }}
-                  </small>
-                  <small *ngIf="smtpStatus === 'error'">
-                    Please check your SMTP configuration
-                  </small>
-                </div>
-              </div>
-
-              <div class="smtp-details" *ngIf="smtpStatus === 'connected'">
-                <div class="smtp-detail-item">
-                  <i class="bi bi-server"></i>
-                  <span>Email server configured and ready</span>
-                </div>
-                <div class="smtp-detail-item">
-                  <i class="bi bi-shield-check"></i>
-                  <span>Authentication verified</span>
-                </div>
-                <div class="smtp-detail-item">
-                  <i class="bi bi-send-check"></i>
-                  <span>Test email sent successfully</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 3. DELIVERY TIMELINE - WHAT WILL HAPPEN -->
+          <!-- 2. DELIVERY TIMELINE - WHAT WILL HAPPEN -->
           <div class="validation-section delivery-timeline-section">
             <div class="section-header">
               <div class="section-title">
@@ -518,57 +465,12 @@
             </div>
           </div>
 
-          <!-- 4. REAL DISCLAIMER + CONFIRMATION CHECKBOX -->
-          <div class="validation-section confirmation-section">
-            <div class="section-header">
-              <div class="section-title">
-                <i class="bi bi-check2-square"></i>
-                <h4>Final Confirmation</h4>
-              </div>
-            </div>
-
-            <div class="confirmation-disclaimer">
-              <div class="disclaimer-icon">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-              </div>
-              <div class="disclaimer-content">
-                <h5>Important: Real Email Delivery</h5>
-                <ul class="disclaimer-points">
-                  <li>
-                    <i class="bi bi-check2"></i>
-                    Emails will be sent to <strong>{{ previewContacts.length }} real recipients</strong> listed above
-                  </li>
-                  <li>
-                    <i class="bi bi-check2"></i>
-                    Delivery is <strong>automated via SMTP</strong> and happens in the background
-                  </li>
-                  <li>
-                    <i class="bi bi-check2"></i>
-                    Once activated, you <strong>cannot stop emails already queued</strong>
-                  </li>
-                  <li>
-                    <i class="bi bi-check2"></i>
-                    Make sure your <strong>SMTP credentials are correct</strong> (verified above)
-                  </li>
-                </ul>
-              </div>
-            </div>
-
+          <!-- 3. LAUNCH CONFIRMATION -->
+          <div class="launch-confirmation">
             <label class="confirmation-checkbox">
-              <input 
-                type="checkbox" 
-                [(ngModel)]="confirmRealRecipientsChecked"
-                id="confirmRealRecipients">
-              <span class="checkbox-label">
-                <strong>I understand that emails will be sent to REAL recipients</strong>
-                and I have verified my SMTP configuration is correct
-              </span>
+              <input type="checkbox" [(ngModel)]="confirmRealRecipientsChecked" id="confirmRealRecipients">
+              <span class="checkbox-label">I've reviewed the contacts and schedule above — ready to launch.</span>
             </label>
-
-            <div class="activation-disabled-hint" *ngIf="!confirmRealRecipientsChecked">
-              <i class="bi bi-info-circle-fill"></i>
-              Please confirm you understand by checking the box above to activate your sequence
-            </div>
           </div>
         </div>
         <!-- ========== END DELIVERY PREVIEW & SMTP VALIDATION ========== -->
@@ -719,42 +621,42 @@
 
       <div class="modal-body">
         <div class="question">
-          <strong>Would you pay $19/month for MailFlow?</strong>
+          <strong>Based on what you just used — would you pay for this?</strong>
           <p class="question-subtitle">
-            Unlimited sequences, unlimited contacts, advanced analytics, and priority support
+            Forget future features. Just what you experienced right now — the sequence builder and automatic sending.
           </p>
         </div>
 
-        <div class="response-buttons">
-          <button class="response-btn yes" (click)="submitValidation('yes', null)">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>Yes, I'd pay</span>
-          </button>
-          
-          <button class="response-btn maybe" (click)="submitValidation('maybe', null)">
-            <i class="bi bi-question-circle-fill"></i>
-            <span>Maybe, depends on features</span>
-          </button>
-          
-          <button class="response-btn no" (click)="submitValidation('no', null)">
-            <i class="bi bi-x-circle-fill"></i>
-            <span>No, I'd use free alternatives</span>
-          </button>
-        </div>
-
-        <div class="feedback-section" *ngIf="validationResponse">
+        <div class="feedback-section">
           <label for="validationComment">
-            Want to tell us more? (optional)
+            What's on your mind? (optional)
           </label>
           <textarea 
             id="validationComment"
             [(ngModel)]="validationComment"
-            placeholder="What would make you more likely to pay? What features are missing?"
+            placeholder="What would make this a no-brainer for you? What's missing or confusing?"
             rows="3"
             class="feedback-textarea"></textarea>
           
           <button class="btn btn-primary btn-sm" (click)="submitFeedback()">
             Submit Feedback
+          </button>
+        </div>
+
+        <div class="response-buttons">
+          <button class="response-btn yes" (click)="submitValidation('yes', null)">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Yes — this solves a real problem for me</span>
+          </button>
+          
+          <button class="response-btn maybe" (click)="submitValidation('maybe', null)">
+            <i class="bi bi-question-circle-fill"></i>
+            <span>Maybe — it's useful but not there yet</span>
+          </button>
+          
+          <button class="response-btn no" (click)="submitValidation('no', null)">
+            <i class="bi bi-x-circle-fill"></i>
+            <span>No — I can solve this another way</span>
           </button>
         </div>
       </div>
@@ -790,9 +692,7 @@
             [disabled]="!canActivateSequence()"
             [class.btn-disabled]="!canActivateSequence()"
             (click)="activateSequence()">
-      <i class="bi bi-rocket-takeoff"></i> 
-      <span *ngIf="canActivateSequence()">Launch Sequence</span>
-      <span *ngIf="!canActivateSequence()">Confirm Delivery Preview to Launch</span>
+      <i class="bi bi-rocket-takeoff"></i> Launch Sequence →
     </button>
 
     <!-- DESPUÉS DE ACTIVAR: Estado de éxito + botón dashboard -->
