@@ -115,6 +115,44 @@ export class TrackingService {
     });
   }
 
+  // ==========================================
+  // Canonical Landing Analytics Contract
+  // ==========================================
+
+  /**
+   * Track landing viewed (canonical event for any landing-type MVP)
+   */
+  landingView(module: string, properties?: { [key: string]: any }): void {
+    this.track('landing_viewed', {
+      module,
+      ...properties
+    });
+  }
+
+  /**
+   * Track meaningful engagement on a landing, without implying conversion.
+   * `detail` carries the product-specific event name for granular funnel analysis.
+   */
+  landingEngagement(module: string, detail: string, properties?: { [key: string]: any }): void {
+    this.track('landing_engaged', {
+      module,
+      detail,
+      ...properties
+    });
+  }
+
+  /**
+   * Track lead/waitlist conversion (the terminal event of a landing funnel).
+   * `detail` carries the product-specific event name for granular funnel analysis.
+   */
+  leadCaptured(module: string, detail: string, properties?: { [key: string]: any }): void {
+    this.track('landing_lead_captured', {
+      module,
+      detail,
+      ...properties
+    });
+  }
+
   /**
    * Track conversion (registro desde preview)
    */

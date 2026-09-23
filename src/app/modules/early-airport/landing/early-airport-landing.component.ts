@@ -1,0 +1,123 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TrackingService } from '../../../services/tracking.service';
+
+const MODULE_KEY = 'early-airport-landing'; // must equal modules.key (tracking_events.module invariant)
+const EXPERIMENT = 'early_airport_v1';
+
+/**
+ * 🛬 Early Airport — Smoke Test V1
+ *
+ * Fake-door landing to measure demand for an airport ride booking product.
+ * Funnel: landing_view → availability_clicked → trip_submitted → email_submitted
+ *
+ * @module modules/early-airport/landing
+ */
+@Component({
+  selector: 'app-early-airport-landing',
+  templateUrl: './early-airport-landing.component.html',
+  styleUrls: ['./early-airport-landing.component.scss']
+})
+export class EarlyAirportLandingComponent implements OnInit {
+
+  tripForm: FormGroup;
+  emailForm: FormGroup;
+
+  submitted = false;
+  emailSubmitted = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private tracking: TrackingService
+  ) {
+    this.tripForm = this.fb.group({
+      origin_city: ['', Validators.required],
+      airport: ['', Validators.required],
+      flight_date: ['', Validators.required],
+      flight_time: ['', Validators.required]
+    });
+
+    this.emailForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]]
+    });
+  }
+
+  ngOnInit(): void {
+    this.tracking.pageView('early_airport_landing', {
+      module: MODULE_KEY,
+      experiment: EXPERIMENT
+    });
+
+    // Canonical landing analytics contract (generic Lab KPI engine)
+    this.tracking.landingView(MODULE_KEY, { experiment: EXPERIMENT });
+  }
+
+  checkAvailability(): void {
+    this.tracking.track('availability_clicked', {
+      module: MODULE_KEY,
+      experiment: EXPERIMENT
+    });
+
+    if (this.tripForm.invalid) {
+      this.tripForm.markAllAsTouched();
+      return;
+    }
+
+    const { origin_city, airport, flight_date, flight_time } = this.tripForm.value;
+
+    this.tracking.track('trip_submitted', {
+      module: MODULE_KEY,
+      experiment: EXPERIMENT,
+      origin_city,
+      airport,
+      flight_date,
+      flight_time
+    });
+
+    // Canonical engagement signal: a valid trip submission, not a lead conversion
+    this.tracking.landingEngagement(MODULE_KEY, 'trip_submitted', { experiment: EXPERIMENT });
+
+    this.submitted = true;
+  }
+
+  notifyMe(): void {
+    if (this.emailForm.invalid) {
+      this.emailForm.markAllAsTouched();
+      return;
+    }
+
+    const email: string = this.emailForm.value.email;
+    const emailDomain = email.split('@')[1] || '';
+    const emailHash = this.simpleHash(email.trim().toLowerCase());
+
+    this.tracking.track('email_submitted', {
+      module: MODULE_KEY,
+      experiment: EXPERIMENT,
+      email_hash: emailHash,
+      email_domain: emailDomain
+    });
+
+    // Canonical lead conversion (only the email capture counts as a lead, not trip_submitted)
+    this.tracking.leadCaptured(MODULE_KEY, 'email_submitted', {
+      experiment: EXPERIMENT,
+      email_hash: emailHash,
+      email_domain: emailDomain
+    });
+
+    this.emailSubmitted = true;
+  }
+
+  /**
+   * Same FNV-1a hash as TrackingService.trackProEmailSubmitted (kept local since that
+   * method is private and tied to the 'pro_email_submitted' event, not reused here to
+   * avoid touching the shared tracking service for this experiment).
+   */
+  private simpleHash(str: string): string {
+    let hash = 2166136261;
+    for (let i = 0; i < str.length; i++) {
+      hash ^= str.charCodeAt(i);
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+    return (hash >>> 0).toString(16);
+  }
+}

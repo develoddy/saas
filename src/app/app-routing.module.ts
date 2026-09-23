@@ -77,6 +77,16 @@ const routes: Routes = [
     }
   },
 
+  // Early Airport MVP - Smoke Test V1
+  {
+    path: 'early-airport',
+    loadChildren: () => import('./modules/early-airport/early-airport.module')
+      .then(m => m.EarlyAirportModule),
+    data: {
+      title: 'Early Airport'
+    }
+  },
+
   {
     path: 'preview/productclip',
     component: VideoExpressWizardComponent,

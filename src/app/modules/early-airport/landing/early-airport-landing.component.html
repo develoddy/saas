@@ -1,0 +1,62 @@
+<div class="early-airport">
+  <div class="card">
+    <span class="label">EARLY AIRPORT</span>
+
+    <h1 class="headline">An early flight shouldn't start with uncertainty.</h1>
+
+    <p class="subheadline">
+      Plan your ride to the airport ahead of time,
+      especially when your flight is too important
+      to leave transport until the last minute.
+    </p>
+
+    <form *ngIf="!submitted" [formGroup]="tripForm" (ngSubmit)="checkAvailability()" class="trip-form">
+      <div class="field">
+        <label for="origin_city">From</label>
+        <input id="origin_city" type="text" formControlName="origin_city" placeholder="City / area">
+        <small class="error" *ngIf="tripForm.get('origin_city')?.invalid && tripForm.get('origin_city')?.touched">Required</small>
+      </div>
+
+      <div class="field">
+        <label for="airport">Airport</label>
+        <input id="airport" type="text" formControlName="airport" placeholder="Airport">
+        <small class="error" *ngIf="tripForm.get('airport')?.invalid && tripForm.get('airport')?.touched">Required</small>
+      </div>
+
+      <div class="field">
+        <label for="flight_date">Flight date</label>
+        <input id="flight_date" type="date" formControlName="flight_date">
+        <small class="error" *ngIf="tripForm.get('flight_date')?.invalid && tripForm.get('flight_date')?.touched">Required</small>
+      </div>
+
+      <div class="field">
+        <label for="flight_time">Flight time</label>
+        <input id="flight_time" type="time" formControlName="flight_time">
+        <small class="error" *ngIf="tripForm.get('flight_time')?.invalid && tripForm.get('flight_time')?.touched">Required</small>
+      </div>
+
+      <button type="submit" class="cta">Check availability</button>
+    </form>
+
+    <div *ngIf="submitted" class="unavailable-state">
+      <p class="unavailable-title">We're not available for this route yet.</p>
+      <p class="unavailable-text">
+        We're testing whether this is something travellers
+        actually need before building it.
+      </p>
+
+      <ng-container *ngIf="!emailSubmitted; else thanks">
+        <p class="notify-question">Want to know if we launch it?</p>
+        <form [formGroup]="emailForm" (ngSubmit)="notifyMe()" class="email-form">
+          <input type="email" formControlName="email" placeholder="your@email.com">
+          <button type="submit" class="cta">Notify me</button>
+        </form>
+        <small class="disclaimer">No spam. Just an update if we continue with this.</small>
+      </ng-container>
+
+      <ng-template #thanks>
+        <p class="thanks">Thanks! We'll let you know.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
