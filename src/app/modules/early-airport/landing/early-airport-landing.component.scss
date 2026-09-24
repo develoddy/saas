@@ -191,4 +191,38 @@
       flex-direction: column;
     }
   }
+
+
+  /* V1 primary action: visually connect the backup/protection concept with the CTA. */
+  .cta.primary-cta {
+    width: 100%;
+    background: #3b82f6;
+    box-shadow: 0 8px 18px rgba(59, 130, 246, 0.18);
+
+    &:hover {
+      background: #2563eb;
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba(59, 130, 246, 0.28);
+      outline-offset: 3px;
+    }
+  }
+
+  .backup-icon-shield {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 19px;
+      height: 19px;
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
+
 }

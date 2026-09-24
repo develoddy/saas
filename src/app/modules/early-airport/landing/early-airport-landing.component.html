@@ -22,7 +22,7 @@
       </div>
 
       <button type="button" class="cta primary-cta" (click)="requestBackup()">
-        Check backup options →
+        I want a backup option →
       </button>
 
       <small class="experiment-note">
@@ -62,7 +62,7 @@
         <small class="error" *ngIf="tripForm.get('flight_time')?.invalid && tripForm.get('flight_time')?.touched">Required</small>
       </div>
 
-      <button type="submit" class="cta">Continue</button>
+      <button type="submit" class="cta primary-cta">Continue</button>
     </form>
 
     <div *ngIf="submitted" class="unavailable-state">
