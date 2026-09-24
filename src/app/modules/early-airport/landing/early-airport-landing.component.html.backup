@@ -9,35 +9,7 @@
       so you are not left searching for another driver at the last minute.
     </p>
 
-    <ng-container *ngIf="!backupRequested">
-      <div class="backup-summary">
-        <p class="backup-summary-item">
-          <span class="backup-icon" aria-hidden="true">✓</span>
-          <span>Your main ride is already booked</span>
-        </p>
-        <p class="backup-summary-item">
-          <span class="backup-icon" aria-hidden="true">↗</span>
-          <span>Explore a backup for your airport trip</span>
-        </p>
-      </div>
-
-      <button type="button" class="cta primary-cta" (click)="requestBackup()">
-        Check backup options →
-      </button>
-
-      <small class="experiment-note">
-        Early concept · We're testing demand. No backup rides are available to book yet.
-      </small>
-    </ng-container>
-
-    <form
-      *ngIf="backupRequested && !submitted"
-      [formGroup]="tripForm"
-      (ngSubmit)="checkAvailability()"
-      class="trip-form"
-    >
-      <p class="step-title">Tell us about your trip</p>
-
+    <form *ngIf="!submitted" [formGroup]="tripForm" (ngSubmit)="checkAvailability()" class="trip-form">
       <div class="field">
         <label for="origin_city">From</label>
         <input id="origin_city" type="text" formControlName="origin_city" placeholder="City / area">
@@ -62,7 +34,7 @@
         <small class="error" *ngIf="tripForm.get('flight_time')?.invalid && tripForm.get('flight_time')?.touched">Required</small>
       </div>
 
-      <button type="submit" class="cta">Continue</button>
+      <button type="submit" class="cta">Check backup options</button>
     </form>
 
     <div *ngIf="submitted" class="unavailable-state">
@@ -72,6 +44,11 @@
         We're testing whether travellers actually want a backup option
         before building the real service.
       </p>
+
+      <button *ngIf="!backupRequested" type="button" class="cta secondary" (click)="requestBackup()">
+        I want a backup option
+      </button>
+      <p class="backup-confirmed" *ngIf="backupRequested">Thanks, we've noted your interest in a backup option.</p>
 
       <ng-container *ngIf="!emailSubmitted; else thanks">
         <p class="notify-question">Want to know if we launch a backup option?</p>

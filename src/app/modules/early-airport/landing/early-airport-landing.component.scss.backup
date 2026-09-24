@@ -38,50 +38,6 @@
     margin: 0 0 24px;
   }
 
-  .backup-summary {
-    padding: 14px 16px;
-    background: #f3f6fa;
-    border-radius: 10px;
-    margin-bottom: 14px;
-  }
-
-  .backup-summary-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    font-size: 14px;
-    color: #111827;
-
-    & + & {
-      margin-top: 10px;
-    }
-  }
-
-  .backup-icon {
-    width: 20px;
-    flex: 0 0 20px;
-    text-align: center;
-    font-weight: 700;
-    color: #6366f1;
-  }
-
-  .experiment-note {
-    display: block;
-    margin-top: 12px;
-    text-align: center;
-    font-size: 12px;
-    line-height: 1.4;
-    color: #6b7280;
-  }
-
-  .step-title {
-    margin: 0 0 2px;
-    font-size: 14px;
-    font-weight: 700;
-    color: #111827;
-  }
-
   .trip-form,
   .email-form {
     display: flex;
@@ -127,10 +83,23 @@
     &:hover {
       background: #1f2937;
     }
+
+    &.secondary {
+      background: #fff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+
+      &:hover {
+        background: #f3f4f6;
+      }
+    }
   }
 
-  .primary-cta {
-    width: 100%;
+  .backup-confirmed {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #16a34a;
   }
 
   .unavailable-state {

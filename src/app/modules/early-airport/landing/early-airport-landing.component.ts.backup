@@ -10,7 +10,7 @@ const EXPERIMENT = 'early_airport_v1';
  *
  * Fake-door landing measuring interest in a backup airport ride option for
  * travellers who already booked transport for an early flight.
- * Funnel: landing_view → backup_requested → trip_submitted → email_submitted
+ * Funnel: landing_view → availability_clicked → trip_submitted → (backup_requested | email_submitted)
  *
  * @module modules/early-airport/landing
  */
@@ -24,9 +24,9 @@ export class EarlyAirportLandingComponent implements OnInit {
   tripForm: FormGroup;
   emailForm: FormGroup;
 
-  backupRequested = false;
   submitted = false;
   emailSubmitted = false;
+  backupRequested = false;
 
   constructor(
     private fb: FormBuilder,
@@ -54,35 +54,18 @@ export class EarlyAirportLandingComponent implements OnInit {
     this.tracking.landingView(MODULE_KEY, { experiment: EXPERIMENT });
   }
 
-  /**
-   * Primary V1 signal. Fires only on the first explicit CTA click, before
-   * asking for trip details, so form friction does not contaminate the signal.
-   */
-  requestBackup(): void {
-    if (this.backupRequested) {
-      return;
-    }
-
-    this.tracking.track('backup_requested', {
+  checkAvailability(): void {
+    this.tracking.track('availability_clicked', {
       module: MODULE_KEY,
       experiment: EXPERIMENT
     });
 
-    this.backupRequested = true;
-  }
-
-  checkAvailability(): void {
     if (this.tripForm.invalid) {
       this.tripForm.markAllAsTouched();
       return;
     }
 
     const { origin_city, airport, flight_date, flight_time } = this.tripForm.value;
-
-    this.tracking.track('availability_clicked', {
-      module: MODULE_KEY,
-      experiment: EXPERIMENT
-    });
 
     this.tracking.track('trip_submitted', {
       module: MODULE_KEY,
@@ -97,6 +80,29 @@ export class EarlyAirportLandingComponent implements OnInit {
     this.tracking.landingEngagement(MODULE_KEY, 'trip_submitted', { experiment: EXPERIMENT });
 
     this.submitted = true;
+  }
+
+  /**
+   * Fires ONLY on explicit click of "I want a backup option" - never on page load,
+   * form completion or email capture. Carries non-sensitive trip context only.
+   */
+  requestBackup(): void {
+    if (this.backupRequested) {
+      return;
+    }
+
+    const { origin_city, airport, flight_date, flight_time } = this.tripForm.value;
+
+    this.tracking.track('backup_requested', {
+      module: MODULE_KEY,
+      experiment: EXPERIMENT,
+      origin_city,
+      airport,
+      flight_date,
+      flight_time
+    });
+
+    this.backupRequested = true;
   }
 
   notifyMe(): void {
