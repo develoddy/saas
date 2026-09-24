@@ -29,6 +29,13 @@ export class TrackingService {
   private sessionId: string;
   private userId: string | null = null;
   private tenantId: number | null = null;
+
+  private readonly UTM_KEYS = [
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_content'
+  ] as const;
   
   // Buffer local de eventos (para fallback si backend falla)
   private eventBuffer: TrackingEvent[] = [];
@@ -36,6 +43,7 @@ export class TrackingService {
   
   constructor(private http: HttpClient) {
     this.sessionId = this.getOrCreateSessionId();
+    this.captureUtmParams();
     this.loadUserContext();
   }
 
@@ -50,10 +58,15 @@ export class TrackingService {
     // ✅ IMPORTANTE: Detectar si es acceso interno (Admin Panel)
     // Si viene con ?internal=true, source debe ser 'admin'
     const source = properties?.['source'] || this.getSource();
+
+    const utmProperties = this.getStoredUtmParams();
     
     const event: TrackingEvent = {
       event: eventName,
-      properties: properties || {},
+      properties: {
+        ...utmProperties,
+        ...(properties || {})
+      },
       timestamp: new Date().toISOString(),
       sessionId: this.sessionId,
       userId: this.userId || undefined,
@@ -249,6 +262,39 @@ export class TrackingService {
   }
 
   // ========== Métodos Privados ==========
+
+  /**
+ * Captura los parámetros UTM de la URL y los conserva
+ * durante toda la sesión.
+ */
+  private captureUtmParams(): void {
+    const queryParams = new URLSearchParams(window.location.search);
+
+    this.UTM_KEYS.forEach(key => {
+      const value = queryParams.get(key);
+
+      if (value) {
+        sessionStorage.setItem(`tracking_${key}`, value);
+      }
+    });
+  }
+
+  /**
+ * Recupera los parámetros UTM almacenados durante la sesión.
+ */
+  private getStoredUtmParams(): { [key: string]: string } {
+    const utmParams: { [key: string]: string } = {};
+
+    this.UTM_KEYS.forEach(key => {
+      const value = sessionStorage.getItem(`tracking_${key}`);
+
+      if (value) {
+        utmParams[key] = value;
+      }
+    });
+
+    return utmParams;
+  }
 
   private getOrCreateSessionId(): string {
     let sessionId = sessionStorage.getItem('tracking_session_id');
