@@ -1,0 +1,187 @@
+<div class="parking-reservation">
+
+  <div class="card">
+
+    <span class="label">PARKING RESERVATION</span>
+
+    <h1 class="headline">
+      You paid for parking. But will the gate actually let you in?
+    </h1>
+
+    <p class="subheadline">
+      Prepaid parking can still fail at arrival — wrong location,
+      plate recognition issues or no space available.
+      We're testing a way to verify your reservation before you drive there.
+    </p>
+
+
+    <!-- STEP 1 — FAKE DOOR -->
+    <ng-container *ngIf="!checkRequested">
+
+      <div class="reservation-summary">
+
+        <p class="reservation-summary-item">
+          <span class="reservation-icon" aria-hidden="true">✓</span>
+          <span>Your parking reservation is already paid</span>
+        </p>
+
+        <p class="reservation-summary-item">
+          <span class="reservation-icon" aria-hidden="true">→</span>
+          <span>Check if everything looks ready before arrival</span>
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="cta primary-cta"
+        (click)="checkReservation()"
+      >
+        Check my reservation →
+      </button>
+
+      <small class="experiment-note">
+        Early concept · We're testing if this is a real problem.
+        Reservation verification is not available yet.
+      </small>
+
+    </ng-container>
+
+
+    <!-- STEP 2 — PROBLEM SEGMENTATION -->
+    <form
+      *ngIf="checkRequested && !problemSubmitted"
+      [formGroup]="problemForm"
+      (ngSubmit)="submitProblem()"
+      class="problem-form"
+    >
+
+      <p class="step-title">
+        Has a prepaid parking reservation ever failed when you arrived?
+      </p>
+
+      <div class="problem-options">
+
+        <label class="problem-option">
+          <input
+            type="radio"
+            formControlName="problem_type"
+            value="paid_again"
+          >
+
+          <span>
+            Yes, and I had to pay for parking again
+          </span>
+        </label>
+
+
+        <label class="problem-option">
+          <input
+            type="radio"
+            formControlName="problem_type"
+            value="lost_time"
+          >
+
+          <span>
+            Yes, I lost time or had to find another option
+          </span>
+        </label>
+
+
+        <label class="problem-option">
+          <input
+            type="radio"
+            formControlName="problem_type"
+            value="worried"
+          >
+
+          <span>
+            No, but I worry it could happen
+          </span>
+        </label>
+
+      </div>
+
+      <small
+        class="error"
+        *ngIf="
+          problemForm.get('problem_type')?.invalid &&
+          problemForm.get('problem_type')?.touched
+        "
+      >
+        Choose one option
+      </small>
+
+      <button
+        type="submit"
+        class="cta primary-cta"
+      >
+        Continue
+      </button>
+
+    </form>
+
+
+    <!-- STEP 3 — HONEST REVEAL -->
+    <div
+      *ngIf="problemSubmitted"
+      class="unavailable-state"
+    >
+
+      <p class="unavailable-title">
+        We're not live yet.
+      </p>
+
+      <p class="unavailable-text">
+        We're testing whether drivers actually want a way to verify
+        that a prepaid parking reservation will work before arriving.
+      </p>
+
+
+      <ng-container *ngIf="!emailSubmitted; else thanks">
+
+        <p class="notify-question">
+          Want to know if we build it?
+        </p>
+
+        <form
+          [formGroup]="emailForm"
+          (ngSubmit)="notifyMe()"
+          class="email-form"
+        >
+
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="your@email.com"
+          >
+
+          <button
+            type="submit"
+            class="cta"
+          >
+            Notify me
+          </button>
+
+        </form>
+
+        <small class="disclaimer">
+          No spam. Just an update if we continue with this.
+        </small>
+
+      </ng-container>
+
+
+      <ng-template #thanks>
+
+        <p class="thanks">
+          Thanks! We'll let you know.
+        </p>
+
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>

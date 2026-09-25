@@ -1,0 +1,303 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.parking-reservation {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(59, 130, 246, 0.10),
+      transparent 38%
+    ),
+    #f8fafc;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #0f172a;
+}
+
+.card {
+  width: 100%;
+  max-width: 620px;
+  padding: 48px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.08),
+    0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.label {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.headline {
+  margin: 0;
+  max-width: 560px;
+  font-size: 42px;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 750;
+  color: #0f172a;
+}
+
+.subheadline {
+  margin: 22px 0 0;
+  max-width: 540px;
+  color: #475569;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.reservation-summary {
+  margin: 30px 0 26px;
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: #f8fafc;
+}
+
+.reservation-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  color: #334155;
+  font-size: 15px;
+  line-height: 1.5;
+
+  & + & {
+    margin-top: 12px;
+  }
+}
+
+.reservation-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cta {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: #1e293b;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.primary-cta {
+  background: #2563eb;
+
+  &:hover {
+    background: #1d4ed8;
+  }
+}
+
+.experiment-note,
+.disclaimer {
+  display: block;
+  margin-top: 13px;
+  color: #94a3b8;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.problem-form {
+  margin-top: 32px;
+}
+
+.step-title {
+  margin: 0 0 20px;
+  color: #0f172a;
+  font-size: 20px;
+  line-height: 1.4;
+  font-weight: 700;
+}
+
+.problem-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.problem-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 17px 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 15px;
+  line-height: 1.45;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: #93c5fd;
+    background: #f8fbff;
+  }
+
+  &:has(input:checked) {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+
+  input {
+    margin-top: 3px;
+    accent-color: #2563eb;
+    cursor: pointer;
+  }
+}
+
+.error {
+  display: block;
+  margin: -8px 0 16px;
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.unavailable-state {
+  margin-top: 32px;
+  padding-top: 30px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.unavailable-title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 23px;
+  font-weight: 750;
+}
+
+.unavailable-text {
+  margin: 12px 0 0;
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.notify-question {
+  margin: 26px 0 12px;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.email-form {
+  display: flex;
+  gap: 10px;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    outline: none;
+    color: #0f172a;
+    background: #ffffff;
+    font-size: 15px;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+
+    &:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+  }
+
+  .cta {
+    width: auto;
+    min-width: 125px;
+  }
+}
+
+.thanks {
+  margin: 24px 0 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 15px;
+  font-weight: 650;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .parking-reservation {
+    align-items: flex-start;
+    padding: 20px 14px;
+  }
+
+  .card {
+    padding: 30px 22px;
+    border-radius: 18px;
+  }
+
+  .headline {
+    font-size: 34px;
+  }
+
+  .subheadline {
+    font-size: 16px;
+  }
+
+  .email-form {
+    flex-direction: column;
+
+    .cta {
+      width: 100%;
+    }
+  }
+}

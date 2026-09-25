@@ -87,6 +87,16 @@ const routes: Routes = [
     }
   },
 
+  // Parking Reservation MVP - Smoke Test V1
+  {
+    path: 'parking-reservation',
+    loadChildren: () => import('./modules/parking-reservation/parking-reservation.module')
+      .then(m => m.ParkingReservationModule),
+    data: {
+      title: 'Parking Reservation'
+    }
+  },
+
   {
     path: 'preview/productclip',
     component: VideoExpressWizardComponent,
