@@ -97,6 +97,16 @@ const routes: Routes = [
     }
   },
 
+  // Raffle Lab - Parro Sorteos (Phase 1 Prototype)
+  {
+    path: 'raffle-lab',
+    loadChildren: () => import('./modules/raffle-lab/raffle-lab.module')
+      .then(m => m.RaffleLabModule),
+    data: {
+      title: 'Raffle Lab - Prototype'
+    }
+  },
+
   {
     path: 'preview/productclip',
     component: VideoExpressWizardComponent,

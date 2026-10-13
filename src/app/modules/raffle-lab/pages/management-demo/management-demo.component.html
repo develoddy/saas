@@ -1,0 +1,130 @@
+<section class="management-demo">
+  <header class="management-header">
+    <span class="management-eyebrow">RAFFLE LAB</span>
+    <h1>Gestión del sorteo</h1>
+    <p>
+      Panel de demostración para gestionar estados ficticios.
+    </p>
+    <a
+      class="management-public-link"
+      routerLink="/raffle-lab"
+    >
+      Ver vista pública →
+    </a>
+  </header>
+
+  <div class="management-stats" aria-label="Resumen del sorteo">
+    <div class="stat-card">
+      <span>Total de números</span>
+      <strong>{{ totalNumbers }}</strong>
+    </div>
+
+    <div class="stat-card stat-available">
+      <span>Disponibles</span>
+      <strong>{{ availableCount }}</strong>
+    </div>
+
+    <div class="stat-card stat-pending">
+      <span>Pendientes</span>
+      <strong>{{ pendingCount }}</strong>
+    </div>
+
+    <div class="stat-card stat-confirmed">
+      <span>Confirmados</span>
+      <strong>{{ confirmedCount }}</strong>
+    </div>
+  </div>
+
+  <section class="management-numbers">
+    <header class="management-numbers-heading">
+      <h2>Estado de los números</h2>
+      <p>
+        Consulta de los 100 números ficticios del sorteo.
+      </p>
+    </header>
+
+    <div class="management-numbers-grid">
+      <button
+        type="button"
+        class="management-number"
+        *ngFor="let number of numbers"
+        [class.is-available]="number.status === 'available'"
+        [class.is-pending]="number.status === 'pending'"
+        [class.is-confirmed]="number.status === 'confirmed'"
+        [class.is-selected]="selectedNumber?.value === number.value"
+        [attr.aria-pressed]="selectedNumber?.value === number.value"
+        [attr.aria-label]="'Número ' + number.value + ': ' + number.status"
+        (click)="selectNumber(number)"
+      >
+        {{ number.value | number:'2.0-0' }}
+      </button>
+    </div>
+  </section>
+
+  <section
+    class="management-selection"
+    *ngIf="selectedNumber as number"
+    aria-label="Detalles del número seleccionado"
+  >
+    <div class="management-selection-header">
+      <span>NÚMERO SELECCIONADO</span>
+      <h2>N.º {{ number.value }}</h2>
+    </div>
+
+    <div class="management-selection-status">
+      <span>Estado actual:</span>
+
+      <strong [ngSwitch]="number.status">
+        <ng-container *ngSwitchCase="'available'">
+          Disponible
+        </ng-container>
+        <ng-container *ngSwitchCase="'pending'">
+          Pendiente
+        </ng-container>
+        <ng-container *ngSwitchCase="'confirmed'">
+          Confirmado
+        </ng-container>
+      </strong>
+    </div>
+
+    <div class="management-selection-actions"
+         role="group"
+         aria-label="Cambiar estado del número">
+      <button
+        type="button"
+        class="status-action status-action--available"
+        [disabled]="number.status === 'available'"
+        (click)="changeSelectedNumberStatus('available')"
+      >
+        Disponible
+      </button>
+
+      <button
+        type="button"
+        class="status-action status-action--pending"
+        [disabled]="number.status === 'pending'"
+        (click)="changeSelectedNumberStatus('pending')"
+      >
+        Pendiente
+      </button>
+
+      <button
+        type="button"
+        class="status-action status-action--confirmed"
+        [disabled]="number.status === 'confirmed'"
+        (click)="changeSelectedNumberStatus('confirmed')"
+      >
+        Confirmado
+      </button>
+    </div>
+
+    <p>
+      Cambios ficticios en memoria. No se guardan
+      ni representan reservas o pagos reales.
+    </p>
+  </section>
+
+  <div class="management-notice">
+    Prototipo sin reservas, pagos ni operaciones reales.
+  </div>
+</section>

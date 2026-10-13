@@ -1,0 +1,126 @@
+
+<div class="raffle-lab">
+  <header class="raffle-header">
+    <div class="raffle-brand">
+      <span class="brand-icon" aria-hidden="true">🎁</span>
+
+      <div class="brand-info">
+        <span class="brand-name">
+          Raffle <strong>Lab</strong>
+        </span>
+        <span class="brand-subtitle">
+          Parro Sorteos · Demo
+        </span>
+      </div>
+    </div>
+
+    <div class="raffle-header-actions">
+      <a
+        class="raffle-management-link"
+        routerLink="/raffle-lab/management"
+      >
+        Ir a gestión →
+      </a>
+
+      <span class="demo-badge">PROTOTYPE</span>
+    </div>
+  </header>
+
+  <main class="raffle-content">
+    <section class="raffle-hero">
+      <span class="section-badge">
+        SORTEO DE DEMOSTRACIÓN
+      </span>
+
+      <h1>La suerte tiene un número.</h1>
+
+      <p class="raffle-description">
+        Elige el tuyo y vive la emoción de participar.
+      </p>
+
+      <div class="raffle-meta">
+        <span>📅 15 diciembre 2026</span>
+        <span>🎟️ 100 números</span>
+      </div>
+    </section>
+
+    <section class="prize-card">
+      <div class="prize-icon" aria-hidden="true">🏆</div>
+
+      <div class="prize-info">
+        <span class="prize-label">Premio</span>
+        <h2>Viaje de fin de semana</h2>
+        <p>Hotel + experiencia gastronómica</p>
+      </div>
+    </section>
+
+
+    <section class="raffle-numbers" aria-labelledby="numbers-title">
+      <div class="numbers-heading">
+        <div>
+          <span class="prize-label">ELIGE TU NÚMERO</span>
+          <h2 id="numbers-title">Encuentra tu número de la suerte</h2>
+          <p>
+            Explora los 100 números de este sorteo de demostración.
+          </p>
+        </div>
+      </div>
+
+      <div class="numbers-grid">
+        <button
+          *ngFor="let number of numbers"
+          type="button"
+          class="number-cell"
+          [class.is-available]="number.status === 'available'"
+          [class.is-pending]="number.status === 'pending'"
+          [class.is-confirmed]="number.status === 'confirmed'"
+          [disabled]="number.status !== 'available'"
+          [class.is-selected]="isNumberSelected(number.value)"
+          [attr.aria-pressed]="number.status === 'available' ? isNumberSelected(number.value) : null"
+          (click)="toggleNumberSelection(number)"
+          [attr.aria-label]="'Número ' + number.value + ', ' + number.status"
+        >
+          {{ number.value | number:'2.0-0' }}
+        </button>
+      </div>
+
+      <div class="selection-summary" aria-live="polite">
+        <div class="selection-info">
+          <span>Tu selección</span>
+          <strong>
+            {{ selectedNumbersCount }}
+            {{ selectedNumbersCount === 1 ? 'número seleccionado' : 'números seleccionados' }}
+          </strong>
+        </div>
+
+        <div
+          class="selected-numbers-list"
+          *ngIf="selectedNumbersCount > 0"
+          aria-label="Números seleccionados"
+        >
+          <span
+            class="selected-number"
+            *ngFor="let value of sortedSelectedNumbers"
+          >
+            {{ value | number:'2.0-0' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="numbers-legend">
+        <span><i class="legend-dot available"></i> Disponible</span>
+        <span><i class="legend-dot pending"></i> Pendiente</span>
+        <span><i class="legend-dot confirmed"></i> Confirmado</span>
+      </div>
+    </section>
+
+
+    <section class="demo-notice">
+      <p>
+        Esta página es un prototipo de Raffle Lab.
+        Los premios, números y fechas son ficticios.
+        No se realizan reservas ni pagos reales.
+      </p>
+    </section>
+  </main>
+</div>

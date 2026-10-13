@@ -1,0 +1,106 @@
+
+@use 'tokens' as tokens;
+
+// Raffle Lab — Responsive Styles
+// Breakpoints y adaptaciones por viewport.
+
+// MOBILE — hasta 600px
+$mobile-max: 600px;
+
+// TABLET — 601px a 1024px
+$tablet-min: 601px;
+$tablet-max: 1024px;
+
+// DESKTOP — desde 1025px
+$desktop-min: 1025px;
+
+// Mixins reutilizables
+@mixin mobile {
+  @media (max-width: $mobile-max) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $tablet-min) and (max-width: $tablet-max) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop-min) {
+    @content;
+  }
+}
+
+// ========================================
+// TABLET
+// ========================================
+
+@include tablet {
+  .numbers-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+// ========================================
+// MOBILE
+// ========================================
+
+@include mobile {
+  .raffle-header {
+    padding-block: 18px;
+    flex-wrap: wrap;
+  }
+
+  .raffle-header-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .demo-badge {
+    font-size: 9px;
+    padding: 5px 8px;
+  }
+
+  .raffle-content {
+    padding-block: 40px;
+  }
+
+  .raffle-hero {
+    margin-bottom: 32px;
+  }
+
+  .prize-card {
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .prize-icon {
+    font-size: 32px;
+  }
+
+  .prize-info h2 {
+    font-size: 20px;
+  }
+
+  .raffle-numbers {
+    margin-top: 36px;
+  }
+
+  .numbers-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .number-cell {
+    font-size: 13px;
+  }
+
+  .numbers-legend {
+    gap: 12px;
+    font-size: 12px;
+  }
+}
