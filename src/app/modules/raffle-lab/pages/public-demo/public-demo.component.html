@@ -107,6 +107,112 @@
         </div>
       </div>
 
+      <section
+        class="reservation-form"
+        aria-labelledby="reservation-title"
+      >
+        <h3 id="reservation-title">Reserva tus números</h3>
+        <p>
+          Introduce tu nombre para reservar temporalmente
+          los números seleccionados durante 15 minutos.
+        </p>
+
+        <form (ngSubmit)="reserveSelectedNumbers()">
+          <label for="participant-name">
+            Nombre del participante
+          </label>
+
+          <input
+            id="participant-name"
+            name="participantName"
+            type="text"
+            autocomplete="name"
+            maxlength="100"
+            [value]="participantName"
+            (input)="participantName = $any($event.target).value"
+            placeholder="Escribe tu nombre"
+          />
+
+          <button
+            type="submit"
+            [disabled]="selectedNumbersCount === 0"
+          >
+            Reservar números
+          </button>
+        </form>
+
+        <p
+          *ngIf="reservationError"
+          class="reservation-error"
+          role="alert"
+        >
+          {{ reservationError }}
+        </p>
+
+        <div
+          *ngIf="activeReservation as reservation"
+          class="reservation-success"
+          role="status"
+        >
+          <h4 *ngIf="!reservationExpired && reservation.status === 'active'">
+            Reserva creada correctamente
+          </h4>
+
+          <h4 *ngIf="reservationExpired && reservation.status !== 'cancelled'">
+            Reserva caducada
+          </h4>
+
+          <h4 *ngIf="reservation.status === 'cancelled'">
+            Reserva cancelada
+          </h4>
+
+          <p>
+            Referencia: {{ reservation.id }}
+          </p>
+
+          <p>
+            Participante: {{ reservation.participantName }}
+          </p>
+
+          <p>
+            Números reservados:
+            {{ reservation.numbers.join(', ') }}
+          </p>
+
+          <div
+            *ngIf="!reservationExpired && reservation.status === 'active'"
+            class="reservation-timer"
+            role="timer"
+            aria-label="Tiempo restante de la reserva"
+          >
+            <span>Tiempo restante</span>
+            <strong>{{ formattedRemainingTime }}</strong>
+          </div>
+
+          <button
+            *ngIf="!reservationExpired && reservation.status === 'active'"
+            type="button"
+            class="reservation-cancel-button"
+            (click)="cancelActiveReservation()"
+          >
+            Cancelar reserva
+          </button>
+
+          <p *ngIf="reservation.status === 'cancelled'" role="status">
+            Has cancelado la reserva. Los números vuelven a estar disponibles.
+          </p>
+
+          <p *ngIf="reservationExpired" role="status">
+            El tiempo de reserva ha terminado.
+            Los números vuelven a estar disponibles.
+          </p>
+
+          <p *ngIf="!reservationExpired && reservation.status === 'active'">
+            Reserva temporal. No implica ningún pago.
+          </p>
+        </div>
+      </section>
+
       <div class="numbers-legend">
         <span><i class="legend-dot available"></i> Disponible</span>
         <span><i class="legend-dot pending"></i> Pendiente</span>

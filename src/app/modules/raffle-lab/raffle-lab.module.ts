@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { RaffleLabRoutingModule } from './raffle-lab-routing.module';
 import { PublicDemoComponent } from './pages/public-demo/public-demo.component';
@@ -14,6 +15,7 @@ import { RaffleNumbersService } from './services/raffle-numbers.service';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     RaffleLabRoutingModule
   ],
   providers: [

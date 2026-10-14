@@ -35,6 +35,168 @@
     </div>
   </div>
 
+  <section
+    class="management-reservations"
+    aria-labelledby="management-reservations-title"
+  >
+    <header>
+      <h2 id="management-reservations-title">
+        Reservas pendientes de confirmación
+      </h2>
+      <p>
+        Confirma las reservas activas antes de su caducidad.
+      </p>
+    </header>
+
+    <p
+      *ngIf="reservationMessage"
+      class="management-reservation-message"
+      role="status"
+    >
+      {{ reservationMessage }}
+    </p>
+
+    <ng-container *ngIf="activeReservations as reservations">
+      <p
+        *ngIf="reservations.length === 0"
+        class="management-reservations-empty"
+      >
+        No hay reservas activas pendientes de confirmación.
+      </p>
+
+      <div
+        *ngFor="let reservation of reservations"
+        class="management-reservation-card"
+      >
+        <h3>{{ reservation.participantName }}</h3>
+
+        <p>Referencia: {{ reservation.id }}</p>
+
+        <p>
+          Números reservados:
+          {{ reservation.numbers.join(', ') }}
+        </p>
+
+        <p>
+          Caduca:
+          {{ reservation.expiresAt | date:'dd/MM/yyyy HH:mm:ss' }}
+        </p>
+
+        <button
+          type="button"
+          class="management-confirm-reservation"
+          (click)="confirmActiveReservation(reservation.id)"
+        >
+          Confirmar reserva
+        </button>
+      </div>
+    </ng-container>
+  </section>
+
+  <section
+    class="management-reservations management-reservation-history"
+    aria-labelledby="management-history-title"
+  >
+    <header>
+      <h2 id="management-history-title">Historial de reservas</h2>
+      <p>Consulta las reservas finalizadas del sorteo.</p>
+    </header>
+
+    <div
+      class="management-history-filters"
+      role="group"
+      aria-label="Filtrar historial por estado"
+    >
+      <button
+        type="button"
+        *ngFor="let filter of [
+          { value: 'all', label: 'Todas' },
+          { value: 'confirmed', label: 'Confirmadas' },
+          { value: 'cancelled', label: 'Canceladas' },
+          { value: 'expired', label: 'Caducadas' }
+        ]"
+        [class.is-active]="historyFilter === filter.value"
+        [attr.aria-pressed]="historyFilter === filter.value"
+        (click)="setHistoryFilter($any(filter.value))"
+      >
+        {{ filter.label }}
+      </button>
+    </div>
+
+    <p class="management-history-count">
+      {{ filteredReservationHistory.length }}
+      reservas encontradas
+    </p>
+
+    <ng-container *ngIf="paginatedReservationHistory as reservations">
+      <p
+        *ngIf="reservations.length === 0"
+        class="management-reservations-empty"
+      >
+        Todavía no hay reservas finalizadas.
+      </p>
+
+      <div
+        *ngFor="let reservation of reservations"
+        class="management-reservation-card"
+      >
+        <h3>{{ reservation.participantName }}</h3>
+
+        <p>Referencia: {{ reservation.id }}</p>
+
+        <p>
+          Números reservados:
+          {{ reservation.numbers.join(', ') }}
+        </p>
+
+        <p>
+          Creada:
+          {{ reservation.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}
+        </p>
+
+        <p>
+          Estado:
+          <strong
+            class="management-reservation-status"
+            [class.is-confirmed]="reservation.status === 'confirmed'"
+            [class.is-cancelled]="reservation.status === 'cancelled'"
+            [class.is-expired]="reservation.status === 'expired'"
+            [ngSwitch]="reservation.status"
+          >
+            <ng-container *ngSwitchCase="'confirmed'">Confirmada</ng-container>
+            <ng-container *ngSwitchCase="'cancelled'">Cancelada</ng-container>
+            <ng-container *ngSwitchCase="'expired'">Caducada</ng-container>
+          </strong>
+        </p>
+      </div>
+    </ng-container>
+    <nav
+      class="management-history-pagination"
+      *ngIf="filteredReservationHistory.length > 0"
+      aria-label="Paginación del historial"
+    >
+      <button
+        type="button"
+        [disabled]="historyPage <= 1"
+        (click)="changeHistoryPage(historyPage - 1)"
+      >
+        Anterior
+      </button>
+
+      <span>
+        Página {{ historyPage }} de {{ historyTotalPages }}
+      </span>
+
+      <button
+        type="button"
+        [disabled]="historyPage >= historyTotalPages"
+        (click)="changeHistoryPage(historyPage + 1)"
+      >
+        Siguiente
+      </button>
+    </nav>
+  </section>
+
   <section class="management-numbers">
     <header class="management-numbers-heading">
       <h2>Estado de los números</h2>
@@ -117,6 +279,14 @@
         Confirmado
       </button>
     </div>
+
+    <p
+      *ngIf="statusMessage"
+      class="management-status-message"
+      role="alert"
+    >
+      {{ statusMessage }}
+    </p>
 
     <p>
       Cambios ficticios en memoria. No se guardan

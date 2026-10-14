@@ -2,6 +2,7 @@
 @use '../../styles/public-demo';
 @use '../../styles/numbers-grid';
 @use '../../styles/responsive';
+@use '../../styles/reservation-form';
 
 .raffle-lab {
   --raffle-bg: #{tokens.$raffle-bg};
