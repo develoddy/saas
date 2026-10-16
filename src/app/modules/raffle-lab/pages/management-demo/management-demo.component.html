@@ -5,12 +5,22 @@
     <p>
       Panel de demostración para gestionar estados ficticios.
     </p>
-    <a
-      class="management-public-link"
-      routerLink="/raffle-lab"
-    >
-      Ver vista pública →
-    </a>
+    <div class="management-header-actions">
+      <a
+        class="management-public-link"
+        routerLink="/raffle-lab"
+      >
+        Ver vista pública →
+      </a>
+
+      <button
+        type="button"
+        class="management-logout-button"
+        (click)="logout()"
+      >
+        Cerrar sesión
+      </button>
+    </div>
   </header>
 
   <div class="management-stats" aria-label="Resumen del sorteo">

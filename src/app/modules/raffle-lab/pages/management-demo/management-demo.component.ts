@@ -4,6 +4,9 @@ import { RaffleNumber, RaffleNumberStatus } from '../../models/raffle-number.mod
 import { RaffleReservation, RaffleReservationStatus } from '../../models/raffle-reservation.model';
 import { RaffleNumbersService } from '../../services/raffle-numbers.service';
 
+import { Router } from '@angular/router';
+import { RaffleAdminAuthService } from '../../services/raffle-admin-auth.service';
+
 @Component({
   selector: 'app-management-demo',
   templateUrl: './management-demo.component.html',
@@ -135,8 +138,17 @@ export class ManagementDemoComponent {
     ).length;
   }
 
-  constructor(private readonly raffleNumbersService: RaffleNumbersService) {
+  constructor(
+    private readonly raffleNumbersService: RaffleNumbersService,
+    private readonly auth: RaffleAdminAuthService,
+    private readonly router: Router
+  ) {
     this.totalNumbers = raffleNumbersService.totalNumbers;
     this.numbers = raffleNumbersService.numbers;
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/raffle-lab/management/login']);
   }
 }

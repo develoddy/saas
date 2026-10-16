@@ -7,11 +7,14 @@ import { PublicDemoComponent } from './pages/public-demo/public-demo.component';
 import { ManagementDemoComponent } from './pages/management-demo/management-demo.component';
 import { RaffleNumbersService } from './services/raffle-numbers.service';
 
+import { ManagementLoginComponent } from './pages/management-login/management-login.component';
+
 
 @NgModule({
   declarations: [
     PublicDemoComponent,
-    ManagementDemoComponent
+    ManagementDemoComponent,
+    ManagementLoginComponent
   ],
   imports: [
     CommonModule,

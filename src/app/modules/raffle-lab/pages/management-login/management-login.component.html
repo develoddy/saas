@@ -1,0 +1,57 @@
+<section class="management-login">
+  <div class="login-card">
+    <div class="login-heading">
+      <span class="eyebrow">LUJANDEV · RAFFLE LAB</span>
+      <h1>Acceso a Management</h1>
+      <p>Inicia sesión con tu cuenta administrativa de LujanDev.</p>
+    </div>
+
+    <form #loginForm="ngForm" (ngSubmit)="login()">
+      <div class="form-field">
+        <label for="raffle-admin-email">Correo electrónico</label>
+        <input
+          id="raffle-admin-email"
+          type="email"
+          name="email"
+          autocomplete="username"
+          [(ngModel)]="email"
+          required
+          email
+          [disabled]="loading"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="raffle-admin-password">Contraseña</label>
+        <input
+          id="raffle-admin-password"
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          [(ngModel)]="password"
+          required
+          [disabled]="loading"
+        />
+      </div>
+
+      <p
+        *ngIf="errorMessage"
+        class="error-message"
+        role="alert"
+      >
+        {{ errorMessage }}
+      </p>
+
+      <button
+        type="submit"
+        [disabled]="loading || loginForm.invalid"
+      >
+        {{ loading ? 'Verificando acceso...' : 'Iniciar sesión' }}
+      </button>
+    </form>
+
+    <a routerLink="/raffle-lab">
+      Volver a Raffle Lab
+    </a>
+  </div>
+</section>
