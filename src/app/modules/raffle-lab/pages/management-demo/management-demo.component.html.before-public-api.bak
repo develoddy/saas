@@ -1,0 +1,635 @@
+
+
+<section class="management-demo">
+  <header class="management-header">
+    <span class="management-eyebrow">RAFFLE LAB</span>
+    <h1>Gestión del sorteo</h1>
+    <p>
+      Administración de sorteos, participantes y reservas.
+    </p>
+    <div class="management-header-actions">
+      <a
+        class="management-public-link"
+        routerLink="/raffle-lab"
+      >
+        Ver vista pública →
+      </a>
+
+      <button
+        type="button"
+        class="management-logout-button"
+        (click)="logout()"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+  </header>
+
+  <section
+    *ngIf="selectedDraw as draw"
+    class="management-active-draw"
+    aria-label="Sorteo activo"
+  >
+    <div class="management-active-draw-info">
+      <span class="management-active-draw-label">SORTEO ACTIVO</span>
+      <strong>{{ draw.name }}</strong>
+      <span class="management-active-draw-count">
+        {{ draw.totalNumbers }} números
+      </span>
+    </div>
+
+    <span
+      class="management-active-draw-status"
+      [class.is-published]="draw.status === 'published'"
+      [class.is-draft]="draw.status === 'draft'"
+      [class.is-closed]="draw.status === 'closed'"
+    >
+      {{
+        draw.status === 'published' ? 'Publicado' :
+        draw.status === 'draft' ? 'Borrador' :
+        'Cerrado'
+      }}
+    </span>
+  </section>
+
+  <nav class="management-admin-nav" aria-label="Secciones del panel">
+    <button
+      type="button"
+      [class.is-active]="activeAdminView === 'numbers'"
+      [attr.aria-current]="activeAdminView === 'numbers' ? 'page' : null"
+      (click)="activeAdminView = 'numbers'"
+    >Números</button>
+    <button
+      type="button"
+      [class.is-active]="activeAdminView === 'participants'"
+      [attr.aria-current]="activeAdminView === 'participants' ? 'page' : null"
+      (click)="activeAdminView = 'participants'"
+    >Participantes</button>
+    <button
+      type="button"
+      [class.is-active]="activeAdminView === 'settings'"
+      [attr.aria-current]="activeAdminView === 'settings' ? 'page' : null"
+      (click)="activeAdminView = 'settings'"
+    >Configuración</button>
+  </nav>
+
+  <section *ngIf="activeAdminView === 'settings'" class="management-reservations">
+    <header>
+      <h2>Sorteos</h2>
+      <p>Gestiona los sorteos registrados en la base de datos.</p>
+    </header>
+
+    <p *ngIf="drawMessage" role="status">{{ drawMessage }}</p>
+    <p *ngIf="drawLoading">Cargando sorteos...</p>
+
+    <div *ngIf="draws.length">
+      <label for="raffle-draw-select">Sorteo seleccionado</label>
+      <select class="raffle-select"
+        id="raffle-draw-select"
+        [ngModel]="selectedDrawId"
+        (ngModelChange)="selectDraw(+$event)"
+      >
+        <option *ngFor="let draw of draws" [ngValue]="draw.id">
+          {{ draw.name }} ({{ draw.status }})
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="selectedDraw as draw">
+      <h3>{{ draw.name }}</h3>
+
+      <p>
+        Estado:
+        <strong [ngSwitch]="draw.status">
+          <ng-container *ngSwitchCase="'draft'">Borrador</ng-container>
+          <ng-container *ngSwitchCase="'published'">Publicado</ng-container>
+          <ng-container *ngSwitchCase="'closed'">Cerrado</ng-container>
+        </strong>
+      </p>
+
+      <p>Total de números: {{ draw.totalNumbers }}</p>
+
+      <button class="raffle-btn raffle-btn--primary"
+        *ngIf="draw.status === 'draft'"
+        type="button"
+        [disabled]="drawActionLoading"
+        (click)="publishSelectedDraw()"
+      >
+        Publicar sorteo
+      </button>
+
+      <button class="raffle-btn raffle-btn--danger"
+        *ngIf="draw.status === 'published'"
+        type="button"
+        [disabled]="drawActionLoading"
+        (click)="closeSelectedDraw()"
+      >
+        Cerrar sorteo
+      </button>
+    </div>
+
+    <form
+      class="management-admin-form management-draw-form"
+      (ngSubmit)="createDraw()"
+    >
+      <h3>Crear sorteo</h3>
+
+      <div class="management-form-fields">
+        <div class="management-form-field">
+          <label for="raffle-draw-name">Nombre del sorteo</label>
+          <input
+            id="raffle-draw-name"
+            name="drawName"
+            type="text"
+            maxlength="150"
+            required
+            placeholder="Ej. Sorteo noviembre"
+            [(ngModel)]="newDrawName"
+          />
+        </div>
+
+        <div class="management-form-field">
+          <label for="raffle-draw-total">Cantidad de números</label>
+          <input
+            id="raffle-draw-total"
+            name="drawTotal"
+            type="number"
+            min="1"
+            required
+            [(ngModel)]="newDrawTotalNumbers"
+          />
+        </div>
+      </div>
+
+      <div class="management-form-actions">
+        <button class="raffle-btn raffle-btn--primary"
+          type="submit"
+          [disabled]="drawSaving"
+        >
+          {{ drawSaving ? 'Guardando...' : 'Crear sorteo' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section *ngIf="activeAdminView === 'participants'" class="management-reservations">
+    <header>
+      <h2>Registrar participante</h2>
+      <p>Asigna números disponibles y registra el estado del pago.</p>
+    </header>
+
+    <p *ngIf="!selectedDrawId">
+      Selecciona o crea un sorteo para registrar participantes.
+    </p>
+
+    <p *ngIf="selectedDraw?.status === 'closed'">
+      Este sorteo está cerrado. No admite nuevas reservas.
+    </p>
+
+    <form
+      *ngIf="selectedDrawId && selectedDraw?.status !== 'closed'"
+      class="management-admin-form management-admin-form--participant"
+      (ngSubmit)="createManualReservation()"
+    >
+      <div class="management-form-fields">
+        <div class="management-form-field">
+          <label for="manual-participant-name">Participante</label>
+          <input
+            id="manual-participant-name"
+            name="manualParticipantName"
+            type="text"
+            maxlength="150"
+            required
+            placeholder="Nombre del participante"
+            [(ngModel)]="manualParticipantName"
+          />
+        </div>
+
+        <div class="management-form-field">
+          <label for="manual-payment-status">Estado del pago</label>
+          <select class="raffle-select"
+            id="manual-payment-status"
+            name="manualPaymentStatus"
+            [(ngModel)]="manualPaymentStatus"
+          >
+            <option value="pending">Pendiente de pago</option>
+            <option value="paid">Pago confirmado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="management-form-field">
+        <label for="manual-numbers-input">
+          Introducir números
+        </label>
+
+        <div class="management-number-input-row">
+          <input
+            id="manual-numbers-input"
+            name="manualNumbersInput"
+            type="text"
+            placeholder="Ejemplo: 7, 18, 42"
+            [(ngModel)]="manualNumbersInput"
+          />
+
+          <button class="raffle-btn raffle-btn--secondary"
+            type="button"
+            (click)="addManualNumbersFromText()"
+            [disabled]="manualSaving"
+          >
+            Añadir números
+          </button>
+        </div>
+
+        <p *ngIf="manualInputError" role="alert">
+          {{ manualInputError }}
+        </p>
+      </div>
+
+      <div class="management-form-field">
+        <label>O selecciona los números disponibles</label>
+
+        <div class="management-manual-number-grid">
+          <button
+            *ngFor="let number of numbers"
+            type="button"
+            [class.is-selected]="manualSelectedNumbers.includes(number.value)"
+            [disabled]="number.status !== 'available' || manualSaving"
+            [attr.aria-pressed]="manualSelectedNumbers.includes(number.value)"
+            (click)="toggleManualNumber(number.value)"
+          >
+            {{ number.value }}
+          </button>
+        </div>
+      </div>
+
+      <div class="management-selected-numbers">
+        <h3>Números seleccionados</h3>
+
+        <div *ngIf="manualSelectedNumbers.length; else emptySelection">
+          <button
+            *ngFor="let value of manualSelectedNumbers"
+            type="button"
+            [disabled]="manualSaving"
+            (click)="removeManualNumber(value)"
+            [attr.aria-label]="'Quitar número ' + value"
+          >
+            {{ value }} ×
+          </button>
+        </div>
+
+        <ng-template #emptySelection>
+          <p>Ninguno seleccionado.</p>
+        </ng-template>
+      </div>
+
+      <div class="management-form-actions">
+        <button class="raffle-btn raffle-btn--primary"
+          type="submit"
+          [disabled]="manualSaving || !manualParticipantName.trim() ||
+            manualSelectedNumbers.length === 0"
+        >
+          {{ manualSaving ? 'Guardando...' : 'Guardar reserva' }}
+        </button>
+      </div>
+    </form>
+
+    <p *ngIf="manualMessage" role="status">
+      {{ manualMessage }}
+    </p>
+  </section>
+
+  <section
+    *ngIf="activeAdminView === 'participants' && selectedDrawId !== null"
+    class="management-participant-summary"
+    aria-label="Resumen de participantes"
+  >
+    <h2>Estado de los participantes</h2>
+
+    <p *ngIf="reservationsLoading">
+      Actualizando participantes...
+    </p>
+
+    <div
+      *ngIf="!reservationsLoading"
+      class="management-participant-summary__counts"
+    >
+      <div>
+        <span>Pagos pendientes</span>
+        <strong>{{ participantSummary.pending }}</strong>
+      </div>
+
+      <div>
+        <span>Pagos confirmados</span>
+        <strong>{{ participantSummary.confirmed }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <div *ngIf="activeAdminView === 'numbers'" class="management-stats" aria-label="Resumen del sorteo">
+    <div class="stat-card">
+      <span>Total de números</span>
+      <strong>{{ totalNumbers }}</strong>
+    </div>
+
+    <div class="stat-card stat-available">
+      <span>Disponibles</span>
+      <strong>{{ availableCount }}</strong>
+    </div>
+
+    <div class="stat-card stat-pending">
+      <span>Pendientes</span>
+      <strong>{{ pendingCount }}</strong>
+    </div>
+
+    <div class="stat-card stat-confirmed">
+      <span>Confirmados</span>
+      <strong>{{ confirmedCount }}</strong>
+    </div>
+  </div>
+
+  <section
+    *ngIf="activeAdminView === 'participants'"
+    class="management-reservations"
+    aria-labelledby="management-reservations-title"
+  >
+    <header>
+      <h2 id="management-reservations-title">
+        Reservas pendientes de confirmación
+      </h2>
+      <p>
+        Confirma pagos o cancela reservas pendientes.
+      </p>
+    </header>
+
+    <p
+      *ngIf="reservationMessage"
+      class="management-reservation-message"
+      role="status"
+    >
+      {{ reservationMessage }}
+    </p>
+
+    <ng-container *ngIf="activeReservations as reservations">
+      <p
+        *ngIf="reservations.length === 0"
+        class="management-reservations-empty"
+      >
+        No hay reservas activas pendientes de confirmación.
+      </p>
+
+      <div
+        *ngFor="let reservation of reservations"
+        class="management-reservation-card"
+      >
+        <h3>{{ reservation.participantName }}</h3>
+
+        <p>Referencia: {{ reservation.id }}</p>
+
+        <p>
+          Números reservados:
+          {{ getReservationNumbers(reservation) }}
+        </p>
+
+        <p *ngIf="reservation.expiresAt; else noExpiry">
+          Caduca:
+          {{ reservation.expiresAt | date:'dd/MM/yyyy HH:mm:ss' }}
+        </p>
+        <ng-template #noExpiry>
+          <p>Reserva manual sin caducidad.</p>
+        </ng-template>
+
+        <div class="management-reservation-actions">
+          <button
+            type="button"
+            class="management-confirm-reservation raffle-btn raffle-btn--primary"
+            [disabled]="isReservationOperationInProgress(reservation.id)"
+              (click)="confirmActiveReservation(reservation.id)"
+          >
+            Confirmar pago
+          </button>
+
+          <button
+            type="button"
+            class="management-confirm-reservation raffle-btn raffle-btn--danger"
+            [disabled]="isReservationOperationInProgress(reservation.id)"
+              (click)="cancelActiveReservation(reservation.id)"
+          >
+            Cancelar reserva
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </section>
+
+  <section
+    *ngIf="activeAdminView === 'participants'"
+    class="management-reservations management-reservation-history"
+    aria-labelledby="management-history-title"
+  >
+    <header>
+      <h2 id="management-history-title">Historial de reservas</h2>
+      <p>Consulta las reservas finalizadas del sorteo.</p>
+    </header>
+
+    <div
+      class="management-history-filters"
+      role="group"
+      aria-label="Filtrar historial por estado"
+    >
+      <button
+        type="button"
+        *ngFor="let filter of [
+          { value: 'all', label: 'Todas' },
+          { value: 'confirmed', label: 'Confirmadas' },
+          { value: 'cancelled', label: 'Canceladas' },
+          { value: 'expired', label: 'Caducadas' }
+        ]"
+        [class.is-active]="historyFilter === filter.value"
+        [class.is-confirmed]="filter.value === 'confirmed'"
+        [class.is-cancelled]="filter.value === 'cancelled'"
+        [class.is-expired]="filter.value === 'expired'"
+        [attr.aria-pressed]="historyFilter === filter.value"
+        (click)="setHistoryFilter($any(filter.value))"
+      >
+        {{ filter.label }}
+      </button>
+    </div>
+
+    <p class="management-history-count">
+      {{ filteredReservationHistory.length }}
+      reservas encontradas
+    </p>
+
+    <ng-container *ngIf="paginatedReservationHistory as reservations">
+      <p
+        *ngIf="reservations.length === 0"
+        class="management-reservations-empty"
+      >
+        Todavía no hay reservas finalizadas.
+      </p>
+
+      <div
+        *ngFor="let reservation of reservations"
+        class="management-reservation-card"
+      >
+        <h3>{{ reservation.participantName }}</h3>
+
+        <p>Referencia: {{ reservation.id }}</p>
+
+        <p>
+          Números reservados:
+          {{ getReservationNumbers(reservation) }}
+        </p>
+
+        <p>
+          Creada:
+          {{ reservation.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}
+        </p>
+
+        <p>
+          Estado:
+          <strong
+            class="management-reservation-status"
+            [class.is-confirmed]="reservation.status === 'confirmed'"
+            [class.is-cancelled]="reservation.status === 'cancelled'"
+            [class.is-expired]="reservation.status === 'expired'"
+            [ngSwitch]="reservation.status"
+          >
+            <ng-container *ngSwitchCase="'confirmed'">Confirmada</ng-container>
+            <ng-container *ngSwitchCase="'cancelled'">Cancelada</ng-container>
+            <ng-container *ngSwitchCase="'expired'">Caducada</ng-container>
+          </strong>
+        </p>
+      </div>
+    </ng-container>
+    <nav
+      class="management-history-pagination"
+      *ngIf="filteredReservationHistory.length > 0"
+      aria-label="Paginación del historial"
+    >
+      <button
+        type="button"
+        [disabled]="historyPage <= 1"
+        (click)="changeHistoryPage(historyPage - 1)"
+      >
+        Anterior
+      </button>
+
+      <span>
+        Página {{ historyPage }} de {{ historyTotalPages }}
+      </span>
+
+      <button
+        type="button"
+        [disabled]="historyPage >= historyTotalPages"
+        (click)="changeHistoryPage(historyPage + 1)"
+      >
+        Siguiente
+      </button>
+    </nav>
+  </section>
+
+  <section *ngIf="activeAdminView === 'numbers'" class="management-numbers">
+    <header class="management-numbers-heading">
+      <h2>Estado de los números</h2>
+      <p>
+        Consulta los números y su disponibilidad real.
+      </p>
+    </header>
+
+    <div class="management-numbers-grid">
+      <button
+        type="button"
+        class="management-number"
+        *ngFor="let number of numbers"
+        [class.is-available]="number.status === 'available'"
+        [class.is-pending]="number.status === 'pending'"
+        [class.is-confirmed]="number.status === 'confirmed'"
+        [class.is-selected]="selectedNumber?.value === number.value"
+        [attr.aria-pressed]="selectedNumber?.value === number.value"
+        [attr.aria-label]="'Número ' + number.value + ': ' + number.status"
+        (click)="selectNumber(number)"
+      >
+        {{ number.value | number:'2.0-0' }}
+      </button>
+    </div>
+
+    <section
+      *ngIf="selectedNumber as number"
+      class="management-number-detail"
+      aria-labelledby="management-number-detail-title"
+    >
+      <header class="management-number-detail-header">
+        <div>
+          <p class="management-number-detail-label">Número seleccionado</p>
+          <h3 id="management-number-detail-title">
+            Número {{ number.value | number:'2.0-0' }}
+          </h3>
+        </div>
+
+        <span
+          class="management-number-detail-status"
+          [class.is-available]="number.status === 'available'"
+          [class.is-pending]="number.status === 'pending'"
+          [class.is-confirmed]="number.status === 'confirmed'"
+        >
+          {{
+            number.status === 'available' ? 'Disponible' :
+            number.status === 'pending' ? 'Pendiente de pago' :
+            'Confirmado'
+          }}
+        </span>
+      </header>
+
+      <ng-container *ngIf="number.status === 'available'">
+        <p>Este número está disponible para asignarlo a un participante.</p>
+        <button
+          type="button"
+          (click)="activeAdminView = 'participants'"
+        >
+          Ir a registrar participante
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="number.status !== 'available'">
+        <ng-container *ngIf="selectedNumberReservation as reservation; else reservationUnavailable">
+          <p>
+            <strong>Participante:</strong>
+            {{ reservation.participantName }}
+          </p>
+          <p>
+            <strong>Reserva:</strong>
+            #{{ reservation.id }}
+          </p>
+
+          <div
+            *ngIf="reservation.status === 'active'"
+            class="management-number-detail-actions"
+          >
+            <button class="raffle-btn raffle-btn--primary"
+              type="button"
+              [disabled]="isReservationOperationInProgress(reservation.id)"
+              (click)="confirmActiveReservation(reservation.id)"
+            >
+              Confirmar pago
+            </button>
+            <button class="raffle-btn raffle-btn--danger"
+              type="button"
+              [disabled]="isReservationOperationInProgress(reservation.id)"
+              (click)="cancelActiveReservation(reservation.id)"
+            >
+              Cancelar reserva
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-template #reservationUnavailable>
+          <p>No se ha encontrado la información de la reserva asociada.</p>
+        </ng-template>
+      </ng-container>
+    </section>
+  </section>
+
+
+</section>

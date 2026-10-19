@@ -11,6 +11,7 @@
       <a
         class="management-public-link"
         routerLink="/raffle-lab"
+        [queryParams]="selectedDraw ? { drawId: selectedDraw.id } : {}"
       >
         Ver vista pública →
       </a>
