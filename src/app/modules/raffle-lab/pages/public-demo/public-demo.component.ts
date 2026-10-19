@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { RaffleNumber } from '../../models/raffle-number.model';
@@ -19,6 +19,9 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   loading = true;
   numbersLoading = false;
   error: string | null = null;
+  selectedNumber: number | null = null;
+  @ViewChild('modalCloseButton') modalCloseButton?: ElementRef<HTMLButtonElement>;
+  private previousFocus: HTMLElement | null = null;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -67,7 +70,36 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
     });
   }
 
+  get whatsappUrl(): string {
+    if (!this.selectedDraw || this.selectedNumber === null) return '';
+
+    const number = String(this.selectedNumber).padStart(2, '0');
+    const message = `Hola, quiero solicitar el número ${number} del sorteo ${this.selectedDraw.name}. ¿Está disponible? Entiendo que la reserva debe confirmarse.`;
+
+    return `https://wa.me/34605974436?text=${encodeURIComponent(message)}`;
+  }
+
+  openNumberModal(number: RaffleNumber): void {
+    if (this.selectedDraw?.status !== 'published' || number.status !== 'available' || this.numbersLoading) return;
+    this.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    this.selectedNumber = number.value;
+    // Focus the close control once Angular has rendered the modal.
+    queueMicrotask(() => this.modalCloseButton?.nativeElement.focus());
+  }
+
+  closeNumberModal(): void {
+    this.selectedNumber = null;
+    this.previousFocus?.focus();
+    this.previousFocus = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.selectedNumber !== null) this.closeNumberModal();
+  }
+
   chooseDraw(event: Event): void {
+    this.closeNumberModal();
     const id = (event.target as HTMLSelectElement).value;
     void this.router.navigate([], {
       relativeTo: this.route,
@@ -77,6 +109,7 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   }
 
   private loadDraw(draw: PublicRaffleDraw): void {
+    this.closeNumberModal();
     this.selectedDraw = draw;
     this.numbers = [];
     this.error = null;
@@ -100,6 +133,7 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.selectedNumber = null;
     this.destroy$.next();
     this.destroy$.complete();
   }

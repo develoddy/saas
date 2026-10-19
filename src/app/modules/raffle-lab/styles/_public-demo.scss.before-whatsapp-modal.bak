@@ -1,0 +1,210 @@
+
+@use 'tokens' as tokens;
+@use 'layout' as layout;
+
+// Raffle Lab — Public Demo
+// Estilos específicos de la vista pública.
+
+.raffle-header {
+  @include layout.page-container;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-block: 24px;
+  border-bottom: 1px solid tokens.$raffle-border;
+}
+
+.raffle-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.raffle-management-link {
+  color: tokens.$raffle-gold;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid tokens.$raffle-gold;
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+}
+
+.raffle-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  font-size: 32px;
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: 700;
+
+  strong {
+    color: tokens.$raffle-gold;
+  }
+}
+
+.brand-subtitle {
+  color: tokens.$raffle-muted;
+  font-size: 12px;
+}
+
+.demo-badge,
+.section-badge {
+  color: tokens.$raffle-gold;
+  border: 1px solid tokens.$raffle-border;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.raffle-content {
+  @include layout.page-container;
+  padding-block: 64px;
+}
+
+.raffle-hero {
+  text-align: center;
+  margin-bottom: 48px;
+
+  h1 {
+    margin: 20px 0 12px;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.15;
+    font-weight: 800;
+    color: tokens.$raffle-text;
+  }
+}
+
+.raffle-description {
+  color: tokens.$raffle-muted;
+  font-size: 17px;
+}
+
+.raffle-meta {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 24px;
+  color: tokens.$raffle-muted;
+  font-size: 14px;
+}
+
+.prize-card {
+  @include layout.card;
+
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+}
+
+.prize-icon {
+  font-size: 48px;
+}
+
+.prize-info {
+  h2 {
+    margin: 6px 0;
+    font-size: 24px;
+    color: tokens.$raffle-text;
+  }
+
+  p {
+    margin: 0;
+    color: tokens.$raffle-muted;
+  }
+}
+
+.prize-label {
+  color: tokens.$raffle-gold;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.demo-notice {
+  margin-top: 32px;
+  padding: 20px;
+  border: 1px dashed tokens.$raffle-border;
+  border-radius: tokens.$raffle-radius-md;
+  color: tokens.$raffle-muted;
+  text-align: center;
+  font-size: 13px;
+
+  p {
+    margin: 0;
+  }
+}
+
+/* Raffle Lab — Selector de sorteos públicos */
+
+.raffle-numbers {
+  select {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    min-height: 44px;
+    margin-top: 10px;
+    padding: 10px 38px 10px 14px;
+
+    color: tokens.$raffle-text;
+    background-color: #15191f;
+    border: 1px solid tokens.$raffle-border;
+    border-radius: tokens.$raffle-radius-md;
+
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    color-scheme: dark;
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: tokens.$raffle-gold;
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    option {
+      background-color: #15191f;
+      color: tokens.$raffle-text;
+    }
+  }
+}
