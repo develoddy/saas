@@ -162,3 +162,49 @@
     margin: 0;
   }
 }
+
+/* Raffle Lab — Selector de sorteos públicos */
+
+.raffle-numbers {
+  select {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    min-height: 44px;
+    margin-top: 10px;
+    padding: 10px 38px 10px 14px;
+
+    color: tokens.$raffle-text;
+    background-color: #15191f;
+    border: 1px solid tokens.$raffle-border;
+    border-radius: tokens.$raffle-radius-md;
+
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    color-scheme: dark;
+
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: tokens.$raffle-gold;
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 2px;
+    }
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    option {
+      background-color: #15191f;
+      color: tokens.$raffle-text;
+    }
+  }
+}
