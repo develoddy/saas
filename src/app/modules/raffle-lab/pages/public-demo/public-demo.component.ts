@@ -119,6 +119,15 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
     if (this.selectedNumber !== null) this.closeNumberModal();
   }
 
+  scrollToNumbers(event: Event): void {
+    event.preventDefault();
+
+    document.getElementById('numbers-title')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
+
   chooseDraw(event: Event): void {
     this.closeNumberModal();
     const id = (event.target as HTMLSelectElement).value;

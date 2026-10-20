@@ -10,7 +10,7 @@
     <div class="raffle-header-actions">
       <nav class="raffle-nav" aria-label="Navegación principal">
         <a href="#raffle-home">Inicio</a>
-        <a href="#numbers-title" *ngIf="draws.length > 0">Números</a>
+        <a href="#numbers-title" (click)="scrollToNumbers($event)" *ngIf="draws.length > 0">Números</a>
       </nav>
 
       <a class="raffle-management-link" routerLink="/raffle-lab/management">
@@ -70,7 +70,7 @@
             </span>
           </div>
 
-          <a class="raffle-hero-banner__cta" href="#numbers-title">
+          <a class="raffle-hero-banner__cta" href="#numbers-title" (click)="scrollToNumbers($event)">
             Ver números
             <span aria-hidden="true">→</span>
           </a>
@@ -85,7 +85,7 @@
           <p class="raffle-hero-banner__description">
             Selecciona un sorteo para consultar sus premios y números disponibles.
           </p>
-          <a *ngIf="draws.length" class="raffle-hero-banner__cta" href="#numbers-title">
+          <a *ngIf="draws.length" class="raffle-hero-banner__cta" href="#numbers-title" (click)="scrollToNumbers($event)">
             Seleccionar sorteo
             <span aria-hidden="true">→</span>
           </a>
