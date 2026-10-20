@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
 
 import { RaffleNumber, RaffleNumberStatus } from '../../models/raffle-number.model';
 import { RaffleReservation, RaffleReservationStatus } from '../../models/raffle-reservation.model';
@@ -9,7 +10,8 @@ import { RaffleAdminAuthService } from '../../services/raffle-admin-auth.service
 import {
   RaffleAdminApiService,
   AdminRaffleDraw,
-  AdminRaffleReservation
+  AdminRaffleReservation,
+  AdminRafflePresentation
 } from '../../services/raffle-admin-api.service';
 
 @Component({
@@ -31,8 +33,352 @@ export class ManagementDemoComponent {
   drawSaving = false;
   drawMessage: string | null = null;
 
+  presentation: AdminRafflePresentation = {
+    headline: null,
+    description: null,
+    ticketPrice: null,
+    drawDate: null
+  };
+  bannerFile: File | null = null;
+  bannerDragging = false;
+  presentationSaving = false;
+  bannerUploading = false;
+
+  mobileBannerFile: File | null = null;
+  mobileBannerDragging = false;
+  mobileBannerUploading = false;
+  presentationMessage: string | null = null;
+
   get selectedDraw(): AdminRaffleDraw | undefined {
     return this.draws.find(draw => draw.id === this.selectedDrawId);
+  }
+
+  onBannerFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+
+    this.setBannerFile(file);
+    input.value = '';
+  }
+
+  onBannerDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.bannerUploading) {
+      this.bannerDragging = true;
+    }
+  }
+
+  onBannerDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const target = event.currentTarget as HTMLElement;
+    const related = event.relatedTarget as Node | null;
+
+    if (!related || !target.contains(related)) {
+      this.bannerDragging = false;
+    }
+  }
+
+  onBannerDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.bannerDragging = false;
+
+    if (this.bannerUploading) {
+      return;
+    }
+
+    const files = event.dataTransfer?.files;
+
+    if (!files?.length) {
+      return;
+    }
+
+    if (files.length !== 1) {
+      this.presentationMessage = 'Selecciona una sola imagen.';
+      return;
+    }
+
+    this.setBannerFile(files[0]);
+  }
+
+  private setBannerFile(file: File | null): void {
+    if (
+      file &&
+      (
+        !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+        file.size > 5 * 1024 * 1024
+      )
+    ) {
+      this.bannerFile = null;
+      this.presentationMessage =
+        'Selecciona una imagen JPEG, PNG o WebP de hasta 5 MB.';
+      return;
+    }
+
+    this.bannerFile = file;
+    this.presentationMessage = null;
+  }
+
+  onMobileBannerFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.setMobileBannerFile(input.files?.[0] || null);
+    input.value = '';
+  }
+
+  onMobileBannerDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.mobileBannerUploading) {
+      this.mobileBannerDragging = true;
+    }
+  }
+
+  onMobileBannerDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const target = event.currentTarget as HTMLElement;
+    const related = event.relatedTarget as Node | null;
+
+    if (!related || !target.contains(related)) {
+      this.mobileBannerDragging = false;
+    }
+  }
+
+  onMobileBannerDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.mobileBannerDragging = false;
+
+    if (this.mobileBannerUploading) {
+      return;
+    }
+
+    const files = event.dataTransfer?.files;
+
+    if (!files?.length) {
+      return;
+    }
+
+    if (files.length !== 1) {
+      this.presentationMessage = 'Selecciona una sola imagen.';
+      return;
+    }
+
+    this.setMobileBannerFile(files[0]);
+  }
+
+  private setMobileBannerFile(file: File | null): void {
+    if (
+      file &&
+      (
+        !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+        file.size > 5 * 1024 * 1024
+      )
+    ) {
+      this.mobileBannerFile = null;
+      this.presentationMessage =
+        'Selecciona una imagen JPEG, PNG o WebP de hasta 5 MB.';
+      return;
+    }
+
+    this.mobileBannerFile = file;
+    this.presentationMessage = null;
+  }
+
+  uploadSelectedDrawMobileBanner(): void {
+    const draw = this.selectedDraw;
+    const file = this.mobileBannerFile;
+
+    if (!draw || !file || this.mobileBannerUploading) {
+      return;
+    }
+
+    if (
+      !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      this.presentationMessage =
+        'Selecciona una imagen JPEG, PNG o WebP de hasta 5 MB.';
+      return;
+    }
+
+    this.mobileBannerUploading = true;
+    this.presentationMessage = null;
+
+    this.raffleApi.uploadDrawBanner(draw.id, file, 'mobile').subscribe({
+      next: response => {
+        this.draws = this.draws.map(item =>
+          item.id === draw.id
+            ? { ...item, bannerImageMobile: response.data.bannerImageMobile }
+            : item
+        );
+
+        if (this.selectedDrawId === draw.id) {
+          this.mobileBannerFile = null;
+          this.presentationMessage = 'Imagen móvil actualizada.';
+        }
+
+        this.mobileBannerUploading = false;
+      },
+      error: error => {
+        this.mobileBannerUploading = false;
+
+        if (this.selectedDrawId === draw.id) {
+          this.presentationMessage =
+            error.error?.message || 'No se pudo subir el banner móvil.';
+        }
+      }
+    });
+  }
+
+  saveDrawPresentation(): void {
+    const draw = this.selectedDraw;
+
+    if (!draw || this.presentationSaving) {
+      return;
+    }
+
+    const headline = this.presentation.headline?.trim() || null;
+    const description = this.presentation.description?.trim() || null;
+    const rawTicketPrice = this.presentation.ticketPrice;
+    const ticketPrice =
+      rawTicketPrice == null
+        ? null
+        : Number(rawTicketPrice);
+    const drawDate = this.presentation.drawDate;
+
+    if (headline && headline.length > 200) {
+      this.presentationMessage = 'El título no puede superar los 200 caracteres.';
+      return;
+    }
+
+    if (description && description.length > 5000) {
+      this.presentationMessage = 'La descripción no puede superar los 5000 caracteres.';
+      return;
+    }
+
+    if (
+      ticketPrice !== null &&
+      (
+        !Number.isFinite(ticketPrice) ||
+        ticketPrice < 0 ||
+        ticketPrice > 99999999.99 ||
+        Math.abs(ticketPrice * 100 - Math.round(ticketPrice * 100)) > 1e-7
+      )
+    ) {
+      this.presentationMessage = 'El precio introducido no es válido.';
+      return;
+    }
+
+    let normalizedDate: string | null = null;
+
+    if (drawDate) {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(drawDate)) {
+        this.presentationMessage = 'La fecha introducida no es válida.';
+        return;
+      }
+
+      normalizedDate = `${drawDate}T12:00:00.000Z`;
+
+      if (
+        new Date(normalizedDate).toISOString().slice(0, 10) !== drawDate
+      ) {
+        this.presentationMessage = 'La fecha introducida no es válida.';
+        return;
+      }
+    }
+
+    this.presentationSaving = true;
+    this.presentationMessage = null;
+
+    this.raffleApi.updateDrawPresentation(draw.id, {
+      headline,
+      description,
+      ticketPrice,
+      drawDate: normalizedDate
+    }).subscribe({
+      next: response => {
+        this.draws = this.draws.map(item =>
+          item.id === draw.id ? response.data : item
+        );
+
+        if (this.selectedDrawId === draw.id) {
+          this.presentation.drawDate = response.data.drawDate
+            ? response.data.drawDate.slice(0, 10)
+            : null;
+          this.presentationMessage = 'Datos comerciales guardados.';
+        }
+
+        this.presentationSaving = false;
+      },
+      error: error => {
+        this.presentationSaving = false;
+
+        if (this.selectedDrawId === draw.id) {
+          this.presentationMessage =
+            error.error?.message || 'No se pudieron guardar los datos.';
+        }
+      }
+    });
+  }
+
+  uploadSelectedDrawBanner(): void {
+    const draw = this.selectedDraw;
+    const file = this.bannerFile;
+
+    if (!draw || !file || this.bannerUploading) {
+      return;
+    }
+
+    if (
+      !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      this.presentationMessage =
+        'Selecciona una imagen JPEG, PNG o WebP de hasta 5 MB.';
+      return;
+    }
+
+    this.bannerUploading = true;
+    this.presentationMessage = null;
+
+    this.raffleApi.uploadDrawBanner(draw.id, file).subscribe({
+      next: response => {
+        this.draws = this.draws.map(item =>
+          item.id === draw.id
+            ? { ...item, bannerImage: response.data.bannerImage }
+            : item
+        );
+
+        if (this.selectedDrawId === draw.id) {
+          this.bannerFile = null;
+          this.presentationMessage = 'Imagen del banner actualizada.';
+        }
+
+        this.bannerUploading = false;
+      },
+      error: error => {
+        this.bannerUploading = false;
+
+        if (this.selectedDrawId === draw.id) {
+          this.presentationMessage =
+            error.error?.message || 'No se pudo subir el banner.';
+        }
+      }
+    });
+  }
+
+  getBannerImageUrl(imagePath: string): string {
+    const apiUrl = environment.API_URL.endsWith('/api')
+      ? environment.API_URL.slice(0, -4)
+      : environment.API_URL;
+    return `${apiUrl}${imagePath}`;
   }
 
   drawActionLoading = false;
@@ -172,6 +518,20 @@ export class ManagementDemoComponent {
     }
 
     this.selectedDrawId = draw.id;
+    this.presentation = {
+      headline: draw.headline,
+      description: draw.description,
+      ticketPrice: draw.ticketPrice === null
+        ? null
+        : Number(draw.ticketPrice),
+      drawDate: draw.drawDate
+        ? draw.drawDate.slice(0, 10)
+        : null
+    };
+    this.bannerFile = null;
+    this.mobileBannerFile = null;
+    this.mobileBannerDragging = false;
+    this.presentationMessage = null;
     this.manualSelectedNumbers = [];
     this.manualNumbersInput = '';
     this.manualInputError = null;

@@ -83,8 +83,12 @@
 }
 
 .raffle-content {
+  width: 100%;
+  padding-block: 0 64px;
+}
+
+.raffle-content > :not(.raffle-hero-banner) {
   @include layout.page-container;
-  padding-block: 64px;
 }
 
 .raffle-hero {

@@ -1,0 +1,332 @@
+.raffle-hero-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  min-height: clamp(520px, 48vw, 680px);
+  padding: clamp(36px, 5vw, 84px);
+  overflow: hidden;
+  border: 0;
+  border-bottom: 1px solid rgba(213, 168, 63, 0.24);
+  border-radius: 0;
+  background:
+    radial-gradient(
+      ellipse at 76% 48%,
+      rgba(245, 184, 55, 0.18) 0%,
+      rgba(169, 106, 20, 0.07) 32%,
+      transparent 68%
+    ),
+    radial-gradient(
+      ellipse at 12% 8%,
+      rgba(255, 203, 91, 0.12) 0%,
+      transparent 35%
+    ),
+    linear-gradient(
+      125deg,
+      #080808 0%,
+      #15100b 52%,
+      #050505 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 208, 112, 0.08);
+  color: #f7f7f7;
+}
+
+.raffle-hero-banner__content {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  max-width: min(100%, 590px);
+}
+
+.raffle-hero-banner__eyebrow {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: #d5a83f;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.raffle-hero-banner h1 {
+  margin: 0;
+  color: #f5d58a;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(38px, 4.2vw, 68px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+  background: linear-gradient(
+    180deg,
+    #fff4cc 0%,
+    #f8d986 28%,
+    #d69a32 65%,
+    #fff0b5 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 10px rgba(220, 151, 36, 0.25));
+}
+
+.raffle-hero-banner__description {
+  max-width: 510px;
+  margin: 20px 0 0;
+  color: #c0c1c5;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.raffle-hero-banner__details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 22px;
+}
+
+.raffle-hero-banner__price {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 132px;
+  height: 132px;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 2px solid #f5d58a;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 25%,
+    #ffe8a0 0%,
+    #e6b64f 42%,
+    #a96b18 100%
+  );
+  box-shadow:
+    inset 0 2px 6px rgba(255, 255, 255, 0.35),
+    0 0 28px rgba(222, 158, 43, 0.28);
+  color: #241706;
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.raffle-hero-banner__price small {
+  margin-top: 5px;
+  color: #47300e;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.raffle-hero-banner__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: #f7f7f7;
+  font-size: 17px;
+}
+
+.raffle-hero-banner__calendar-icon {
+  flex-shrink: 0;
+  color: #d5a83f;
+}
+
+.raffle-hero-banner__date-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.raffle-hero-banner__date-label {
+  color: #d5a83f;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.raffle-hero-banner__date time {
+  font-size: 17px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.raffle-hero-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 52px;
+  margin-top: 20px;
+  padding: 12px 26px;
+  border: 1px solid #d5a83f;
+  border-radius: 10px;
+  background: #d5a83f;
+  color: #171717;
+  font-size: 15px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.raffle-hero-banner__cta:hover {
+  background: #ebc469;
+  transform: translateY(-2px);
+}
+
+.raffle-hero-banner__cta:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+}
+
+.raffle-hero-banner__status {
+  display: block;
+  margin-top: 18px;
+  color: #eac56a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.raffle-hero-banner__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.raffle-hero-banner__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.88) 0%,
+    rgba(0, 0, 0, 0.65) 38%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  pointer-events: none;
+}
+
+.raffle-hero-banner__media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.raffle-hero-banner__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.raffle-hero-banner:not(:has(.raffle-hero-banner__media)) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.raffle-hero-banner:not(:has(.raffle-hero-banner__media))
+.raffle-hero-banner__content {
+  max-width: 760px;
+}
+
+@media (max-width: 800px) {
+  .raffle-hero-banner {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding: 48px 28px;
+    gap: 32px;
+  }
+
+  .raffle-hero-banner__media::after {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.40) 0%,
+      rgba(0, 0, 0, 0.72) 65%,
+      rgba(0, 0, 0, 0.88) 100%
+    );
+  }
+}
+
+@media (max-width: 480px) {
+  .raffle-hero-banner {
+    padding: 36px 20px;
+    border-radius: 0;
+  }
+
+  .raffle-hero-banner h1 {
+    font-size: clamp(32px, 9vw, 44px);
+  }
+
+  .raffle-hero-banner__content {
+    max-width: 100%;
+  }
+
+  .raffle-hero-banner__description {
+    margin-top: 16px;
+    line-height: 1.4;
+  }
+
+  .raffle-hero-banner__details {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .raffle-hero-banner__price {
+    width: 112px;
+    height: 112px;
+    padding: 12px;
+    font-size: 30px;
+    white-space: nowrap;
+  }
+
+  .raffle-hero-banner__price small {
+    font-size: 10px;
+  }
+
+  .raffle-hero-banner__date {
+    flex: 1 1 160px;
+    gap: 10px;
+  }
+
+  .raffle-hero-banner__calendar-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .raffle-hero-banner__date-label {
+    font-size: 10px;
+  }
+
+  .raffle-hero-banner__date time {
+    font-size: 14px;
+  }
+
+  .raffle-hero-banner__cta {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-hero-banner__cta {
+    transition: none;
+  }
+
+  .raffle-hero-banner__cta:hover {
+    transform: none;
+  }
+}

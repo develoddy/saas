@@ -11,6 +11,19 @@ export interface AdminRaffleDraw {
   name: string;
   totalNumbers: number;
   status: 'draft' | 'published' | 'closed';
+  headline: string | null;
+  description: string | null;
+  bannerImage: string | null;
+  bannerImageMobile: string | null;
+  ticketPrice: string | null;
+  drawDate: string | null;
+}
+
+export interface AdminRafflePresentation {
+  headline: string | null;
+  description: string | null;
+  ticketPrice: number | null;
+  drawDate: string | null;
 }
 
 interface ApiResponse<T> {
@@ -74,6 +87,41 @@ export class RaffleAdminApiService {
     return this.http.post<ApiResponse<AdminRaffleDraw>>(
       `${this.baseUrl}/draws`,
       { name, totalNumbers },
+      { headers: this.headers }
+    );
+  }
+
+  updateDrawPresentation(
+    drawId: number,
+    presentation: AdminRafflePresentation
+  ): Observable<ApiResponse<AdminRaffleDraw>> {
+    return this.http.patch<ApiResponse<AdminRaffleDraw>>(
+      `${this.baseUrl}/draws/${drawId}/presentation`,
+      presentation,
+      { headers: this.headers }
+    );
+  }
+
+  uploadDrawBanner(
+    drawId: number,
+    file: File,
+    variant: 'desktop' | 'mobile' = 'desktop'
+  ): Observable<ApiResponse<{
+    id: number;
+    bannerImage: string | null;
+    bannerImageMobile: string | null;
+  }>> {
+    const formData = new FormData();
+    formData.append('variant', variant);
+    formData.append('banner', file);
+
+    return this.http.post<ApiResponse<{
+      id: number;
+      bannerImage: string | null;
+      bannerImageMobile: string | null;
+    }>>(
+      `${this.baseUrl}/draws/${drawId}/banner`,
+      formData,
       { headers: this.headers }
     );
   }

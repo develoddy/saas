@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { environment } from '../../../../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { RaffleNumber } from '../../models/raffle-number.model';
@@ -68,6 +69,26 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
         this.error = 'No se pudieron cargar los sorteos. Inténtalo más tarde.';
       }
     });
+  }
+
+  get bannerImageUrl(): string | null {
+    return this.getBannerUrl(this.selectedDraw?.bannerImage);
+  }
+
+  get bannerImageMobileUrl(): string | null {
+    return this.getBannerUrl(this.selectedDraw?.bannerImageMobile);
+  }
+
+  private getBannerUrl(imagePath: string | null | undefined): string | null {
+    if (!imagePath || !imagePath.startsWith('/uploads/raffle-lab/')) {
+      return null;
+    }
+
+    const apiUrl = environment.API_URL.endsWith('/api')
+      ? environment.API_URL.slice(0, -4)
+      : environment.API_URL;
+
+    return `${apiUrl}${imagePath}`;
   }
 
   get whatsappUrl(): string {

@@ -4,20 +4,108 @@
       <span class="brand-icon" aria-hidden="true">🎁</span>
       <div class="brand-info">
         <span class="brand-name">Raffle <strong>Lab</strong></span>
-        <span class="brand-subtitle">Parro Sorteos · Vista pública</span>
+        <span class="brand-subtitle">Sorteos · Vista pública</span>
       </div>
     </div>
     <div class="raffle-header-actions">
-      <a class="raffle-management-link" routerLink="/raffle-lab/management">Ir a gestión →</a>
+      <nav class="raffle-nav" aria-label="Navegación principal">
+        <a href="#raffle-home">Inicio</a>
+        <a href="#numbers-title" *ngIf="draws.length > 0">Números</a>
+      </nav>
+
+      <a class="raffle-management-link" routerLink="/raffle-lab/management">
+        Ir a gestión →
+      </a>
+
       <span class="demo-badge">LAB</span>
     </div>
   </header>
 
   <main class="raffle-content">
-    <section class="raffle-hero">
-      <span class="section-badge">SORTEOS PÚBLICOS</span>
-      <h1>La suerte tiene un número.</h1>
-      <p class="raffle-description">Consulta la disponibilidad real de cada sorteo.</p>
+    <section id="raffle-home" class="raffle-hero-banner" aria-labelledby="raffle-hero-banner-title">
+      <div class="raffle-hero-banner__content">
+        <span class="raffle-hero-banner__eyebrow">SORTEOS</span>
+
+        <ng-container *ngIf="selectedDraw as draw; else noSelectedDraw">
+          <h1 id="raffle-hero-banner-title">
+            {{ draw.headline || draw.name }}
+          </h1>
+
+          <p *ngIf="draw.description" class="raffle-hero-banner__description">
+            {{ draw.description }}
+          </p>
+
+          <div class="raffle-hero-banner__details"
+            *ngIf="draw.ticketPrice !== null || draw.drawDate">
+            <span *ngIf="draw.ticketPrice !== null" class="raffle-hero-banner__price">
+              {{ draw.ticketPrice | number:'1.0-2' }} €
+              <small>por número</small>
+            </span>
+
+            <span *ngIf="draw.drawDate" class="raffle-hero-banner__date">
+              <svg
+                class="raffle-hero-banner__calendar-icon"
+                viewBox="0 0 24 24"
+                width="34"
+                height="34"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="5" width="18" height="16" rx="2" />
+                <path d="M7 3v4M17 3v4M3 10h18" />
+                <path d="m9 16 2 2 4-4" />
+              </svg>
+              <span class="raffle-hero-banner__date-text">
+                <span class="raffle-hero-banner__date-label">
+                  Fecha del sorteo
+                </span>
+                <time>
+                  {{ draw.drawDate | date:'dd/MM/yyyy':'UTC' }}
+                </time>
+              </span>
+            </span>
+          </div>
+
+          <a class="raffle-hero-banner__cta" href="#numbers-title">
+            Ver números
+            <span aria-hidden="true">→</span>
+          </a>
+
+          <span *ngIf="draw.status === 'closed'" class="raffle-hero-banner__status">
+            Sorteo cerrado
+          </span>
+        </ng-container>
+
+        <ng-template #noSelectedDraw>
+          <h1 id="raffle-hero-banner-title">Raffle Lab</h1>
+          <p class="raffle-hero-banner__description">
+            Selecciona un sorteo para consultar sus premios y números disponibles.
+          </p>
+          <a *ngIf="draws.length" class="raffle-hero-banner__cta" href="#numbers-title">
+            Seleccionar sorteo
+            <span aria-hidden="true">→</span>
+          </a>
+        </ng-template>
+      </div>
+
+      <div *ngIf="bannerImageUrl as imageUrl" class="raffle-hero-banner__media">
+        <picture>
+          <source
+            *ngIf="bannerImageMobileUrl as mobileImageUrl"
+            media="(max-width: 767px)"
+            [srcset]="mobileImageUrl"
+          />
+          <img
+            [src]="imageUrl"
+            [alt]="'Imagen del sorteo ' + (selectedDraw?.name || '')"
+            fetchpriority="high"
+          />
+        </picture>
+      </div>
     </section>
 
     <p *ngIf="loading" role="status">Cargando sorteos…</p>
@@ -30,9 +118,12 @@
           <span class="prize-label">SORTEO</span>
           <h2 id="numbers-title">Consulta los números</h2>
           <label for="public-draw">Selecciona un sorteo</label>
-          <select id="public-draw" [value]="selectedDraw?.id || ''" (change)="chooseDraw($event)">
-            <option value="">Seleccionar sorteo…</option>
-            <option *ngFor="let draw of draws" [value]="draw.id">
+          <select id="public-draw" (change)="chooseDraw($event)">
+            <option value="" [selected]="!selectedDraw">Seleccionar sorteo…</option>
+            <option
+              *ngFor="let draw of draws"
+              [value]="draw.id"
+              [selected]="selectedDraw?.id === draw.id">
               {{ draw.name }} ({{ draw.status === 'closed' ? 'cerrado' : 'publicado' }})
             </option>
           </select>

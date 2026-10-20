@@ -11,6 +11,12 @@ export interface PublicRaffleDraw {
   name: string;
   totalNumbers: number;
   status: 'published' | 'closed';
+  headline: string | null;
+  description: string | null;
+  bannerImage: string | null;
+  bannerImageMobile: string | null;
+  ticketPrice: string | null;
+  drawDate: string | null;
 }
 
 export interface PublicRaffleNumbers {
