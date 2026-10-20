@@ -112,6 +112,104 @@
     <p *ngIf="error" class="reservation-error" role="alert">{{ error }}</p>
     <p *ngIf="!loading && !error && draws.length === 0">No hay sorteos públicos disponibles.</p>
 
+    <!-- Premios del sorteo -->
+    <section
+      *ngIf="selectedDraw as draw"
+      class="raffle-prizes"
+      aria-labelledby="raffle-prizes-title"
+    >
+      <header class="raffle-prizes__heading">
+        <h2 id="raffle-prizes-title">PREMIOS DEL SORTEO</h2>
+        <p>Descubre los premios de este sorteo</p>
+      </header>
+
+      <p *ngIf="prizesLoading" class="raffle-prizes__status" role="status">
+        Cargando premios...
+      </p>
+
+      <p *ngIf="prizesError" class="raffle-prizes__status" role="alert">
+        {{ prizesError }}
+      </p>
+
+      <div *ngIf="!prizesLoading && prizes.length > 0"
+           class="raffle-prizes__grid">
+        <article
+          *ngFor="let prize of prizes"
+          class="raffle-prizes__card"
+        >
+          <span class="raffle-prizes__badge">
+            {{ prize.position }}º PREMIO
+          </span>
+
+          <div class="raffle-prizes__image">
+            <img
+              *ngIf="getPrizeImageUrl(prize.imagePath) as imageUrl"
+              [src]="imageUrl"
+              [alt]="prize.title"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="raffle-prizes__card-content">
+            <h3>{{ prize.title }}</h3>
+            <p *ngIf="prize.description">
+              {{ prize.description }}
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="raffle-prizes__info">
+        <div *ngIf="draw.drawDate" class="raffle-prizes__info-item">
+          <svg class="raffle-prizes__info-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <path d="M7 3v4M17 3v4M3 10h18"/>
+            <path d="m9 16 2 2 4-4"/>
+          </svg>
+          <div class="raffle-prizes__info-text">
+            <span class="raffle-prizes__info-label">FECHA DEL SORTEO</span>
+            <time>{{ draw.drawDate | date:'dd/MM/yyyy':'UTC' }}</time>
+          </div>
+        </div>
+
+        <div *ngIf="draw.ticketPrice !== null"
+             class="raffle-prizes__info-item">
+          <svg class="raffle-prizes__info-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4
+                     a3 3 0 0 0 0 6v4a2 2 0 0 1-2 2H4
+                     a2 2 0 0 1-2-2v-4a3 3 0 0 0 0-6Z"/>
+            <path d="M13 5v2M13 10v4M13 17v2"/>
+          </svg>
+          <div class="raffle-prizes__info-text">
+            <span class="raffle-prizes__info-label">PRECIO DEL BOLETO</span>
+            <strong>{{ draw.ticketPrice | number:'1.0-2' }} €</strong>
+          </div>
+        </div>
+
+        <div class="raffle-prizes__info-item">
+          <svg class="raffle-prizes__info-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <div class="raffle-prizes__info-text">
+            <span class="raffle-prizes__info-label">NÚMERO TOTAL</span>
+            <strong>{{ draw.totalNumbers }} números</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section *ngIf="!loading && draws.length > 0" class="raffle-numbers" aria-labelledby="numbers-title">
       <div class="numbers-heading">
         <div>

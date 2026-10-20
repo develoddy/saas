@@ -3,6 +3,7 @@ import { environment } from '../../../../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { RaffleNumber } from '../../models/raffle-number.model';
+import { RafflePrize } from '../../models/raffle-prize.model';
 import {
   PublicRaffleDraw,
   RafflePublicApiService
@@ -17,6 +18,9 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   draws: PublicRaffleDraw[] = [];
   selectedDraw: PublicRaffleDraw | null = null;
   numbers: RaffleNumber[] = [];
+  prizes: RafflePrize[] = [];
+  prizesLoading = false;
+  prizesError: string | null = null;
   loading = true;
   numbersLoading = false;
   error: string | null = null;
@@ -45,12 +49,18 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
           if (raw === null) {
             this.selectedDraw = null;
             this.numbers = [];
+            this.prizes = [];
+            this.prizesLoading = false;
+            this.prizesError = null;
             this.error = null;
             return;
           }
           if (!/^[1-9]\d*$/.test(raw) || !Number.isSafeInteger(Number(raw))) {
             this.selectedDraw = null;
             this.numbers = [];
+            this.prizes = [];
+            this.prizesLoading = false;
+            this.prizesError = null;
             this.error = 'Identificador de sorteo inválido.';
             return;
           }
@@ -58,6 +68,9 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
           if (!draw) {
             this.selectedDraw = null;
             this.numbers = [];
+            this.prizes = [];
+            this.prizesLoading = false;
+            this.prizesError = null;
             this.error = 'El sorteo solicitado no está disponible públicamente.';
             return;
           }
@@ -77,6 +90,10 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
 
   get bannerImageMobileUrl(): string | null {
     return this.getBannerUrl(this.selectedDraw?.bannerImageMobile);
+  }
+
+  getPrizeImageUrl(imagePath: string | null): string | null {
+    return this.getBannerUrl(imagePath);
   }
 
   private getBannerUrl(imagePath: string | null | undefined): string | null {
@@ -138,10 +155,47 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadDrawPrizes(drawId: number): void {
+    this.prizesLoading = true;
+    this.prizesError = null;
+
+    this.api.getDrawPrizes(drawId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: response => {
+          if (this.selectedDraw?.id !== drawId) return;
+
+          this.prizesLoading = false;
+
+          if (
+            !response.success ||
+            response.data?.drawId !== drawId ||
+            !Array.isArray(response.data.prizes)
+          ) {
+            this.prizesError = 'No se pudieron consultar los premios.';
+            return;
+          }
+
+          this.prizes = response.data.prizes
+            .slice()
+            .sort((a, b) => a.position - b.position);
+        },
+        error: () => {
+          if (this.selectedDraw?.id !== drawId) return;
+
+          this.prizesLoading = false;
+          this.prizesError = 'No se pudieron cargar los premios del sorteo.';
+        }
+      });
+  }
+
   private loadDraw(draw: PublicRaffleDraw): void {
     this.closeNumberModal();
     this.selectedDraw = draw;
     this.numbers = [];
+    this.prizes = [];
+    this.prizesError = null;
+    this.loadDrawPrizes(draw.id);
     this.error = null;
     this.numbersLoading = true;
     this.api.getDrawNumbers(draw.id).pipe(takeUntil(this.destroy$)).subscribe({

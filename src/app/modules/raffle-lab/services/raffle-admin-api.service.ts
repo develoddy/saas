@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { RaffleAdminAuthService } from './raffle-admin-auth.service';
 import { RaffleNumber } from '../models/raffle-number.model';
+import { RafflePrize, RafflePrizeInput, RafflePrizesResponse } from '../models/raffle-prize.model';
 
 export interface AdminRaffleDraw {
   id: number;
@@ -71,6 +72,73 @@ export class RaffleAdminApiService {
     return new HttpHeaders({
       Authorization: `Bearer ${this.auth.getAccessToken() || ''}`
     });
+  }
+
+  removeDrawPrizeImage(
+    drawId: number,
+    prizeId: number
+  ): Observable<ApiResponse<RafflePrize>> {
+    return this.http.delete<ApiResponse<RafflePrize>>(
+      `${this.baseUrl}/draws/${drawId}/prizes/${prizeId}/image`,
+      { headers: this.headers }
+    );
+  }
+
+  uploadDrawPrizeImage(
+    drawId: number,
+    prizeId: number,
+    file: File
+  ): Observable<ApiResponse<RafflePrize>> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    return this.http.post<ApiResponse<RafflePrize>>(
+      `${this.baseUrl}/draws/${drawId}/prizes/${prizeId}/image`,
+      formData,
+      { headers: this.headers }
+    );
+  }
+
+  deleteDrawPrize(
+    drawId: number,
+    prizeId: number
+  ): Observable<ApiResponse<{ id: number; drawId: number }>> {
+    return this.http.delete<ApiResponse<{ id: number; drawId: number }>>(
+      `${this.baseUrl}/draws/${drawId}/prizes/${prizeId}`,
+      { headers: this.headers }
+    );
+  }
+
+  updateDrawPrize(
+    drawId: number,
+    prizeId: number,
+    changes: Partial<RafflePrizeInput>
+  ): Observable<ApiResponse<RafflePrize>> {
+    return this.http.patch<ApiResponse<RafflePrize>>(
+      `${this.baseUrl}/draws/${drawId}/prizes/${prizeId}`,
+      changes,
+      { headers: this.headers }
+    );
+  }
+
+  createDrawPrize(
+    drawId: number,
+    prize: RafflePrizeInput
+  ): Observable<ApiResponse<RafflePrize>> {
+    return this.http.post<ApiResponse<RafflePrize>>(
+      `${this.baseUrl}/draws/${drawId}/prizes`,
+      prize,
+      { headers: this.headers }
+    );
+  }
+
+  getDrawPrizes(
+    drawId: number
+  ): Observable<ApiResponse<RafflePrizesResponse>> {
+    return this.http.get<ApiResponse<RafflePrizesResponse>>(
+      `${this.baseUrl}/draws/${drawId}/prizes`,
+      { headers: this.headers }
+    );
   }
 
   getDraws(): Observable<ApiResponse<AdminRaffleDraw[]>> {

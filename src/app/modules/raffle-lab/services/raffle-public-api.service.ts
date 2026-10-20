@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { RaffleNumber } from '../models/raffle-number.model';
+import { RafflePrizesResponse } from '../models/raffle-prize.model';
 
 export interface PublicRaffleDraw {
   id: number;
@@ -48,6 +49,14 @@ export class RafflePublicApiService {
   getDraws(): Observable<ApiResponse<PublicRaffleDraw[]>> {
     return this.http.get<ApiResponse<PublicRaffleDraw[]>>(
       `${this.baseUrl}/draws`
+    );
+  }
+
+  getDrawPrizes(
+    drawId: number
+  ): Observable<ApiResponse<RafflePrizesResponse>> {
+    return this.http.get<ApiResponse<RafflePrizesResponse>>(
+      `${this.baseUrl}/draws/${drawId}/prizes`
     );
   }
 

@@ -396,6 +396,284 @@
 
     </div>
 
+    <section
+      *ngIf="selectedDraw as draw"
+      class="raffle-prizes-admin"
+      aria-labelledby="raffle-prizes-admin-title"
+    >
+      <header class="raffle-prizes-admin-header">
+        <h3 id="raffle-prizes-admin-title">4. Premios del sorteo</h3>
+        <p>Gestiona los premios asociados a {{ draw.name }}.</p>
+      </header>
+
+      <form
+        class="raffle-prizes-admin-form"
+        (ngSubmit)="createPrize()"
+      >
+        <div class="management-form-fields">
+          <div class="management-form-field">
+            <label for="raffle-prize-position">Posición del premio</label>
+            <input
+              id="raffle-prize-position"
+              name="prizePosition"
+              type="number"
+              min="1"
+              max="4294967295"
+              step="1"
+              required
+              [(ngModel)]="newPrizePosition"
+            />
+          </div>
+
+          <div class="management-form-field">
+            <label for="raffle-prize-title">Título del premio</label>
+            <input
+              id="raffle-prize-title"
+              name="prizeTitle"
+              type="text"
+              maxlength="200"
+              required
+              placeholder="Ej. Primer premio"
+              [(ngModel)]="newPrizeTitle"
+            />
+          </div>
+
+          <div class="management-form-field">
+            <label for="raffle-prize-description">Descripción (opcional)</label>
+            <textarea
+              id="raffle-prize-description"
+              name="prizeDescription"
+              rows="3"
+              placeholder="Describe el premio..."
+              [(ngModel)]="newPrizeDescription"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="management-form-actions">
+          <button
+            class="raffle-btn raffle-btn--primary"
+            type="submit"
+            [disabled]="prizeSaving || prizesLoading"
+          >
+            {{ prizeSaving ? 'Guardando...' : 'Añadir premio' }}
+          </button>
+        </div>
+
+        <p
+          *ngIf="prizeFormMessage"
+          class="raffle-prizes-admin-feedback"
+          [class.raffle-prizes-admin-feedback--error]="prizeFormMessage !== 'Premio creado correctamente.'"
+          [attr.role]="prizeFormMessage === 'Premio creado correctamente.' ? 'status' : 'alert'"
+        >
+          <span aria-hidden="true">
+            {{ prizeFormMessage === 'Premio creado correctamente.' ? '✓' : '!' }}
+          </span>
+          {{ prizeFormMessage }}
+        </p>
+      </form>
+
+      <p *ngIf="prizesLoading" role="status">
+        Cargando premios...
+      </p>
+
+      <p *ngIf="prizesMessage" role="alert">
+        {{ prizesMessage }}
+      </p>
+
+      <p *ngIf="!prizesLoading && !prizesMessage && prizes.length === 0">
+        Este sorteo todavía no tiene premios configurados.
+      </p>
+
+      <p
+        *ngIf="prizeDeleteMessage"
+        class="raffle-prizes-admin-feedback"
+        [class.raffle-prizes-admin-feedback--error]="prizeDeleteMessage !== 'Premio eliminado correctamente.'"
+        [attr.role]="prizeDeleteMessage === 'Premio eliminado correctamente.' ? 'status' : 'alert'"
+      >
+        <span aria-hidden="true">
+          {{ prizeDeleteMessage === 'Premio eliminado correctamente.' ? '✓' : '!' }}
+        </span>
+        {{ prizeDeleteMessage }}
+      </p>
+
+      <div
+        *ngIf="!prizesLoading && prizes.length > 0"
+        class="raffle-prizes-admin-list"
+      >
+        <article
+          *ngFor="let prize of prizes"
+          class="raffle-prizes-admin-item"
+        >
+          <ng-container *ngIf="editingPrizeId !== prize.id; else prizeEditForm">
+            <div
+              *ngIf="prize.imagePath"
+              class="raffle-prizes-admin-item-image"
+            >
+              <img
+                [src]="getBannerImageUrl(prize.imagePath)"
+                [alt]="prize.title"
+                loading="lazy"
+              />
+            </div>
+
+            <h4>{{ prize.position }}. {{ prize.title }}</h4>
+            <p *ngIf="prize.description">{{ prize.description }}</p>
+
+            <div class="raffle-prizes-admin-image-controls">
+              <label [for]="'raffle-prize-image-' + prize.id">
+                Imagen del premio
+              </label>
+
+              <input
+                type="file"
+                [id]="'raffle-prize-image-' + prize.id"
+                accept="image/jpeg,image/png,image/webp"
+                [disabled]="prizeImageUploadingId !== null"
+                (change)="onPrizeImageSelected($event, prize.id)"
+              />
+
+              <p *ngIf="prizeImageFiles[prize.id]">
+                Archivo seleccionado:
+                {{ prizeImageFiles[prize.id].name }}
+              </p>
+
+              <button
+                type="button"
+                class="raffle-btn"
+                [disabled]="!prizeImageFiles[prize.id] || prizeImageUploadingId !== null || deletingPrizeId !== null || prizeUpdating || prizeSaving"
+                (click)="uploadPrizeImage(prize)"
+              >
+                {{
+                  prizeImageUploadingId === prize.id
+                    ? 'Subiendo imagen...'
+                    : (prize.imagePath ? 'Sustituir imagen' : 'Subir imagen')
+                }}
+              </button>
+
+              <button
+                *ngIf="prize.imagePath"
+                type="button"
+                class="raffle-btn"
+                [disabled]="prizeImageRemovingId !== null || prizeImageUploadingId !== null || deletingPrizeId !== null || prizeUpdating || prizeSaving"
+                (click)="removePrizeImage(prize)"
+              >
+                {{
+                  prizeImageRemovingId === prize.id
+                    ? 'Eliminando imagen...'
+                    : 'Eliminar imagen'
+                }}
+              </button>
+
+              <p
+                *ngIf="prizeImageMessages[prize.id] as imageMessage"
+                class="raffle-prizes-admin-feedback"
+                [class.raffle-prizes-admin-feedback--error]="imageMessage !== 'Imagen del premio actualizada.' && imageMessage !== 'Imagen del premio eliminada correctamente.'"
+                [attr.role]="(imageMessage === 'Imagen del premio actualizada.' || imageMessage === 'Imagen del premio eliminada correctamente.') ? 'status' : 'alert'"
+              >
+                <span aria-hidden="true">
+                  {{ (imageMessage === 'Imagen del premio actualizada.' || imageMessage === 'Imagen del premio eliminada correctamente.') ? '✓' : '!' }}
+                </span>
+                {{ imageMessage }}
+              </p>
+            </div>
+
+            <div class="raffle-prizes-admin-item-actions">
+              <button
+                type="button"
+                class="raffle-btn"
+                [disabled]="prizeUpdating || deletingPrizeId !== null"
+                (click)="startEditPrize(prize)"
+              >
+                Editar
+              </button>
+
+              <button
+                type="button"
+                class="raffle-btn"
+                [disabled]="prizeUpdating || prizeSaving || deletingPrizeId !== null"
+                (click)="deletePrize(prize)"
+              >
+                {{ deletingPrizeId === prize.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-template #prizeEditForm>
+            <form
+              class="raffle-prizes-admin-edit-form"
+              (ngSubmit)="saveEditPrize()"
+            >
+              <div class="management-form-field">
+                <label [for]="'raffle-edit-position-' + prize.id">
+                  Posición
+                </label>
+                <input
+                  [id]="'raffle-edit-position-' + prize.id"
+                  [name]="'editPrizePosition-' + prize.id"
+                  type="number"
+                  min="1"
+                  max="4294967295"
+                  step="1"
+                  required
+                  [(ngModel)]="editPrizePosition"
+                />
+              </div>
+
+              <div class="management-form-field">
+                <label [for]="'raffle-edit-title-' + prize.id">
+                  Título
+                </label>
+                <input
+                  [id]="'raffle-edit-title-' + prize.id"
+                  [name]="'editPrizeTitle-' + prize.id"
+                  type="text"
+                  maxlength="200"
+                  required
+                  [(ngModel)]="editPrizeTitle"
+                />
+              </div>
+
+              <div class="management-form-field">
+                <label [for]="'raffle-edit-description-' + prize.id">
+                  Descripción (opcional)
+                </label>
+                <textarea
+                  [id]="'raffle-edit-description-' + prize.id"
+                  [name]="'editPrizeDescription-' + prize.id"
+                  rows="3"
+                  [(ngModel)]="editPrizeDescription"
+                ></textarea>
+              </div>
+
+              <p *ngIf="prizeEditMessage" role="alert">
+                {{ prizeEditMessage }}
+              </p>
+
+              <div class="raffle-prizes-admin-item-actions">
+                <button
+                  type="submit"
+                  class="raffle-btn raffle-btn--primary"
+                  [disabled]="prizeUpdating"
+                >
+                  {{ prizeUpdating ? 'Guardando...' : 'Guardar cambios' }}
+                </button>
+
+                <button
+                  type="button"
+                  class="raffle-btn"
+                  [disabled]="prizeUpdating"
+                  (click)="cancelEditPrize()"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </ng-template>
+        </article>
+      </div>
+    </section>
+
   </section>
 
   <section *ngIf="activeAdminView === 'participants'" class="management-reservations">

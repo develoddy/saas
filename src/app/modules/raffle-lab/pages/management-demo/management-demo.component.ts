@@ -3,6 +3,7 @@ import { environment } from '../../../../../environments/environment';
 
 import { RaffleNumber, RaffleNumberStatus } from '../../models/raffle-number.model';
 import { RaffleReservation, RaffleReservationStatus } from '../../models/raffle-reservation.model';
+import { RafflePrize } from '../../models/raffle-prize.model';
 import { RaffleNumbersService } from '../../services/raffle-numbers.service';
 
 import { Router } from '@angular/router';
@@ -27,6 +28,31 @@ export class ManagementDemoComponent {
 
   draws: AdminRaffleDraw[] = [];
   selectedDrawId: number | null = null;
+  prizes: RafflePrize[] = [];
+  newPrizePosition = 1;
+  newPrizeTitle = '';
+  newPrizeDescription = '';
+  prizeSaving = false;
+  editingPrizeId: number | null = null;
+  editPrizePosition = 1;
+  editPrizeTitle = '';
+  editPrizeDescription = '';
+  prizeUpdating = false;
+  prizeImageFiles: Record<number, File> = {};
+  prizeImageUploadingId: number | null = null;
+  prizeImageRemovingId: number | null = null;
+
+  prizeImageMessages: Record<number, string> = {};
+  deletingPrizeId: number | null = null;
+  prizeDeleteMessage: string | null = null;
+
+  prizeEditMessage: string | null = null;
+
+  prizeFormMessage: string | null = null;
+
+  prizesLoading = false;
+  prizesMessage: string | null = null;
+
   newDrawName = '';
   newDrawTotalNumbers = 100;
   drawLoading = false;
@@ -510,7 +536,378 @@ export class ManagementDemoComponent {
     });
   }
 
+  createPrize(): void {
+    const drawId = this.selectedDrawId;
+    const position = Number(this.newPrizePosition);
+    const title = this.newPrizeTitle.trim();
+    const description = this.newPrizeDescription.trim();
+
+    if (drawId === null || this.prizeSaving) {
+      return;
+    }
+
+    if (!Number.isInteger(position) || position < 1 || position > 4294967295) {
+      this.prizeFormMessage = 'Introduce una posición válida.';
+      return;
+    }
+
+    if (!title || title.length > 200) {
+      this.prizeFormMessage = 'El título debe tener entre 1 y 200 caracteres.';
+      return;
+    }
+
+    this.prizeSaving = true;
+    this.prizeFormMessage = null;
+
+    this.raffleApi.createDrawPrize(drawId, {
+      position,
+      title,
+      description: description || null
+    }).subscribe({
+      next: response => {
+        this.prizeSaving = false;
+
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.prizes = [...this.prizes, response.data]
+          .sort((a, b) => a.position - b.position);
+
+        this.newPrizePosition = Math.max(
+          1,
+          ...this.prizes.map(prize => prize.position + 1)
+        );
+        this.newPrizeTitle = '';
+        this.newPrizeDescription = '';
+        this.prizeFormMessage = 'Premio creado correctamente.';
+      },
+      error: error => {
+        this.prizeSaving = false;
+
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.prizeFormMessage = error.status === 409
+          ? 'Ya existe un premio con esa posición.'
+          : error.error?.message || 'No se pudo crear el premio.';
+      }
+    });
+  }
+
+  startEditPrize(prize: RafflePrize): void {
+    if (this.prizeUpdating) {
+      return;
+    }
+
+    this.editingPrizeId = prize.id;
+    this.editPrizePosition = prize.position;
+    this.editPrizeTitle = prize.title;
+    this.editPrizeDescription = prize.description || '';
+    this.prizeEditMessage = null;
+  }
+
+  cancelEditPrize(): void {
+    if (this.prizeUpdating) {
+      return;
+    }
+
+    this.editingPrizeId = null;
+    this.prizeEditMessage = null;
+  }
+
+  saveEditPrize(): void {
+    const drawId = this.selectedDrawId;
+    const prizeId = this.editingPrizeId;
+    const position = Number(this.editPrizePosition);
+    const title = this.editPrizeTitle.trim();
+    const description = this.editPrizeDescription.trim();
+
+    if (drawId === null || prizeId === null || this.prizeUpdating) {
+      return;
+    }
+
+    if (!Number.isInteger(position) || position < 1 || position > 4294967295) {
+      this.prizeEditMessage = 'Introduce una posición válida.';
+      return;
+    }
+
+    if (!title || title.length > 200) {
+      this.prizeEditMessage = 'El título debe tener entre 1 y 200 caracteres.';
+      return;
+    }
+
+    this.prizeUpdating = true;
+    this.prizeEditMessage = null;
+
+    this.raffleApi.updateDrawPrize(drawId, prizeId, {
+      position,
+      title,
+      description: description || null
+    }).subscribe({
+      next: response => {
+        this.prizeUpdating = false;
+
+        if (this.selectedDrawId !== drawId ||
+            this.editingPrizeId !== prizeId) {
+          return;
+        }
+
+        this.prizes = this.prizes.map(prize =>
+          prize.id === prizeId ? response.data : prize
+        ).sort((a, b) => a.position - b.position);
+
+        this.editingPrizeId = null;
+        this.prizeFormMessage = 'Premio actualizado correctamente.';
+      },
+      error: error => {
+        this.prizeUpdating = false;
+
+        if (this.selectedDrawId !== drawId ||
+            this.editingPrizeId !== prizeId) {
+          return;
+        }
+
+        this.prizeEditMessage = error.status === 409
+          ? 'Ya existe un premio con esa posición.'
+          : error.error?.message || 'No se pudo actualizar el premio.';
+      }
+    });
+  }
+
+  onPrizeImageSelected(event: Event, prizeId: number): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+
+    if (!file) {
+      delete this.prizeImageFiles[prizeId];
+      return;
+    }
+
+    if (
+      !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      delete this.prizeImageFiles[prizeId];
+      input.value = '';
+      this.prizeImageMessages[prizeId] =
+        'Selecciona una imagen JPEG, PNG o WebP de hasta 5 MB.';
+      return;
+    }
+
+    this.prizeImageFiles[prizeId] = file;
+    delete this.prizeImageMessages[prizeId];
+  }
+
+  uploadPrizeImage(prize: RafflePrize): void {
+    const drawId = this.selectedDrawId;
+    const file = this.prizeImageFiles[prize.id];
+
+    if (
+      drawId === null ||
+      !file ||
+      this.prizeImageUploadingId !== null ||
+      this.prizeImageRemovingId !== null ||
+      this.deletingPrizeId !== null ||
+      this.prizeUpdating ||
+      this.prizeSaving
+    ) {
+      return;
+    }
+
+    if (
+      !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      this.prizeImageMessages[prize.id] =
+        'Selecciona una imagen JPEG, PNG o WebP de hasta 5 MB.';
+      return;
+    }
+
+    this.prizeImageUploadingId = prize.id;
+    delete this.prizeImageMessages[prize.id];
+
+    if (this.prizeFormMessage === 'Premio creado correctamente.') {
+      this.prizeFormMessage = null;
+    }
+
+    if (this.prizeDeleteMessage === 'Premio eliminado correctamente.') {
+      this.prizeDeleteMessage = null;
+    }
+
+    this.raffleApi.uploadDrawPrizeImage(drawId, prize.id, file).subscribe({
+      next: response => {
+        if (this.selectedDrawId === drawId) {
+          this.prizes = this.prizes.map(item =>
+            item.id === prize.id ? response.data : item
+          );
+
+          delete this.prizeImageFiles[prize.id];
+
+          const input = document.getElementById(
+            `raffle-prize-image-${prize.id}`
+          ) as HTMLInputElement | null;
+
+          if (input) {
+            input.value = '';
+          }
+
+          this.prizeImageMessages[prize.id] = 'Imagen del premio actualizada.';
+        }
+
+        this.prizeImageUploadingId = null;
+      },
+      error: error => {
+        if (this.selectedDrawId === drawId) {
+          this.prizeImageMessages[prize.id] =
+            error.error?.message || 'No se pudo subir la imagen del premio.';
+        }
+
+        this.prizeImageUploadingId = null;
+      }
+    });
+  }
+
+  removePrizeImage(prize: RafflePrize): void {
+    const drawId = this.selectedDrawId;
+
+    if (
+      drawId === null ||
+      !prize.imagePath ||
+      this.prizeImageRemovingId !== null ||
+      this.prizeImageUploadingId !== null ||
+      this.deletingPrizeId !== null ||
+      this.prizeUpdating ||
+      this.prizeSaving
+    ) {
+      return;
+    }
+
+    if (!window.confirm(
+      `¿Eliminar la imagen del premio "${prize.title}"? El premio se conservará.`
+    )) {
+      return;
+    }
+
+    this.prizeImageRemovingId = prize.id;
+    delete this.prizeImageMessages[prize.id];
+
+    this.raffleApi.removeDrawPrizeImage(drawId, prize.id).subscribe({
+      next: response => {
+        if (this.selectedDrawId === drawId) {
+          this.prizes = this.prizes.map(item =>
+            item.id === prize.id ? response.data : item
+          );
+
+          delete this.prizeImageFiles[prize.id];
+
+          const input = document.getElementById(
+            `raffle-prize-image-${prize.id}`
+          ) as HTMLInputElement | null;
+
+          if (input) {
+            input.value = '';
+          }
+
+          this.prizeImageMessages[prize.id] =
+            'Imagen del premio eliminada correctamente.';
+        }
+
+        this.prizeImageRemovingId = null;
+      },
+      error: error => {
+        if (this.selectedDrawId === drawId) {
+          this.prizeImageMessages[prize.id] =
+            error.error?.message || 'No se pudo eliminar la imagen.';
+        }
+
+        this.prizeImageRemovingId = null;
+      }
+    });
+  }
+
+  deletePrize(prize: RafflePrize): void {
+    const drawId = this.selectedDrawId;
+
+    if (
+      drawId === null ||
+      this.deletingPrizeId !== null ||
+      this.prizeUpdating ||
+      this.prizeSaving
+    ) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Eliminar el premio "${prize.title}"? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) return;
+
+    this.deletingPrizeId = prize.id;
+    this.prizeDeleteMessage = null;
+
+    this.raffleApi.deleteDrawPrize(drawId, prize.id).subscribe({
+      next: () => {
+        if (this.selectedDrawId === drawId) {
+          this.prizes = this.prizes.filter(item => item.id !== prize.id);
+
+          if (this.editingPrizeId === prize.id) {
+            this.editingPrizeId = null;
+          }
+
+          this.prizeDeleteMessage = 'Premio eliminado correctamente.';
+        }
+
+        this.deletingPrizeId = null;
+      },
+      error: error => {
+        if (this.selectedDrawId === drawId) {
+          this.prizeDeleteMessage =
+            error.error?.message || 'No se pudo eliminar el premio.';
+        }
+
+        this.deletingPrizeId = null;
+      }
+    });
+  }
+
+  loadDrawPrizes(drawId: number): void {
+    this.prizesLoading = true;
+    this.prizesMessage = null;
+
+    this.raffleApi.getDrawPrizes(drawId).subscribe({
+      next: response => {
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.prizes = response.data.prizes;
+        this.prizesLoading = false;
+      },
+      error: () => {
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.prizesLoading = false;
+        this.prizesMessage = 'No se pudieron cargar los premios.';
+      }
+    });
+  }
+
   selectDraw(drawId: number): void {
+    if (
+      this.prizeUpdating ||
+      this.prizeSaving ||
+      this.deletingPrizeId !== null ||
+      this.prizeImageUploadingId !== null ||
+      this.prizeImageRemovingId !== null
+    ) {
+      return;
+    }
+
     const draw = this.draws.find(item => item.id === drawId);
 
     if (!draw) {
@@ -518,6 +915,16 @@ export class ManagementDemoComponent {
     }
 
     this.selectedDrawId = draw.id;
+    this.editingPrizeId = null;
+    this.prizeEditMessage = null;
+    this.prizeFormMessage = null;
+    this.prizeDeleteMessage = null;
+    this.prizeImageMessages = {};
+    this.prizeImageFiles = {};
+    this.prizes = [];
+    this.prizesLoading = false;
+    this.prizesMessage = null;
+    this.loadDrawPrizes(draw.id);
     this.presentation = {
       headline: draw.headline,
       description: draw.description,
