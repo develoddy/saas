@@ -1,0 +1,228 @@
+
+@use '../../shared/styles/tokens' as tokens;
+
+// ========================================
+// RAFFLE LAB — NUMBERS GRID
+// ========================================
+// Estilos base de la cuadrícula.
+// Las reglas responsive están en
+// _responsive.scss.
+
+// SECCIÓN DE NÚMEROS
+
+.raffle-numbers {
+  margin-top: 48px;
+}
+
+// ENCABEZADO
+
+.numbers-heading {
+  margin-bottom: 28px;
+
+  h2 {
+    margin: 10px 0;
+    color: tokens.$raffle-text;
+    font-size: clamp(24px, 3vw, 32px);
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0;
+    color: tokens.$raffle-muted;
+    font-size: 14px;
+  }
+}
+
+// CUADRÍCULA BASE — DESKTOP
+
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 8px;
+}
+
+// BOTONES
+
+.number-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+  aspect-ratio: 1;
+
+  border: 1px solid tokens.$raffle-border;
+  border-radius: tokens.$raffle-radius-sm;
+
+  background: tokens.$raffle-surface;
+  color: tokens.$raffle-text;
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+
+  // DISPONIBLE
+
+  &.is-available {
+    cursor: pointer;
+    background: #142019;
+    border-color: #357e53;
+
+    &:hover {
+      border-color: tokens.$raffle-success;
+      background: #1b3023;
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 2px;
+    }
+  }
+
+  // SELECCIONADO — únicamente números disponibles
+
+  &.is-available.is-selected {
+    background: tokens.$raffle-gold;
+    border-color: tokens.$raffle-gold;
+    color: tokens.$raffle-bg;
+
+    &:hover {
+      background: tokens.$raffle-gold;
+      border-color: tokens.$raffle-gold;
+    }
+  }
+
+  // PENDIENTE
+
+  &.is-pending {
+    background: #332b19;
+    border-color: #655027;
+    color: tokens.$raffle-warning;
+    cursor: not-allowed;
+    opacity: 1;
+  }
+
+  // CONFIRMADO
+
+  &.is-confirmed {
+    background: #24282d;
+    border-color: #343941;
+    color: tokens.$raffle-muted;
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+}
+
+// RESUMEN DE SELECCIÓN
+
+.selection-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 24px;
+  padding: 16px 20px;
+
+  background: tokens.$raffle-surface;
+  border: 1px solid tokens.$raffle-border;
+  border-radius: tokens.$raffle-radius-md;
+
+  span {
+    color: tokens.$raffle-text;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  strong {
+    color: tokens.$raffle-gold;
+    font-size: 14px;
+    font-weight: 700;
+  }
+}
+
+// DETALLE DE NÚMEROS SELECCIONADOS
+
+.selection-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.selected-numbers-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selected-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 36px;
+  min-height: 36px;
+  padding: 6px 10px;
+
+  background: tokens.$raffle-gold;
+  color: tokens.$raffle-bg;
+  border-radius: tokens.$raffle-radius-sm;
+
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+// LEYENDA
+
+.numbers-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+
+  margin-top: 24px;
+  color: tokens.$raffle-muted;
+  font-size: 13px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+// INDICADORES DE ESTADO
+
+.legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  &.available {
+    background: tokens.$raffle-success;
+  }
+
+  &.pending {
+    background: tokens.$raffle-warning;
+  }
+
+  &.confirmed {
+    background: tokens.$raffle-muted;
+  }
+}
+
+// ACCESIBILIDAD
+
+@media (prefers-reduced-motion: reduce) {
+  .number-cell {
+    transition: none;
+  }
+}

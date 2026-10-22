@@ -1,0 +1,24 @@
+<footer class="raffle-footer">
+  <div class="raffle-footer__content">
+    <div class="raffle-footer__brand">
+      <strong>🎁 Raffle Lab</strong>
+      <p>Experimentos y sorteos digitales.</p>
+    </div>
+
+    <nav class="raffle-footer__nav" aria-label="Navegación del pie de página">
+      <a
+        routerLink="/raffle-lab"
+        [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+      >
+        Inicio
+      </a>
+
+      <a
+        routerLink="/raffle-lab/winners"
+        [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+      >
+        Ganadores
+      </a>
+    </nav>
+  </div>
+</footer>

@@ -1,0 +1,861 @@
+/* Raffle Lab — Admin shell
+ * Layout exclusivo del panel de administración.
+ * No modifica los estilos de la vista pública.
+ */
+
+.management-demo {
+  --admin-sidebar-bg: #142238;
+  --admin-sidebar-text: #d0d8e5;
+  --admin-sidebar-active: #3449b8;
+  --admin-workspace-bg: #f5f7fb;
+  --admin-workspace-text: #202b3d;
+
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  min-height: 100vh;
+  padding: 0;
+  background: var(--admin-workspace-bg);
+  color: var(--admin-workspace-text);
+}
+
+.management-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+  padding: 32px 16px;
+  background: var(--admin-sidebar-bg);
+  color: var(--admin-sidebar-text);
+}
+
+.management-sidebar-brand {
+  padding: 0 12px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.management-sidebar .management-admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.management-sidebar .management-admin-nav button {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--admin-sidebar-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.management-sidebar .management-admin-nav button:hover {
+  background: #253650;
+  color: #fff;
+}
+
+.management-sidebar .management-admin-nav button.is-active {
+  background: var(--admin-sidebar-active);
+  border-color: transparent;
+  color: #fff;
+}
+
+.management-sidebar .management-admin-nav button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.management-workspace {
+  min-width: 0;
+  padding: 32px;
+  background: var(--admin-workspace-bg);
+  color: var(--admin-workspace-text);
+}
+
+@media (max-width: 768px) {
+  .management-demo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .management-sidebar {
+    gap: 16px;
+    padding: 20px 16px;
+  }
+
+  .management-sidebar .management-admin-nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .management-sidebar .management-admin-nav button {
+    width: auto;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .management-workspace {
+    padding: 24px 16px;
+  }
+}
+
+/* Raffle Lab — Light theme: Numbers view */
+
+.management-workspace .management-header h1,
+.management-workspace .management-numbers-heading h2,
+.management-workspace .management-number-detail-header h3 {
+  color: #202b3d;
+}
+
+.management-workspace .management-header p,
+.management-workspace .management-numbers-heading p,
+.management-workspace .management-number-detail-label {
+  color: #64748b;
+}
+
+.management-workspace .management-logout-button {
+  color: #202b3d;
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+.management-workspace .management-public-link {
+  color: #3449b8;
+}
+
+.management-workspace .management-active-draw,
+.management-workspace .stat-card,
+.management-workspace .management-number-detail {
+  background: #ffffff;
+  border-color: #dce3ec;
+  color: #202b3d;
+  box-shadow: 0 2px 8px rgba(20, 34, 56, 0.035);
+}
+
+.management-workspace .management-active-draw-info strong,
+.management-workspace .stat-card strong {
+  color: #202b3d;
+}
+
+/* Selector global de sorteos — tema claro */
+.management-workspace .raffle-select.management-active-draw-select {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  min-height: 44px;
+  padding: 10px 38px 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #202b3d;
+  font: inherit;
+  cursor: pointer;
+  color-scheme: light;
+}
+
+.management-workspace .raffle-select.management-active-draw-select:hover {
+  border-color: #94a3b8;
+}
+
+.management-workspace .raffle-select.management-active-draw-select:focus-visible {
+  outline: 2px solid #3449b8;
+  outline-offset: 2px;
+}
+
+.management-workspace .raffle-select.management-active-draw-select:disabled {
+  background-color: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+
+.management-workspace .management-active-draw-count,
+.management-workspace .stat-card span {
+  color: #64748b;
+}
+
+.management-workspace .stat-card.stat-available strong {
+  color: #16834b;
+}
+
+.management-workspace .stat-card.stat-pending strong {
+  color: #a66b08;
+}
+
+.management-workspace .management-active-draw-status {
+  border-color: #dce3ec;
+  color: #64748b;
+}
+
+.management-workspace .management-active-draw-status.is-published {
+  color: #16834b;
+}
+
+.management-workspace .management-active-draw-status.is-draft {
+  color: #a66b08;
+}
+
+.management-workspace .management-number-detail-status.is-available {
+  background: #e9eff7;
+  color: #475569;
+}
+
+.management-workspace .management-number-detail-status.is-pending {
+  background: #fff4d8;
+  color: #925d08;
+}
+
+.management-workspace .management-number-detail-status.is-confirmed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.management-workspace .management-number-detail button:not(.raffle-btn) {
+  background: #eef2f8;
+  border-color: #cbd5e1;
+  color: #202b3d;
+}
+
+.management-workspace .management-number-detail button:not(.raffle-btn):hover {
+  background: #e2e8f0;
+}
+
+.management-workspace .management-number-detail button:focus-visible,
+.management-workspace .management-logout-button:focus-visible {
+  outline: 2px solid #3449b8;
+  outline-offset: 2px;
+}
+
+/* Raffle Lab — Light theme: Participants view */
+
+/* Las secciones de Participantes comparten estilos antiguos con Configuración.
+   Limitamos el cambio al workspace y excluimos Configuración mediante :has(). */
+.management-workspace > .management-participant-registration,
+.management-workspace > .management-reservations[aria-labelledby="management-reservations-title"],
+.management-workspace > .management-reservation-history,
+.management-workspace > .management-participant-summary {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 24px;
+  border: 1px solid #dce3ec;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #202b3d;
+  box-shadow: 0 2px 8px rgba(20, 34, 56, 0.035);
+}
+
+.management-workspace > .management-participant-summary h2,
+.management-workspace > .management-reservations[aria-labelledby="management-reservations-title"] h2,
+.management-workspace > .management-reservation-history h2 {
+  color: #202b3d;
+}
+
+.management-workspace > .management-participant-summary__counts,
+.management-workspace .management-participant-summary__counts > div {
+  background: #f5f7fb;
+  color: #202b3d;
+}
+
+.management-workspace .management-participant-summary__counts span {
+  color: #64748b;
+}
+
+.management-workspace .management-participant-summary__counts strong {
+  color: #202b3d;
+}
+
+.management-workspace .management-reservations-empty {
+  background: #f5f7fb;
+  color: #64748b;
+}
+
+.management-workspace .management-reservation-card {
+  background: #f8fafc;
+  border-color: #dce3ec;
+  color: #202b3d;
+}
+
+.management-workspace .management-reservation-card h3 {
+  color: #202b3d;
+}
+
+.management-workspace .management-reservation-card p {
+  color: #475569;
+}
+
+/* Raffle Lab — Participants: readability and controls */
+
+/* Registro: visible incluso cuando el formulario no se renderiza. */
+.management-workspace > .management-participant-registration header h2,
+.management-workspace > .management-participant-registration header p,
+.management-workspace > .management-participant-registration > p {
+  color: #202b3d;
+}
+
+.management-workspace > .management-participant-registration header p,
+.management-workspace > .management-reservations[aria-labelledby="management-reservations-title"] header p,
+.management-workspace > .management-reservation-history header p {
+  color: #64748b;
+}
+
+/* Textos auxiliares del historial. */
+.management-workspace .management-reservation-history .management-history-count,
+.management-workspace .management-reservation-history .management-history-pagination span {
+  color: #64748b;
+}
+
+/* Controles claros y legibles. */
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button,
+.management-demo .management-workspace .management-reservation-history
+.management-history-pagination button {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button:hover:not(:disabled),
+.management-demo .management-workspace .management-reservation-history
+.management-history-pagination button:hover:not(:disabled) {
+  background: #e9eff7;
+  border-color: #94a3b8;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button.is-active {
+  background: #e8edff;
+  border-color: #3449b8;
+  color: #3449b8;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button.is-active.is-confirmed {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #166534;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button.is-active.is-cancelled {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #991b1b;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button.is-active.is-expired {
+  background: #fef3c7;
+  border-color: #d97706;
+  color: #92400e;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-pagination button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.management-demo .management-workspace .management-reservation-history
+.management-history-filters button:focus-visible,
+.management-demo .management-workspace .management-reservation-history
+.management-history-pagination button:focus-visible {
+  outline: 2px solid #3449b8;
+  outline-offset: 2px;
+}
+
+/* Raffle Lab — Participants: closed draw notice */
+.management-workspace .management-participant-registration
+.management-registration-notice {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Raffle Lab — Participants: registration form light theme */
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant .management-form-field label {
+  color: #334155;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant input,
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant select {
+  background-color: #ffffff;
+  color: #202b3d;
+  border: 1px solid #cbd5e1;
+  color-scheme: light;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant input::placeholder {
+  color: #64748b;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant input:focus-visible,
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant select:focus-visible {
+  outline: 2px solid #3449b8;
+  outline-offset: 2px;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-number-input-row .raffle-btn--secondary {
+  background: #eef2f8;
+  border-color: #cbd5e1;
+  color: #202b3d;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-manual-number-grid button {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-manual-number-grid button.is-selected {
+  background: #e8edff;
+  border-color: #3449b8;
+  color: #3449b8;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-manual-number-grid button:disabled:not(.is-selected) {
+  background: #f1f5f9;
+  border-color: #dce3ec;
+  color: #94a3b8;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-selected-numbers {
+  background: #f5f7fb;
+  border: 1px solid #dce3ec;
+  color: #202b3d;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-selected-numbers h3 {
+  color: #202b3d;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-selected-numbers p {
+  color: #64748b;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-selected-numbers button {
+  background: #e8edff;
+  border: 1px solid #c7d2fe;
+  color: #3449b8;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-admin-form--participant .management-form-field > p[role="alert"] {
+  color: #b91c1c;
+}
+
+/* Raffle Lab — Settings: light surfaces */
+.management-workspace .management-settings {
+  width: 100%;
+  max-width: 1100px;
+  margin: 28px auto;
+  background: #ffffff;
+  border: 1px solid #dce3ec;
+  color: #202b3d;
+  box-shadow: 0 2px 8px rgba(20, 34, 56, 0.035);
+}
+
+.management-workspace .management-settings > header h2 {
+  color: #202b3d;
+}
+
+.management-workspace .management-settings > header p {
+  color: #64748b;
+}
+
+.management-workspace .management-settings .raffle-settings-card,
+.management-workspace .management-settings .raffle-presentation-editor,
+.management-workspace .management-settings .raffle-prizes-admin {
+  background: #ffffff;
+  border: 1px solid #dce3ec;
+  color: #202b3d;
+  box-shadow: 0 2px 8px rgba(20, 34, 56, 0.035);
+}
+
+.management-workspace .management-settings .raffle-settings-card h3,
+.management-workspace .management-settings .raffle-presentation-header h3,
+.management-workspace .management-settings .raffle-prizes-admin-header h3 {
+  color: #202b3d;
+}
+
+.management-workspace .management-settings .raffle-presentation-header p,
+.management-workspace .management-settings .raffle-prizes-admin-header p {
+  color: #64748b;
+}
+
+.management-workspace .management-settings .raffle-presentation-header {
+  border-bottom-color: #dce3ec;
+}
+
+/* Raffle Lab — Settings: readable forms */
+.management-workspace .management-settings .raffle-settings-card h3,
+.management-workspace .management-settings .raffle-settings-card .management-draw-form > h3,
+.management-workspace .management-settings .raffle-presentation-header h3,
+.management-workspace .management-settings .raffle-prizes-admin-header h3 {
+  color: #202b3d;
+}
+
+.management-workspace .management-settings .management-form-field label,
+.management-workspace .management-settings .raffle-presentation-field label,
+.management-workspace .management-settings .raffle-settings-card--existing label,
+.management-workspace .management-settings .raffle-prizes-admin label {
+  color: #334155;
+  font-weight: 600;
+}
+
+.management-workspace .management-settings .management-form-field small,
+.management-workspace .management-settings .raffle-presentation-field small {
+  color: #64748b;
+}
+
+.management-workspace .management-settings input:not([type="file"]),
+.management-workspace .management-settings select,
+.management-workspace .management-settings textarea {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #202b3d;
+}
+
+.management-workspace .management-settings input:not([type="file"])::placeholder,
+.management-workspace .management-settings textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+.management-workspace .management-settings input:not([type="file"]):focus,
+.management-workspace .management-settings select:focus,
+.management-workspace .management-settings textarea:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-color: #2563eb;
+}
+
+/* Raffle Lab — Settings: light banner uploads */
+.management-workspace .management-settings .raffle-presentation-media {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.management-workspace .management-settings .raffle-presentation-media-heading h4 {
+  color: #202b3d;
+}
+
+.management-workspace .management-settings .raffle-presentation-media-heading > span,
+.management-workspace .management-settings .raffle-presentation-upload-icon {
+  color: #2563eb;
+}
+
+.management-workspace .management-settings .raffle-presentation-dropzone {
+  background: #ffffff;
+  border: 1px dashed #94a3b8;
+}
+
+.management-workspace .management-settings .raffle-presentation-dropzone:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.management-workspace .management-settings .raffle-presentation-dropzone--dragging {
+  background: #dbeafe;
+  border-color: #2563eb;
+  box-shadow: inset 0 0 0 1px #2563eb;
+}
+
+.management-workspace .management-settings .raffle-presentation-upload-title {
+  color: #334155;
+}
+
+.management-workspace .management-settings .raffle-presentation-upload-help,
+.management-workspace .management-settings .raffle-presentation-preview-label {
+  color: #64748b;
+}
+
+.management-workspace .management-settings .raffle-presentation-preview-image {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.management-workspace .management-settings .raffle-presentation-current-image {
+  color: #1d4ed8;
+}
+
+.management-workspace .management-settings
+.raffle-presentation-media:focus-within .raffle-presentation-dropzone {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Raffle Lab — Settings: light prize cards */
+.management-workspace .management-settings .raffle-prizes-admin-item {
+  background: #f8fafc;
+  border: 1px solid #dce3ec;
+  border-radius: 12px;
+  color: #202b3d;
+}
+
+.management-workspace .management-settings .raffle-prizes-admin-item h4 {
+  color: #1e3a5f;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.management-workspace .management-settings .raffle-prizes-admin-item p {
+  color: #475569;
+}
+
+.management-workspace .management-settings .raffle-prizes-admin-image-controls label {
+  color: #334155;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-image-controls input[type="file"] {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-image-controls input[type="file"]::file-selector-button {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-image-controls input[type="file"]:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.management-workspace .management-settings .raffle-prizes-admin-item-image {
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.management-workspace .management-settings .raffle-prizes-admin-feedback {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.management-workspace .management-settings .raffle-prizes-admin-feedback--error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-image-controls p {
+  color: #64748b;
+}
+
+/* Raffle Lab — Settings: prize action buttons */
+.management-workspace .management-settings
+.raffle-prizes-admin-item-actions > .raffle-btn:not(.raffle-btn--primary) {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-item-actions > .raffle-btn:not(.raffle-btn--primary):last-child {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-item-actions > .raffle-btn:not(.raffle-btn--primary):hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-item-actions > .raffle-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Raffle Lab — Settings: neutral cancel button */
+.management-workspace .management-settings
+.raffle-prizes-admin-edit-form
+.raffle-prizes-admin-item-actions > .raffle-btn:not(.raffle-btn--primary):last-child {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+.management-workspace .management-settings
+.raffle-prizes-admin-edit-form
+.raffle-prizes-admin-item-actions > .raffle-btn:not(.raffle-btn--primary):last-child:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+
+/* Raffle Lab — Light theme: Numbers grid */
+
+.management-demo .management-workspace .management-number {
+  background: #ffffff;
+  border-color: #dce3ec;
+  color: #202b3d;
+  opacity: 1;
+}
+
+.management-demo .management-workspace .management-number.is-available {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.management-demo .management-workspace .management-number.is-pending {
+  background: #fef3c7;
+  border-color: #fcd34d;
+  color: #92400e;
+}
+
+.management-demo .management-workspace .management-number.is-confirmed {
+  background: #e9eff7;
+  border-color: #cbd5e1;
+  color: #475569;
+  opacity: 1;
+}
+
+.management-demo .management-workspace .management-number.is-selected {
+  border-color: #3449b8;
+  box-shadow: 0 0 0 2px #3449b8;
+  opacity: 1;
+}
+
+/* Raffle Lab — Participants: dismissible feedback */
+.management-demo .management-workspace
+.management-participant-registration .management-manual-feedback {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #166534;
+  font-size: 14px;
+}
+
+.management-demo .management-workspace
+.management-participant-registration .management-manual-feedback--error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.management-demo .management-workspace
+.management-participant-registration .management-manual-feedback-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.management-demo .management-workspace
+.management-participant-registration .management-manual-feedback-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.management-demo .management-workspace
+.management-participant-registration .management-manual-feedback-close:hover {
+  background: rgba(22, 101, 52, 0.08);
+}
+
+.management-demo .management-workspace
+.management-participant-registration .management-manual-feedback-close:focus-visible {
+  outline: 2px solid #3449b8;
+  outline-offset: 2px;
+}
+
+
+/* Raffle Lab — Admin: ganador asignado */
+.management-workspace .management-results .raffle-winner-assigned {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 20px 0 24px;
+  padding: 18px 24px;
+  border: 1px solid #dce3ec;
+  border-radius: 14px;
+  background: #f8fafc;
+}
+
+.management-workspace .management-results .raffle-winner-assigned__label {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.management-workspace .management-results .raffle-winner-assigned__number {
+  color: #202b3d;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.management-workspace .management-results .raffle-winner-assigned__status {
+  color: #28734a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .management-workspace .management-results .raffle-winner-assigned {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px 18px;
+  }
+}

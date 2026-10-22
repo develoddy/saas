@@ -7,7 +7,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { RaffleAdminAuthService } from '../services/raffle-admin-auth.service';
+import { RaffleAdminAuthService } from '../admin/services/raffle-admin-auth.service';
 
 @Injectable({
   providedIn: 'root'

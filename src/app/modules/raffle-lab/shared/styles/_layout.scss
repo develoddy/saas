@@ -1,0 +1,16 @@
+
+@use './tokens' as tokens;
+
+// Raffle Lab — Shared Layout
+// Estilos estructurales reutilizables del experimento.
+
+@mixin page-container {
+  width: min(100% - 32px, tokens.$raffle-content-width);
+  margin-inline: auto;
+}
+
+@mixin card {
+  background: tokens.$raffle-surface;
+  border: 1px solid tokens.$raffle-border;
+  border-radius: tokens.$raffle-radius-lg;
+}

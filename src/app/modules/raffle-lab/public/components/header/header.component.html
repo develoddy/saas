@@ -1,0 +1,23 @@
+<header class="raffle-header">
+  <div class="raffle-brand">
+    <span class="brand-icon" aria-hidden="true">🎁</span>
+    <div class="brand-info">
+      <span class="brand-name">Raffle <strong>Lab</strong></span>
+      <span class="brand-subtitle">Sorteos · Vista pública</span>
+    </div>
+  </div>
+
+  <div class="raffle-header-actions">
+    <nav class="raffle-nav" aria-label="Navegación principal">
+      <a routerLink="/raffle-lab" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Inicio</a>
+      <a *ngIf="showNumbersLink" href="#numbers-title" (click)="scrollToNumbers($event)">Números</a>
+      <a routerLink="/raffle-lab/winners" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Ganadores</a>
+    </nav>
+
+    <a class="raffle-management-link" routerLink="/raffle-lab/management">
+      Ir a gestión →
+    </a>
+
+    <span class="demo-badge">LAB</span>
+  </div>
+</header>

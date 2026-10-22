@@ -1,0 +1,73 @@
+<div class="raffle-lab">
+  <app-raffle-header [drawId]="drawId"></app-raffle-header>
+
+  <main class="raffle-winners-page">
+    <a routerLink="/raffle-lab" [queryParams]="drawId !== null ? { drawId: drawId } : {}">
+      ← Volver al inicio
+    </a>
+
+    <section aria-labelledby="winners-page-title">
+      <h1 id="winners-page-title">🏆 Ganadores</h1>
+      <p *ngIf="drawName" class="raffle-winners__draw-name">
+        {{ drawName }}
+      </p>
+      <p>Consulta los resultados oficiales de los sorteos.</p>
+    </section>
+
+    <p *ngIf="resultsLoading" role="status">
+      Cargando resultados...
+    </p>
+
+    <p *ngIf="resultsError" role="alert">
+      {{ resultsError }}
+    </p>
+
+    <ng-container *ngIf="resultsData as results">
+      <ng-container *ngIf="results.resultsPublishedAt; else unpublishedResults">
+
+        <div class="raffle-winners__grid">
+          <article
+            *ngFor="let prize of results.prizes"
+            class="raffle-winners__card"
+          >
+            <div
+              *ngIf="getPrizeImageUrl(prize.imagePath) as imageUrl"
+              class="raffle-winners__image"
+            >
+              <img
+                [src]="imageUrl"
+                [alt]="prize.title"
+                loading="lazy"
+              />
+            </div>
+
+            <div class="raffle-winners__details">
+              <span class="raffle-winners__position">
+                {{ prize.position }}º PREMIO
+              </span>
+
+              <h2>{{ prize.title }}</h2>
+
+              <p *ngIf="prize.description">
+                {{ prize.description }}
+              </p>
+
+              <div *ngIf="prize.result" class="raffle-winners__number">
+                <span>NÚMERO GANADOR</span>
+                <strong>{{ prize.result.numberValue }}</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </ng-container>
+
+      <ng-template #unpublishedResults>
+        <p class="raffle-winners__pending">
+          Los resultados todavía no se han publicado.
+        </p>
+      </ng-template>
+    </ng-container>
+  </main>
+  <app-raffle-footer [drawId]="drawId"></app-raffle-footer>
+</div>

@@ -1,0 +1,53 @@
+@use '../../../shared/styles/tokens' as tokens;
+@use '../../../shared/styles/layout' as layout;
+
+.raffle-footer {
+  border-top: 1px solid tokens.$raffle-border;
+  background: tokens.$raffle-bg;
+  color: tokens.$raffle-text;
+}
+
+.raffle-footer__content {
+  @include layout.page-container;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-block: 2rem;
+}
+
+.raffle-footer__brand {
+  strong {
+    color: tokens.$raffle-text;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+    color: tokens.$raffle-muted;
+    font-size: 0.875rem;
+  }
+}
+
+.raffle-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+
+  a {
+    color: tokens.$raffle-text;
+    font-size: 0.875rem;
+    text-decoration: none;
+
+    &:hover {
+      color: tokens.$raffle-gold;
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 4px;
+    }
+  }
+}

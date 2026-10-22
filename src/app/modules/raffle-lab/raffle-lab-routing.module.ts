@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { PublicDemoComponent } from './pages/public-demo/public-demo.component';
-import { ManagementDemoComponent } from './pages/management-demo/management-demo.component';
+import { PublicDemoComponent } from './public/pages/home/public-demo.component';
+import { WinnersComponent } from './public/pages/winners/winners.component';
+import { ManagementDemoComponent } from './admin/pages/dashboard/management-demo.component';
 
-import { ManagementLoginComponent } from './pages/management-login/management-login.component';
+import { ManagementLoginComponent } from './admin/pages/login/management-login.component';
 import { RaffleManagementGuard } from './guards/raffle-management.guard';
 
 const routes: Routes = [
@@ -14,6 +15,14 @@ const routes: Routes = [
     component: PublicDemoComponent,
     data: {
       title: 'Raffle Lab - Public Demo'
+    }
+  },
+  {
+    path: 'winners',
+    pathMatch: 'full',
+    component: WinnersComponent,
+    data: {
+      title: 'Raffle Lab - Ganadores'
     }
   },
   {
