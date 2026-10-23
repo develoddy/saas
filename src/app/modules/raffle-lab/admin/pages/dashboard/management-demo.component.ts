@@ -19,7 +19,7 @@ import {
 @Component({
   selector: 'app-management-demo',
   templateUrl: './management-demo.component.html',
-  styleUrls: ['./management-demo.component.scss']
+  styleUrls: ['./management-prizes.component.scss', './management-shell.component.scss', './management-demo.component.scss']
 })
 export class ManagementDemoComponent {
   activeAdminView: 'numbers' | 'participants' | 'settings' | 'results' = 'numbers';
