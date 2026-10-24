@@ -1,23 +1,41 @@
 <header class="raffle-header">
   <div class="raffle-brand">
-    <span class="brand-icon" aria-hidden="true">🎁</span>
-    <div class="brand-info">
-      <span class="brand-name">Raffle <strong>Lab</strong></span>
-      <span class="brand-subtitle">Sorteos · Vista pública</span>
-    </div>
+    <img
+      class="numiq-logo"
+      src="assets/brands/numiq/numiq-logo-horizontal.svg"
+      alt="NUMIQ — Plataforma de gestión de sorteos"
+      width="300"
+      height="75"
+    >
   </div>
 
-  <div class="raffle-header-actions">
+  <button
+    class="raffle-menu-toggle"
+    type="button"
+    [attr.aria-expanded]="menuOpen"
+    aria-controls="raffle-header-menu"
+    [attr.aria-label]="menuOpen ? 'Cerrar menú' : 'Abrir menú'"
+    (click)="toggleMenu()"
+  >
+    <span class="raffle-menu-toggle__icon" aria-hidden="true">
+      {{ menuOpen ? '×' : '☰' }}
+    </span>
+  </button>
+
+  <div
+    id="raffle-header-menu"
+    class="raffle-header-actions"
+    [class.is-open]="menuOpen"
+  >
     <nav class="raffle-nav" aria-label="Navegación principal">
-      <a routerLink="/raffle-lab" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Inicio</a>
+      <a routerLink="/raffle-lab" [queryParams]="drawId !== null ? { drawId: drawId } : {}" (click)="closeMenu()">Inicio</a>
       <a *ngIf="showNumbersLink" href="#numbers-title" (click)="scrollToNumbers($event)">Números</a>
-      <a routerLink="/raffle-lab/winners" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Ganadores</a>
+      <a routerLink="/raffle-lab/winners" [queryParams]="drawId !== null ? { drawId: drawId } : {}" (click)="closeMenu()">Ganadores</a>
     </nav>
 
-    <a class="raffle-management-link" routerLink="/raffle-lab/management">
+    <a class="raffle-management-link" routerLink="/raffle-lab/management" (click)="closeMenu()">
       Ir a gestión →
     </a>
 
-    <span class="demo-badge">LAB</span>
   </div>
 </header>

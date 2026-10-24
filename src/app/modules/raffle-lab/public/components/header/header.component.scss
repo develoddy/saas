@@ -26,23 +26,11 @@
   gap: 12px;
 }
 
-.brand-icon { font-size: 32px; }
-
-.brand-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-name {
-  font-size: 20px;
-  font-weight: 700;
-
-  strong { color: tokens.$raffle-gold; }
-}
-
-.brand-subtitle {
-  color: tokens.$raffle-muted;
-  font-size: 12px;
+.numiq-logo {
+  display: block;
+  width: 300px;
+  max-width: 100%;
+  height: auto;
 }
 
 .raffle-management-link {
@@ -59,16 +47,6 @@
     outline-offset: 4px;
     border-radius: 2px;
   }
-}
-
-.demo-badge {
-  color: tokens.$raffle-gold;
-  border: 1px solid tokens.$raffle-border;
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
 }
 
 .raffle-nav {
@@ -111,6 +89,10 @@
 }
 
 @media (max-width: 600px) {
+  .numiq-logo {
+    width: 240px;
+  }
+
   .raffle-header {
     padding-block: 18px;
     flex-wrap: wrap;
@@ -120,10 +102,6 @@
     gap: 12px;
   }
 
-  .demo-badge {
-    font-size: 9px;
-    padding: 5px 8px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -136,4 +114,105 @@
 
 @media (prefers-reduced-motion: reduce) {
   .raffle-nav a { transition: none; }
+}
+
+
+/* NUMIQ responsive navigation */
+
+.raffle-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .raffle-header {
+    position: relative;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0;
+    padding-block: 14px;
+  }
+
+  .raffle-brand {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .numiq-logo {
+    display: block;
+    width: clamp(155px, 35vw, 230px);
+    max-width: 100%;
+    height: auto;
+  }
+
+  .raffle-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid tokens.$raffle-border;
+    border-radius: 10px;
+    background: transparent;
+    color: tokens.$raffle-text;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 3px;
+    }
+  }
+
+  .raffle-menu-toggle__icon {
+    font-size: 25px;
+    line-height: 1;
+  }
+
+  .raffle-header-actions {
+    display: none;
+    flex: 0 0 100%;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-top: 16px;
+  }
+
+  .raffle-header-actions.is-open {
+    display: flex;
+  }
+
+  .raffle-nav {
+    display: flex;
+    flex: 0 0 auto;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .raffle-nav a {
+    display: flex;
+    min-height: 48px;
+    padding: 10px 12px;
+    border-radius: 8px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .raffle-management-link {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px;
+    border-top: 1px solid tokens.$raffle-border;
+  }
+}
+
+@media (max-width: 480px) {
+  .numiq-logo {
+    width: clamp(150px, 52vw, 200px);
+  }
 }

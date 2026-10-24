@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { HostListener, Component } from '@angular/core';
 import { environment } from '../../../../../../environments/environment';
 
 import { RaffleNumber, RaffleNumberStatus } from '../../../shared/models/raffle-number.model';
@@ -23,6 +23,29 @@ import {
 })
 export class ManagementDemoComponent {
   activeAdminView: 'numbers' | 'participants' | 'settings' | 'results' = 'numbers';
+
+  adminMenuOpen = false;
+
+  toggleAdminMenu(): void {
+    this.adminMenuOpen = !this.adminMenuOpen;
+  }
+
+  closeAdminMenu(): void {
+    this.adminMenuOpen = false;
+  }
+
+  selectAdminView(
+    view: 'numbers' | 'participants' | 'settings' | 'results'
+  ): void {
+    this.activeAdminView = view;
+    this.closeAdminMenu();
+  }
+
+  @HostListener('document:keydown.escape')
+  onAdminMenuEscape(): void {
+    this.closeAdminMenu();
+  }
+
 
   resultsData: AdminRaffleResults | null = null;
   resultsLoading = false;
@@ -884,6 +907,8 @@ export class ManagementDemoComponent {
 
   resultNumberInputs: Record<number, number | null> = {};
   resultSavingPrizeId: number | null = null;
+  resultErrorPrizeId: number | null = null;
+  resultErrorMessage: string | null = null;
 
   savePrizeResult(prizeId: number, hasResult: boolean): void {
     const drawId = this.selectedDrawId;
@@ -907,6 +932,8 @@ export class ManagementDemoComponent {
 
     this.resultSavingPrizeId = prizeId;
     this.resultsMessage = null;
+    this.resultErrorPrizeId = null;
+    this.resultErrorMessage = null;
 
     const request = hasResult
       ? this.raffleApi.updateDrawResult(drawId, prizeId, numberValue)
@@ -930,8 +957,11 @@ export class ManagementDemoComponent {
           return;
         }
 
-        this.resultsMessage =
-          error.error?.message || 'No se pudo guardar el número ganador.';
+        this.resultErrorPrizeId = prizeId;
+        this.resultErrorMessage =
+          error.status === 409
+            ? 'Este número ya está asignado a otro premio. Selecciona uno diferente.'
+            : error.error?.message || 'No se pudo guardar el número ganador.';
       }
     });
   }
@@ -1075,6 +1105,8 @@ export class ManagementDemoComponent {
     this.resultsData = null;
     this.resultsLoading = false;
     this.resultsMessage = null;
+    this.resultErrorPrizeId = null;
+    this.resultErrorMessage = null;
     this.resultNumberInputs = {};
     this.loadDrawPrizes(draw.id);
     this.loadDrawResults(draw.id);
@@ -1313,6 +1345,16 @@ export class ManagementDemoComponent {
         )
         .filter(value => confirmedNumbers.has(value))
     )].sort((a, b) => a - b);
+  }
+
+  getWinnerParticipantName(numberValue: number): string | null {
+    const reservation = this.realReservations.find(
+      reservation =>
+        reservation.status === 'confirmed' &&
+        reservation.numbers.some(number => number.value === numberValue)
+    );
+
+    return reservation?.participantName ?? null;
   }
 
   get activeReservations(): AdminRaffleReservation[] {

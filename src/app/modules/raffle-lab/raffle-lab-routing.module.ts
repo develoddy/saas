@@ -13,33 +13,25 @@ const routes: Routes = [
     path: '',
     pathMatch: 'full',
     component: PublicDemoComponent,
-    data: {
-      title: 'Raffle Lab - Public Demo'
-    }
+    title: 'NUMIQ | Sorteos'
   },
   {
     path: 'winners',
     pathMatch: 'full',
     component: WinnersComponent,
-    data: {
-      title: 'Raffle Lab - Ganadores'
-    }
+    title: 'NUMIQ | Ganadores'
   },
   {
     path: 'management/login',
     component: ManagementLoginComponent,
-    data: {
-      title: 'Raffle Lab - Management Login'
-    }
+    title: 'NUMIQ | Acceso a gestión'
   },
   {
     path: 'management',
     pathMatch: 'full',
     component: ManagementDemoComponent,
     canActivate: [RaffleManagementGuard],
-    data: {
-      title: 'Raffle Lab - Management Demo'
-    }
+    title: 'NUMIQ | Panel de gestión'
   }
 ];
 

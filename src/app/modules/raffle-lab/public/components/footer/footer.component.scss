@@ -19,16 +19,15 @@
 }
 
 .raffle-footer__brand {
-  strong {
-    color: tokens.$raffle-text;
-    font-size: 1rem;
-  }
+  flex: 0 1 220px;
+  min-width: 0;
+}
 
-  p {
-    margin: 0.5rem 0 0;
-    color: tokens.$raffle-muted;
-    font-size: 0.875rem;
-  }
+.raffle-footer__logo {
+  display: block;
+  width: 220px;
+  max-width: 100%;
+  height: auto;
 }
 
 .raffle-footer__nav {

@@ -1,38 +1,93 @@
 
 
 <section class="management-demo">
-  <aside class="management-sidebar">
-    <div class="management-sidebar-brand">Raffle Lab</div>
+  <div class="management-mobile-bar">
+    <div class="management-mobile-brand">
+      <img
+        src="assets/brands/numiq/numiq-symbol.svg"
+        alt=""
+        aria-hidden="true"
+        width="32"
+        height="32"
+      >
+      <span>NUMIQ · Gestión</span>
+    </div>
+
+    <button
+      type="button"
+      class="management-menu-toggle"
+      [attr.aria-expanded]="adminMenuOpen"
+      aria-controls="management-mobile-sidebar"
+      [attr.aria-label]="adminMenuOpen ? 'Cerrar menú de gestión' : 'Abrir menú de gestión'"
+      (click)="toggleAdminMenu()"
+    >
+      <span aria-hidden="true">{{ adminMenuOpen ? '×' : '☰' }}</span>
+    </button>
+  </div>
+
+  <button
+    type="button"
+    class="management-sidebar-backdrop"
+    [class.is-visible]="adminMenuOpen"
+    aria-label="Cerrar menú de gestión"
+    [attr.tabindex]="adminMenuOpen ? 0 : -1"
+    (click)="closeAdminMenu()"
+  ></button>
+
+  <aside
+    id="management-mobile-sidebar"
+    class="management-sidebar"
+    [class.is-open]="adminMenuOpen"
+  >
+    <div class="management-sidebar-brand">
+      <img
+        class="management-sidebar-logo"
+        src="assets/brands/numiq/numiq-symbol.svg"
+        alt=""
+        aria-hidden="true"
+        width="40"
+        height="40"
+      >
+      <span>NUMIQ</span>
+      <button
+        type="button"
+        class="management-sidebar-close"
+        aria-label="Cerrar menú de gestión"
+        (click)="closeAdminMenu()"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
   <nav class="management-admin-nav" aria-label="Secciones del panel">
     <button
       type="button"
       [class.is-active]="activeAdminView === 'numbers'"
       [attr.aria-current]="activeAdminView === 'numbers' ? 'page' : null"
-      (click)="activeAdminView = 'numbers'"
+      (click)="selectAdminView('numbers')"
     >Números</button>
     <button
       type="button"
       [class.is-active]="activeAdminView === 'participants'"
       [attr.aria-current]="activeAdminView === 'participants' ? 'page' : null"
-      (click)="activeAdminView = 'participants'"
+      (click)="selectAdminView('participants')"
     >Participantes</button>
     <button
       type="button"
       [class.is-active]="activeAdminView === 'settings'"
       [attr.aria-current]="activeAdminView === 'settings' ? 'page' : null"
-      (click)="activeAdminView = 'settings'"
+      (click)="selectAdminView('settings')"
     >Configuración</button>
     <button
       type="button"
       [class.is-active]="activeAdminView === 'results'"
       [attr.aria-current]="activeAdminView === 'results' ? 'page' : null"
-      (click)="activeAdminView = 'results'"
+      (click)="selectAdminView('results')"
     >Resultados</button>
   </nav>
   </aside>
   <main class="management-workspace">
   <header class="management-header">
-    <span class="management-eyebrow">RAFFLE LAB</span>
+    <span class="management-eyebrow">NUMIQ</span>
     <h1>Gestión del sorteo</h1>
     <p>
       Administración de sorteos, participantes y reservas.
@@ -234,6 +289,9 @@
                       [ngValue]="number"
                     >
                       Número {{ number }}
+                      <ng-container *ngIf="getWinnerParticipantName(number) as participantName">
+                        — {{ participantName }}
+                      </ng-container>
                     </option>
                   </select>
                 </div>
@@ -252,6 +310,14 @@
                       : 'Asignar ganador'
                 }}
               </button>
+
+              <p
+                *ngIf="resultErrorPrizeId === prize.id && resultErrorMessage"
+                role="alert"
+                class="raffle-result-error"
+              >
+                {{ resultErrorMessage }}
+              </p>
             </form>
           </div>
         </ng-container>
@@ -360,7 +426,7 @@
     <div *ngIf="selectedDraw as draw" class="raffle-presentation-editor raffle-settings-card--presentation">
 
       <header class="raffle-presentation-header">
-        <span class="raffle-presentation-eyebrow">RAFFLE LAB · ADMIN</span>
+        <span class="raffle-presentation-eyebrow">NUMIQ · ADMIN</span>
         <h3>3. Presentación del sorteo</h3>
         <p>Personaliza la información que verán los participantes.</p>
       </header>

@@ -64,7 +64,7 @@
         </ng-container>
 
         <ng-template #noSelectedDraw>
-          <h1 id="raffle-hero-banner-title">Raffle Lab</h1>
+          <h1 id="raffle-hero-banner-title">NUMIQ</h1>
           <p class="raffle-hero-banner__description">
             Selecciona un sorteo para consultar sus premios y números disponibles.
           </p>
@@ -239,6 +239,11 @@
       </ng-container>
     </section>
 
+    <section class="demo-notice">
+      <p>Consulta de números reales. Puedes solicitar un número disponible por WhatsApp; la reserva se confirmará manualmente.</p>
+    </section>
+  </main>
+
     <div *ngIf="selectedNumber !== null && selectedDraw as draw" class="raffle-modal-backdrop" (click)="closeNumberModal()">
       <section class="raffle-number-modal" role="dialog" aria-modal="true" aria-labelledby="raffle-modal-title" aria-describedby="raffle-modal-description" (click)="$event.stopPropagation()">
         <button #modalCloseButton class="raffle-modal-close" type="button" aria-label="Cerrar" (click)="closeNumberModal()">×</button>
@@ -262,10 +267,6 @@
       </section>
     </div>
 
-    <section class="demo-notice">
-      <p>Consulta de números reales. Puedes solicitar un número disponible por WhatsApp; la reserva se confirmará manualmente.</p>
-    </section>
-  </main>
 
   <app-raffle-footer [drawId]="selectedDraw?.id ?? null"></app-raffle-footer>
 </div>

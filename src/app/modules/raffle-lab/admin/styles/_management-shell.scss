@@ -29,10 +29,23 @@
 }
 
 .management-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
   padding: 0 12px;
   color: #fff;
   font-size: 20px;
   font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.management-sidebar-logo {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  object-fit: contain;
 }
 
 .management-sidebar .management-admin-nav {
@@ -815,6 +828,22 @@
 }
 
 
+/* Raffle Lab — Results: spacing and validation feedback */
+.management-workspace .management-results .raffle-settings-card > .raffle-settings-card {
+  margin-top: 24px;
+}
+
+.management-workspace .management-results .raffle-result-error {
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 /* Raffle Lab — Admin: ganador asignado */
 .management-workspace .management-results .raffle-winner-assigned {
   display: flex;
@@ -857,5 +886,197 @@
     box-sizing: border-box;
     width: 100%;
     padding: 16px 18px;
+  }
+}
+
+
+/* NUMIQ Admin mobile navigation */
+
+.management-mobile-bar,
+.management-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .management-demo {
+    display: block;
+    padding: 0;
+    min-width: 0;
+  }
+
+  .management-mobile-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 72px;
+    padding: 12px 20px;
+    background: var(--admin-sidebar-bg);
+    color: #fff;
+  }
+
+  .management-mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .management-mobile-brand img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .management-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .management-menu-toggle span {
+    font-size: 26px;
+    line-height: 1;
+  }
+
+  .management-menu-toggle:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+
+  .management-sidebar-backdrop.is-visible {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: rgba(10, 16, 28, 0.65);
+    cursor: pointer;
+  }
+
+  .management-sidebar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1001;
+    width: min(300px, 85vw);
+    height: 100dvh;
+    padding: 28px 16px;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 200ms ease, visibility 200ms ease;
+    box-shadow: 12px 0 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .management-sidebar.is-open {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .management-sidebar .management-admin-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: visible;
+    gap: 6px;
+  }
+
+  .management-sidebar .management-admin-nav button {
+    width: 100%;
+    min-height: 48px;
+    flex: 0 0 auto;
+    white-space: normal;
+    text-align: left;
+  }
+
+  .management-workspace {
+    min-width: 0;
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .management-mobile-bar {
+    padding-inline: 16px;
+  }
+
+  .management-workspace {
+    padding: 20px 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .management-sidebar {
+    transition: none;
+  }
+}
+
+
+/* NUMIQ Admin sidebar close button */
+
+.management-sidebar-close {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .management-sidebar-brand {
+    gap: 10px;
+    padding: 0 4px;
+  }
+
+  .management-sidebar-brand > span {
+    min-width: 0;
+  }
+
+  .management-sidebar-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .management-sidebar-close span {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .management-sidebar-close:hover {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .management-sidebar-close:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 3px;
   }
 }
