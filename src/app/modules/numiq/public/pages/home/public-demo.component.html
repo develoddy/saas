@@ -423,6 +423,7 @@
         <p id="raffle-modal-description">¿Quieres solicitar este número? Su disponibilidad y reserva se confirmarán por WhatsApp.</p>
         <a class="raffle-modal-whatsapp"
            [href]="whatsappUrl"
+           (click)="trackWhatsappClick()"
            target="_blank"
            rel="noopener noreferrer">
           <svg

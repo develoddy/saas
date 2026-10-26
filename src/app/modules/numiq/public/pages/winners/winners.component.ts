@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TrackingService } from '../../../../../services/tracking.service';
 import { getRaffleImageUrl } from '../../../shared/utils/raffle-image-url.util';
 import { EMPTY, Subject, catchError, map, of, switchMap, takeUntil } from 'rxjs';
 import {
@@ -26,7 +27,8 @@ export class WinnersComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly api: RafflePublicApiService
+    private readonly api: RafflePublicApiService,
+    private readonly tracking: TrackingService
   ) {}
 
   get drawId(): number | null {
@@ -129,6 +131,11 @@ export class WinnersComponent implements OnInit, OnDestroy {
       }
 
       this.resultsData = results;
+
+      this.tracking.pageView('numiq_winners', {
+        module: 'numiq',
+        draw_id: results.drawId
+      });
     });
   }
 

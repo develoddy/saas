@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { getRaffleImageUrl } from '../../../shared/utils/raffle-image-url.util';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TrackingService } from '../../../../../services/tracking.service';
 import { Subject, takeUntil } from 'rxjs';
 import { RaffleNumber } from '../../../shared/models/raffle-number.model';
 import { RafflePrize } from '../../../shared/models/raffle-prize.model';
@@ -35,7 +36,8 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   constructor(
     private readonly api: RafflePublicApiService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly tracking: TrackingService
   ) {}
 
   get isDirectDrawView(): boolean {
@@ -135,12 +137,34 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
 
     this.selectedNumber = number.value;
 
+    this.tracking.landingEngagement(
+      'numiq',
+      'numiq_number_selected',
+      {
+        draw_id: this.selectedDraw.id,
+        number_value: number.value
+      }
+    );
+
     // Focus the close control once Angular has rendered the modal.
     queueMicrotask(() => {
       if (this.selectedNumber !== null) {
         this.modalCloseButton?.nativeElement.focus();
       }
     });
+  }
+
+  trackWhatsappClick(): void {
+    if (!this.selectedDraw || this.selectedNumber === null) return;
+
+    this.tracking.landingEngagement(
+      'numiq',
+      'numiq_whatsapp_clicked',
+      {
+        draw_id: this.selectedDraw.id,
+        number_value: this.selectedNumber
+      }
+    );
   }
 
   closeNumberModal(): void {
@@ -286,6 +310,11 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   private loadDraw(draw: PublicRaffleDraw): void {
     this.closeNumberModal();
     this.selectedDraw = draw;
+
+    this.tracking.landingView('numiq', {
+      draw_id: draw.id,
+      draw_status: draw.status
+    });
     this.numbers = [];
     this.winningNumbers = new Set<number>();
     this.resultsPublished = false;
