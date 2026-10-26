@@ -33,6 +33,63 @@
   }
 }
 
+// ENCABEZADO NUMIQ
+
+.numbers-heading {
+  h2 {
+    color: tokens.$raffle-gold;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  .numbers-intro {
+    max-width: 540px;
+    margin: 0 0 24px;
+    line-height: 1.6;
+  }
+
+  label {
+    display: block;
+    color: tokens.$raffle-text;
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+// METADATOS DEL SORTEO — PRESENTACIÓN PÚBLICA
+
+.raffle-numbers .raffle-meta {
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0 16px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 7px 12px;
+    border: 1px solid tokens.$raffle-border;
+    border-radius: tokens.$raffle-radius-sm;
+    background: tokens.$raffle-surface;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-numbers .raffle-meta {
+    gap: 8px;
+    margin: 24px 0 14px;
+
+    span {
+      min-height: 32px;
+      padding: 6px 9px;
+      font-size: 11px;
+    }
+  }
+}
+
 // CUADRÍCULA BASE — DESKTOP
 
 .numbers-grid {
@@ -224,5 +281,198 @@
 @media (prefers-reduced-motion: reduce) {
   .number-cell {
     transition: none;
+  }
+}
+
+// NUMIQ — ESPACIADO UX DEL SELECTOR
+
+.raffle-numbers {
+  .numbers-heading {
+    margin-bottom: 32px;
+  }
+
+  .raffle-meta {
+    margin-top: 28px;
+    margin-bottom: 24px;
+  }
+
+  .raffle-closed-notice {
+    margin: 0 0 24px;
+    padding: 16px 20px;
+    border: 1px solid #70572c;
+    border-left: 3px solid tokens.$raffle-gold;
+    border-radius: tokens.$raffle-radius-md;
+    background: #211b13;
+    color: tokens.$raffle-text;
+    font-size: 14px;
+    line-height: 1.65;
+
+    strong {
+      color: tokens.$raffle-gold;
+    }
+  }
+
+  .numbers-legend {
+    margin-top: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-numbers {
+    .numbers-heading {
+      margin-bottom: 24px;
+    }
+
+    .raffle-meta {
+      margin-top: 22px;
+      margin-bottom: 20px;
+    }
+
+    .raffle-closed-notice {
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      font-size: 13px;
+    }
+
+    .numbers-legend {
+      margin-top: 22px;
+    }
+  }
+}
+
+// NUMIQ — SELECT DE SORTEOS REFINADO
+
+.raffle-numbers select#public-draw {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 100%;
+  max-width: 460px;
+  min-height: 52px;
+
+  padding: 12px 52px 12px 16px;
+
+  background-color: #171b22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23E8B94F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 20px 20px;
+
+  border: 1px solid #4a4438;
+  border-radius: 12px;
+
+  color: tokens.$raffle-text;
+  font-size: 14px;
+  line-height: 1.5;
+
+  &:hover {
+    border-color: tokens.$raffle-gold;
+  }
+
+  &:focus-visible {
+    outline: 2px solid tokens.$raffle-gold;
+    outline-offset: 3px;
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-numbers select#public-draw {
+    max-width: 100%;
+    min-height: 50px;
+    padding-left: 14px;
+    padding-right: 48px;
+    background-position: right 14px center;
+    font-size: 13px;
+  }
+}
+
+// NUMIQ — ESTADO DE ENLACE NO DISPONIBLE
+
+.raffle-unavailable {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 48px;
+  padding: 28px;
+  background: #17191e;
+  border: 1px solid #654044;
+  border-left: 4px solid #d66a72;
+  border-radius: 12px;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #3a2328;
+    color: #f08b92;
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  &__content {
+    min-width: 0;
+
+    h2 {
+      margin: 0 0 12px;
+      color: tokens.$raffle-text;
+      font-size: clamp(20px, 3vw, 26px);
+    }
+
+    p {
+      margin: 0 0 10px;
+      color: tokens.$raffle-muted;
+      line-height: 1.6;
+    }
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 12px 20px;
+    background: tokens.$raffle-gold;
+    color: tokens.$raffle-bg;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 4px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-unavailable {
+    gap: 14px;
+    margin-top: 28px;
+    padding: 20px 16px;
+
+    &__icon {
+      flex-basis: 34px;
+      width: 34px;
+      height: 34px;
+      font-size: 20px;
+    }
+
+    &__content h2 {
+      font-size: 20px;
+    }
+
+    &__content p {
+      font-size: 13px;
+    }
   }
 }

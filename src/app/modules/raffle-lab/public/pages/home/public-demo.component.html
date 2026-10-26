@@ -92,7 +92,25 @@
     </section>
 
     <p *ngIf="loading" role="status">Cargando sorteos…</p>
-    <p *ngIf="error" class="reservation-error" role="alert">{{ error }}</p>
+    <section
+      *ngIf="isUnavailableDirectDraw"
+      class="raffle-unavailable"
+      role="alert"
+      aria-labelledby="raffle-unavailable-title">
+      <div class="raffle-unavailable__icon" aria-hidden="true">!</div>
+      <div class="raffle-unavailable__content">
+        <h2 id="raffle-unavailable-title">No podemos mostrar este sorteo</h2>
+        <p>{{ error }}</p>
+        <p>Comprueba el enlace o solicita uno actualizado al organizador.</p>
+        <a class="raffle-unavailable__link" routerLink="/raffle-lab">
+          Ver sorteos públicos
+        </a>
+      </div>
+    </section>
+
+    <p *ngIf="error && !isUnavailableDirectDraw"
+       class="reservation-error"
+       role="alert">{{ error }}</p>
     <p *ngIf="!loading && !error && draws.length === 0">No hay sorteos públicos disponibles.</p>
 
     <!-- Premios del sorteo -->
@@ -193,13 +211,14 @@
       </div>
     </section>
 
-    <section *ngIf="!loading && draws.length > 0" class="raffle-numbers" aria-labelledby="numbers-title">
+    <section *ngIf="!loading && draws.length > 0 && !isUnavailableDirectDraw" class="raffle-numbers" aria-labelledby="numbers-title">
       <div class="numbers-heading">
         <div>
           <span class="prize-label">SORTEO</span>
           <h2 id="numbers-title">Consulta los números</h2>
-          <label for="public-draw">Selecciona un sorteo</label>
-          <select id="public-draw" (change)="chooseDraw($event)">
+          <p class="numbers-intro">Explora los números del sorteo y consulta su disponibilidad.</p>
+          <label *ngIf="!isDirectDrawView" for="public-draw">Selecciona un sorteo</label>
+          <select *ngIf="!isDirectDrawView" id="public-draw" (change)="chooseDraw($event)">
             <option value="" [selected]="!selectedDraw">Seleccionar sorteo…</option>
             <option
               *ngFor="let draw of draws"
@@ -217,6 +236,14 @@
           <span>🎟️ {{ draw.totalNumbers }} números</span>
           <span>{{ draw.status === 'closed' ? 'Sorteo cerrado' : 'Sorteo publicado' }}</span>
         </div>
+        <p
+          *ngIf="draw.status === 'closed'"
+          class="raffle-closed-notice"
+          role="status">
+          <strong>Sorteo cerrado.</strong>
+          Los números se muestran únicamente para consulta.
+          Ya no se admiten nuevas solicitudes.
+        </p>
         <p *ngIf="numbersLoading" role="status">Cargando números…</p>
         <div *ngIf="!numbersLoading && !error" class="numbers-grid">
           <button
@@ -239,8 +266,65 @@
       </ng-container>
     </section>
 
-    <section class="demo-notice">
-      <p>Consulta de números reales. Puedes solicitar un número disponible por WhatsApp; la reserva se confirmará manualmente.</p>
+    <!-- NUMIQ: guía pública de participación -->
+    <section *ngIf="!isUnavailableDirectDraw" class="raffle-how-to" aria-labelledby="how-to-title">
+      <div class="raffle-how-to__heading">
+        <span class="prize-label">PARTICIPACIÓN</span>
+        <h2 id="how-to-title">¿CÓMO PARTICIPAR?</h2>
+        <p>Es muy fácil, solo sigue estos 3 pasos</p>
+      </div>
+
+      <div class="raffle-how-to__grid">
+        <article class="raffle-how-to__card">
+          <span class="raffle-how-to__number">1</span>
+          <svg class="raffle-how-to__icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a3 3 0 0 0 0 6v4a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-4a3 3 0 0 0 0-6Z"/>
+            <path d="M13 5v2m0 4v2m0 4v2"/>
+          </svg>
+          <div class="raffle-how-to__content">
+            <h3>Elige tu número</h3>
+            <p>Consulta los números disponibles y selecciona el que prefieras.</p>
+          </div>
+        </article>
+
+        <article class="raffle-how-to__card">
+          <span class="raffle-how-to__number">2</span>
+          <svg class="raffle-how-to__icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5Z"/>
+            <path d="M9 9.5c.5 2 2 3.5 4 4l1.5-1 2 1.5c-.5 1.5-1.5 2-3 2-3.5 0-6-2.5-6-6 0-1.5.5-2.5 2-3l1.5 2-1 1.5Z"/>
+          </svg>
+          <div class="raffle-how-to__content">
+            <h3>Confirma el pago</h3>
+            <p>Contacta por WhatsApp y sigue las indicaciones del organizador. La confirmación es manual.</p>
+          </div>
+        </article>
+
+        <article class="raffle-how-to__card">
+          <span class="raffle-how-to__number">3</span>
+          <svg class="raffle-how-to__icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">
+            <rect x="3" y="9" width="18" height="12" rx="1"/>
+            <path d="M12 9v12M3 13h18"/>
+            <path d="M12 9H8a3 3 0 1 1 3-3l1 3Zm0 0h4a3 3 0 1 0-3-3l-1 3Z"/>
+          </svg>
+          <div class="raffle-how-to__content">
+            <h3>Sigue el sorteo</h3>
+            <p>Una vez confirmado tu número, consulta el sorteo y los resultados publicados.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section *ngIf="!isUnavailableDirectDraw" class="demo-notice">
+      <p><strong>Importante:</strong> Solicitar un número por WhatsApp no garantiza su reserva. El organizador debe confirmar su disponibilidad.</p>
     </section>
   </main>
 

@@ -68,6 +68,13 @@
 
     &:hover { color: tokens.$raffle-gold; }
 
+    &.is-active {
+      color: tokens.$raffle-gold;
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+
     &:focus-visible {
       outline: 2px solid tokens.$raffle-gold;
       outline-offset: 4px;

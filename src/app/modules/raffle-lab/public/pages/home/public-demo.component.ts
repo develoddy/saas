@@ -27,6 +27,7 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   selectedNumber: number | null = null;
   @ViewChild('modalCloseButton') modalCloseButton?: ElementRef<HTMLButtonElement>;
   private previousFocus: HTMLElement | null = null;
+  private previousBodyOverflow: string | null = null;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -34,6 +35,17 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     private readonly router: Router
   ) {}
+
+  get isDirectDrawView(): boolean {
+    return this.route.snapshot.queryParamMap.has('drawId');
+  }
+
+  get isUnavailableDirectDraw(): boolean {
+    return this.isDirectDrawView &&
+      !this.loading &&
+      !this.selectedDraw &&
+      !!this.error;
+  }
 
   ngOnInit(): void {
     this.api.getDraws().pipe(takeUntil(this.destroy$)).subscribe({
@@ -111,14 +123,34 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
 
   openNumberModal(number: RaffleNumber): void {
     if (this.selectedDraw?.status !== 'published' || number.status !== 'available' || this.numbersLoading) return;
-    this.previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    this.previousFocus = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+
+    this.previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     this.selectedNumber = number.value;
+
     // Focus the close control once Angular has rendered the modal.
-    queueMicrotask(() => this.modalCloseButton?.nativeElement.focus());
+    queueMicrotask(() => {
+      if (this.selectedNumber !== null) {
+        this.modalCloseButton?.nativeElement.focus();
+      }
+    });
   }
 
   closeNumberModal(): void {
+    if (this.selectedNumber === null) return;
+
     this.selectedNumber = null;
+
+    if (this.previousBodyOverflow !== null) {
+      document.body.style.overflow = this.previousBodyOverflow;
+      this.previousBodyOverflow = null;
+    }
+
     this.previousFocus?.focus();
     this.previousFocus = null;
   }
@@ -126,6 +158,42 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.selectedNumber !== null) this.closeNumberModal();
+  }
+
+  @HostListener('document:keydown.tab', ['$event'])
+  onModalTab(event: KeyboardEvent): void {
+    if (this.selectedNumber === null) return;
+
+    const closeButton = this.modalCloseButton?.nativeElement;
+    const modal = closeButton?.closest('.raffle-number-modal');
+
+    if (!modal) return;
+
+    const focusable = Array.from(
+      modal.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(element => element.getClientRects().length > 0);
+
+    if (!focusable.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (!modal.contains(active)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    } else if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   scrollToNumbers(event: Event): void {
@@ -209,6 +277,11 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.previousBodyOverflow !== null) {
+      document.body.style.overflow = this.previousBodyOverflow;
+      this.previousBodyOverflow = null;
+    }
+
     this.selectedNumber = null;
     this.destroy$.next();
     this.destroy$.complete();

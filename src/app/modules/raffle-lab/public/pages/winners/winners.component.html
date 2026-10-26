@@ -11,16 +11,31 @@
       <p *ngIf="drawName" class="raffle-winners__draw-name">
         {{ drawName }}
       </p>
-      <p>Consulta los resultados oficiales de los sorteos.</p>
+      <p *ngIf="resultsData?.resultsPublishedAt">
+        Estos son los resultados publicados de este sorteo.
+      </p>
     </section>
 
     <p *ngIf="resultsLoading" role="status">
       Cargando resultados...
     </p>
 
-    <p *ngIf="resultsError" role="alert">
-      {{ resultsError }}
-    </p>
+    <section
+      *ngIf="resultsError"
+      class="raffle-winners__error"
+      role="alert"
+      aria-labelledby="winners-error-title"
+    >
+      <h2 id="winners-error-title">
+        No podemos mostrar estos resultados
+      </h2>
+
+      <p>{{ resultsError }}</p>
+
+      <a routerLink="/raffle-lab" class="raffle-winners__error-link">
+        Ver sorteos públicos
+      </a>
+    </section>
 
     <ng-container *ngIf="resultsData as results">
       <ng-container *ngIf="results.resultsPublishedAt; else unpublishedResults">
@@ -54,7 +69,7 @@
 
               <div *ngIf="prize.result" class="raffle-winners__number">
                 <span>NÚMERO GANADOR</span>
-                <strong>{{ prize.result.numberValue }}</strong>
+                <strong>{{ prize.result.numberValue | number:'2.0-0' }}</strong>
               </div>
             </div>
           </article>

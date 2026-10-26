@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getRaffleImageUrl } from '../../../shared/utils/raffle-image-url.util';
-import { EMPTY, Subject, catchError, switchMap, takeUntil } from 'rxjs';
+import { EMPTY, Subject, catchError, map, of, switchMap, takeUntil } from 'rxjs';
 import {
   PublicRaffleResults,
   RafflePublicApiService
@@ -57,7 +57,8 @@ export class WinnersComponent implements OnInit, OnDestroy {
         }
 
         if (!/^[1-9]\d*$/.test(raw) ||
-            !Number.isSafeInteger(Number(raw))) {
+            !Number.isSafeInteger(Number(raw)) ||
+            Number(raw) > 4294967295) {
           this.resultsError = 'Identificador de sorteo inválido.';
           return EMPTY;
         }
@@ -65,25 +66,46 @@ export class WinnersComponent implements OnInit, OnDestroy {
         const id = Number(raw);
         this.resultsLoading = true;
 
-        this.api.getDraws()
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: response => {
-              if (this.drawId !== id) return;
-
-              if (response.success && Array.isArray(response.data)) {
-                this.drawName =
-                  response.data.find(draw => draw.id === id)?.name ?? null;
-              }
-            },
-            error: () => {
-              if (this.drawId === id) {
-                this.drawName = null;
-              }
+        return this.api.getDraws().pipe(
+          switchMap(response => {
+            if (!response.success || !Array.isArray(response.data)) {
+              throw new Error('Listado público inválido.');
             }
-          });
 
-        return this.api.getDrawResults(id).pipe(
+            const draw = response.data.find(item => item.id === id);
+
+            if (!draw) {
+              this.resultsLoading = false;
+              this.resultsError = 'Sorteo no disponible.';
+              return EMPTY;
+            }
+
+            this.drawName = draw.name;
+
+            if (draw.status === 'published') {
+              return of({
+                drawId: id,
+                resultsPublishedAt: null,
+                prizes: []
+              } as PublicRaffleResults);
+            }
+
+            if (draw.status !== 'closed') {
+              this.resultsLoading = false;
+              this.resultsError = 'Sorteo no disponible.';
+              return EMPTY;
+            }
+
+            return this.api.getDrawResults(id).pipe(
+              map(result => {
+                if (!result.success) {
+                  throw new Error('Respuesta de resultados inválida.');
+                }
+
+                return result.data;
+              })
+            );
+          }),
           catchError(() => {
             this.resultsLoading = false;
             this.resultsError =
@@ -93,23 +115,20 @@ export class WinnersComponent implements OnInit, OnDestroy {
         );
       }),
       takeUntil(this.destroy$)
-    ).subscribe(response => {
+    ).subscribe(results => {
       this.resultsLoading = false;
 
-      const id = this.drawId;
-
       if (
-        id === null ||
-        !response.success ||
-        response.data?.drawId !== id ||
-        !Array.isArray(response.data.prizes)
+        !results ||
+        results.drawId !== this.drawId ||
+        !Array.isArray(results.prizes)
       ) {
         this.resultsError =
           'No se pudieron consultar los resultados.';
         return;
       }
 
-      this.resultsData = response.data;
+      this.resultsData = results;
     });
   }
 

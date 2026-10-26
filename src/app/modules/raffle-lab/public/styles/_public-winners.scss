@@ -141,4 +141,48 @@
     border-radius: 0.75rem;
     color: var(--raffle-muted);
   }
+
+  // Estado de error con una salida clara hacia los sorteos públicos.
+  .raffle-winners__error {
+    margin-top: 2rem;
+    padding: 1.75rem;
+    background: var(--raffle-surface);
+    border: 1px solid var(--raffle-border);
+    border-left: 3px solid var(--raffle-gold);
+    border-radius: 0.75rem;
+
+    h2 {
+      margin: 0 0 0.75rem;
+      color: var(--raffle-text);
+      font-size: clamp(1.15rem, 2vw, 1.4rem);
+    }
+
+    p {
+      margin: 0 0 1.5rem;
+      color: var(--raffle-muted);
+      line-height: 1.6;
+    }
+  }
+
+  .raffle-winners__error-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    background: var(--raffle-gold);
+    color: var(--raffle-bg);
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--raffle-text);
+      outline-offset: 3px;
+    }
+  }
 }

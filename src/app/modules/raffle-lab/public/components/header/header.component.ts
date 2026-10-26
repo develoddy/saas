@@ -1,4 +1,4 @@
-import { Component, HostListener, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-raffle-header',
@@ -8,6 +8,8 @@ import { Component, HostListener, Input } from '@angular/core';
 export class RaffleHeaderComponent {
   @Input() showNumbersLink = false;
   @Input() drawId: number | null = null;
+
+  @ViewChild('menuToggle') menuToggle?: ElementRef<HTMLButtonElement>;
 
   menuOpen = false;
 
@@ -21,7 +23,10 @@ export class RaffleHeaderComponent {
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
+    if (!this.menuOpen) return;
+
     this.closeMenu();
+    this.menuToggle?.nativeElement.focus();
   }
 
   scrollToNumbers(event: Event): void {

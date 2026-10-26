@@ -290,12 +290,14 @@
   }
 
   .raffle-modal-note {
-    margin: 26px 8px 0;
-    padding-top: 18px;
-    border-top: 1px solid tokens.$raffle-border;
-    color: #aeb6c2;
-    font-size: 12px;
-    line-height: 1.7;
+    margin: 24px 0 0;
+    padding: 14px 16px;
+    border: 1px solid rgba(217, 171, 66, 0.35);
+    border-radius: 8px;
+    background: rgba(217, 171, 66, 0.06);
+    color: #cbd0d8;
+    font-size: 14px;
+    line-height: 1.6;
   }
 }
 

@@ -1,0 +1,139 @@
+// NUMIQ — Guía pública de participación
+
+.raffle-how-to {
+  margin-top: 64px;
+  color: #f5f5f5;
+}
+
+.raffle-how-to__heading {
+  margin-bottom: 32px;
+  text-align: center;
+
+  h2 {
+    margin: 10px 0 8px;
+    color: #f3c45b;
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 800;
+    letter-spacing: 0.025em;
+  }
+
+  p {
+    margin: 0;
+    color: #aeb4c0;
+    font-size: 15px;
+  }
+}
+
+.raffle-how-to__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.raffle-how-to__card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  min-height: 174px;
+  padding: 30px 20px 24px;
+  border: 1px solid rgba(243, 196, 91, 0.4);
+  border-radius: 12px;
+  background: linear-gradient(145deg, #151719, #0d0f12);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+.raffle-how-to__number {
+  position: absolute;
+  top: -17px;
+  left: 22px;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 2px solid #111317;
+  border-radius: 50%;
+  background: #f3c45b;
+  color: #15120b;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.raffle-how-to__icon {
+  flex: 0 0 54px;
+  width: 54px;
+  height: 54px;
+  color: #f3c45b;
+}
+
+.raffle-how-to__content {
+  min-width: 0;
+
+  h3 {
+    margin: 0 0 10px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #b9bec8;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 1024px) {
+  .raffle-how-to__grid {
+    gap: 14px;
+  }
+
+  .raffle-how-to__card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 30px 18px 20px;
+  }
+
+  .raffle-how-to__icon {
+    flex-basis: auto;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-how-to {
+    margin-top: 52px;
+  }
+
+  .raffle-how-to__heading {
+    margin-bottom: 34px;
+  }
+
+  .raffle-how-to__grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .raffle-how-to__card {
+    flex-direction: row;
+    align-items: center;
+    min-height: 130px;
+    padding: 24px 18px;
+  }
+
+  .raffle-how-to__number {
+    left: 18px;
+  }
+
+  .raffle-how-to__icon {
+    flex: 0 0 44px;
+  }
+
+  .raffle-how-to__content h3 {
+    font-size: 17px;
+  }
+}
