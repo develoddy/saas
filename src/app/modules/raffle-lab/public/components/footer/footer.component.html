@@ -30,5 +30,14 @@
         Ganadores
       </a>
     </nav>
+
+    <nav class="raffle-footer__legal" aria-label="Información legal">
+      <a routerLink="/raffle-lab/legal" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Aviso legal</a>
+      <a routerLink="/raffle-lab/privacy" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Privacidad</a>
+      <a routerLink="/raffle-lab/cookies" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Cookies y almacenamiento</a>
+      <a routerLink="/raffle-lab/terms" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Condiciones</a>
+    </nav>
   </div>
 </footer>
+
+<app-raffle-privacy-notice [drawId]="drawId"></app-raffle-privacy-notice>

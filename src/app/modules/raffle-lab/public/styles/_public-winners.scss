@@ -1,6 +1,11 @@
+@use '../../shared/styles/layout' as layout;
+
 .raffle-winners-page {
+  @include layout.page-container;
+
+  box-sizing: border-box;
   min-height: 100vh;
-  padding: 2rem;
+  padding-block: 2rem;
   background: var(--raffle-bg);
   color: var(--raffle-text);
 
@@ -85,7 +90,7 @@
 
   // En móvil, imagen arriba y resultado debajo.
   @media (max-width: 700px) {
-    padding: 1rem;
+    padding-block: 1rem;
 
     .raffle-winners__card {
       padding: 1rem;

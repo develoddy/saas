@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { PublicDemoComponent } from './public/pages/home/public-demo.component';
 import { WinnersComponent } from './public/pages/winners/winners.component';
+import { LegalComponent } from './public/pages/legal/legal.component';
 import { ManagementDemoComponent } from './admin/pages/dashboard/management-demo.component';
 
 import { ManagementLoginComponent } from './admin/pages/login/management-login.component';
@@ -20,6 +21,30 @@ const routes: Routes = [
     pathMatch: 'full',
     component: WinnersComponent,
     title: 'NUMIQ | Ganadores'
+  },
+  {
+    path: 'legal',
+    component: LegalComponent,
+    data: { legalPage: 'legal' },
+    title: 'NUMIQ | Aviso legal'
+  },
+  {
+    path: 'privacy',
+    component: LegalComponent,
+    data: { legalPage: 'privacy' },
+    title: 'NUMIQ | Privacidad'
+  },
+  {
+    path: 'cookies',
+    component: LegalComponent,
+    data: { legalPage: 'cookies' },
+    title: 'NUMIQ | Cookies y almacenamiento'
+  },
+  {
+    path: 'terms',
+    component: LegalComponent,
+    data: { legalPage: 'terms' },
+    title: 'NUMIQ | Condiciones de participación'
   },
   {
     path: 'management/login',

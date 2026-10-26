@@ -1,0 +1,91 @@
+@use '../../../shared/styles/tokens' as tokens;
+
+:host {
+  display: contents;
+}
+
+.numiq-privacy-notice {
+  position: fixed;
+  z-index: 1100;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+
+  box-sizing: border-box;
+  width: min(calc(100% - 32px), 960px);
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  margin-inline: auto;
+  padding: clamp(20px, 3vw, 28px);
+
+  overflow-y: auto;
+  border: 1px solid tokens.$raffle-border;
+  border-radius: 16px;
+  background: tokens.$raffle-surface;
+  color: tokens.$raffle-text;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75), 0 0 28px rgba(244, 196, 84, 0.06);
+
+  h2 {
+    margin: 0 0 16px;
+    color: tokens.$raffle-text;
+    font-size: clamp(20px, 3vw, 24px);
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  p {
+    margin: 0 0 22px;
+    color: tokens.$raffle-text;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+}
+
+.numiq-privacy-notice__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+
+  button {
+    min-height: 44px;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 10px;
+    background: tokens.$raffle-gold;
+    color: tokens.$raffle-bg;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      filter: brightness(1.08);
+    }
+  }
+
+  a {
+    color: tokens.$raffle-gold;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.numiq-privacy-notice button:focus-visible,
+.numiq-privacy-notice a:focus-visible {
+  outline: 2px solid tokens.$raffle-gold;
+  outline-offset: 4px;
+}
+
+@media (max-width: 600px) {
+  .numiq-privacy-notice {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: calc(100% - 24px);
+    max-height: calc(100dvh - 24px);
+    padding: 20px;
+  }
+}

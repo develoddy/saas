@@ -1,0 +1,29 @@
+<aside
+  *ngIf="visible"
+  class="numiq-privacy-notice"
+  aria-labelledby="numiq-privacy-notice-title"
+  aria-describedby="numiq-privacy-notice-description"
+>
+  <h2 id="numiq-privacy-notice-title">
+    Tu privacidad importa
+  </h2>
+
+  <p id="numiq-privacy-notice-description">
+    Utilizamos tecnologías de almacenamiento necesarias para el
+    funcionamiento del servicio. Puedes consultar cómo las utilizamos
+    en nuestra política de cookies y almacenamiento.
+  </p>
+
+  <div class="numiq-privacy-notice__actions">
+    <button type="button" (click)="acknowledge()">
+      Entendido
+    </button>
+
+    <a
+      routerLink="/raffle-lab/cookies"
+      [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+    >
+      Política de cookies
+    </a>
+  </div>
+</aside>

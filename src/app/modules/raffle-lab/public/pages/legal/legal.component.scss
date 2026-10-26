@@ -1,0 +1,179 @@
+@use '../../../shared/styles/tokens' as tokens;
+@use '../../../shared/styles/layout' as layout;
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: tokens.$raffle-bg;
+  color: tokens.$raffle-text;
+}
+
+.raffle-lab {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: tokens.$raffle-bg;
+  color: tokens.$raffle-text;
+}
+
+.raffle-legal-page {
+  flex: 1 0 auto;
+}
+
+.raffle-legal-page {
+  @include layout.page-container;
+  box-sizing: border-box;
+  padding-block: 32px 72px;
+  color: tokens.$raffle-text;
+}
+
+.raffle-legal-page__back {
+  display: inline-block;
+  margin-bottom: 32px;
+  color: tokens.$raffle-gold;
+  text-decoration: none;
+}
+
+.raffle-legal-page__intro {
+  margin-bottom: 28px;
+
+  h1 {
+    margin: 14px 0;
+    font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.2;
+  }
+
+  p {
+    color: tokens.$raffle-muted;
+    line-height: 1.7;
+  }
+}
+
+.raffle-legal-page__eyebrow {
+  color: tokens.$raffle-gold;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.raffle-legal-page__section,
+.raffle-legal-page__notice {
+  margin-bottom: 18px;
+  padding: clamp(20px, 4vw, 28px);
+  border: 1px solid tokens.$raffle-border;
+  border-radius: 16px;
+  background: #181b22;
+
+  h2 {
+    margin: 0 0 16px;
+    color: tokens.$raffle-gold;
+    font-size: clamp(19px, 3vw, 23px);
+  }
+
+  p {
+    margin: 0 0 12px;
+    line-height: 1.75;
+    color: tokens.$raffle-text;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.raffle-legal-page__notice {
+  border-style: dashed;
+
+  strong {
+    display: block;
+    margin-bottom: 10px;
+    color: tokens.$raffle-gold;
+  }
+}
+
+
+
+.raffle-legal-page a:focus-visible {
+  outline: 2px solid tokens.$raffle-gold;
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+
+
+/* NUMIQ — Legal editorial refinement */
+
+.raffle-legal-page__intro {
+  max-width: 900px;
+  margin-bottom: 40px;
+
+  h1 {
+    color: tokens.$raffle-text;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    color: tokens.$raffle-muted;
+  }
+}
+
+.raffle-legal-page__section,
+.raffle-legal-page__notice {
+  max-width: 900px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.raffle-legal-page__section {
+  margin-bottom: 48px;
+
+  h2 {
+    margin-bottom: 20px;
+    color: tokens.$raffle-gold;
+    font-weight: 700;
+  }
+
+  p {
+    color: tokens.$raffle-text;
+    line-height: 1.85;
+  }
+}
+
+.raffle-legal-page__notice {
+  margin-bottom: 48px;
+  padding-left: 16px;
+  border-left: 2px solid tokens.$raffle-gold;
+
+  strong {
+    color: tokens.$raffle-gold;
+  }
+
+  p {
+    color: tokens.$raffle-muted;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+}
+
+
+
+@media (max-width: 600px) {
+  .raffle-legal-page {
+    padding-block: 24px 56px;
+  }
+
+  .raffle-legal-page__intro {
+    margin-bottom: 32px;
+  }
+
+  .raffle-legal-page__section {
+    margin-bottom: 36px;
+  }
+
+  .raffle-legal-page__notice {
+    margin-bottom: 36px;
+  }
+}
