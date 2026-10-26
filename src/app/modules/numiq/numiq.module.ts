@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { RaffleLabRoutingModule } from './raffle-lab-routing.module';
+import { NumiqRoutingModule } from './numiq-routing.module';
 import { PublicDemoComponent } from './public/pages/home/public-demo.component';
 import { WinnersComponent } from './public/pages/winners/winners.component';
 import { LegalComponent } from './public/pages/legal/legal.component';
@@ -29,10 +29,10 @@ import { ManagementLoginComponent } from './admin/pages/login/management-login.c
   imports: [
     CommonModule,
     FormsModule,
-    RaffleLabRoutingModule
+    NumiqRoutingModule
   ],
   providers: [
     RaffleNumbersService
   ]
 })
-export class RaffleLabModule { }
+export class NumiqModule { }

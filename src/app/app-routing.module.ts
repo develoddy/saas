@@ -106,8 +106,8 @@ const routes: Routes = [
   // NUMIQ - Public and management routes
   {
     path: 'numiq',
-    loadChildren: () => import('./modules/raffle-lab/raffle-lab.module')
-      .then(m => m.RaffleLabModule),
+    loadChildren: () => import('./modules/numiq/numiq.module')
+      .then(m => m.NumiqModule),
     data: {
       title: 'NUMIQ | Sorteos'
     }
