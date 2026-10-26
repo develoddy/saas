@@ -8,6 +8,7 @@
   top: 0;
   z-index: 100;
   background: #090b0f;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 .raffle-header {
@@ -19,7 +20,6 @@
   gap: 16px;
   padding-block: 14px;
   border-bottom: 0;
-  box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.75);
 }
 
 .raffle-header-actions {
@@ -261,5 +261,32 @@
 @media (max-width: 480px) {
   .numiq-logo {
     width: clamp(150px, 52vw, 200px);
+  }
+}
+
+
+// NUMIQ — Compactación estable con histéresis (escritorio).
+@media (min-width: 901px) {
+  .raffle-header {
+    transition: padding-block 180ms ease;
+  }
+
+  .numiq-logo {
+    transition: width 180ms ease;
+  }
+
+  .raffle-header.is-compact {
+    padding-block: 10px;
+
+    .numiq-logo {
+      width: 200px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-header,
+  .numiq-logo {
+    transition: none;
   }
 }

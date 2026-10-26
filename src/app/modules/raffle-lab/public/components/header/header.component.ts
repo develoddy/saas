@@ -12,6 +12,19 @@ export class RaffleHeaderComponent {
   @ViewChild('menuToggle') menuToggle?: ElementRef<HTMLButtonElement>;
 
   menuOpen = false;
+  isCompact = false;
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    const scrollY = window.scrollY;
+
+    if (!this.isCompact && scrollY > 160) {
+      this.isCompact = true;
+    } else if (this.isCompact && scrollY < 40) {
+      this.isCompact = false;
+    }
+  }
+
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
