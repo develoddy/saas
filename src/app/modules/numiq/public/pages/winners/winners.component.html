@@ -70,7 +70,9 @@
     <ng-container *ngIf="resultsData as results">
       <ng-container *ngIf="results.resultsPublishedAt; else unpublishedResults">
 
-        <div class="raffle-winners__grid">
+        <div class="raffle-winners__grid"
+             [class.raffle-winners__grid--single]="results.prizes.length === 1"
+             [class.raffle-winners__grid--multiple]="results.prizes.length > 1">
           <article
             *ngFor="let prize of results.prizes"
             class="raffle-winners__card"
