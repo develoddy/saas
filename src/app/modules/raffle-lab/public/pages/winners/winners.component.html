@@ -4,7 +4,7 @@
   <main class="raffle-winners-page">
     <nav class="raffle-winners__breadcrumb" aria-label="Ruta de navegación">
       <a
-        routerLink="/raffle-lab"
+        routerLink="/numiq"
         [queryParams]="drawId !== null ? { drawId: drawId } : {}"
       >Inicio</a>
       <span aria-hidden="true">›</span>
@@ -62,7 +62,7 @@
 
       <p>{{ resultsError }}</p>
 
-      <a routerLink="/raffle-lab" class="raffle-winners__error-link">
+      <a routerLink="/numiq" class="raffle-winners__error-link">
         Ver sorteos públicos
       </a>
     </section>

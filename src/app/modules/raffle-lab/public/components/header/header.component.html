@@ -1,7 +1,7 @@
 <header class="raffle-header" [class.is-compact]="isCompact">
   <a
     class="raffle-brand"
-    routerLink="/raffle-lab"
+    routerLink="/numiq"
     [queryParams]="drawId !== null ? { drawId: drawId } : {}"
     aria-label="NUMIQ — Volver al inicio"
     (click)="closeMenu()"
@@ -35,9 +35,9 @@
     [class.is-open]="menuOpen"
   >
     <nav class="raffle-nav" aria-label="Navegación principal">
-      <a routerLink="/raffle-lab" [queryParams]="drawId !== null ? { drawId: drawId } : {}" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" (click)="closeMenu()">Inicio</a>
+      <a routerLink="/numiq" [queryParams]="drawId !== null ? { drawId: drawId } : {}" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" (click)="closeMenu()">Inicio</a>
       <a *ngIf="showNumbersLink" href="#numbers-title" (click)="scrollToNumbers($event)">Números</a>
-      <a routerLink="/raffle-lab/winners" [queryParams]="drawId !== null ? { drawId: drawId } : {}" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" (click)="closeMenu()">Ganadores</a>
+      <a routerLink="/numiq/winners" [queryParams]="drawId !== null ? { drawId: drawId } : {}" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" ariaCurrentWhenActive="page" (click)="closeMenu()">Ganadores</a>
     </nav>
 
 

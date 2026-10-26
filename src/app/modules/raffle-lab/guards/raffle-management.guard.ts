@@ -21,7 +21,7 @@ export class RaffleManagementGuard implements CanActivate {
 
   canActivate(): Observable<boolean | UrlTree> | UrlTree {
     const loginUrl = this.router.createUrlTree([
-      '/raffle-lab/management/login'
+      '/numiq/management/login'
     ]);
 
     if (!this.auth.getAccessToken()) {

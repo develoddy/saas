@@ -40,8 +40,8 @@ export class AppComponent implements OnInit, OnDestroy {
     const pathname = url.split(/[?#]/, 1)[0];
 
     const isNumiq =
-      pathname === '/raffle-lab' ||
-      pathname.startsWith('/raffle-lab/');
+      pathname === '/numiq' ||
+      pathname.startsWith('/numiq/');
 
     this.isNumiqRoute = isNumiq;
 

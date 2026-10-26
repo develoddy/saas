@@ -1,0 +1,69 @@
+<div class="raffle-lab">
+  <app-raffle-header [drawId]="drawId"></app-raffle-header>
+
+  <main class="raffle-legal-page" id="main-content">
+    <nav
+      class="raffle-legal-page__breadcrumb"
+      aria-label="Ruta de navegación"
+    >
+      <a
+        routerLink="/raffle-lab"
+        [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+      >Inicio</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">{{ titles[page] }}</span>
+    </nav>
+
+    <header class="raffle-legal-page__intro">
+      <span class="raffle-legal-page__eyebrow">INFORMACIÓN LEGAL</span>
+      <h1>{{ titles[page] }}</h1>
+      <p>{{ descriptions[page] }}</p>
+    </header>
+
+    <section class="raffle-legal-page__notice" aria-label="Estado del documento">
+      <strong>Documento en preparación</strong>
+      <p>
+        Este contenido es preliminar. Los datos del titular, las responsabilidades
+        y las condiciones definitivas están pendientes de revisión antes de su publicación.
+      </p>
+    </section>
+
+    <ng-container [ngSwitch]="page">
+      <section *ngSwitchCase="'legal'" class="raffle-legal-page__section">
+        <h2>1. Titularidad del servicio</h2>
+        <p>NUMIQ es un experimento tecnológico desarrollado bajo la marca LujanDev,
+          cuya titularidad corresponde a una persona física.</p>
+        <p><strong>Pendiente:</strong> nombre y apellidos completos, datos identificativos
+          exigibles, domicilio y medio de contacto.</p>
+      </section>
+
+      <section *ngSwitchCase="'privacy'" class="raffle-legal-page__section">
+        <h2>1. Datos personales</h2>
+        <p>NUMIQ gestiona nombres de participantes asociados a solicitudes y reservas
+          de números para sorteos.</p>
+        <p><strong>Pendiente:</strong> identificación del responsable, finalidades,
+          bases jurídicas, destinatarios, plazos de conservación y ejercicio de derechos.</p>
+      </section>
+
+      <section *ngSwitchCase="'cookies'" class="raffle-legal-page__section">
+        <h2>1. Almacenamiento del navegador</h2>
+        <p>El área administrativa de NUMIQ utiliza sessionStorage para conservar
+          temporalmente el token de autenticación.</p>
+        <p><strong>Pendiente:</strong> verificar las tecnologías efectivamente utilizadas
+          en producción y completar su información técnica y jurídica.</p>
+      </section>
+
+      <section *ngSwitchCase="'terms'" class="raffle-legal-page__section">
+        <h2>1. Participación en sorteos</h2>
+        <p>NUMIQ proporciona herramientas para consultar sorteos, solicitar números
+          y visualizar resultados publicados.</p>
+        <p><strong>Pendiente:</strong> identificar al organizador, definir las reglas
+          aplicables, premios, fechas, elegibilidad y procedimiento de adjudicación.</p>
+      </section>
+    </ng-container>
+
+
+  </main>
+
+  <app-raffle-footer [drawId]="drawId"></app-raffle-footer>
+</div>

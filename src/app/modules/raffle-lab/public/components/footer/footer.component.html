@@ -2,7 +2,7 @@
   <div class="raffle-footer__content">
     <a
       class="raffle-footer__brand"
-      routerLink="/raffle-lab"
+      routerLink="/numiq"
       [queryParams]="drawId !== null ? { drawId: drawId } : {}"
       aria-label="NUMIQ — Volver al inicio"
     >
@@ -17,14 +17,14 @@
 
     <nav class="raffle-footer__nav" aria-label="Navegación del pie de página">
       <a
-        routerLink="/raffle-lab"
+        routerLink="/numiq"
         [queryParams]="drawId !== null ? { drawId: drawId } : {}"
       >
         Inicio
       </a>
 
       <a
-        routerLink="/raffle-lab/winners"
+        routerLink="/numiq/winners"
         [queryParams]="drawId !== null ? { drawId: drawId } : {}"
       >
         Ganadores
@@ -32,10 +32,10 @@
     </nav>
 
     <nav class="raffle-footer__legal" aria-label="Información legal">
-      <a routerLink="/raffle-lab/legal" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Aviso legal</a>
-      <a routerLink="/raffle-lab/privacy" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Privacidad</a>
-      <a routerLink="/raffle-lab/cookies" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Cookies y almacenamiento</a>
-      <a routerLink="/raffle-lab/terms" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Condiciones</a>
+      <a routerLink="/numiq/legal" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Aviso legal</a>
+      <a routerLink="/numiq/privacy" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Privacidad</a>
+      <a routerLink="/numiq/cookies" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Cookies y almacenamiento</a>
+      <a routerLink="/numiq/terms" [queryParams]="drawId !== null ? { drawId: drawId } : {}">Condiciones</a>
     </nav>
   </div>
 </footer>

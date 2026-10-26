@@ -43,7 +43,7 @@ export class ManagementLoginComponent {
       .subscribe({
         next: () => {
           this.password = '';
-          this.router.navigate(['/raffle-lab/management']);
+          this.router.navigate(['/numiq/management']);
         },
         error: () => {
           this.password = '';

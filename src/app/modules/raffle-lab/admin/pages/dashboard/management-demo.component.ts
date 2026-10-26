@@ -1673,6 +1673,6 @@ export class ManagementDemoComponent {
 
   logout(): void {
     this.auth.logout();
-    this.router.navigate(['/raffle-lab/management/login']);
+    this.router.navigate(['/numiq/management/login']);
   }
 }

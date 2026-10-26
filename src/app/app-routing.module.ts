@@ -97,13 +97,19 @@ const routes: Routes = [
     }
   },
 
-  // Raffle Lab - Parro Sorteos (Phase 1 Prototype)
   {
     path: 'raffle-lab',
+    redirectTo: 'numiq',
+    pathMatch: 'prefix'
+  },
+
+  // NUMIQ - Public and management routes
+  {
+    path: 'numiq',
     loadChildren: () => import('./modules/raffle-lab/raffle-lab.module')
       .then(m => m.RaffleLabModule),
     data: {
-      title: 'Raffle Lab - Prototype'
+      title: 'NUMIQ | Sorteos'
     }
   },
 
