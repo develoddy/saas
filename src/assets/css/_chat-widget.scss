@@ -25,7 +25,7 @@ $transition: all 0.25s cubic-bezier(.2,.9,.2,1);
 }
 
 /* Prevent any horizontal scroll globally (chat UI shouldn't cause page shift) */
-html, body { overflow-x: hidden; }
+html, body { overflow-x: clip; }
 
 /* When chat is fullscreen we lock the background to avoid double scrollbars on iOS */
 html.chat-fullscreen-active, body.chat-fullscreen-active {

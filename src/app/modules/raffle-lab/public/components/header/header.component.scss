@@ -1,6 +1,15 @@
 @use '../../../shared/styles/tokens' as tokens;
 @use '../../../shared/styles/layout' as layout;
 
+// NUMIQ — Cabecera pública persistente.
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #090b0f;
+}
+
 .raffle-header {
   @include layout.page-container;
 
@@ -8,8 +17,9 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  padding-block: 24px;
-  border-bottom: 1px solid tokens.$raffle-border;
+  padding-block: 14px;
+  border-bottom: 0;
+  box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.75);
 }
 
 .raffle-header-actions {
@@ -58,7 +68,7 @@
 
 .numiq-logo {
   display: block;
-  width: 300px;
+  width: 240px;
   max-width: 100%;
   height: auto;
 }

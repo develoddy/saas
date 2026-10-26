@@ -305,7 +305,16 @@
               *ngIf="draw.status === 'closed' && winningNumbers.has(number.value)"
               class="number-cell__trophy"
               aria-hidden="true"
-            >🏆</span>
+            >
+              <svg viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true" focusable="false"
+                             stroke="currentColor" stroke-width="1.7"
+                             stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M8 21h8M12 17v4"/>
+                          <path d="M7 3h10v7a5 5 0 0 1-10 0V3Z"/>
+                          <path d="M7 5H4v3a4 4 0 0 0 4 4"/>
+                          <path d="M17 5h3v3a4 4 0 0 1-4 4"/>
+                        </svg>
+            </span>
           </button>
         </div>
         <div
@@ -326,7 +335,16 @@
             [queryParams]="{ drawId: draw.id }"
             class="numbers-results-link"
           >
-            <span aria-hidden="true">🏆</span>
+            <span class="numbers-results-link__trophy" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="22" height="22" aria-hidden="true" focusable="false"
+                             stroke="currentColor" stroke-width="1.7"
+                             stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M8 21h8M12 17v4"/>
+                          <path d="M7 3h10v7a5 5 0 0 1-10 0V3Z"/>
+                          <path d="M7 5H4v3a4 4 0 0 0 4 4"/>
+                          <path d="M17 5h3v3a4 4 0 0 1-4 4"/>
+                        </svg>
+            </span>
             <span>Ver resultados del sorteo</span>
             <span class="numbers-results-link__arrow" aria-hidden="true">→</span>
           </a>
