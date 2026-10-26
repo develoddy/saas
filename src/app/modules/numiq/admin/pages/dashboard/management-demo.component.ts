@@ -87,12 +87,15 @@ export class ManagementDemoComponent {
   drawLoading = false;
   drawSaving = false;
   drawMessage: string | null = null;
+  drawStatusMessage: string | null = null;
+  drawStatusMessageSuccess = false;
 
   presentation: AdminRafflePresentation = {
     headline: null,
     description: null,
     ticketPrice: null,
-    drawDate: null
+    drawDate: null,
+    whatsappNumber: null
   };
   bannerFile: File | null = null;
   bannerDragging = false;
@@ -307,6 +310,22 @@ export class ManagementDemoComponent {
         ? null
         : Number(rawTicketPrice);
     const drawDate = this.presentation.drawDate;
+    const whatsappNumber = this.presentation.whatsappNumber?.trim() || null;
+
+    if (whatsappNumber) {
+      const normalized = whatsappNumber.replace(/[^0-9]/g, '');
+
+      if (
+        !/^\+?[0-9\s()-]+$/.test(whatsappNumber) ||
+        normalized.length < 8 ||
+        normalized.length > 15 ||
+        normalized.startsWith('0')
+      ) {
+        this.presentationMessage =
+          'Introduce un teléfono internacional válido, incluyendo el prefijo del país.';
+        return;
+      }
+    }
 
     if (headline && headline.length > 200) {
       this.presentationMessage = 'El título no puede superar los 200 caracteres.';
@@ -356,7 +375,8 @@ export class ManagementDemoComponent {
       headline,
       description,
       ticketPrice,
-      drawDate: normalizedDate
+      drawDate: normalizedDate,
+      whatsappNumber
     }).subscribe({
       next: response => {
         this.draws = this.draws.map(item =>
@@ -364,6 +384,7 @@ export class ManagementDemoComponent {
         );
 
         if (this.selectedDrawId === draw.id) {
+          this.presentation.whatsappNumber = response.data.whatsappNumber;
           this.presentation.drawDate = response.data.drawDate
             ? response.data.drawDate.slice(0, 10)
             : null;
@@ -452,7 +473,7 @@ export class ManagementDemoComponent {
     }
 
     this.drawActionLoading = true;
-    this.drawMessage = null;
+    this.drawStatusMessage = null;
 
     this.raffleApi.publishDraw(draw.id).subscribe({
       next: response => {
@@ -461,12 +482,14 @@ export class ManagementDemoComponent {
         );
 
         this.drawActionLoading = false;
-        this.drawMessage = 'Sorteo publicado correctamente.';
+        this.drawStatusMessage = 'Sorteo publicado correctamente.';
+        this.drawStatusMessageSuccess = true;
       },
       error: error => {
         this.drawActionLoading = false;
-        this.drawMessage =
+        this.drawStatusMessage =
           error.error?.message || 'No se pudo publicar el sorteo.';
+        this.drawStatusMessageSuccess = false;
       }
     });
   }
@@ -485,7 +508,7 @@ export class ManagementDemoComponent {
     }
 
     this.drawActionLoading = true;
-    this.drawMessage = null;
+    this.drawStatusMessage = null;
 
     this.raffleApi.closeDraw(draw.id).subscribe({
       next: response => {
@@ -494,12 +517,14 @@ export class ManagementDemoComponent {
         );
 
         this.drawActionLoading = false;
-        this.drawMessage = 'Sorteo cerrado correctamente.';
+        this.drawStatusMessage = 'Sorteo cerrado correctamente.';
+        this.drawStatusMessageSuccess = true;
       },
       error: error => {
         this.drawActionLoading = false;
-        this.drawMessage =
+        this.drawStatusMessage =
           error.error?.message || 'No se pudo cerrar el sorteo.';
+        this.drawStatusMessageSuccess = false;
       }
     });
   }
@@ -1118,7 +1143,8 @@ export class ManagementDemoComponent {
         : Number(draw.ticketPrice),
       drawDate: draw.drawDate
         ? draw.drawDate.slice(0, 10)
-        : null
+        : null,
+      whatsappNumber: draw.whatsappNumber
     };
     this.bannerFile = null;
     this.mobileBannerFile = null;
@@ -1135,6 +1161,7 @@ export class ManagementDemoComponent {
     this.reservationMessage = null;
     this.loadReservations(draw.id);
     this.drawMessage = null;
+    this.drawStatusMessage = null;
 
     this.raffleApi.getDrawNumbers(draw.id).subscribe({
       next: response => {

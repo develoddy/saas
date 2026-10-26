@@ -18,6 +18,7 @@ export interface PublicRaffleDraw {
   bannerImageMobile: string | null;
   ticketPrice: string | null;
   drawDate: string | null;
+  whatsappNumber: string | null;
 }
 
 export interface PublicRaffleNumbers {

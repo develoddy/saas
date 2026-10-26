@@ -419,6 +419,30 @@
       >
         Cerrar sorteo
       </button>
+
+      <div
+        *ngIf="drawStatusMessage"
+        class="raffle-presentation-message"
+        [class.raffle-presentation-message--error]="!drawStatusMessageSuccess"
+        [attr.role]="drawStatusMessageSuccess ? 'status' : 'alert'"
+      >
+        <span class="raffle-presentation-message__icon" aria-hidden="true">
+          {{ drawStatusMessageSuccess ? '✓' : '!' }}
+        </span>
+        <div class="raffle-presentation-message__content">
+          <strong>
+            {{ drawStatusMessageSuccess
+              ? 'Operación completada'
+              : 'No se pudo completar la operación' }}
+          </strong>
+          <span *ngIf="!drawStatusMessageSuccess">
+            {{ drawStatusMessage }}
+          </span>
+          <span *ngIf="drawStatusMessageSuccess">
+            {{ drawStatusMessage }}
+          </span>
+        </div>
+      </div>
     </div>
 
     </div>
@@ -484,9 +508,25 @@
           </div>
         </div>
 
-        <p *ngIf="presentationMessage" class="raffle-presentation-message" role="status">
-          {{ presentationMessage }}
-        </p>
+        <div class="raffle-presentation-field">
+          <label for="raffle-whatsapp-number">
+            WhatsApp del organizador (opcional)
+          </label>
+          <input
+            id="raffle-whatsapp-number"
+            name="whatsappNumber"
+            type="tel"
+            maxlength="24"
+            autocomplete="tel"
+            placeholder="Ej. +34 600 123 456"
+            [(ngModel)]="presentation.whatsappNumber"
+          />
+          <small>
+            Incluye el prefijo internacional. Este número recibirá las solicitudes
+            de reserva por WhatsApp. Si lo dejas vacío, no se configurará un contacto.
+          </small>
+        </div>
+
 
       </form>
 
@@ -667,6 +707,27 @@
         >
           {{ presentationSaving ? 'Guardando...' : 'Guardar presentación' }}
         </button>
+      </div>
+
+      <div
+        *ngIf="presentationMessage"
+        class="raffle-presentation-message"
+        [class.raffle-presentation-message--error]="presentationMessage !== 'Datos comerciales guardados.'"
+        [attr.role]="presentationMessage === 'Datos comerciales guardados.' ? 'status' : 'alert'"
+      >
+        <span class="raffle-presentation-message__icon" aria-hidden="true">
+          {{ presentationMessage === 'Datos comerciales guardados.' ? '✓' : '!' }}
+        </span>
+        <div class="raffle-presentation-message__content">
+          <strong>
+            {{ presentationMessage === 'Datos comerciales guardados.'
+              ? 'Cambios guardados correctamente'
+              : 'No se pudieron guardar los cambios' }}
+          </strong>
+          <span *ngIf="presentationMessage !== 'Datos comerciales guardados.'">
+            {{ presentationMessage }}
+          </span>
+        </div>
       </div>
 
     </div>

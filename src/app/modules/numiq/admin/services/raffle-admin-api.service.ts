@@ -18,6 +18,7 @@ export interface AdminRaffleDraw {
   bannerImageMobile: string | null;
   ticketPrice: string | null;
   drawDate: string | null;
+  whatsappNumber: string | null;
 }
 
 export interface AdminRafflePresentation {
@@ -25,6 +26,7 @@ export interface AdminRafflePresentation {
   description: string | null;
   ticketPrice: number | null;
   drawDate: string | null;
+  whatsappNumber?: string | null;
 }
 
 interface ApiResponse<T> {

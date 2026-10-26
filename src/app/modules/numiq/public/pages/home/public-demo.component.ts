@@ -117,12 +117,20 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   }
 
   get whatsappUrl(): string {
-    if (!this.selectedDraw || this.selectedNumber === null) return '';
+    const draw = this.selectedDraw;
+
+    if (!draw || this.selectedNumber === null) return '';
+
+    const whatsappNumber = draw.whatsappNumber;
+
+    if (!whatsappNumber || !/^[1-9][0-9]{7,14}$/.test(whatsappNumber)) {
+      return '';
+    }
 
     const number = String(this.selectedNumber).padStart(2, '0');
-    const message = `Hola, quiero solicitar el número ${number} del sorteo ${this.selectedDraw.name}. ¿Está disponible? Entiendo que la reserva debe confirmarse.`;
+    const message = `Hola, quiero solicitar el número ${number} del sorteo ${draw.name}. ¿Está disponible? Entiendo que la reserva debe confirmarse.`;
 
-    return `https://wa.me/34605974436?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   }
 
   openNumberModal(number: RaffleNumber): void {
@@ -155,7 +163,7 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   }
 
   trackWhatsappClick(): void {
-    if (!this.selectedDraw || this.selectedNumber === null) return;
+    if (!this.selectedDraw || this.selectedNumber === null || !this.whatsappUrl) return;
 
     this.tracking.landingEngagement(
       'numiq',

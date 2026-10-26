@@ -420,8 +420,16 @@
         <span class="prize-label">SOLICITUD DE NÚMERO</span>
         <h2 id="raffle-modal-title">{{ draw.name }}</h2>
         <div class="raffle-modal-number">{{ selectedNumber | number:'2.0-0' }}</div>
-        <p id="raffle-modal-description">¿Quieres solicitar este número? Su disponibilidad y reserva se confirmarán por WhatsApp.</p>
-        <a class="raffle-modal-whatsapp"
+        <p id="raffle-modal-description">
+          <ng-container *ngIf="whatsappUrl; else whatsappUnavailableDescription">
+            ¿Quieres solicitar este número? Su disponibilidad y reserva se confirmarán por WhatsApp.
+          </ng-container>
+          <ng-template #whatsappUnavailableDescription>
+            Este número está disponible, pero el organizador todavía no ha habilitado las solicitudes.
+            Inténtalo más tarde.
+          </ng-template>
+        </p>
+        <a *ngIf="whatsappUrl" class="raffle-modal-whatsapp"
            [href]="whatsappUrl"
            (click)="trackWhatsappClick()"
            target="_blank"
@@ -433,8 +441,11 @@
           </svg>
           <span>Solicitar por WhatsApp</span>
         </a>
+        <p *ngIf="!whatsappUrl" class="raffle-modal-note" role="status">
+          El organizador todavía no ha habilitado las solicitudes por WhatsApp para este sorteo.
+        </p>
         <button type="button" class="raffle-modal-cancel" (click)="closeNumberModal()">Volver a los números</button>
-        <p class="raffle-modal-note">Tu número no quedará reservado hasta que recibas la confirmación. No se realizan pagos en esta web.</p>
+        <p *ngIf="whatsappUrl" class="raffle-modal-note">Tu número no quedará reservado hasta que recibas la confirmación. No se realizan pagos en esta web.</p>
       </section>
     </div>
 

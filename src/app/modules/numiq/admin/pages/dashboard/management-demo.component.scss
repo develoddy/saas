@@ -1416,10 +1416,46 @@
 }
 
 .raffle-presentation-message {
-  margin: 0;
-  color: #e6c46d;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid #b7dfc4;
+  border-radius: 10px;
+  background: #edf8f0;
+  color: #17653b;
   font-size: 14px;
   line-height: 1.5;
+}
+
+.raffle-presentation-message--error {
+  border-color: #f0b8b8;
+  background: #fff1f1;
+  color: #9d2929;
+}
+
+.raffle-presentation-message__icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.raffle-presentation-message__content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.raffle-presentation-message__content strong {
+  font-weight: 600;
 }
 
 .management-demo .raffle-presentation-save {
