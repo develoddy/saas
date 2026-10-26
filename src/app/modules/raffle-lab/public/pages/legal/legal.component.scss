@@ -27,11 +27,32 @@
   color: tokens.$raffle-text;
 }
 
-.raffle-legal-page__back {
-  display: inline-block;
-  margin-bottom: 32px;
-  color: tokens.$raffle-gold;
-  text-decoration: none;
+// NUMIQ — Navegación contextual de las páginas legales.
+.raffle-legal-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid tokens.$raffle-border;
+  font-size: 14px;
+  line-height: 1.5;
+
+  a {
+    color: tokens.$raffle-muted;
+    text-decoration: none;
+
+    &:hover {
+      color: tokens.$raffle-gold;
+      text-decoration: underline;
+    }
+  }
+
+  [aria-current="page"] {
+    color: tokens.$raffle-gold;
+    font-weight: 700;
+  }
 }
 
 .raffle-legal-page__intro {

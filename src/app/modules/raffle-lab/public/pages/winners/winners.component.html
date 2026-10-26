@@ -2,19 +2,49 @@
   <app-raffle-header [drawId]="drawId"></app-raffle-header>
 
   <main class="raffle-winners-page">
-    <a routerLink="/raffle-lab" [queryParams]="drawId !== null ? { drawId: drawId } : {}">
-      ← Volver al inicio
-    </a>
+    <nav class="raffle-winners__breadcrumb" aria-label="Ruta de navegación">
+      <a
+        routerLink="/raffle-lab"
+        [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+      >Inicio</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">Ganadores</span>
+    </nav>
 
-    <section aria-labelledby="winners-page-title">
-      <h1 id="winners-page-title">🏆 Ganadores</h1>
-      <p *ngIf="drawName" class="raffle-winners__draw-name">
-        {{ drawName }}
+    <header class="raffle-winners__intro">
+      <div class="raffle-winners__heading">
+        <span class="raffle-winners__trophy" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.7"
+               stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 21h8M12 17v4"/>
+            <path d="M7 3h10v7a5 5 0 0 1-10 0V3Z"/>
+            <path d="M7 5H4v3a4 4 0 0 0 4 4"/>
+            <path d="M17 5h3v3a4 4 0 0 1-4 4"/>
+          </svg>
+        </span>
+        <div>
+          <span class="raffle-winners__eyebrow">RESULTADOS OFICIALES</span>
+          <h1 id="winners-page-title">Ganadores</h1>
+        </div>
+      </div>
+
+      <p class="raffle-winners__description">
+        Consulta los números premiados y los premios de este sorteo.
       </p>
-      <p *ngIf="resultsData?.resultsPublishedAt">
-        Estos son los resultados publicados de este sorteo.
-      </p>
-    </section>
+
+      <div *ngIf="drawName" class="raffle-winners__draw-info">
+        <span class="raffle-winners__draw-label">SORTEO</span>
+        <strong class="raffle-winners__draw-name">{{ drawName }}</strong>
+        <span
+          *ngIf="resultsData?.resultsPublishedAt"
+          class="raffle-winners__published"
+        >
+          <span aria-hidden="true">✓</span>
+          Resultados publicados
+        </span>
+      </div>
+    </header>
 
     <p *ngIf="resultsLoading" role="status">
       Cargando resultados...

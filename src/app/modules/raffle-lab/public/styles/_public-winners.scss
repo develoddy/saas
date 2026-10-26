@@ -17,21 +17,148 @@
     color: var(--raffle-gold);
   }
 
-  // Identidad del sorteo en la cabecera de resultados.
-  .raffle-winners__draw-name {
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    margin: 1rem 0 0.75rem;
-    padding: 0.75rem 1rem;
-    border-left: 3px solid var(--raffle-gold);
-    border-radius: 0 0.5rem 0.5rem 0;
+  // NUMIQ — Cabecera de resultados.
+  .raffle-winners__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--raffle-border);
+    font-size: 14px;
+
+    a {
+      color: var(--raffle-muted);
+      text-decoration: none;
+
+      &:hover {
+        color: var(--raffle-gold);
+        text-decoration: underline;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--raffle-gold);
+        outline-offset: 4px;
+      }
+    }
+
+    [aria-current="page"] {
+      color: var(--raffle-gold);
+      font-weight: 700;
+    }
+  }
+
+  .raffle-winners__intro {
+    margin-bottom: 28px;
+  }
+
+  .raffle-winners__heading {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    h1 {
+      margin: 4px 0 0;
+      color: var(--raffle-text);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+    }
+  }
+
+  .raffle-winners__trophy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 76px;
+    width: 76px;
+    height: 76px;
+    border: 1px solid #947233;
+    border-radius: 16px;
+    background: #292112;
+    color: var(--raffle-gold);
+
+    svg {
+      width: 42px;
+      height: 42px;
+    }
+  }
+
+  .raffle-winners__eyebrow {
+    color: var(--raffle-gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .raffle-winners__description {
+    margin: 20px 0 24px;
+    color: var(--raffle-muted);
+    font-size: clamp(15px, 2vw, 17px);
+    line-height: 1.6;
+  }
+
+  .raffle-winners__draw-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 20px 24px;
+    border: 1px solid var(--raffle-border);
+    border-radius: 12px;
     background: var(--raffle-surface);
+  }
+
+  .raffle-winners__draw-label {
+    color: var(--raffle-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .raffle-winners__draw-name {
+    max-width: 100%;
     color: var(--raffle-text);
-    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
     font-weight: 700;
     line-height: 1.4;
     overflow-wrap: anywhere;
+  }
+
+  .raffle-winners__published {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #67d9a2;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    .raffle-winners__breadcrumb {
+      margin-bottom: 22px;
+    }
+
+    .raffle-winners__heading {
+      gap: 14px;
+    }
+
+    .raffle-winners__trophy {
+      flex-basis: 58px;
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+
+      svg {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    .raffle-winners__draw-info {
+      padding: 16px;
+    }
   }
 
   .raffle-winners__grid {

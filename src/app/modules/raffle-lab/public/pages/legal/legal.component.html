@@ -2,11 +2,17 @@
   <app-raffle-header [drawId]="drawId"></app-raffle-header>
 
   <main class="raffle-legal-page" id="main-content">
-    <a class="raffle-legal-page__back"
-       routerLink="/raffle-lab"
-       [queryParams]="drawId !== null ? { drawId: drawId } : {}">
-      ← Volver al inicio
-    </a>
+    <nav
+      class="raffle-legal-page__breadcrumb"
+      aria-label="Ruta de navegación"
+    >
+      <a
+        routerLink="/raffle-lab"
+        [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+      >Inicio</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">{{ titles[page] }}</span>
+    </nav>
 
     <header class="raffle-legal-page__intro">
       <span class="raffle-legal-page__eyebrow">INFORMACIÓN LEGAL</span>

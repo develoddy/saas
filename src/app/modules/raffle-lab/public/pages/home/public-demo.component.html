@@ -216,7 +216,11 @@
         <div>
           <span class="prize-label">SORTEO</span>
           <h2 id="numbers-title">Consulta los números</h2>
-          <p class="numbers-intro">Explora los números del sorteo y consulta su disponibilidad.</p>
+          <p class="numbers-intro">
+            {{ selectedDraw?.status === 'closed'
+              ? 'La participación ha finalizado. Consulta los números del sorteo.'
+              : 'Explora los números del sorteo y consulta su disponibilidad.' }}
+          </p>
           <label *ngIf="!isDirectDrawView" for="public-draw">Selecciona un sorteo</label>
           <select *ngIf="!isDirectDrawView" id="public-draw" (change)="chooseDraw($event)">
             <option value="" [selected]="!selectedDraw">Seleccionar sorteo…</option>
@@ -224,7 +228,7 @@
               *ngFor="let draw of draws"
               [value]="draw.id"
               [selected]="selectedDraw?.id === draw.id">
-              {{ draw.name }} ({{ draw.status === 'closed' ? 'cerrado' : 'publicado' }})
+              {{ draw.name }} ({{ draw.status === 'closed' ? 'cerrado' : 'abierto' }})
             </option>
           </select>
         </div>
@@ -234,34 +238,98 @@
         <div class="raffle-meta">
           <span>{{ draw.name }}</span>
           <span>🎟️ {{ draw.totalNumbers }} números</span>
-          <span>{{ draw.status === 'closed' ? 'Sorteo cerrado' : 'Sorteo publicado' }}</span>
         </div>
-        <p
-          *ngIf="draw.status === 'closed'"
-          class="raffle-closed-notice"
-          role="status">
-          <strong>Sorteo cerrado.</strong>
-          Los números se muestran únicamente para consulta.
-          Ya no se admiten nuevas solicitudes.
-        </p>
+
+        <div
+          class="raffle-state-card"
+          [class.raffle-state-card--open]="draw.status === 'published'"
+          [class.raffle-state-card--closed]="draw.status === 'closed'"
+          role="status"
+        >
+          <div class="raffle-state-card__heading">
+            <i
+              *ngIf="draw.status === 'published'"
+              class="raffle-state-card__live-dot"
+              aria-hidden="true"
+            ></i>
+
+            <svg
+              *ngIf="draw.status === 'closed'"
+              class="raffle-state-card__lock"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="5" y="10" width="14" height="11" rx="2"/>
+              <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+              <circle cx="12" cy="15.5" r="1"/>
+            </svg>
+
+            <strong>
+              {{ draw.status === 'published'
+                ? 'SORTEO ABIERTO'
+                : 'SORTEO CERRADO' }}
+            </strong>
+          </div>
+
+          <p>
+            {{ draw.status === 'published'
+              ? 'Participación disponible · Selecciona tu número'
+              : 'Participación finalizada · Solo consulta' }}
+          </p>
+        </div>
         <p *ngIf="numbersLoading" role="status">Cargando números…</p>
         <div *ngIf="!numbersLoading && !error" class="numbers-grid">
           <button
             *ngFor="let number of numbers"
             type="button"
             class="number-cell"
-            [class.is-available]="number.status === 'available'"
-            [class.is-pending]="number.status === 'pending'"
-            [class.is-confirmed]="number.status === 'confirmed'"
+            [class.is-available]="draw.status === 'published' && number.status === 'available'"
+            [class.is-pending]="draw.status === 'published' && number.status === 'pending'"
+            [class.is-confirmed]="draw.status === 'published' && number.status === 'confirmed'"
+            [class.is-closed]="draw.status === 'closed'"
+            [class.is-winner]="draw.status === 'closed' && winningNumbers.has(number.value)"
             [disabled]="draw.status !== 'published' || number.status !== 'available'"
             (click)="openNumberModal(number)"
-            [attr.aria-label]="'Número ' + number.value + ', ' + number.status"
-          >{{ number.value | number:'2.0-0' }}</button>
+            [attr.aria-label]="draw.status === 'closed'
+              ? 'Número ' + number.value +
+                (winningNumbers.has(number.value) ? ', ganador' : ', solo consulta')
+              : 'Número ' + number.value + ', ' + number.status"
+          >
+            <span>{{ number.value | number:'2.0-0' }}</span>
+            <span
+              *ngIf="draw.status === 'closed' && winningNumbers.has(number.value)"
+              class="number-cell__trophy"
+              aria-hidden="true"
+            >🏆</span>
+          </button>
         </div>
-        <div *ngIf="!numbersLoading && !error" class="numbers-legend">
+        <div
+          *ngIf="!numbersLoading && !error && draw.status === 'published'"
+          class="numbers-legend"
+        >
           <span><i class="legend-dot available"></i> Disponible</span>
           <span><i class="legend-dot pending"></i> Pendiente</span>
           <span><i class="legend-dot confirmed"></i> Confirmado</span>
+        </div>
+        <div
+          *ngIf="!numbersLoading && !error && draw.status === 'closed'"
+          class="numbers-closed-summary"
+        >
+          <a
+            *ngIf="resultsPublished"
+            routerLink="/raffle-lab/winners"
+            [queryParams]="{ drawId: draw.id }"
+            class="numbers-results-link"
+          >
+            <span aria-hidden="true">🏆</span>
+            <span>Ver resultados del sorteo</span>
+            <span class="numbers-results-link__arrow" aria-hidden="true">→</span>
+          </a>
         </div>
       </ng-container>
     </section>

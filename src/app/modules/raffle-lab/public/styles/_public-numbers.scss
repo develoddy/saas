@@ -175,6 +175,286 @@
   }
 }
 
+// NUMIQ — ESTADO PUBLICO DEL SORTEO
+.raffle-status.raffle-status--open {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #12251b;
+  border-color: #287a52;
+  color: #6ee7a5;
+}
+
+.raffle-status__dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: #32d583;
+  box-shadow: 0 0 0 3px rgba(50, 213, 131, 0.12);
+  animation: numiq-status-pulse 2s ease-in-out infinite;
+}
+
+@keyframes numiq-status-pulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(50, 213, 131, 0.12);
+  }
+  50% {
+    opacity: 0.65;
+    box-shadow: 0 0 0 6px rgba(50, 213, 131, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-status__dot {
+    animation: none;
+  }
+}
+
+// NUMIQ — INDICADORES DE ESTADO VISIBLES
+.raffle-meta .raffle-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 10px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.raffle-meta .raffle-status--open {
+  background: #10291e;
+  border: 1px solid #2e9d66;
+  color: #72edaf;
+}
+
+.raffle-meta .raffle-status--closed {
+  background: #2b2117;
+  border: 1px solid #a97b3d;
+  color: #f0bb68;
+}
+
+.raffle-meta .raffle-status__dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  min-width: 9px;
+  min-height: 9px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #38e58a;
+  box-shadow: 0 0 0 3px rgba(56, 229, 138, 0.18);
+  animation: numiq-status-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-meta .raffle-status__dot {
+    animation: none;
+  }
+}
+
+// NUMIQ — TARJETA DE ESTADO DEL SORTEO
+.raffle-state-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 18px 20px;
+  border: 1px solid;
+  border-radius: tokens.$raffle-radius-md;
+
+  &__heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  &--open {
+    background: #10271d;
+    border-color: #2f9b65;
+    color: #71f0af;
+
+    p {
+      color: #b2c5ba;
+    }
+  }
+
+  &--closed {
+    background: #292017;
+    border-color: #bd8740;
+    color: #f0ba65;
+
+    p {
+      color: #c8b9a4;
+    }
+  }
+
+  &__live-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    flex: 0 0 12px;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 0 5px rgba(52, 211, 153, 0.18);
+    animation: numiq-status-pulse 2s ease-in-out infinite;
+  }
+
+  &__lock {
+    display: block;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-state-card {
+    padding: 15px 16px;
+
+    &__heading {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-state-card__live-dot {
+    animation: none;
+  }
+}
+
+// NUMIQ — ACCESO DESTACADO A RESULTADOS
+.numbers-closed-summary .numbers-results-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid #d5a744;
+  border-radius: tokens.$raffle-radius-md;
+  background: #221c11;
+  color: tokens.$raffle-gold;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover {
+    background: #332813;
+    border-color: tokens.$raffle-gold;
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid tokens.$raffle-gold;
+    outline-offset: 4px;
+  }
+
+  &__arrow {
+    font-size: 20px;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .numbers-closed-summary .numbers-results-link {
+    width: 100%;
+    max-width: 360px;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .numbers-closed-summary .numbers-results-link {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+// NUMIQ — MODO CONSULTA PARA SORTEOS CERRADOS
+.number-cell.is-closed {
+  flex-direction: column;
+  gap: 4px;
+  background: #1b1f25;
+  border-color: #343941;
+  color: #a5aab3;
+  opacity: 1;
+  cursor: default;
+}
+
+.number-cell.is-closed.is-winner {
+  background: #302713;
+  border-color: tokens.$raffle-gold;
+  color: tokens.$raffle-gold;
+  font-weight: 700;
+}
+
+.number-cell__trophy {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.numbers-closed-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: tokens.$raffle-muted;
+  font-size: 13px;
+
+  a {
+    color: tokens.$raffle-gold;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 4px;
+    }
+  }
+}
+
 // RESUMEN DE SELECCIÓN
 
 .selection-summary {

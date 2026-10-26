@@ -18,6 +18,8 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
   draws: PublicRaffleDraw[] = [];
   selectedDraw: PublicRaffleDraw | null = null;
   numbers: RaffleNumber[] = [];
+  winningNumbers = new Set<number>();
+  resultsPublished = false;
   prizes: RafflePrize[] = [];
   prizesLoading = false;
   prizesError: string | null = null;
@@ -249,11 +251,49 @@ export class PublicDemoComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadPublishedResults(drawId: number): void {
+    this.api.getDrawResults(drawId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: response => {
+          if (
+            this.selectedDraw?.id !== drawId ||
+            this.selectedDraw.status !== 'closed'
+          ) return;
+
+          if (
+            !response.success ||
+            response.data?.drawId !== drawId ||
+            !response.data.resultsPublishedAt ||
+            !Array.isArray(response.data.prizes)
+          ) return;
+
+          this.winningNumbers = new Set(
+            response.data.prizes
+              .map(prize => prize.result?.numberValue)
+              .filter((value): value is number =>
+                typeof value === 'number' && Number.isSafeInteger(value)
+              )
+          );
+          this.resultsPublished = true;
+        },
+        error: () => {
+          // Sin resultados verificados, no destacar ganadores.
+        }
+      });
+  }
+
   private loadDraw(draw: PublicRaffleDraw): void {
     this.closeNumberModal();
     this.selectedDraw = draw;
     this.numbers = [];
+    this.winningNumbers = new Set<number>();
+    this.resultsPublished = false;
     this.prizes = [];
+
+    if (draw.status === 'closed') {
+      this.loadPublishedResults(draw.id);
+    }
     this.prizesError = null;
     this.loadDrawPrizes(draw.id);
     this.error = null;
