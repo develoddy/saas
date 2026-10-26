@@ -19,8 +19,39 @@
 }
 
 .raffle-footer__brand {
+  display: block;
   flex: 0 1 220px;
   min-width: 0;
+  text-decoration: none;
+  transform-origin: center;
+  transition: transform 180ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+
+  &:hover {
+    transform: scale(1.015);
+  }
+
+  &:active {
+    transform: scale(0.97);
+    transition-duration: 90ms;
+  }
+
+  &:focus-visible {
+    outline: 2px solid tokens.$raffle-gold;
+    outline-offset: 5px;
+    border-radius: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-footer__brand {
+    transition: none;
+
+    &:hover,
+    &:active {
+      transform: none;
+    }
+  }
 }
 
 .raffle-footer__logo {
