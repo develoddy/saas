@@ -1,5 +1,11 @@
 <header class="raffle-header">
-  <div class="raffle-brand">
+  <a
+    class="raffle-brand"
+    routerLink="/raffle-lab"
+    [queryParams]="drawId !== null ? { drawId: drawId } : {}"
+    aria-label="NUMIQ — Volver al inicio"
+    (click)="closeMenu()"
+  >
     <img
       class="numiq-logo"
       src="assets/brands/numiq/numiq-logo-horizontal.svg"
@@ -7,7 +13,7 @@
       width="300"
       height="75"
     >
-  </div>
+  </a>
 
   <button
     #menuToggle
