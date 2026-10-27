@@ -3,24 +3,25 @@
     <!-- Navbar Moderna: Clean, Sticky, Minimal -->
     <nav class="navbar">
         <div class="navbar-container">
-            <!-- Mobile Hamburger -->
+            <!-- Identidad LujanDev Orbit -->
+            <div class="logo">
+                <img
+                    class="orbit-logo"
+                    src="assets/brand/orbit/orbit-symbol.svg"
+                    alt=""
+                    aria-hidden="true"
+                    width="36"
+                    height="36">
+                <span class="logo-text">LujanDev <span class="logo-secondary">Orbit</span></span>
+            </div>
+
+            <!-- Navegación móvil -->
             <button class="btn-hamburger" (click)="toggleMobileMenu()" aria-label="Abrir menú">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
             </button>
 
-            <!-- Logo -->
-            <div class="logo">
-                <i class="bi bi-gear-fill"></i>
-                <span class="logo-text">LujanDev <span class="logo-secondary">Labs</span></span>
-            </div>
-
-            <!-- Status (Desktop) -->
-            <div class="navbar-status" *ngIf="!isLoading">
-                <span class="status-dot"></span>
-                <span class="status-text">Sistema activo</span>
-            </div>
 
             <!-- Dashboard Button (Desktop) -->
             <button class="btn-navbar-dashboard btn-desktop" 
@@ -36,8 +37,14 @@
     <div class="mobile-sidebar" [class.open]="isMobileMenuOpen">
         <div class="sidebar-header">
             <div class="logo">
-                <i class="bi bi-gear-fill"></i>
-                <span class="logo-text">LujanDev Labs</span>
+                <img
+                    class="orbit-logo"
+                    src="assets/brand/orbit/orbit-symbol.svg"
+                    alt=""
+                    aria-hidden="true"
+                    width="32"
+                    height="32">
+                <span class="logo-text">LujanDev <span class="logo-secondary">Orbit</span></span>
             </div>
             <button class="btn-close" (click)="closeMobileMenu()" aria-label="Cerrar menú">
                 <i class="bi bi-x"></i>
@@ -51,7 +58,7 @@
             </a>
             <a class="nav-link" (click)="scrollToSection('how-it-works'); closeMobileMenu()">
                 <i class="bi bi-info-circle"></i>
-                <span>Cómo funciona</span>
+                <span>Nuestra filosofía</span>
             </a>
             <a class="nav-link" *ngIf="isAuthenticated && currentTenant" (click)="goToDashboard(); closeMobileMenu()">
                 <i class="bi bi-speedometer2"></i>
@@ -64,12 +71,6 @@
             </a>
         </nav>
 
-        <div class="sidebar-footer">
-            <div class="sidebar-status" *ngIf="!isLoading">
-                <span class="status-dot"></span>
-                <span>Sistema activo</span>
-            </div>
-        </div>
     </div>
 
     <!-- Mobile Overlay -->
@@ -80,16 +81,16 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    Construyendo micro-SaaS<br>
-                    basados en <span class="highlight">uso real</span>, no ideas
+                    De problemas reales a<br>
+                    <span class="highlight">productos digitales.</span>
                 </h1>
                 <p class="hero-subtitle">
-                    Las herramientas aparecen aquí solo cuando muestran señales reales de uso y retención.<br>
-                    No publicamos demos. Solo lo que funciona.
+                    Construimos, probamos y mejoramos herramientas digitales a través de experimentos.<br>
+                    Cada proyecto comienza con una hipótesis y evoluciona a partir de lo que aprendemos.
                 </p>
                 <div class="hero-badge">
                     <span class="badge-dot"></span>
-                    <span>Modo validación activo</span>
+                    <span>Explora lo que estamos construyendo</span>
                 </div>
             </div>
         </div>
@@ -99,185 +100,86 @@
     <main class="hub-main">
         <div class="container">
             
-            <!-- Loading State -->
-            <div *ngIf="isLoading" class="loading-state">
-                <div class="loading-spinner">
-                    <i class="bi bi-arrow-repeat"></i>
-                </div>
-                <h3>Cargando experimentos</h3>
-                <p>Conectando al laboratorio...</p>
-            </div>
+            <!-- Contenido público de LujanDev Lab -->
+            <section class="content-section">
 
-            <!-- Error State -->
-            <div *ngIf="!isLoading && error" class="error-state">
-                <div class="error-icon">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-                <h3>Algo salió mal</h3>
-                <p class="error-message">{{ error }}</p>
-                <button class="btn-retry" (click)="retryLoad()">
-                    <i class="bi bi-arrow-clockwise"></i>
-                    <span>Reintentar</span>
-                </button>
-                <p class="error-help">Si el problema persiste, <a href="#" class="error-link">contacta soporte</a></p>
-            </div>
-
-            <!-- Content Section -->
-            <section *ngIf="!isLoading && !error" class="content-section">
-
-                <!-- Cómo funciona -->
-                <div class="how-it-works-section" id="how-it-works">
+                <!-- LujanDev Lab: catálogo público -->
+                <section class="experiments-section" id="experiments">
                     <div class="section-header">
-                        <h2>Cómo funciona</h2>
-                        <p>Nuestro proceso de validación basado en datos</p>
+                        <h2>Explora los experimentos</h2>
+                        <p>Ideas que estamos construyendo, probando y mejorando.</p>
                     </div>
 
-                    <div class="steps-grid">
-                        <div class="step-card">
-                            <div class="step-number">01</div>
-                            <div class="step-icon">
-                                <i class="bi bi-code-slash"></i>
-                            </div>
-                            <h3>Experimentamos</h3>
-                            <p>Probamos ideas con usuarios reales</p>
-                        </div>
-
-                        <div class="step-card">
-                            <div class="step-number">02</div>
-                            <div class="step-icon">
-                                <i class="bi bi-graph-up"></i>
-                            </div>
-                            <h3>Medimos</h3>
-                            <p>Uso real, retención y señales de mercado antes de crear tenants</p>
-                        </div>
-
-                        <div class="step-card">
-                            <div class="step-number">03</div>
-                            <div class="step-icon">
-                                <i class="bi bi-rocket-takeoff"></i>
-                            </div>
-                            <h3>Publicamos</h3>
-                            <p>Solo lo que muestra tracción</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Experimentos en Validación -->
-                <section class="experiments-section" id="experiments" *ngIf="hasMvpData">
-                    <div class="section-header">
-                        <h2>Experimentos en validación</h2>
-                        <p>Estamos probando estas ideas con usuarios reales</p>
-
-                        <!-- Period Selector -->
-                        <div class="period-selector">
-                            <button [class.active]="selectedPeriod === '7d'" (click)="changePeriod('7d')">
-                                7 días
-                            </button>
-                            <button [class.active]="selectedPeriod === '30d'" (click)="changePeriod('30d')">
-                                30 días
-                            </button>
-                            <button [class.active]="selectedPeriod === '90d'" (click)="changePeriod('90d')">
-                                90 días
-                            </button>
-                            <button [class.active]="selectedPeriod === 'all'" (click)="changePeriod('all')">
-                                Todo
-                            </button>
-                        </div>
+                    <div class="loading-state" *ngIf="isLabLoading">
+                        <p>Cargando experimentos...</p>
                     </div>
 
-                    <!-- MVP Cards Grid -->
-                    <div class="mvp-cards-grid">
-                        <div class="mvp-card" 
-                             *ngFor="let mvp of mvpAnalytics" 
-                             [class.insufficient-data]="mvp.insufficient_data"
-                             [class.ready]="isReadyToTry(mvp)">
-
-                            <!-- Card Header -->
-                            <div class="card-header">
-                                <div class="mvp-info">
-                                    <h3>{{ mvp.module_name }}</h3>
-                                    <span class="mvp-type">Experimento en validación</span>
-                                </div>
-                                <div class="health-badge" [class]="'health-' + getPublicHealthLevel(mvp.health_score)">
-                                    {{ getPublicHealthLabel(mvp.health_score) }}
-                                </div>
-                            </div>
-                            
-                            <!-- Special Badge -->
-                            <div class="special-badge" *ngIf="getSpecialBadge(mvp)">
-                                <span [class]="getSpecialBadge(mvp)!.class">
-                                    {{ getSpecialBadge(mvp)!.label }}
-                                </span>
-                            </div>
-
-                            <!-- Status -->
-                            <div class="status-badge" [class]="getPublicStatusClass(mvp)">
-                                <span class="status-dot"></span>
-                                <span>{{ getPublicStatus(mvp) }}</span>
-                            </div>
-
-                            <!-- Message -->
-                            <div class="mvp-message">
-                                <i class="bi bi-info-circle"></i>
-                                <p>{{ getPublicMessage(mvp) }}</p>
-                            </div>
-
-                            <!-- Indicators -->
-                            <div class="indicators">
-                                <div class="indicator" [class.active]="mvp.total_sessions > 0">
-                                    <i class="bi bi-eye"></i>
-                                    <span>Uso real</span>
-                                </div>
-                                <div class="indicator" [class.active]="mvp.wizard_completions > 0">
-                                    <i class="bi bi-check-circle"></i>
-                                    <span>Completados</span>
-                                </div>
-                                <div class="indicator" [class.active]="mvp.total_feedback > 0">
-                                    <i class="bi bi-chat-left-heart"></i>
-                                    <span>Feedback</span>
-                                </div>
-                            </div>
-
-                            <!-- CTA -->
-                            <button class="btn-mvp-cta" 
-                                    [class.ready]="isReadyToTry(mvp)"
-                                    [disabled]="mvp.insufficient_data"
-                                    (click)="handleMvpCta(mvp)">
-                                <i [class]="getCtaIcon(mvp)"></i>
-                                <span>{{ getCtaText(mvp) }}</span>
-                            </button>
-                        </div>
+                    <div class="error-state" *ngIf="!isLabLoading && labError">
+                        <p>{{ labError }}</p>
                     </div>
 
-                    <!-- Empty State -->
-                    <div class="empty-state" *ngIf="mvpAnalytics.length === 0">
+                    <div class="mvp-cards-grid"
+                         *ngIf="!isLabLoading && !labError && labExperiments.length > 0">
+                        <app-experiment-card
+                            *ngFor="let experiment of labExperiments"
+                            [experiment]="experiment">
+                        </app-experiment-card>
+                    </div>
+
+                    <div class="empty-state"
+                         *ngIf="!isLabLoading && !labError && labExperiments.length === 0">
                         <i class="bi bi-inbox"></i>
                         <p>Estamos preparando nuevos experimentos</p>
-                        <small>Vuelve pronto para ver qué estamos validando</small>
+                        <small>Vuelve pronto para descubrir qué estamos construyendo.</small>
                     </div>
                 </section>
 
-                <!-- CTA Section -->
-                <div class="cta-section">
-                    <div class="cta-content">
-                        <div class="cta-icon">
-                            <i class="bi bi-bell"></i>
-                        </div>
-                        <h2>¿Quieres acceso cuando un experimento esté listo?</h2>
-                        <p>
-                            Te avisaremos cuando tengamos algo con señales reales de uso listo para probar
-                        </p>
-                        <button class="btn-cta-primary" (click)="requestEarlyAccess()">
-                            <i class="bi bi-envelope-heart"></i>
-                            <span>Avísame cuando esté listo</span>
-                        </button>
-                        <p class="cta-note">
-                            <i class="bi bi-info-circle"></i>
-                            No es una beta pública, solo señal de validación temprana
-                        </p>
+                <!-- Filosofía LujanDev: Problem → Experiments → Evidence → Product -->
+                <section class="how-it-works-section" id="how-it-works">
+                    <div class="section-header">
+                        <h2>Nuestra filosofía</h2>
+                        <p>De problemas reales a productos digitales. Experimentamos, medimos y evolucionamos a partir de evidencia.</p>
                     </div>
-                </div>
-                
+
+                    <div class="steps-grid">
+                        <article class="step-card">
+                            <div class="step-number">01</div>
+                            <div class="step-icon">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                            </div>
+                            <h3>Problem</h3>
+                            <p>Identificamos problemas reales y comprendemos las necesidades antes de construir soluciones.</p>
+                        </article>
+
+                        <article class="step-card">
+                            <div class="step-number">02</div>
+                            <div class="step-icon">
+                                <i class="bi bi-eyedropper" aria-hidden="true"></i>
+                            </div>
+                            <h3>Experiments</h3>
+                            <p>Diseñamos experimentos pequeños para poner a prueba hipótesis y validar ideas.</p>
+                        </article>
+
+                        <article class="step-card">
+                            <div class="step-number">03</div>
+                            <div class="step-icon">
+                                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                            </div>
+                            <h3>Evidence</h3>
+                            <p>Observamos el uso, medimos resultados y aprendemos de señales reales.</p>
+                        </article>
+
+                        <article class="step-card">
+                            <div class="step-number">04</div>
+                            <div class="step-icon">
+                                <i class="bi bi-box-seam" aria-hidden="true"></i>
+                            </div>
+                            <h3>Product</h3>
+                            <p>Convertimos lo que funciona en productos útiles, mantenibles y capaces de evolucionar.</p>
+                        </article>
+                    </div>
+                </section>
+
             </section>
 
         </div>
@@ -288,49 +190,12 @@
         <div class="container">
             <div class="footer-content">
                 <p class="footer-brand">
-                    MVP Hub · Fase de validación ·
-                    <a href="https://lujandev.com" target="_blank">lujandev.com</a>
+                    LujanDev Lab · Experimentos, evidencia y productos ·
+                    <a href="https://lujandev.com" target="_blank" rel="noopener noreferrer">lujandev.com</a>
                 </p>
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Documentación</a>
-                    <a href="#" class="footer-link">Soporte</a>
-                    <a href="#" class="footer-link">Estado del servicio</a>
-                </div>
             </div>
         </div>
     </footer>
 
-    <!-- Modal de Acceso Anticipado -->
-    <div class="modal-overlay" *ngIf="showEarlyAccessModal" (click)="closeEarlyAccessModal()">
-        <div class="modal-container" (click)="$event.stopPropagation()">
-            
-            <div class="modal-header">
-                <div class="modal-icon">
-                    <i class="bi bi-check-circle"></i>
-                </div>
-                <button class="modal-close" (click)="closeEarlyAccessModal()" aria-label="Cerrar">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </div>
-
-            <div class="modal-body">
-                <h3>¡Gracias por tu interés!</h3>
-                <p>
-                    Te avisaremos cuando tengamos un experimento listo para probar.
-                </p>
-                <p class="modal-note">
-                    Por ahora estamos 100% enfocados en validación con usuarios reales.
-                    Solo publicamos lo que muestra tracción.
-                </p>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-modal-primary" (click)="closeEarlyAccessModal()">
-                    Entendido
-                </button>
-            </div>
-            
-        </div>
-    </div>
 
 </div>

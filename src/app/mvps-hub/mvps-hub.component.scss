@@ -9,8 +9,460 @@
 // ========================================
 
 .mvps-hub {
+  // Tokens visuales de LujanDev Lab
+  --lab-bg: #0d1017;
+  --lab-surface: #171a21;
+  --lab-border: #303540;
+  --lab-text: #f5f7fa;
+  --lab-text-muted: #a8b2c3;
+  --lab-accent-blue: #3b82f6;
+  --lab-accent-violet: #6d00d9;
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
+
+  background: var(--lab-bg);
+  color: var(--lab-text);
+
+  // Catálogo público de experimentos
+  .experiments-section {
+    background: var(--lab-bg);
+
+    .section-header {
+      h2 {
+        color: var(--lab-text);
+      }
+
+      p {
+        color: var(--lab-text-muted);
+      }
+    }
+  }
+
+  // Distribución adaptable del catálogo
+  .experiments-section {
+    .mvp-cards-grid {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(min(100%, 320px), 1fr)
+      );
+
+      gap: 1.5rem;
+    }
+  }
+
+  // Proceso de experimentación de Lab
+  .how-it-works-section {
+    background: var(--lab-bg);
+
+    // Cuatro etapas de la filosofía LujanDev
+    .steps-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+
+      @media (max-width: 1100px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      @media (max-width: 600px) {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .step-card {
+      min-width: 0;
+      padding: 1.75rem 1.25rem;
+
+      .step-number {
+        width: 60px;
+        height: 60px;
+        font-size: 1.05rem;
+      }
+
+      .step-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 76px;
+        height: 76px;
+        margin: 0 auto 1.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(139, 92, 246, 0.4);
+        background: linear-gradient(
+          135deg,
+          rgba(59, 130, 246, 0.1),
+          rgba(109, 0, 217, 0.18)
+        );
+
+        i {
+          font-size: 2.5rem;
+          line-height: 1;
+          color: var(--lab-text);
+        }
+      }
+    }
+
+    .section-header {
+      h2 {
+        color: var(--lab-text);
+      }
+
+      p {
+        color: var(--lab-text-muted);
+      }
+    }
+
+    .step-card {
+      background: var(--lab-surface);
+      border-color: var(--lab-border);
+
+      &:hover {
+        border-color: #626b7d;
+      }
+
+      .step-number {
+        color: var(--lab-accent-blue);
+        background: rgba(59, 130, 246, 0.12);
+      }
+
+      .step-icon i,
+      h3 {
+        color: var(--lab-text);
+      }
+
+      p {
+        color: var(--lab-text-muted);
+      }
+    }
+  }
+
+  // Navegación de LujanDev Lab
+  .navbar {
+    background: rgba(13, 16, 23, 0.96);
+    border-bottom-color: var(--lab-border);
+
+    .logo {
+      i {
+        color: var(--lab-accent-blue);
+      }
+
+      .logo-text {
+        color: var(--lab-text);
+
+        .logo-secondary {
+          color: var(--lab-accent-blue);
+        }
+      }
+    }
+
+    .btn-hamburger .hamburger-line {
+      background: var(--lab-text);
+    }
+  }
+
+  // Identidad y distribución de Orbit
+  .navbar {
+    .navbar-container {
+      gap: 1rem;
+    }
+
+    .logo {
+      min-width: 0;
+
+      .orbit-logo {
+        display: block;
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        object-fit: contain;
+      }
+
+      .logo-text {
+        white-space: nowrap;
+        letter-spacing: -0.025em;
+      }
+    }
+
+    .btn-navbar-dashboard {
+      color: var(--lab-accent-blue);
+      border-color: var(--lab-accent-blue);
+
+      &:hover {
+        background: var(--lab-accent-blue);
+        color: #fff;
+      }
+    }
+
+    .btn-hamburger {
+      order: 0;
+      margin-left: auto;
+      flex-shrink: 0;
+
+      &:hover .hamburger-line {
+        background: var(--lab-accent-blue);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar-container {
+        justify-content: space-between;
+      }
+
+      .logo {
+        gap: 0.5rem;
+
+        .orbit-logo {
+          width: 30px;
+          height: 30px;
+        }
+
+        .logo-text {
+          font-size: 1.05rem;
+        }
+      }
+    }
+  }
+
+  .mobile-sidebar {
+    background: var(--lab-surface);
+    color: var(--lab-text);
+
+    .sidebar-header {
+      border-bottom-color: var(--lab-border);
+
+      .logo {
+        min-width: 0;
+
+        .orbit-logo {
+          display: block;
+          width: 32px;
+          height: 32px;
+          flex-shrink: 0;
+          object-fit: contain;
+        }
+
+        .logo-text {
+          color: var(--lab-text);
+
+          .logo-secondary {
+            color: var(--lab-accent-blue);
+          }
+        }
+      }
+
+      .btn-close i {
+        color: var(--lab-text-muted);
+      }
+
+      .btn-close:hover i {
+        color: var(--lab-text);
+      }
+    }
+  }
+
+  // Refuerzo visual de la marca Orbit
+  .navbar,
+  .mobile-sidebar {
+    .logo {
+      .logo-text .logo-secondary {
+        color: var(--lab-accent-blue);
+        background: linear-gradient(
+          90deg,
+          var(--lab-accent-blue),
+          var(--lab-accent-violet)
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+  }
+
+  .navbar {
+    .logo {
+      .orbit-logo {
+        width: 46px;
+        height: 46px;
+      }
+
+      .logo-text {
+        font-size: 1.35rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .logo {
+        .orbit-logo {
+          width: 38px;
+          height: 38px;
+        }
+
+        .logo-text {
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+
+  .mobile-sidebar {
+    .sidebar-header .logo {
+      .orbit-logo {
+        width: 38px;
+        height: 38px;
+      }
+
+      .logo-text {
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  // Contraste de navegación móvil Orbit
+  .mobile-sidebar {
+    .sidebar-nav {
+      .nav-link {
+        color: var(--lab-text);
+
+        i {
+          color: var(--lab-accent-blue);
+        }
+
+        span {
+          color: inherit;
+        }
+
+        &:hover,
+        &:focus-visible {
+          background: rgba(59, 130, 246, 0.1);
+          color: var(--lab-text);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--lab-accent-blue);
+          outline-offset: -2px;
+        }
+      }
+
+      .nav-divider {
+        background: var(--lab-border);
+        border-color: var(--lab-border);
+      }
+    }
+  }
+
+  // Acentos degradados de Orbit
+  .navbar {
+    .btn-hamburger {
+      .hamburger-line {
+        background: linear-gradient(
+          90deg,
+          var(--lab-accent-blue),
+          var(--lab-accent-violet)
+        );
+      }
+
+      &:hover .hamburger-line {
+        background: linear-gradient(
+          90deg,
+          var(--lab-accent-blue),
+          var(--lab-accent-violet)
+        );
+      }
+    }
+  }
+
+  .how-it-works-section {
+    .step-card {
+      .step-number {
+        background: rgba(109, 0, 217, 0.12);
+        color: var(--lab-accent-violet);
+        background-clip: border-box;
+      }
+    }
+  }
+
+  // Identidad degradada del footer
+  .footer {
+    .footer-brand a {
+      color: var(--lab-accent-violet);
+      background: linear-gradient(
+        90deg,
+        var(--lab-accent-blue),
+        var(--lab-accent-violet)
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--lab-accent-violet);
+        outline-offset: 4px;
+      }
+    }
+  }
+
+  // Footer de LujanDev Lab
+  .footer {
+    background: var(--lab-bg);
+    border-top: 1px solid var(--lab-border);
+
+    .footer-brand {
+      color: var(--lab-text-muted);
+
+      a {
+        text-decoration: none;
+      }
+    }
+  }
+
+  // Hero de LujanDev Lab
+  .hero-section {
+    background: var(--lab-bg);
+
+    .hero-title {
+      color: var(--lab-text);
+
+      .highlight {
+        color: #3b82f6;
+        background: linear-gradient(90deg, #3b82f6, #6d00d9);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        &::after {
+          display: none;
+        }
+      }
+    }
+
+    .hero-subtitle {
+      color: var(--lab-text-muted);
+    }
+
+    .hero-badge {
+      border: 1px solid transparent;
+      color: var(--lab-text);
+      background:
+        linear-gradient(var(--lab-bg), var(--lab-bg)) padding-box,
+        linear-gradient(
+          90deg,
+          var(--lab-accent-blue),
+          var(--lab-accent-violet)
+        ) border-box;
+
+      .badge-dot {
+        background: linear-gradient(
+          135deg,
+          var(--lab-accent-blue),
+          var(--lab-accent-violet)
+        );
+        animation: none;
+      }
+    }
+  }
 }

@@ -20,6 +20,7 @@ import { VideoExpressWizardComponent } from './components/video-express-wizard/v
 import { MvpsHubComponent } from './mvps-hub/mvps-hub.component';
 import { SharedModule } from './shared/shared.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { ExperimentCardComponent } from './lab/components/experiment-card/experiment-card.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ChatModule } from './modules/chat/chat.module';
     AccountComponent,
     ModulePreviewWizardComponent,
     VideoExpressWizardComponent,
-    MvpsHubComponent
+    MvpsHubComponent,
+    ExperimentCardComponent
   ],
   imports: [
     BrowserModule,

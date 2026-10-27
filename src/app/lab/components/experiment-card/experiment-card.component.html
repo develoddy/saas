@@ -1,0 +1,51 @@
+<article
+  class="experiment-card"
+  [class.experiment-card--with-cover]="experiment.screenshots?.length || experiment.key === 'mailflow'">
+
+  <!-- Portada del experimento -->
+  <div
+    class="experiment-card__cover"
+    *ngIf="experiment.screenshots?.length || experiment.key === 'mailflow'">
+    <img
+      [src]="experiment.screenshots?.length
+        ? experiment.screenshots[0]
+        : 'assets/experiments/mailflow/cover.png'"
+      [alt]="'Portada de ' + experiment.name"
+      loading="lazy">
+  </div>
+
+  <!-- Estado -->
+  <div class="experiment-card__header">
+    <span
+      class="experiment-card__status"
+      [class.experiment-card__status--live]="experiment.status === 'live'">
+      {{ experiment.status === 'live' ? 'Disponible' : 'En pruebas' }}
+    </span>
+  </div>
+
+  <!-- Información superpuesta -->
+  <div class="experiment-card__overlay">
+    <div class="experiment-card__content">
+      <h3 class="experiment-card__title">
+        {{ experiment.name }}
+      </h3>
+
+      <p
+        class="experiment-card__description"
+        *ngIf="experiment.description">
+        {{ experiment.description }}
+      </p>
+    </div>
+
+    <a
+      *ngIf="experimentRoute"
+      class="experiment-card__link"
+      [routerLink]="experimentRoute">
+      <span class="experiment-card__link-text">
+        Explorar experimento
+      </span>
+      <i class="bi bi-arrow-right" aria-hidden="true"></i>
+    </a>
+  </div>
+
+</article>
