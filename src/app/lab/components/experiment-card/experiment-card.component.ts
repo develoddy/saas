@@ -10,10 +10,15 @@ export class ExperimentCardComponent {
   @Input() experiment!: LabExperiment;
 
   get experimentRoute(): string | null {
-    const routes: Record<string, string> = {
-      mailflow: '/mailflow'
-    };
+    const route = this.experiment?.route;
 
-    return routes[this.experiment?.key] ?? null;
+    if (
+      typeof route === 'string' &&
+      /^\/[a-z0-9_-]+(?:\/[a-z0-9_-]+)*$/.test(route)
+    ) {
+      return route;
+    }
+
+    return null;
   }
 }

@@ -11,6 +11,7 @@ export interface LabExperiment {
   icon: string;
   color: string;
   status: 'testing' | 'live';
+  route?: string | null;
   screenshots: string[];
   features: string[];
 }
