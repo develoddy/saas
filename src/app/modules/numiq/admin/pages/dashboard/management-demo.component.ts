@@ -95,7 +95,8 @@ export class ManagementDemoComponent {
     description: null,
     ticketPrice: null,
     drawDate: null,
-    whatsappNumber: null
+    whatsappNumber: null,
+    organizerName: null
   };
   bannerFile: File | null = null;
   bannerDragging = false;
@@ -311,6 +312,7 @@ export class ManagementDemoComponent {
         : Number(rawTicketPrice);
     const drawDate = this.presentation.drawDate;
     const whatsappNumber = this.presentation.whatsappNumber?.trim() || null;
+    const organizerName = this.presentation.organizerName?.trim() || null;
 
     if (whatsappNumber) {
       const normalized = whatsappNumber.replace(/[^0-9]/g, '');
@@ -376,7 +378,8 @@ export class ManagementDemoComponent {
       description,
       ticketPrice,
       drawDate: normalizedDate,
-      whatsappNumber
+      whatsappNumber,
+      organizerName
     }).subscribe({
       next: response => {
         this.draws = this.draws.map(item =>
@@ -385,6 +388,7 @@ export class ManagementDemoComponent {
 
         if (this.selectedDrawId === draw.id) {
           this.presentation.whatsappNumber = response.data.whatsappNumber;
+          this.presentation.organizerName = response.data.organizerName;
           this.presentation.drawDate = response.data.drawDate
             ? response.data.drawDate.slice(0, 10)
             : null;
@@ -1144,7 +1148,8 @@ export class ManagementDemoComponent {
       drawDate: draw.drawDate
         ? draw.drawDate.slice(0, 10)
         : null,
-      whatsappNumber: draw.whatsappNumber
+      whatsappNumber: draw.whatsappNumber,
+      organizerName: draw.organizerName
     };
     this.bannerFile = null;
     this.mobileBannerFile = null;

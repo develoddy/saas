@@ -81,6 +81,50 @@
   white-space: pre-line;
 }
 
+.raffle-hero-banner__organizer {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  max-width: 510px;
+  margin: 22px 0 0;
+  color: #fff0d0;
+}
+
+.raffle-hero-banner__organizer-icon {
+  box-sizing: content-box;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  padding: 12px;
+  border: 1px solid rgba(217, 173, 88, 0.4);
+  border-radius: 12px;
+  background: rgba(20, 16, 10, 0.65);
+  color: #e3b951;
+}
+
+.raffle-hero-banner__organizer-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.raffle-hero-banner__organizer-label {
+  color: #c4ac7f;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+}
+
+.raffle-hero-banner__organizer-name {
+  color: #ffd66b;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
 .raffle-hero-banner__details {
   display: flex;
   flex-wrap: wrap;

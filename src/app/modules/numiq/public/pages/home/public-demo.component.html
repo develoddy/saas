@@ -17,6 +17,33 @@
           <p *ngIf="draw.description" class="raffle-hero-banner__description">
             {{ draw.description }}
           </p>
+          <p *ngIf="draw.organizerName" class="raffle-hero-banner__organizer">
+            <svg
+              class="raffle-hero-banner__organizer-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 21v-2a8 8 0 0 1 16 0v2"></path>
+            </svg>
+            <span class="raffle-hero-banner__organizer-text">
+              <span class="raffle-hero-banner__organizer-label">
+                ORGANIZADO POR
+              </span>
+              <strong class="raffle-hero-banner__organizer-name">
+                {{ draw.organizerName }}
+              </strong>
+            </span>
+          </p>
 
           <div class="raffle-hero-banner__details"
             *ngIf="draw.ticketPrice !== null || draw.drawDate">

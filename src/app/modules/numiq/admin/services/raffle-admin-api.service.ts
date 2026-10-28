@@ -19,6 +19,7 @@ export interface AdminRaffleDraw {
   ticketPrice: string | null;
   drawDate: string | null;
   whatsappNumber: string | null;
+  organizerName: string | null;
 }
 
 export interface AdminRafflePresentation {
@@ -27,6 +28,7 @@ export interface AdminRafflePresentation {
   ticketPrice: number | null;
   drawDate: string | null;
   whatsappNumber?: string | null;
+  organizerName?: string | null;
 }
 
 interface ApiResponse<T> {

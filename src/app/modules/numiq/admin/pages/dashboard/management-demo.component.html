@@ -509,6 +509,26 @@
         </div>
 
         <div class="raffle-presentation-field">
+          <label for="raffle-organizer-name">
+            Nombre del organizador (opcional)
+          </label>
+          <input
+            id="raffle-organizer-name"
+            name="organizerName"
+            type="text"
+            maxlength="150"
+            autocomplete="off"
+            placeholder="Ej. Cristian Córdoba (Parro)"
+            [(ngModel)]="presentation.organizerName"
+          />
+          <small>
+            Se mostrará públicamente en el sorteo como
+            «Organizado por [nombre]». Si lo dejas vacío,
+            no se mostrará esta información.
+          </small>
+        </div>
+
+        <div class="raffle-presentation-field">
           <label for="raffle-whatsapp-number">
             WhatsApp del organizador (opcional)
           </label>
