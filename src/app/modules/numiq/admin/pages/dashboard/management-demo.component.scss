@@ -403,6 +403,11 @@
   color: #86efac;
 }
 
+.management-demo .management-reservation-card
+.management-reservation-message {
+  color: #dcfce7;
+}
+
 @media (max-width: 600px) {
   .management-reservations {
     width: calc(100% - 24px);
@@ -900,8 +905,22 @@
 }
 
 .management-manual-number-grid button:disabled {
-  opacity: 0.35;
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+.management-manual-number-grid button.is-pending:disabled {
+  opacity: 1;
+  background: #4a3818;
+  border-color: #c49a36;
+  color: #ffe2a0;
+}
+
+.management-manual-number-grid button.is-confirmed:disabled {
+  opacity: 1;
+  background: #292d36;
+  border-color: #626a79;
+  color: #b9c0cc;
 }
 
 .management-selected-numbers {

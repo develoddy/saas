@@ -270,6 +270,28 @@ export class RaffleAdminApiService {
     );
   }
 
+  updateReservationParticipant(
+    reservationId: number,
+    participantName: string
+  ): Observable<ApiResponse<unknown>> {
+    return this.http.patch<ApiResponse<unknown>>(
+      `${this.baseUrl}/reservations/${reservationId}/participant`,
+      { participantName },
+      { headers: this.headers }
+    );
+  }
+
+  changeReservationNumbers(
+    reservationId: number,
+    values: number[]
+  ): Observable<ApiResponse<unknown>> {
+    return this.http.patch<ApiResponse<unknown>>(
+      `${this.baseUrl}/reservations/${reservationId}/numbers`,
+      { values },
+      { headers: this.headers }
+    );
+  }
+
   confirmReservation(
     reservationId: number
   ): Observable<ApiResponse<unknown>> {

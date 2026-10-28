@@ -1134,6 +1134,8 @@
             *ngFor="let number of numbers"
             type="button"
             [class.is-selected]="manualSelectedNumbers.includes(number.value)"
+            [class.is-pending]="number.status === 'pending'"
+            [class.is-confirmed]="number.status === 'confirmed'"
             [disabled]="number.status !== 'available' || manualSaving"
             [attr.aria-pressed]="manualSelectedNumbers.includes(number.value)"
             (click)="toggleManualNumber(number.value)"
@@ -1370,6 +1372,46 @@
             <ng-container *ngSwitchCase="'expired'">Caducada</ng-container>
           </strong>
         </p>
+
+        <p
+          *ngIf="historyReservationMessageId === reservation.id &&
+            historyReservationMessage"
+          class="management-reservation-message"
+          role="status"
+        >
+          {{ historyReservationMessage }}
+        </p>
+
+        <div
+          *ngIf="selectedDraw &&
+            selectedDraw.status !== 'closed' &&
+            reservation.status === 'confirmed'"
+          class="management-reservation-actions"
+        >
+          <button
+            type="button"
+            [disabled]="isReservationOperationInProgress(reservation.id)"
+            (click)="editReservationParticipant(reservation)"
+          >
+            Editar participante
+          </button>
+
+          <button
+            type="button"
+            [disabled]="isReservationOperationInProgress(reservation.id)"
+            (click)="changeReservationNumbers(reservation)"
+          >
+            Cambiar números
+          </button>
+
+          <button
+            type="button"
+            [disabled]="isReservationOperationInProgress(reservation.id)"
+            (click)="cancelHistoryReservation(reservation)"
+          >
+            Cancelar reserva
+          </button>
+        </div>
       </div>
     </ng-container>
     <nav

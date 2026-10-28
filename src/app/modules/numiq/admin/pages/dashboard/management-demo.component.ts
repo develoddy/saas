@@ -1347,6 +1347,8 @@ export class ManagementDemoComponent {
   selectedNumber: RaffleNumber | null = null;
   statusMessage: string | null = null;
   reservationMessage: string | null = null;
+  historyReservationMessage: string | null = null;
+  historyReservationMessageId: number | null = null;
 
   realReservations: AdminRaffleReservation[] = [];
   reservationsLoading = false;
@@ -1519,6 +1521,214 @@ export class ManagementDemoComponent {
 
   isReservationOperationInProgress(id: number): boolean {
     return this.reservationOperationsInProgress.has(id);
+  }
+
+  editReservationParticipant(
+    reservation: AdminRaffleReservation
+  ): void {
+    const drawId = this.selectedDrawId;
+
+    if (
+      drawId === null ||
+      this.selectedDraw?.status === 'closed' ||
+      reservation.status !== 'confirmed' ||
+      this.isReservationOperationInProgress(reservation.id)
+    ) {
+      return;
+    }
+
+    const input = window.prompt(
+      'Nombre del participante:',
+      reservation.participantName
+    );
+
+    if (input === null) {
+      return;
+    }
+
+    const participantName = input.trim();
+
+    if (
+      !participantName ||
+      participantName === reservation.participantName
+    ) {
+      return;
+    }
+
+    this.reservationOperationsInProgress.add(reservation.id);
+
+    this.raffleApi.updateReservationParticipant(
+      reservation.id,
+      participantName
+    ).subscribe({
+      next: () => {
+        this.reservationOperationsInProgress.delete(reservation.id);
+
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+          'Participante actualizado correctamente.';
+        this.loadReservations(drawId);
+      },
+      error: error => {
+        this.reservationOperationsInProgress.delete(reservation.id);
+
+        if (this.selectedDrawId === drawId) {
+          this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+            error.error?.message ||
+            'No se pudo actualizar el participante.';
+        }
+      }
+    });
+  }
+
+  changeReservationNumbers(
+    reservation: AdminRaffleReservation
+  ): void {
+    const drawId = this.selectedDrawId;
+
+    if (
+      drawId === null ||
+      !this.selectedDraw ||
+      this.selectedDraw.status === 'closed' ||
+      reservation.status !== 'confirmed' ||
+      this.isReservationOperationInProgress(reservation.id)
+    ) {
+      return;
+    }
+
+    const input = window.prompt(
+      'Introduce los números separados por comas:',
+      this.getReservationNumbers(reservation)
+    );
+
+    if (input === null) {
+      return;
+    }
+
+    const parts = input.split(',').map(value => value.trim());
+
+    if (
+      parts.some(value => !/^[0-9]+$/.test(value)) ||
+      parts.length === 0
+    ) {
+      this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage = 'Introduce números válidos separados por comas.';
+      return;
+    }
+
+    const values = parts.map(Number);
+
+    if (
+      values.some(value =>
+        !Number.isSafeInteger(value) ||
+        value < 1 ||
+        value > this.selectedDraw!.totalNumbers
+      ) ||
+      new Set(values).size !== values.length
+    ) {
+      this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+        'Los números deben estar dentro del sorteo y no repetirse.';
+      return;
+    }
+
+    const currentValues = reservation.numbers
+      .map(number => number.value)
+      .sort((a, b) => a - b);
+
+    if (
+      values.length === currentValues.length &&
+      [...values].sort((a, b) => a - b)
+        .every((value, index) => value === currentValues[index])
+    ) {
+      return;
+    }
+
+    this.reservationOperationsInProgress.add(reservation.id);
+
+    this.raffleApi.changeReservationNumbers(
+      reservation.id,
+      values
+    ).subscribe({
+      next: () => {
+        this.reservationOperationsInProgress.delete(reservation.id);
+
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+          'Números de la reserva actualizados correctamente.';
+        this.loadReservations(drawId);
+        this.refreshNumbers(drawId);
+      },
+      error: error => {
+        this.reservationOperationsInProgress.delete(reservation.id);
+
+        if (this.selectedDrawId === drawId) {
+          this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+            error.error?.message ||
+            'No se pudieron actualizar los números.';
+        }
+      }
+    });
+  }
+
+  cancelHistoryReservation(
+    reservation: AdminRaffleReservation
+  ): void {
+    const drawId = this.selectedDrawId;
+
+    if (
+      drawId === null ||
+      !this.selectedDraw ||
+      this.selectedDraw.status === 'closed' ||
+      reservation.status !== 'confirmed' ||
+      this.isReservationOperationInProgress(reservation.id)
+    ) {
+      return;
+    }
+
+    if (!window.confirm(
+      '¿Cancelar esta reserva confirmada y liberar sus números?'
+    )) {
+      return;
+    }
+
+    this.reservationOperationsInProgress.add(reservation.id);
+
+    this.raffleApi.cancelReservation(reservation.id).subscribe({
+      next: () => {
+        this.reservationOperationsInProgress.delete(reservation.id);
+
+        if (this.selectedDrawId !== drawId) {
+          return;
+        }
+
+        this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+          'Reserva cancelada correctamente.';
+        this.loadReservations(drawId);
+        this.refreshNumbers(drawId);
+      },
+      error: error => {
+        this.reservationOperationsInProgress.delete(reservation.id);
+
+        if (this.selectedDrawId === drawId) {
+          this.historyReservationMessageId = reservation.id;
+        this.historyReservationMessage =
+            error.error?.message ||
+            'No se pudo cancelar la reserva.';
+        }
+      }
+    });
   }
 
   confirmActiveReservation(id: number): void {

@@ -462,6 +462,20 @@
 }
 
 .management-demo .management-workspace .management-participant-registration
+.management-manual-number-grid button.is-pending:disabled:not(.is-selected) {
+  background: #fef3c7;
+  border-color: #fbbf24;
+  color: #92400e;
+}
+
+.management-demo .management-workspace .management-participant-registration
+.management-manual-number-grid button.is-confirmed:disabled:not(.is-selected) {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.management-demo .management-workspace .management-participant-registration
 .management-selected-numbers {
   background: #f5f7fb;
   border: 1px solid #dce3ec;
