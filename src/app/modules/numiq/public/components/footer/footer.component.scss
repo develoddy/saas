@@ -87,6 +87,7 @@
   display: flex;
   flex: 0 0 100%;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px 22px;
   padding-top: 20px;
   border-top: 1px solid tokens.$raffle-border;
@@ -103,6 +104,76 @@
     &:focus-visible {
       outline: 2px solid tokens.$raffle-gold;
       outline-offset: 4px;
+    }
+  }
+}
+
+.raffle-footer__credits {
+  flex: 0 0 100%;
+  margin: -0.5rem 0 0;
+  padding-top: 0;
+  text-align: center;
+  color: tokens.$raffle-muted;
+  font-size: 0.625rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: normal;
+  animation: raffle-footer-credit-enter 650ms ease-out both;
+
+  a {
+    color: tokens.$raffle-gold;
+    font: inherit;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 180ms ease;
+
+    &:hover {
+      color: tokens.$raffle-text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    &:focus-visible {
+      outline: 2px solid tokens.$raffle-gold;
+      outline-offset: 4px;
+    }
+  }
+
+  span {
+    margin-inline: 0.25rem;
+    color: tokens.$raffle-muted;
+  }
+}
+
+@keyframes raffle-footer-credit-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .raffle-footer__credits {
+    animation: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .raffle-footer__legal {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 0.75rem;
+    width: 100%;
+    text-align: center;
+
+    a {
+      min-width: 0;
+      overflow-wrap: break-word;
     }
   }
 }
